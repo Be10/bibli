@@ -1,14 +1,15 @@
 import { sitePath } from "./site-paths";
 import {
+  getBibleBookPath,
   getBibleRootPath,
   getBibleVersePath,
 } from "./bible-routes";
-
 import {
   getDefaultBibleVersionId,
+  type SupportedLanguageCode,
 } from "./bible-config";
 import {
-  getAllBooks,
+  getAllBooksByLanguage,
   getAllEvents,
   getAllGlossaryTerms,
   getAllLessons,
@@ -23,6 +24,7 @@ import {
 export type SearchIndexItem = {
   title: string;
   type: string;
+  typeLabel?: string;
   url: string;
   summary: string;
   searchText: string;
@@ -30,6 +32,8 @@ export type SearchIndexItem = {
   bookOrder: number;
   chapterNumber: number;
   verseNumber: number;
+  language?: SupportedLanguageCode;
+  versionId?: string;
 };
 
 const typePriority: Record<string, number> = {
@@ -46,305 +50,379 @@ const typePriority: Record<string, number> = {
   Sección: 11,
 };
 
+const typeLabels: Record<
+  SupportedLanguageCode,
+  Record<string, string>
+> = {
+  es: {
+    Versículo: "Versículo",
+    Glosario: "Glosario",
+    Lugar: "Lugar",
+    Personaje: "Personaje",
+    Evento: "Evento",
+    Tema: "Tema",
+    Lección: "Lección",
+    Libro: "Libro",
+    Pasaje: "Pasaje",
+    Ruta: "Ruta",
+    Sección: "Sección",
+  },
+  en: {
+    Versículo: "Verse",
+    Glosario: "Glossary",
+    Lugar: "Place",
+    Personaje: "Person",
+    Evento: "Event",
+    Tema: "Topic",
+    Lección: "Lesson",
+    Libro: "Book",
+    Pasaje: "Passage",
+    Ruta: "Route",
+    Sección: "Section",
+  },
+};
+
 function getTypePriority(type: string) {
   return typePriority[type] ?? 99;
 }
 
-function joinSearchText(...parts: Array<string | number | null | undefined>) {
+function getTypeLabel(
+  language: SupportedLanguageCode,
+  type: string
+) {
+  return typeLabels[language][type] ?? type;
+}
+
+function joinSearchText(
+  ...parts: Array<string | number | null | undefined>
+) {
   return parts.filter(Boolean).join(" ");
 }
 
-const spanishBibleVersionId =
-  getDefaultBibleVersionId("es");
+function makeItem(
+  language: SupportedLanguageCode,
+  type: string,
+  item: Omit<
+    SearchIndexItem,
+    "type" | "typeLabel" | "typePriority" | "language"
+  >
+): SearchIndexItem {
+  return {
+    ...item,
+    type,
+    typeLabel: getTypeLabel(language, type),
+    typePriority: getTypePriority(type),
+    language,
+  };
+}
 
-export function buildSearchIndex(): SearchIndexItem[] {
-  const rawBooks = getAllBooks().filter((book) => book.status !== "Borrador");
-
-  const bookOrderBySlug = new Map(
-    rawBooks.map((book) => [book.slug, book.order_number])
+export function buildSearchIndex(
+  language: SupportedLanguageCode = "es"
+): SearchIndexItem[] {
+  const bibleVersionId = getDefaultBibleVersionId(language);
+  const rawBooks = getAllBooksByLanguage(language).filter(
+    (book) => book.status !== "Borrador" && book.usfm_code
   );
 
+  const bookOrderById = new Map(
+    rawBooks.map((book) => [book.id, book.order_number])
+  );
+
+  const bibleSection = makeItem(language, "Sección", {
+    title: language === "en" ? "Bible" : "Biblia",
+    url: getBibleRootPath(language),
+    summary:
+      language === "en"
+        ? "Read the Bible by version, book, chapter, and verse."
+        : "Lectura bíblica por versión, libro, capítulo y versículo.",
+    searchText:
+      language === "en"
+        ? "Bible reading versions books chapters verses"
+        : "Biblia lectura bíblica versiones libros capítulos versículos",
+    bookOrder: 999,
+    chapterNumber: 999,
+    verseNumber: 999,
+    versionId: bibleVersionId,
+  });
+
+  const books: SearchIndexItem[] = rawBooks.map((book) =>
+    makeItem(language, "Libro", {
+      title: book.name,
+      url:
+        language === "en"
+          ? getBibleBookPath(
+              language,
+              bibleVersionId,
+              book.usfm_code
+            )
+          : sitePath(`/libros/${book.slug}/`),
+      summary:
+        book.summary ??
+        book.category ??
+        (language === "en" ? "Bible book." : "Libro bíblico."),
+      searchText: joinSearchText(
+        book.name,
+        book.abbreviation,
+        book.testament,
+        book.category,
+        book.genre,
+        book.summary,
+        book.usfm_code
+      ),
+      bookOrder: book.order_number,
+      chapterNumber: 999,
+      verseNumber: 999,
+      versionId: bibleVersionId,
+    })
+  );
+
+  const bibleVerses: SearchIndexItem[] = getBibleSearchVerses(
+    bibleVersionId,
+    language
+  )
+    .filter((verse) => verse.verse_text)
+    .map((verse) =>
+      makeItem(language, "Versículo", {
+        title: `${verse.book_name} ${verse.chapter_number}:${verse.verse_number}`,
+        url: getBibleVersePath(
+          language,
+          bibleVersionId,
+          verse.book_usfm_code,
+          verse.chapter_number,
+          verse.verse_number
+        ),
+        summary: verse.verse_text ?? "",
+        searchText: joinSearchText(
+          verse.book_name,
+          verse.book_usfm_code,
+          verse.chapter_number,
+          verse.verse_number,
+          verse.verse_text
+        ),
+        bookOrder: verse.book_order,
+        chapterNumber: verse.chapter_number,
+        verseNumber: verse.verse_number,
+        versionId: bibleVersionId,
+      })
+    );
+
+  // English currently has a complete localized Bible, but the editorial
+  // entities outside the Bible have not yet been translated. Do not leak
+  // Spanish fallbacks into the English search experience.
+  if (language === "en") {
+    return [bibleSection, ...books, ...bibleVerses];
+  }
+
   const sectionItems: SearchIndexItem[] = [
-    {
+    makeItem(language, "Sección", {
       title: "Lecciones",
-      type: "Sección",
       url: sitePath("/lecciones/"),
-      summary: "Índice de lecciones publicadas de la Enciclopedia Bíblica Visual.",
-      searchText: "Lecciones índice lecciones publicadas Enciclopedia Bíblica Visual",
-      typePriority: getTypePriority("Sección"),
+      summary: "Índice de lecciones publicadas de Biblioteca Bíblica.",
+      searchText: "Lecciones índice lecciones publicadas Biblioteca Bíblica Bibli",
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
-      title: "Biblia",
-      type: "Sección",
-      url: getBibleRootPath("es"),
-      summary: "Lectura bíblica por libros, capítulos y versículos.",
-      searchText: "Biblia lectura bíblica libros capítulos versículos",
-      typePriority: getTypePriority("Sección"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    },
-    {
+    }),
+    bibleSection,
+    makeItem(language, "Sección", {
       title: "Libros",
-      type: "Sección",
       url: sitePath("/libros/"),
       summary: "Directorio de libros bíblicos.",
       searchText: "Libros directorio libros bíblicos",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Pasajes",
-      type: "Sección",
       url: sitePath("/pasajes/"),
       summary: "Pasajes bíblicos conectados con lecciones y eventos.",
       searchText: "Pasajes bíblicos conectados lecciones eventos",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Eventos",
-      type: "Sección",
       url: sitePath("/eventos/"),
       summary: "Línea narrativa de eventos bíblicos.",
       searchText: "Eventos línea narrativa eventos bíblicos",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Temas",
-      type: "Sección",
       url: sitePath("/temas/"),
       summary: "Conceptos y temas bíblicos principales.",
       searchText: "Temas conceptos bíblicos principales",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Personajes",
-      type: "Sección",
       url: sitePath("/personajes/"),
       summary: "Directorio de personajes bíblicos.",
       searchText: "Personajes directorio personajes bíblicos",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Lugares",
-      type: "Sección",
       url: sitePath("/lugares/"),
       summary: "Lugares bíblicos conectados con mapa y eventos.",
       searchText: "Lugares bíblicos mapa eventos",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
-    {
+    }),
+    makeItem(language, "Sección", {
       title: "Mapa",
-      type: "Sección",
       url: sitePath("/mapa/"),
       summary: "Mapa bíblico visual con lugares registrados.",
       searchText: "Mapa bíblico visual lugares registrados",
-      typePriority: getTypePriority("Sección"),
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
-    },
+    }),
   ];
 
   const routes: SearchIndexItem[] = getAllRoutes()
     .filter((route) => route.status !== "Borrador")
-    .map((route) => ({
-      title: route.title,
-      type: "Ruta",
-      url: sitePath(`/rutas/${route.slug}/`),
-      summary: route.description ?? "Ruta guiada.",
-      searchText: joinSearchText(route.title, route.description),
-      typePriority: getTypePriority("Ruta"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
+    .map((route) =>
+      makeItem(language, "Ruta", {
+        title: route.title,
+        url: sitePath(`/rutas/${route.slug}/`),
+        summary: route.description ?? "Ruta guiada.",
+        searchText: joinSearchText(route.title, route.description),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const lessons: SearchIndexItem[] = getAllLessons()
     .filter((lesson) => lesson.status !== "Borrador")
-    .map((lesson) => ({
-      title: lesson.title,
-      type: "Lección",
-      url: sitePath(`/lecciones/${lesson.slug}/`),
-      summary: lesson.main_idea ?? lesson.summary ?? "Lección bíblica.",
-      searchText: joinSearchText(
-        lesson.title,
-        lesson.eyebrow,
-        lesson.main_idea,
-        lesson.summary,
-        lesson.explanation,
-        lesson.remember,
-        lesson.application
-      ),
-      typePriority: getTypePriority("Lección"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
-
-  const books: SearchIndexItem[] = rawBooks.map((book) => ({
-    title: book.name,
-    type: "Libro",
-    url: sitePath(`/libros/${book.slug}/`),
-    summary: book.summary ?? book.category ?? "Libro bíblico.",
-    searchText: joinSearchText(
-      book.name,
-      book.abbreviation,
-      book.testament,
-      book.category,
-      book.genre,
-      book.summary
-    ),
-    typePriority: getTypePriority("Libro"),
-    bookOrder: book.order_number,
-    chapterNumber: 999,
-    verseNumber: 999,
-  }));
+    .map((lesson) =>
+      makeItem(language, "Lección", {
+        title: lesson.title,
+        url: sitePath(`/lecciones/${lesson.slug}/`),
+        summary: lesson.main_idea ?? lesson.summary ?? "Lección bíblica.",
+        searchText: joinSearchText(
+          lesson.title,
+          lesson.eyebrow,
+          lesson.main_idea,
+          lesson.summary,
+          lesson.explanation,
+          lesson.remember,
+          lesson.application
+        ),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const passages: SearchIndexItem[] = getAllPassages()
     .filter((passage) => passage.status !== "Borrador")
-    .map((passage) => ({
-      title: passage.display_reference,
-      type: "Pasaje",
-      url: sitePath(`/pasajes/${passage.slug}/`),
-      summary: passage.summary ?? `Pasaje en ${passage.book_name}.`,
-      searchText: joinSearchText(
-        passage.display_reference,
-        passage.book_name,
-        passage.summary
-      ),
-      typePriority: getTypePriority("Pasaje"),
-      bookOrder: bookOrderBySlug.get(passage.book_slug) ?? 999,
-      chapterNumber: passage.start_chapter,
-      verseNumber: passage.start_verse ?? 999,
-    }));
+    .map((passage) =>
+      makeItem(language, "Pasaje", {
+        title: passage.display_reference,
+        url: sitePath(`/pasajes/${passage.slug}/`),
+        summary: passage.summary ?? `Pasaje en ${passage.book_name}.`,
+        searchText: joinSearchText(
+          passage.display_reference,
+          passage.book_name,
+          passage.book_usfm_code,
+          passage.summary
+        ),
+        bookOrder: bookOrderById.get(passage.book_id) ?? 999,
+        chapterNumber: passage.start_chapter,
+        verseNumber: passage.start_verse ?? 999,
+      })
+    );
 
   const events: SearchIndexItem[] = getAllEvents()
     .filter((event) => event.status !== "Borrador")
-    .map((event) => ({
-      title: event.title,
-      type: "Evento",
-      url: sitePath(`/eventos/${event.slug}/`),
-      summary: event.summary ?? event.biblical_period ?? "Evento bíblico.",
-      searchText: joinSearchText(
-        event.title,
-        event.summary,
-        event.description,
-        event.biblical_period,
-        event.approximate_date
-      ),
-      typePriority: getTypePriority("Evento"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
+    .map((event) =>
+      makeItem(language, "Evento", {
+        title: event.title,
+        url: sitePath(`/eventos/${event.slug}/`),
+        summary: event.summary ?? event.biblical_period ?? "Evento bíblico.",
+        searchText: joinSearchText(
+          event.title,
+          event.summary,
+          event.description,
+          event.biblical_period,
+          event.approximate_date
+        ),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const topics: SearchIndexItem[] = getAllTopics()
     .filter((topic) => topic.status !== "Borrador")
-    .map((topic) => ({
-      title: topic.title,
-      type: "Tema",
-      url: sitePath(`/temas/${topic.slug}/`),
-      summary: topic.definition ?? "Tema bíblico.",
-      searchText: joinSearchText(topic.title, topic.definition),
-      typePriority: getTypePriority("Tema"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
+    .map((topic) =>
+      makeItem(language, "Tema", {
+        title: topic.title,
+        url: sitePath(`/temas/${topic.slug}/`),
+        summary: topic.definition ?? "Tema bíblico.",
+        searchText: joinSearchText(topic.title, topic.definition),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const people: SearchIndexItem[] = getAllPeople()
     .filter((person) => person.status !== "Borrador")
-    .map((person) => ({
-      title: person.name,
-      type: "Personaje",
-      url: sitePath(`/personajes/${person.slug}/`),
-      summary: person.summary ?? "Personaje bíblico.",
-      searchText: joinSearchText(person.name, person.summary),
-      typePriority: getTypePriority("Personaje"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
+    .map((person) =>
+      makeItem(language, "Personaje", {
+        title: person.name,
+        url: sitePath(`/personajes/${person.slug}/`),
+        summary: person.summary ?? "Personaje bíblico.",
+        searchText: joinSearchText(person.name, person.summary),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const places: SearchIndexItem[] = getAllPlaces()
     .filter((place) => place.status !== "Borrador")
-    .map((place) => ({
-      title: place.name,
-      type: "Lugar",
-      url: sitePath(`/lugares/${place.slug}/`),
-      summary: place.summary ?? place.place_type ?? "Lugar bíblico.",
-      searchText: joinSearchText(
-        place.name,
-        place.place_type,
-        place.summary,
-        place.modern_equivalent,
-        place.region
-      ),
-      typePriority: getTypePriority("Lugar"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
+    .map((place) =>
+      makeItem(language, "Lugar", {
+        title: place.name,
+        url: sitePath(`/lugares/${place.slug}/`),
+        summary: place.summary ?? place.place_type ?? "Lugar bíblico.",
+        searchText: joinSearchText(
+          place.name,
+          place.place_type,
+          place.summary
+        ),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   const glossary: SearchIndexItem[] = getAllGlossaryTerms()
     .filter((term) => term.status !== "Borrador")
-    .map((term) => ({
-      title: term.term,
-      type: "Glosario",
-      url: sitePath(`/glosario/${term.slug}/`),
-      summary: term.definition ?? "Término del glosario.",
-      searchText: joinSearchText(term.term, term.definition),
-      typePriority: getTypePriority("Glosario"),
-      bookOrder: 999,
-      chapterNumber: 999,
-      verseNumber: 999,
-    }));
-
-  const bibleVerses: SearchIndexItem[] = getBibleSearchVerses()
-    .filter((verse) => verse.verse_text)
-    .map((verse) => ({
-      title: `${verse.book_name} ${verse.chapter_number}:${verse.verse_number}`,
-      type: "Versículo",
-      url: getBibleVersePath(
-            "es",
-            spanishBibleVersionId,
-            verse.book_usfm_code,
-            verse.chapter_number,
-            verse.verse_number
-          ),
-      summary: verse.verse_text ?? "",
-      searchText: joinSearchText(
-        verse.book_name,
-        verse.chapter_number,
-        verse.verse_number,
-        verse.verse_text
-      ),
-      typePriority: getTypePriority("Versículo"),
-      bookOrder: bookOrderBySlug.get(verse.book_slug) ?? 999,
-      chapterNumber: verse.chapter_number,
-      verseNumber: verse.verse_number,
-    }));
+    .map((term) =>
+      makeItem(language, "Glosario", {
+        title: term.term,
+        url: sitePath(`/glosario/${term.slug}/`),
+        summary: term.definition ?? "Término del glosario.",
+        searchText: joinSearchText(term.term, term.definition),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
 
   return [
     ...sectionItems,

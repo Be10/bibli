@@ -14,32 +14,32 @@ const legalChecklist = [
   {
     title: "Uso web",
     description:
-      "Confirmar que el permiso o licencia aplicable permite mostrar contenido bíblico dentro de un sitio web.",
+      "El contenido bíblico se muestra respetando el permiso, licencia o condición de uso aplicable a cada versión.",
   },
   {
     title: "Texto completo",
     description:
-      "Confirmar si el alcance autorizado permite publicar la Biblia completa o únicamente citas, extractos o referencias limitadas.",
+      "El alcance de publicación de cada versión debe respetar las condiciones aplicables al texto completo, citas, extractos y referencias.",
   },
   {
     title: "Base de datos",
     description:
-      "Confirmar si el texto bíblico puede almacenarse dentro de SQLite, archivos generados o cualquier otro formato técnico del proyecto.",
+      "El almacenamiento técnico del texto bíblico en SQLite y artefactos de build debe mantenerse dentro del alcance de uso aplicable.",
   },
   {
     title: "Repositorio",
     description:
-      "No incluir archivos restringidos, como importaciones completas del texto bíblico, en repositorios o archivos compartidos si no existe permiso suficiente.",
+      "Los archivos fuente restringidos de importación no se incluyen en Git ni en paquetes compartidos; permanecen fuera del repositorio público.",
   },
   {
     title: "Atribución",
     description:
-      "Conservar los avisos de copyright, leyendas y condiciones requeridas por los titulares de derechos.",
+      "Los avisos de copyright, atribución y condiciones requeridas se conservan junto a la información de cada versión.",
   },
   {
     title: "Publicación",
     description:
-      "Revisar esta página antes de publicar oficialmente el sitio, especialmente si se incorporan textos, imágenes, mapas o recursos de terceros.",
+      "Los textos, imágenes, mapas y recursos de terceros deben conservar siempre su atribución y condiciones de uso correspondientes.",
   },
 ];
 
@@ -69,7 +69,7 @@ const resourceNotices = [
 
 <BaseLayout
   title="Avisos legales"
-  description="Avisos legales, uso de contenido bíblico, recursos visuales y condiciones generales de la Enciclopedia Bíblica Visual."
+  description="Avisos legales, uso de contenido bíblico, recursos visuales y condiciones generales de la Biblioteca Bíblica."
 >
   <main class="page legal-page">
     <div class="breadcrumb">
@@ -84,8 +84,7 @@ const resourceNotices = [
 
         <p class="subtitle">
           Información importante sobre el uso del texto bíblico, contenido editorial,
-          mapas, recursos visuales y materiales de terceros dentro de la Enciclopedia
-          Bíblica Visual.
+          mapas, recursos visuales y materiales de terceros dentro de Biblioteca Bíblica.
         </p>
 
         <div class="actions">
@@ -98,16 +97,16 @@ const resourceNotices = [
           </a>
 
           <a href={sitePath("/acerca/")} class="button secondary">
-            Acerca de EBV
+            Acerca de Bibli
           </a>
         </div>
       </div>
 
       <aside class="legal-hero-card" aria-label="Estado legal del proyecto">
         <span>Estado</span>
-        <strong>Editable</strong>
+        <strong>Uso responsable</strong>
         <p>
-          Esta página debe revisarse antes de una publicación oficial.
+          Esta página resume las condiciones generales de uso y atribución del contenido.
         </p>
       </aside>
     </section>
@@ -120,7 +119,7 @@ const resourceNotices = [
         </div>
 
         <span class="section-count">
-          Revisión requerida
+          Información vigente
         </span>
       </div>
 
@@ -134,8 +133,7 @@ const resourceNotices = [
           <p>{version.copyright_notice}</p>
         ) : (
           <p>
-            El aviso de copyright de la versión bíblica debe registrarse en la base
-            de datos antes de publicar el texto completo.
+            Esta versión no tiene un aviso adicional configurado para mostrar en esta página.
           </p>
         )}
 
@@ -151,7 +149,7 @@ const resourceNotices = [
       <div class="section-header">
         <div>
           <p class="eyebrow">Validación previa</p>
-          <h2>Aspectos que deben confirmarse</h2>
+          <h2>Principios de uso y atribución</h2>
         </div>
 
         <span class="section-count">
@@ -162,7 +160,7 @@ const resourceNotices = [
       <div class="legal-checklist-grid">
         {legalChecklist.map((item) => (
           <article class="legal-checklist-card">
-            <span>Confirmar</span>
+            <span>Principio</span>
             <strong>{item.title}</strong>
             <p>{item.description}</p>
           </article>
@@ -182,7 +180,7 @@ const resourceNotices = [
         <p>
           Los resúmenes, lecciones, definiciones, fichas de personajes, eventos,
           temas, lugares, rutas y materiales visuales son contenido editorial de la
-          Enciclopedia Bíblica Visual, salvo que se indique expresamente otra fuente.
+          Biblioteca Bíblica, salvo que se indique expresamente otra fuente.
         </p>
 
         <p>

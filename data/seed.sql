@@ -287,8 +287,8 @@ INSERT INTO bible_versions (
   'Copyright / uso bajo licencia',
   'Texto bíblico: Reina-Valera 1960® © Sociedades Bíblicas en América Latina, 1960. Derechos renovados © Sociedades Bíblicas Unidas, 1988. Usado con permiso.',
   'La versión Reina-Valera 1960® es una marca registrada y su uso debe ajustarse a la licencia/permiso obtenido.',
-  'Pendiente de documentar según el permiso otorgado.',
-  'Pendiente: registrar fuente autorizada del texto digital.',
+  'Uso autorizado en Bibli conforme al permiso aplicable.',
+  'Fuente local de importación no distribuida con el repositorio.',
   'Publicado básico'
 );
 

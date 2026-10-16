@@ -1,12 +1,20 @@
 # Contenido editorial
 
-Esta carpeta contiene archivos SQL modulares para publicar contenido progresivamente.
+Esta carpeta contiene archivos SQL modulares usados por el flujo actual de reconstrucción de la base.
 
-Convención sugerida:
+## Estado de las 20 lecciones actuales
 
-- 010-leccion-01-*.sql
-- 020-leccion-02-*.sql
-- 030-leccion-03-*.sql
+Los archivos `010-...sql` a `200-...sql` corresponden a la ruta histórica **Panorama Visual de la Biblia**. En Bibli deben considerarse **contenido legacy/test**, no la fuente editorial canónica de los nuevos estudios bíblicos.
+
+No deben eliminarse todavía: `scripts/reset-db.mjs` los ejecuta y la aplicación actual consulta esas lecciones desde `data/enciclopedia.sqlite`. Se retirarán únicamente cuando exista un importador canónico de los Markdown de Estudio Bíblico y se haya verificado que ninguna ruta, consulta, seed o build depende de estos SQL.
+
+## Convención actual
+
+- `010-leccion-01-*.sql`
+- `020-leccion-02-*.sql`
+- `030-leccion-03-*.sql`
+- …
+- `200-leccion-20-*.sql`
 
 Cada archivo puede:
 
@@ -22,7 +30,9 @@ Cada archivo puede:
 - conectar glosario;
 - conectar recursos visuales.
 
-Regla importante:
+## Fuentes de verdad
 
-El contenido base común vive en `data/seed.sql`.
-El contenido progresivo de lecciones vive aquí.
+- `data/schema.sql`: estructura relacional.
+- `data/seed.sql`: datos base globales.
+- `data/content/*.sql`: capa legacy/test de lecciones todavía requerida por el reset actual.
+- Markdown canónico de Estudio Bíblico: futura fuente editorial para las nuevas lecciones, mediante un importador explícito y validado.

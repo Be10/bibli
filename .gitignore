@@ -28,3 +28,7 @@ data/import/rvr1960.csv
 data/import/*.private.csv
 
 # Fuentes bíblicas locales de importación
+
+# local transfer / snapshot archives
+/enciclopedia-biblica-visual.zip
+/bibli-proyecto.zip

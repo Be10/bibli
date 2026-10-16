@@ -2,11 +2,17 @@
 import { sitePath } from "../../../../../lib/site-paths";
 
 import {
+  getBibleBookPath,
   getBibleChapterPath,
   getBibleVersionPath,
 } from "../../../../../lib/bible-routes";
 
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+import BibleVersionSwitcher from "../../../../../components/BibleVersionSwitcher.astro";
+
+import {
+  getDefaultBibleVersionId,
+} from "../../../../../lib/bible-config";
 
 import {
   getAllBooksByLanguage,
@@ -75,14 +81,34 @@ const abbreviationLabel =
   book.abbreviation ?? "Pendiente";
 
 const firstChapter = chapters[0];
+const availableVersions =
+  getBibleVersionsByLanguage("es");
+
 ---
 
 <BaseLayout
   lang="es"
+  alternateLanguage={{
+    code: "en",
+    label: "English",
+    href: getBibleBookPath(
+      "en",
+      getDefaultBibleVersionId("en"),
+      book.usfm_code
+    ),
+  }}
   title={`Biblia · ${book.name}`}
   description={book.summary ?? `Lee el libro de ${book.name}.`}
 >
   <main class="page">
+    <div class="bible-version-toolbar">
+      <BibleVersionSwitcher
+        language="es"
+        versions={availableVersions}
+        currentVersionId={version.id}
+        bookCode={book.usfm_code}
+      />
+    </div>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
 
@@ -597,5 +623,13 @@ const firstChapter = chapters[0];
       height: 44px;
       border-radius: 14px;
     }
+  }
+</style>
+<style>
+  .bible-version-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 1px;
+    margin-bottom: 10px;
   }
 </style>

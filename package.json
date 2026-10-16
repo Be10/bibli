@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "bibli",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -15,7 +15,9 @@
     "bible:validate:kjv": "node scripts/validate-bible-kjv.mjs",
     "bible:import:kjv": "node scripts/import-bible-kjv.mjs",
     "bible:audit:kjv": "node scripts/audit-bible-kjv-text.mjs",
-    "bible:audit:kjv:spacing": "node scripts/audit-bible-kjv-spacing.mjs"
+    "bible:audit:kjv:spacing": "node scripts/audit-bible-kjv-spacing.mjs",
+    "repo:validate": "node scripts/validate-repository.mjs",
+    "db:validate": "node scripts/validate-db.mjs"
   },
   "dependencies": {
     "astro": "^7.0.3",

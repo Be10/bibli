@@ -132,9 +132,9 @@ try {
     ];
 
     for (const token of knownConcatenations) {
-      if (
-        text.toLowerCase().includes(token.toLowerCase())
-      ) {
+      const tokenRegex = new RegExp(`\\b${token}\\b`, "i");
+
+      if (tokenRegex.test(text)) {
         addFinding(
           findings,
           "Palabra concatenada conocida",

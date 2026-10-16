@@ -3,7 +3,7 @@ import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildSearchIndex } from "../../lib/search-index";
 
-const searchItems = buildSearchIndex();
+const searchItems = buildSearchIndex("es");
 
 const searchStats = [
   {
@@ -112,6 +112,8 @@ function getExploreCount(item: ExploreItem) {
 ---
 
 <BaseLayout
+  lang="es"
+  alternateLanguage={{ code: "en", label: "English", href: sitePath("/en/search/") }}
   title="Búsqueda avanzada"
   description="Busca libros, pasajes, lecciones, eventos, temas, personajes, lugares, términos del glosario y versículos bíblicos."
 >
@@ -124,7 +126,7 @@ function getExploreCount(item: ExploreItem) {
       <div class="advanced-search-hero-content">
         <p class="eyebrow">Búsqueda avanzada</p>
 
-        <h1>Buscar en la enciclopedia</h1>
+        <h1>Buscar en Bibli</h1>
 
         <p class="subtitle">
           Encuentra libros, pasajes, lecciones, eventos, temas, personajes, lugares,

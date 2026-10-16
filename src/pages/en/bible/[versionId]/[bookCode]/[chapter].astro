@@ -8,6 +8,7 @@ import {
 } from "../../../../../lib/bible-routes";
 
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+import BibleVersionSwitcher from "../../../../../components/BibleVersionSwitcher.astro";
 
 import {
   getAllBooksByLanguage,
@@ -106,14 +107,36 @@ const verseRange =
 
 const spanishVersionId =
   getDefaultBibleVersionId("es");
+const availableVersions =
+  getBibleVersionsByLanguage("en");
+
 ---
 
 <BaseLayout
   lang="en"
+  alternateLanguage={{
+    code: "es",
+    label: "Español",
+    href: getBibleChapterPath(
+      "es",
+      getDefaultBibleVersionId("es"),
+      book.usfm_code,
+      currentChapterNumber
+    ),
+  }}
   title={`${book.name} ${currentChapterNumber}`}
   description={`Read ${book.name} chapter ${currentChapterNumber} in the ${versionLabel}.`}
 >
   <main class="page">
+    <div class="bible-version-toolbar">
+      <BibleVersionSwitcher
+        language="en"
+        versions={availableVersions}
+        currentVersionId={version.id}
+        bookCode={book.usfm_code}
+        chapterNumber={currentChapterNumber}
+      />
+    </div>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Home</a> →
 
@@ -650,5 +673,13 @@ const spanishVersionId =
     .bible-chapter-nav-card {
       min-height: auto;
     }
+  }
+</style>
+<style>
+  .bible-version-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 1px;
+    margin-bottom: 10px;
   }
 </style>

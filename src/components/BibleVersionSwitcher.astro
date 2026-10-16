@@ -1,0 +1,125 @@
+---
+import {
+  getBibleBookPath,
+  getBibleChapterPath,
+  getBibleVersionPath,
+} from "../lib/bible-routes";
+import type { SupportedLanguageCode } from "../lib/bible-config";
+import type { BibleVersion } from "../lib/queries";
+
+type Props = {
+  language: SupportedLanguageCode;
+  versions: BibleVersion[];
+  currentVersionId: string;
+  bookCode?: string;
+  chapterNumber?: number;
+};
+
+const {
+  language,
+  versions,
+  currentVersionId,
+  bookCode,
+  chapterNumber,
+} = Astro.props;
+
+const label = language === "en" ? "Bible version" : "Versión bíblica";
+const storageKey = `bibli-bible-version-${language}`;
+
+function getTargetPath(versionId: string) {
+  if (bookCode && chapterNumber) {
+    return getBibleChapterPath(
+      language,
+      versionId,
+      bookCode,
+      chapterNumber
+    );
+  }
+
+  if (bookCode) {
+    return getBibleBookPath(language, versionId, bookCode);
+  }
+
+  return getBibleVersionPath(language, versionId);
+}
+---
+
+{versions.length > 1 && (
+  <label class="bible-version-switcher">
+    <span>{label}</span>
+    <select
+      data-bible-version-switch
+      data-storage-key={storageKey}
+      aria-label={label}
+    >
+      {versions.map((version) => (
+        <option
+          value={getTargetPath(version.id)}
+          data-version-id={version.id}
+          selected={version.id === currentVersionId}
+        >
+          {version.abbreviation} · {version.name}
+        </option>
+      ))}
+    </select>
+  </label>
+)}
+
+<script>
+  document
+    .querySelectorAll("[data-bible-version-switch]")
+    .forEach((element) => {
+      if (!(element instanceof HTMLSelectElement)) return;
+
+      element.addEventListener("change", () => {
+        const option = element.selectedOptions[0];
+        const versionId = option?.getAttribute("data-version-id");
+        const storageKey = element.getAttribute("data-storage-key");
+
+        if (versionId && storageKey) {
+          localStorage.setItem(storageKey, versionId);
+        }
+
+        if (element.value) {
+          window.location.assign(element.value);
+        }
+      });
+    });
+</script>
+
+<style>
+  .bible-version-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .bible-version-switcher span {
+    color: #6a5c4d;
+  }
+
+  .bible-version-switcher select {
+    min-height: 40px;
+    max-width: min(100%, 320px);
+    padding: 0 38px 0 12px;
+    border: 1px solid #c8a982;
+    border-radius: 999px;
+    background: #fffaf0;
+    color: #5d3212;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  :global(html[data-theme="dark"]) .bible-version-switcher span {
+    color: #cbb9a8;
+  }
+
+  :global(html[data-theme="dark"]) .bible-version-switcher select {
+    border-color: #6c4c2f;
+    background: #18110c;
+    color: #f7ead8;
+  }
+</style>

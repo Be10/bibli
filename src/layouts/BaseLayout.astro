@@ -1,21 +1,147 @@
 ---
 import { sitePath } from "../lib/site-paths";
+import { getBibleRootPath } from "../lib/bible-routes";
+
+type LanguageCode = "es" | "en";
+
+type AlternateLanguage = {
+  code: LanguageCode;
+  label: string;
+  href: string;
+};
+
 interface Props {
   title: string;
   description?: string;
-  lang?: "es" | "en";
+  lang?: LanguageCode;
+  alternateLanguage?: AlternateLanguage;
 }
 
 const {
   title,
-  description = "Enciclopedia Bíblica Visual con rutas guiadas, mapas, líneas de tiempo y recursos visuales.",
   lang = "es",
+  alternateLanguage,
 } = Astro.props;
 
-const siteName = "Enciclopedia Bíblica Visual";
+const ui = {
+  es: {
+    siteName: "BIBLIOTECA BÍBLICA",
+    shortName: "Bibli",
+    defaultDescription: "Recursos para escudriñar y comprender las Escrituras.",
+    searchOpen: "Abrir búsqueda",
+    searchClose: "Cerrar búsqueda",
+    searchIcon: "Icono de búsqueda",
+    searchLabel: "Búsqueda global",
+    searchInputLabel: "Buscar en Bibli",
+    searchPlaceholder: "Buscar...",
+    searchFilters: "Filtros de búsqueda",
+    searchResults: "Resultados de búsqueda",
+    searchAll: "Ver todos los resultados →",
+    searchEmpty: "Escribe una palabra para comenzar.",
+    searchNone: "No se encontraron resultados.",
+    searchAdvanced: "Búsqueda avanzada",
+    menuOpen: "Abrir menú",
+    menuLabel: "Menú principal",
+    mainRoute: "Ruta principal",
+    readBible: "Leer la Biblia",
+    resources: "Recursos visuales",
+    about: "Acerca de Bibli",
+    theme: "Tema",
+    themeAuto: "Automático",
+    themeLight: "Claro",
+    themeDark: "Oscuro",
+    themeCycle: "Cambiar tema",
+    footerText: "Biblioteca Bíblica · Recursos para escudriñar y comprender las Escrituras.",
+    footerLabel: "Navegación secundaria",
+    legal: "Avisos legales",
+    all: "Todos",
+  },
+  en: {
+    siteName: "BIBLICAL LIBRARY",
+    shortName: "Bibli",
+    defaultDescription: "Resources for studying and understanding the Scriptures.",
+    searchOpen: "Open search",
+    searchClose: "Close search",
+    searchIcon: "Search icon",
+    searchLabel: "Global search",
+    searchInputLabel: "Search Bibli",
+    searchPlaceholder: "Search...",
+    searchFilters: "Search filters",
+    searchResults: "Search results",
+    searchAll: "View all results →",
+    searchEmpty: "Type a word to begin.",
+    searchNone: "No results found.",
+    searchAdvanced: "Advanced search",
+    menuOpen: "Open menu",
+    menuLabel: "Main menu",
+    mainRoute: "Main route",
+    readBible: "Read the Bible",
+    resources: "Visual resources",
+    about: "About Bibli",
+    theme: "Theme",
+    themeAuto: "Automatic",
+    themeLight: "Light",
+    themeDark: "Dark",
+    themeCycle: "Change theme",
+    footerText: "Biblical Library · Resources for studying and understanding the Scriptures.",
+    footerLabel: "Secondary navigation",
+    legal: "Legal notices",
+    all: "All",
+  },
+} as const;
+
+const activeUi = ui[lang];
+const description = Astro.props.description ?? activeUi.defaultDescription;
+const siteName = activeUi.siteName;
 const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
 
-const searchDataUrl = sitePath("/buscar/datos.json");
+const searchDataUrl =
+  lang === "en"
+    ? sitePath("/en/search/data.json")
+    : sitePath("/buscar/datos.json");
+const searchPageUrl =
+  lang === "en" ? sitePath("/en/search/") : sitePath("/buscar/");
+const homeUrl = lang === "en" ? getBibleRootPath("en") : sitePath("/");
+const bibleRootUrl = getBibleRootPath(lang);
+
+const menuItems =
+  lang === "en"
+    ? [
+        { href: searchPageUrl, label: activeUi.searchAdvanced },
+        { href: bibleRootUrl, label: activeUi.readBible },
+      ]
+    : [
+        { href: searchPageUrl, label: activeUi.searchAdvanced },
+        {
+          href: sitePath("/rutas/panorama-visual-de-la-biblia/"),
+          label: activeUi.mainRoute,
+        },
+        { href: bibleRootUrl, label: activeUi.readBible },
+        { href: sitePath("/recursos/"), label: activeUi.resources },
+        { href: sitePath("/acerca/"), label: activeUi.about },
+      ];
+
+const footerItems =
+  lang === "en"
+    ? [
+        { href: searchPageUrl, label: activeUi.searchAdvanced },
+        { href: bibleRootUrl, label: activeUi.readBible },
+      ]
+    : [
+        { href: searchPageUrl, label: activeUi.searchAdvanced },
+        { href: bibleRootUrl, label: activeUi.readBible },
+        { href: sitePath("/acerca/"), label: activeUi.about },
+        { href: sitePath("/legal/"), label: activeUi.legal },
+      ];
+
+const canonicalHref = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.href;
+const alternateHref = alternateLanguage
+  ? Astro.site
+    ? new URL(alternateLanguage.href, Astro.site).toString()
+    : alternateLanguage.href
+  : null;
 ---
 
 <html lang={lang}>
@@ -24,6 +150,14 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
+    <link rel="canonical" href={canonicalHref} />
+    {alternateLanguage && alternateHref && (
+      <link
+        rel="alternate"
+        hreflang={alternateLanguage.code}
+        href={alternateHref}
+      />
+    )}
     <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
 
     <style is:inline>
@@ -319,169 +453,198 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     </style>
 
     <script is:inline>
-      function getPreferredTheme() {
-        const storedTheme = localStorage.getItem("ebv-theme");
+      (() => {
+        const currentKey = "bibli-theme";
+        const legacyKey = "ebv-theme";
 
-        if (storedTheme === "dark" || storedTheme === "light") {
-          return storedTheme;
-        }
+        const storedPreference = localStorage.getItem(currentKey);
+        const legacyPreference = localStorage.getItem(legacyKey);
 
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      }
+        const preference =
+          storedPreference === "auto" ||
+          storedPreference === "light" ||
+          storedPreference === "dark"
+            ? storedPreference
+            : legacyPreference === "light" || legacyPreference === "dark"
+              ? legacyPreference
+              : "auto";
 
-      function applyTheme(theme) {
-        document.documentElement.dataset.theme = theme;
-      }
+        const effectiveTheme =
+          preference === "auto"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : preference;
 
-      applyTheme(getPreferredTheme());
+        document.documentElement.dataset.theme = effectiveTheme;
+        document.documentElement.dataset.themePreference = preference;
+      })();
     </script>
   </head>
 
   <body>
     <header class="site-header" data-site-header>
-  <a href={sitePath("/")} class="logo">Enciclopedia Bíblica Visual</a>
+      <a href={homeUrl} class="logo" aria-label={siteName}>{activeUi.shortName}</a>
 
-  <div class="header-actions">
-    <div
-      class="global-search-shell"
-      data-global-search-shell
-      data-search-url={searchDataUrl}
-    >
-      <button
-        type="button"
-        class="global-search-toggle"
-        data-global-search-toggle
-        aria-label="Abrir búsqueda"
-        aria-expanded="false"
-      >
-        🔍
-      </button>
-
-      <form
-        class="global-search-form"
-        action={sitePath("/buscar/")}
-        method="get"
-        role="search"
-        aria-label="Búsqueda global"
-        data-global-search-form
-      >
-        <label class="sr-only" for="global-search">
-          Buscar en la enciclopedia
-        </label>
-
-        <input
-          id="global-search"
-          name="q"
-          type="search"
-          placeholder="Buscar..."
-          autocomplete="off"
-          data-global-search-input
-        />
-
-        <button
-          type="button"
-          class="global-search-submit"
-          data-global-search-submit
-          aria-label="Icono de búsqueda"
-        >
-          🔍
-        </button>
-      </form>
-
-      <div
-        class="global-search-popover"
-        data-global-search-popover
-        hidden
-      >
+      <div class="header-actions">
         <div
-          class="global-search-filters"
-          data-global-search-filters
-          aria-label="Filtros de búsqueda"
-        ></div>
-
-        <div
-          class="global-search-results"
-          data-global-search-results
-          aria-label="Resultados de búsqueda"
-        ></div>
-
-        <a
-          href={sitePath("/buscar/")}
-          class="global-search-all"
-          data-global-search-all
+          class="global-search-shell"
+          data-global-search-shell
+          data-search-url={searchDataUrl}
+          data-empty-label={activeUi.searchEmpty}
+          data-none-label={activeUi.searchNone}
+          data-all-label={activeUi.searchAll}
+          data-advanced-label={activeUi.searchAdvanced}
+          data-filter-all-label={activeUi.all}
+          data-search-open-label={activeUi.searchOpen}
+          data-search-close-label={activeUi.searchClose}
+          data-search-icon-label={activeUi.searchIcon}
         >
-          Ver todos los resultados →
-        </a>
-      </div>
-    </div>
-
-    <div class="global-menu-shell">
-      <button
-        type="button"
-        class="menu-toggle"
-        data-menu-toggle
-        aria-label="Abrir menú"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-
-      <nav
-        class="global-menu"
-        data-global-menu
-        aria-label="Menú principal"
-        hidden
-      >
-        <a href={sitePath("/buscar/")}>Búsqueda avanzada</a>
-        <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")}>Ruta principal</a>
-        <a href={sitePath("/es/biblia/")}>Leer la Biblia</a>
-        <a href={sitePath("/recursos/")}>Recursos visuales</a>
-        <a href={sitePath("/acerca/")}>Acerca de EBV</a>
-
-
-        <div class="menu-theme-row">
-          <span>Cambiar tema</span>
-
           <button
             type="button"
-            class="theme-toggle menu-theme-toggle"
-            data-theme-toggle
-            aria-label="Cambiar a modo oscuro"
-            aria-pressed="false"
+            class="global-search-toggle"
+            data-global-search-toggle
+            aria-label={activeUi.searchOpen}
+            aria-expanded="false"
           >
-            <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+            🔍
           </button>
-        </div>
-      </nav>
-    </div>
-  </div>
-</header>
 
-<button
-  type="button"
-  class="theme-toggle floating-theme-toggle"
-  data-theme-toggle
-  aria-label="Cambiar a modo oscuro"
-  aria-pressed="false"
->
-  <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
-</button>
+          <form
+            class="global-search-form"
+            action={searchPageUrl}
+            method="get"
+            role="search"
+            aria-label={activeUi.searchLabel}
+            data-global-search-form
+          >
+            <label class="sr-only" for="global-search">
+              {activeUi.searchInputLabel}
+            </label>
+
+            <input
+              id="global-search"
+              name="q"
+              type="search"
+              placeholder={activeUi.searchPlaceholder}
+              autocomplete="off"
+              data-global-search-input
+            />
+
+            <button
+              type="button"
+              class="global-search-submit"
+              data-global-search-submit
+              aria-label={activeUi.searchOpen}
+            >
+              🔍
+            </button>
+          </form>
+
+          <div
+            class="global-search-popover"
+            data-global-search-popover
+            hidden
+          >
+            <div
+              class="global-search-filters"
+              data-global-search-filters
+              aria-label={activeUi.searchFilters}
+            ></div>
+
+            <div
+              class="global-search-results"
+              data-global-search-results
+              aria-label={activeUi.searchResults}
+            ></div>
+
+            <a
+              href={searchPageUrl}
+              class="global-search-all"
+              data-global-search-all
+            >
+              {activeUi.searchAll}
+            </a>
+          </div>
+        </div>
+
+        {alternateLanguage && (
+          <a
+            class="language-switch"
+            href={alternateLanguage.href}
+            hreflang={alternateLanguage.code}
+            lang={alternateLanguage.code}
+            title={alternateLanguage.label}
+            data-language-switch
+            data-language-code={alternateLanguage.code}
+          >
+            {alternateLanguage.code.toUpperCase()}
+          </a>
+        )}
+
+        <div class="global-menu-shell">
+          <button
+            type="button"
+            class="menu-toggle"
+            data-menu-toggle
+            aria-label={activeUi.menuOpen}
+            aria-expanded="false"
+          >
+            ☰
+          </button>
+
+          <nav
+            class="global-menu"
+            data-global-menu
+            aria-label={activeUi.menuLabel}
+            hidden
+          >
+            {menuItems.map((item) => (
+              <a href={item.href}>{item.label}</a>
+            ))}
+
+            <div class="menu-theme-row">
+              <span>{activeUi.theme}</span>
+
+              <button
+                type="button"
+                class="theme-toggle menu-theme-toggle"
+                data-theme-toggle
+                data-theme-label-auto={activeUi.themeAuto}
+                data-theme-label-light={activeUi.themeLight}
+                data-theme-label-dark={activeUi.themeDark}
+                aria-label={activeUi.themeCycle}
+              >
+                <span class="theme-toggle-icon" aria-hidden="true">🖥️</span>
+              </button>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <button
+      type="button"
+      class="theme-toggle floating-theme-toggle"
+      data-theme-toggle
+      data-theme-label-auto={activeUi.themeAuto}
+      data-theme-label-light={activeUi.themeLight}
+      data-theme-label-dark={activeUi.themeDark}
+      aria-label={activeUi.themeCycle}
+    >
+      <span class="theme-toggle-icon" aria-hidden="true">🖥️</span>
+    </button>
 
     <slot />
 
     <footer class="site-footer">
       <div class="site-footer-inner">
-        <p>
-          Enciclopedia Bíblica Visual · Recurso educativo en desarrollo.
-        </p>
+        <p>{activeUi.footerText}</p>
 
-        <nav class="footer-links" aria-label="Navegación secundaria">
-          <a href={sitePath("/buscar/")}>Búsqueda avanzada</a>
-          <a href={sitePath("/es/biblia/")}>Leer la Biblia</a>
-          <a href={sitePath("/acerca/")}>Acerca de EBV</a>
-          <a href={sitePath("/legal/")}>Avisos legales</a>
+        <nav class="footer-links" aria-label={activeUi.footerLabel}>
+          {footerItems.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))}
         </nav>
       </div>
     </footer>
@@ -501,6 +664,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
 
     const menuToggle = document.querySelector("[data-menu-toggle]");
     const globalMenu = document.querySelector("[data-global-menu]");
+    const languageSwitch = document.querySelector("[data-language-switch]");
 
     const searchShell = document.querySelector("[data-global-search-shell]");
     const searchToggle = document.querySelector("[data-global-search-toggle]");
@@ -512,15 +676,63 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     const searchResults = document.querySelector("[data-global-search-results]");
     const searchAllLink = document.querySelector("[data-global-search-all]");
 
+    const ALL_SEARCH_TYPE = "Todos";
+    const THEME_KEY = "bibli-theme";
+    const LEGACY_THEME_KEY = "ebv-theme";
+    const LANGUAGE_KEY = "bibli-language";
+
+    const searchEmptyLabel =
+      searchShell?.getAttribute("data-empty-label") ??
+      "Escribe una palabra para comenzar.";
+    const searchNoneLabel =
+      searchShell?.getAttribute("data-none-label") ??
+      "No se encontraron resultados.";
+    const searchAllLabel =
+      searchShell?.getAttribute("data-all-label") ??
+      "Ver todos los resultados →";
+    const searchAdvancedLabel =
+      searchShell?.getAttribute("data-advanced-label") ??
+      "Búsqueda avanzada";
+    const filterAllLabel =
+      searchShell?.getAttribute("data-filter-all-label") ?? "Todos";
+    const searchOpenLabel =
+      searchShell?.getAttribute("data-search-open-label") ??
+      "Abrir búsqueda";
+    const searchCloseLabel =
+      searchShell?.getAttribute("data-search-close-label") ??
+      "Cerrar búsqueda";
+    const searchIconLabel =
+      searchShell?.getAttribute("data-search-icon-label") ??
+      "Icono de búsqueda";
+
     let searchItems = null;
-    let activeSearchType = "Todos";
+    let activeSearchType = ALL_SEARCH_TYPE;
     let globalSearchDebounceTimer;
 
-    function getPreferredTheme() {
-      const storedTheme = localStorage.getItem("ebv-theme");
+    function getThemePreference() {
+      const storedTheme = localStorage.getItem(THEME_KEY);
 
-      if (storedTheme === "dark" || storedTheme === "light") {
+      if (
+        storedTheme === "auto" ||
+        storedTheme === "light" ||
+        storedTheme === "dark"
+      ) {
         return storedTheme;
+      }
+
+      const legacyTheme = localStorage.getItem(LEGACY_THEME_KEY);
+
+      if (legacyTheme === "light" || legacyTheme === "dark") {
+        localStorage.setItem(THEME_KEY, legacyTheme);
+        return legacyTheme;
+      }
+
+      return "auto";
+    }
+
+    function getEffectiveTheme(preference) {
+      if (preference === "light" || preference === "dark") {
+        return preference;
       }
 
       return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -528,33 +740,52 @@ const searchDataUrl = sitePath("/buscar/datos.json");
         : "light";
     }
 
-    function applyTheme(theme) {
-      document.documentElement.dataset.theme = theme;
+    function applyThemePreference(preference) {
+      document.documentElement.dataset.theme =
+        getEffectiveTheme(preference);
+      document.documentElement.dataset.themePreference = preference;
     }
 
-    function syncThemeToggle(theme) {
-      const isDark = theme === "dark";
+    function syncThemeToggle(preference) {
+      const iconByPreference = {
+        auto: "🖥️",
+        light: "☀️",
+        dark: "🌙",
+      };
 
       themeToggleButtons.forEach((button) => {
         const icon = button.querySelector(".theme-toggle-icon");
+        const label =
+          button.getAttribute(`data-theme-label-${preference}`) ??
+          preference;
 
-        button.setAttribute("aria-pressed", String(isDark));
-        button.setAttribute(
-          "aria-label",
-          isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
-        );
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", label);
 
         if (icon) {
-          icon.textContent = isDark ? "☀️" : "🌙";
+          icon.textContent =
+            iconByPreference[preference] ?? iconByPreference.auto;
         }
       });
     }
 
-    function syncThemeFromStorage() {
-      const theme = getPreferredTheme();
+    function setThemePreference(preference) {
+      localStorage.setItem(THEME_KEY, preference);
+      localStorage.removeItem(LEGACY_THEME_KEY);
+      applyThemePreference(preference);
+      syncThemeToggle(preference);
+    }
 
-      applyTheme(theme);
-      syncThemeToggle(theme);
+    function syncThemeFromStorage() {
+      const preference = getThemePreference();
+      applyThemePreference(preference);
+      syncThemeToggle(preference);
+    }
+
+    function getNextThemePreference(preference) {
+      if (preference === "auto") return "light";
+      if (preference === "light") return "dark";
+      return "auto";
     }
 
     function normalizeText(value) {
@@ -648,7 +879,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       searchShell.classList.add("is-open");
       siteHeader?.classList.add("search-open");
       searchToggle.setAttribute("aria-expanded", "true");
-      searchToggle.setAttribute("aria-label", "Cerrar búsqueda");
+      searchToggle.setAttribute("aria-label", searchCloseLabel);
       syncSearchSubmitIcon();
 
       window.requestAnimationFrame(() => {
@@ -662,7 +893,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       searchShell.classList.remove("is-open");
       siteHeader?.classList.remove("search-open");
       searchToggle.setAttribute("aria-expanded", "false");
-      searchToggle.setAttribute("aria-label", "Abrir búsqueda");
+      searchToggle.setAttribute("aria-label", searchOpenLabel);
       closeSearchPopover();
       syncSearchSubmitIcon();
     }
@@ -690,13 +921,13 @@ const searchDataUrl = sitePath("/buscar/datos.json");
 
       if (isMobileSearch() && isOpen) {
         searchSubmit.textContent = "✕";
-        searchSubmit.setAttribute("aria-label", "Cerrar búsqueda");
+        searchSubmit.setAttribute("aria-label", searchCloseLabel);
         searchSubmit.classList.add("is-close");
         return;
       }
 
       searchSubmit.textContent = "🔍";
-      searchSubmit.setAttribute("aria-label", "Icono de búsqueda");
+      searchSubmit.setAttribute("aria-label", searchIconLabel);
       searchSubmit.classList.remove("is-close");
     }
 
@@ -709,11 +940,11 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       if (normalizedQuery) {
         url.searchParams.set("q", query);
         searchAllLink.textContent = hasResults
-          ? "Ver todos los resultados →"
-          : "Ir al buscador avanzado →";
+          ? searchAllLabel
+          : `${searchAdvancedLabel} →`;
       } else {
         url.searchParams.delete("q");
-        searchAllLink.textContent = "Ir al buscador avanzado →";
+        searchAllLink.textContent = `${searchAdvancedLabel} →`;
       }
 
       searchAllLink.href = `${url.pathname}${url.search}`;
@@ -725,24 +956,26 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       const counts = getSearchCounts(results);
 
       if (
-        activeSearchType !== "Todos" &&
+        activeSearchType !== ALL_SEARCH_TYPE &&
         !SEARCH_FILTER_ORDER.includes(activeSearchType)
       ) {
-        activeSearchType = "Todos";
+        activeSearchType = ALL_SEARCH_TYPE;
       }
 
-      if (activeSearchType !== "Todos" && !counts[activeSearchType]) {
-        activeSearchType = "Todos";
+      if (activeSearchType !== ALL_SEARCH_TYPE && !counts[activeSearchType]) {
+        activeSearchType = ALL_SEARCH_TYPE;
       }
 
       const filters = getAvailableSearchFilters(results);
 
       searchFilters.innerHTML = [
-        `<button type="button" data-global-search-filter="Todos">Todos <span>${results.length}</span></button>`,
-        ...filters.map(
-          ({ type, count }) =>
-            `<button type="button" data-global-search-filter="${escapeHtml(type)}">${escapeHtml(type)} <span>${count}</span></button>`
-        ),
+        `<button type="button" data-global-search-filter="${ALL_SEARCH_TYPE}">${escapeHtml(filterAllLabel)} <span>${results.length}</span></button>`,
+        ...filters.map(({ type, count }) => {
+          const label =
+            results.find((item) => item.type === type)?.typeLabel ?? type;
+
+          return `<button type="button" data-global-search-filter="${escapeHtml(type)}">${escapeHtml(label)} <span>${count}</span></button>`;
+        }),
       ].join("");
 
       searchFilters
@@ -758,7 +991,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
             event.stopPropagation();
 
             activeSearchType =
-              button.getAttribute("data-global-search-filter") ?? "Todos";
+              button.getAttribute("data-global-search-filter") ?? ALL_SEARCH_TYPE;
 
             renderSearchResults(searchInput?.value ?? "");
             openSearchPopover();
@@ -771,7 +1004,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
 
       return `
         <a href="${escapeHtml(item.url)}" class="global-search-result">
-          <span>${escapeHtml(item.type)}</span>
+          <span>${escapeHtml(item.typeLabel ?? item.type)}</span>
           <strong>${highlightMatches(item.title, query)}</strong>
           <small>${highlightMatches(item.summary, query)}</small>
         </a>
@@ -788,7 +1021,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       if (!query) {
         searchResults.innerHTML = `
           <div class="global-search-state">
-            Escribe una palabra para comenzar.
+            ${escapeHtml(searchEmptyLabel)}
           </div>
         `;
         searchFilters.innerHTML = "";
@@ -803,7 +1036,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       if (results.length === 0) {
         searchResults.innerHTML = `
           <div class="global-search-state">
-            No se encontraron resultados.
+            ${escapeHtml(searchNoneLabel)}
           </div>
         `;
         searchFilters.innerHTML = "";
@@ -839,16 +1072,23 @@ const searchDataUrl = sitePath("/buscar/datos.json");
 
     themeToggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const activeTheme =
-          document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        const currentPreference = getThemePreference();
+        const nextPreference =
+          getNextThemePreference(currentPreference);
 
-        localStorage.setItem("ebv-theme", activeTheme);
-        applyTheme(activeTheme);
-        syncThemeToggle(activeTheme);
+        setThemePreference(nextPreference);
       });
     });
 
     menuToggle?.addEventListener("click", toggleMenu);
+
+    languageSwitch?.addEventListener("click", () => {
+      const language = languageSwitch.getAttribute("data-language-code");
+
+      if (language === "es" || language === "en") {
+        localStorage.setItem(LANGUAGE_KEY, language);
+      }
+    });
 
     searchToggle?.addEventListener("click", (event) => {
       event.preventDefault();
@@ -877,7 +1117,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     });
 
     searchInput?.addEventListener("input", () => {
-      activeSearchType = "Todos";
+      activeSearchType = ALL_SEARCH_TYPE;
 
       window.clearTimeout(globalSearchDebounceTimer);
 
@@ -952,9 +1192,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", () => {
-        const storedTheme = localStorage.getItem("ebv-theme");
-
-        if (storedTheme !== "dark" && storedTheme !== "light") {
+        if (getThemePreference() === "auto") {
           syncThemeFromStorage();
         }
       });
@@ -1897,12 +2135,12 @@ const searchDataUrl = sitePath("/buscar/datos.json");
     outline-offset: 2px;
   }
 
-  .ebv-map-marker {
+  .bibli-map-marker {
     background: transparent;
     border: 0;
   }
 
-  .ebv-map-marker span {
+  .bibli-map-marker span {
     position: relative;
     display: block;
     width: 30px;
@@ -1916,7 +2154,7 @@ const searchDataUrl = sitePath("/buscar/datos.json");
       0 0 0 2px rgba(122, 63, 22, 0.25);
   }
 
-  .ebv-map-marker span::after {
+  .bibli-map-marker span::after {
     content: "";
     position: absolute;
     inset: 8px;
@@ -4211,7 +4449,8 @@ box-shadow: 0 0 0 6px #100c08;
 
   .global-search-submit,
   .global-search-toggle,
-  .menu-toggle {
+  .menu-toggle,
+  .language-switch {
     display: inline-flex;
     width: 42px;
     height: 42px;
@@ -4226,6 +4465,12 @@ box-shadow: 0 0 0 6px #100c08;
     font-size: 1rem;
     font-weight: 900;
     cursor: pointer;
+  }
+
+  .language-switch {
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
   }
 
   .global-search-toggle[aria-expanded="true"] {
@@ -4255,7 +4500,8 @@ box-shadow: 0 0 0 6px #100c08;
 
   .global-search-submit:hover,
   .global-search-toggle:hover,
-  .menu-toggle:hover {
+  .menu-toggle:hover,
+  .language-switch:hover {
     background: #f1dfc5;
   }
 
@@ -4486,6 +4732,7 @@ box-shadow: 0 0 0 6px #100c08;
   html[data-theme="dark"] .global-search-submit,
   html[data-theme="dark"] .global-search-toggle,
   html[data-theme="dark"] .menu-toggle,
+  html[data-theme="dark"] .language-switch,
   html[data-theme="dark"] .global-search-filters button,
   html[data-theme="dark"] .global-search-result,
   html[data-theme="dark"] .global-search-state {
@@ -4502,6 +4749,7 @@ box-shadow: 0 0 0 6px #100c08;
   html[data-theme="dark"] .global-search-submit:hover,
   html[data-theme="dark"] .global-search-toggle:hover,
   html[data-theme="dark"] .menu-toggle:hover,
+  html[data-theme="dark"] .language-switch:hover,
   html[data-theme="dark"] .global-search-result:hover,
   html[data-theme="dark"] .global-menu a:hover {
     background: #312113;

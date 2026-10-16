@@ -1,0 +1,369 @@
+---
+import { sitePath } from "../../../lib/site-paths";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { buildSearchIndex } from "../../../lib/search-index";
+
+const searchItems = buildSearchIndex("en");
+---
+
+<BaseLayout
+  lang="en"
+  title="Advanced search"
+  description="Search English Bible books and KJV verses in Bibli."
+  alternateLanguage={{
+    code: "es",
+    label: "Español",
+    href: sitePath("/buscar/"),
+  }}
+>
+  <main class="page advanced-search-page">
+    <div class="breadcrumb">
+      <a href={sitePath("/en/bible/")}>Bible</a> → Advanced search
+    </div>
+
+    <section class="hero advanced-search-hero">
+      <div>
+        <p class="eyebrow">Advanced search</p>
+        <h1>Search the English Bible</h1>
+        <p class="subtitle">
+          Search KJV verses and localized English book names without falling back
+          to untranslated Spanish editorial content.
+        </p>
+      </div>
+
+      <aside class="search-summary-card" aria-label="Search index summary">
+        <span>Local index</span>
+        <strong>{searchItems.length}</strong>
+        <p>English Bible entries</p>
+      </aside>
+    </section>
+
+    <section class="section" id="advanced-search">
+      <label class="search-label" for="search-input">
+        Enter a word, phrase, book, or Bible reference
+      </label>
+
+      <input
+        id="search-input"
+        class="search-input"
+        type="search"
+        placeholder="Try: John 3:16, grace, Genesis, in the beginning..."
+        autocomplete="off"
+      />
+
+      <div id="search-empty" class="search-state" hidden></div>
+      <div id="search-filters" class="search-filters" hidden></div>
+      <div id="search-results-summary" class="search-results-summary" hidden></div>
+      <div id="search-results" class="search-results"></div>
+
+      <script type="application/json" id="search-data" set:html={JSON.stringify(searchItems)} />
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import {
+    SEARCH_FILTER_ORDER,
+    getAvailableSearchFilters,
+    getDisplaySearchResults,
+    getSearchCounts,
+    getSearchResults,
+    normalizeSearchText,
+  } from "../../../lib/search-engine";
+
+  const ALL_TYPE = "Todos";
+  const dataElement = document.getElementById("search-data");
+  const input = document.getElementById("search-input");
+  const resultsElement = document.getElementById("search-results");
+  const emptyElement = document.getElementById("search-empty");
+  const resultsSummaryElement = document.getElementById("search-results-summary");
+  const filtersElement = document.getElementById("search-filters");
+
+  const items = dataElement?.textContent
+    ? JSON.parse(dataElement.textContent)
+    : [];
+
+  const initialParams = new URLSearchParams(window.location.search);
+  const initialQuery = initialParams.get("q") ?? "";
+  let activeSearchType = ALL_TYPE;
+  let currentResults = [];
+  let searchDebounceTimer;
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function updateUrl(value) {
+    const url = new URL(window.location.href);
+
+    if (normalizeSearchText(value)) {
+      url.searchParams.set("q", value);
+    } else {
+      url.searchParams.delete("q");
+    }
+
+    window.history.replaceState({}, "", url);
+  }
+
+  function getTypeLabel(type) {
+    return items.find((item) => item.type === type)?.typeLabel ?? type;
+  }
+
+  function renderFilters(results) {
+    if (!filtersElement) return;
+
+    const counts = getSearchCounts(results);
+
+    if (
+      activeSearchType !== ALL_TYPE &&
+      !SEARCH_FILTER_ORDER.includes(activeSearchType)
+    ) {
+      activeSearchType = ALL_TYPE;
+    }
+
+    if (activeSearchType !== ALL_TYPE && !counts[activeSearchType]) {
+      activeSearchType = ALL_TYPE;
+    }
+
+    const filters = getAvailableSearchFilters(results);
+    filtersElement.hidden = false;
+    filtersElement.innerHTML = [
+      `<button type="button" data-search-filter="${ALL_TYPE}">All <span>${results.length}</span></button>`,
+      ...filters.map(
+        ({ type, count }) =>
+          `<button type="button" data-search-filter="${escapeHtml(type)}">${escapeHtml(getTypeLabel(type))} <span>${count}</span></button>`
+      ),
+    ].join("");
+
+    filtersElement.querySelectorAll("[data-search-filter]").forEach((button) => {
+      button.classList.toggle(
+        "is-active",
+        button.getAttribute("data-search-filter") === activeSearchType
+      );
+
+      button.addEventListener("click", () => {
+        activeSearchType =
+          button.getAttribute("data-search-filter") ?? ALL_TYPE;
+        renderFilteredResults();
+      });
+    });
+  }
+
+  function renderResultCard(item) {
+    return `
+      <a href="${escapeHtml(item.url)}" class="search-result">
+        <span>${escapeHtml(item.typeLabel ?? item.type)}</span>
+        <strong>${escapeHtml(item.title)}</strong>
+        <p>${escapeHtml(item.summary)}</p>
+      </a>
+    `;
+  }
+
+  function renderFilteredResults() {
+    if (!resultsElement || !resultsSummaryElement || !filtersElement) return;
+
+    renderFilters(currentResults);
+    const filteredResults = getDisplaySearchResults(
+      currentResults,
+      activeSearchType,
+      120
+    );
+    const query = input?.value ?? "";
+
+    resultsSummaryElement.hidden = false;
+    resultsSummaryElement.textContent =
+      activeSearchType === ALL_TYPE
+        ? `${currentResults.length} result${currentResults.length === 1 ? "" : "s"} for “${query}”`
+        : `${filteredResults.length} result${filteredResults.length === 1 ? "" : "s"} in ${getTypeLabel(activeSearchType)} for “${query}”`;
+
+    resultsElement.innerHTML = filteredResults.map(renderResultCard).join("");
+  }
+
+  function renderResults(query) {
+    if (!resultsElement || !emptyElement || !resultsSummaryElement || !filtersElement) {
+      return;
+    }
+
+    if (!normalizeSearchText(query)) {
+      currentResults = [];
+      activeSearchType = ALL_TYPE;
+      resultsElement.innerHTML = "";
+      filtersElement.innerHTML = "";
+      filtersElement.hidden = true;
+      resultsSummaryElement.hidden = true;
+      emptyElement.hidden = true;
+      return;
+    }
+
+    currentResults = getSearchResults(items, query);
+
+    if (currentResults.length === 0) {
+      resultsElement.innerHTML = "";
+      filtersElement.innerHTML = "";
+      filtersElement.hidden = true;
+      resultsSummaryElement.hidden = true;
+      emptyElement.hidden = false;
+      emptyElement.textContent = "No results found for that search.";
+      return;
+    }
+
+    emptyElement.hidden = true;
+    renderFilteredResults();
+  }
+
+  input?.addEventListener("input", (event) => {
+    const value = event.target.value;
+    activeSearchType = ALL_TYPE;
+    updateUrl(value);
+    window.clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = window.setTimeout(() => renderResults(value), 120);
+  });
+
+  if (input && initialQuery) {
+    input.value = initialQuery;
+    renderResults(initialQuery);
+    input.focus();
+  }
+</script>
+
+<style>
+  .advanced-search-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+    gap: 28px;
+    align-items: end;
+  }
+
+  .search-summary-card {
+    display: grid;
+    gap: 8px;
+    padding: 24px;
+    border: 1px solid #eadcc4;
+    border-radius: 22px;
+    background: white;
+  }
+
+  .search-summary-card span,
+  .search-result span {
+    color: #8a5a2b;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .search-summary-card strong {
+    font-size: 2rem;
+  }
+
+  .search-summary-card p,
+  .search-result p {
+    margin: 0;
+    color: #6a5c4d;
+    line-height: 1.5;
+  }
+
+  .search-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 850;
+  }
+
+  .search-input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 50px;
+    padding: 0 16px;
+    border: 1px solid #c8a982;
+    border-radius: 16px;
+    background: #fffaf0;
+    color: #2d2418;
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  :global(.search-filters) {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    overflow-x: auto;
+  }
+
+  :global(.search-filters[hidden]) {
+    display: none;
+  }
+
+  :global(.search-filters button) {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid #eadcc4;
+    border-radius: 999px;
+    background: #fffaf0;
+    color: #5d3212;
+    font: inherit;
+    font-weight: 850;
+    cursor: pointer;
+  }
+
+  :global(.search-filters button.is-active) {
+    background: #5d3212;
+    border-color: #5d3212;
+    color: #fffaf0;
+  }
+
+  .search-results-summary,
+  .search-state {
+    margin-top: 18px;
+    color: #6a5c4d;
+  }
+
+  .search-results {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  :global(.search-result) {
+    display: grid;
+    gap: 6px;
+    padding: 16px;
+    border: 1px solid #eadcc4;
+    border-radius: 18px;
+    background: #fffaf0;
+    text-decoration: none;
+  }
+
+  :global(.search-result strong) {
+    color: #2d2418;
+  }
+
+  :global(html[data-theme="dark"] .search-summary-card),
+  :global(html[data-theme="dark"] .search-input),
+  :global(html[data-theme="dark"] .search-result),
+  :global(html[data-theme="dark"] .search-filters button) {
+    background: #21160e;
+    border-color: #4a3523;
+    color: #fff5e8;
+  }
+
+  :global(html[data-theme="dark"] .search-result strong) {
+    color: #fff5e8;
+  }
+
+  :global(html[data-theme="dark"] .search-result p),
+  :global(html[data-theme="dark"] .search-results-summary),
+  :global(html[data-theme="dark"] .search-state) {
+    color: #d8c8b6;
+  }
+
+  @media (max-width: 760px) {
+    .advanced-search-hero {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

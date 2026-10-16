@@ -4,9 +4,15 @@ import { sitePath } from "../../../../lib/site-paths";
 import {
   getBibleBookPath,
   getBibleRootPath,
+  getBibleVersionPath,
 } from "../../../../lib/bible-routes";
 
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import BibleVersionSwitcher from "../../../../components/BibleVersionSwitcher.astro";
+
+import {
+  getDefaultBibleVersionId,
+} from "../../../../lib/bible-config";
 
 import {
   getAllBooksByLanguage,
@@ -76,14 +82,32 @@ function getBookMeta(book: Book) {
     ? `Abreviatura: ${book.abbreviation}`
     : book.testament;
 }
+const availableVersions =
+  getBibleVersionsByLanguage("es");
+
 ---
 
 <BaseLayout
   lang="es"
+  alternateLanguage={{
+    code: "en",
+    label: "English",
+    href: getBibleVersionPath(
+      "en",
+      getDefaultBibleVersionId("en")
+    ),
+  }}
   title={`Biblia · ${version.abbreviation}`}
   description={`Lee la Biblia en la versión ${version.name}.`}
 >
   <main class="page">
+    <div class="bible-version-toolbar">
+      <BibleVersionSwitcher
+        language="es"
+        versions={availableVersions}
+        currentVersionId={version.id}
+      />
+    </div>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={getBibleRootPath("es")}>Biblia</a> →
@@ -592,5 +616,13 @@ function getBookMeta(book: Book) {
       align-items: flex-start;
       flex-direction: column;
     }
+  }
+</style>
+<style>
+  .bible-version-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 1px;
+    margin-bottom: 10px;
   }
 </style>

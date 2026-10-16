@@ -867,35 +867,43 @@ export type BibleVerse = {
 
 export type BibleSearchVerse = {
   id: string;
+  book_id: string;
   book_name: string;
   book_slug: string;
   book_usfm_code: string;
+  book_order: number;
   chapter_number: number;
   verse_number: number;
   verse_text: string | null;
 };
 
 export function getBibleSearchVerses(
-  versionId = DEFAULT_BIBLE_VERSION_ID
+  versionId = DEFAULT_BIBLE_VERSION_ID,
+  language = "es"
 ): BibleSearchVerse[] {
   return db
     .prepare(
       `
       SELECT
         bible_verses.id,
-        books.name AS book_name,
-        books.slug AS book_slug,
+        books.id AS book_id,
+        COALESCE(book_translations.name, books.name) AS book_name,
+        COALESCE(book_translations.slug, books.slug) AS book_slug,
         books.usfm_code AS book_usfm_code,
+        books.order_number AS book_order,
         bible_verses.chapter_number,
         bible_verses.verse_number,
         bible_verses.verse_text
       FROM bible_verses
       JOIN books ON books.id = bible_verses.book_id
+      LEFT JOIN book_translations
+        ON book_translations.book_id = books.id
+        AND book_translations.language = ?
       WHERE bible_verses.version_id = ?
       ORDER BY books.order_number ASC, bible_verses.chapter_number ASC, bible_verses.verse_number ASC
       `
     )
-    .all(versionId) as BibleSearchVerse[];
+    .all(language, versionId) as BibleSearchVerse[];
 }
 
 export type BibleChapter = {

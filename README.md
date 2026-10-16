@@ -1,6 +1,6 @@
-# Bibli — Enciclopedia Bíblica Visual
+# Bibli — Biblioteca Bíblica
 
-Bibli es una Enciclopedia Bíblica Visual construida con Astro, SQLite, better-sqlite3 y TypeScript.
+Bibli es una Biblioteca Bíblica digital construida con Astro, SQLite, better-sqlite3 y TypeScript.
 
 El proyecto combina contenido editorial estructurado, estudio bíblico, navegación por libros y pasajes, lecciones, personajes, lugares, eventos, temas, recursos visuales, mapas y búsqueda.
 
@@ -172,9 +172,39 @@ Workflow:
 .github/workflows/deploy.yml
 ```
 
+## Validación
+
 Antes de guardar cambios:
 
 ```bash
+npm run repo:validate
+npm run db:validate
 npm run build
 git status
+git diff --check
+```
+
+`repo:validate` impide versionar dependencias, artefactos generados, archivos privados de RVR1960 y snapshots ZIP obsoletos. `db:validate` verifica integridad, conteos, esquema editorial y sincronía entre SQL y `data/enciclopedia.sqlite`.
+
+## Idiomas y preferencias
+
+Bibli utiliza una sola app con rutas `/es/` y `/en/`. El lector bíblico conserva entidades canónicas y códigos USFM, mientras la interfaz se localiza por idioma.
+
+Preferencias locales:
+
+- `bibli-theme`: `auto`, `light` o `dark`;
+- `bibli-language`: última selección explícita ES/EN.
+
+La preferencia de idioma no provoca redirecciones automáticas hacia secciones que todavía no tengan equivalente traducido.
+
+## Despliegue seguro
+
+El workflow de GitHub Pages ejecuta, en este orden:
+
+```text
+npm ci
+→ npm run repo:validate
+→ npm run db:validate
+→ npm run build
+→ deploy
 ```

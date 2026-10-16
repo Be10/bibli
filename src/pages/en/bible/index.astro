@@ -2,6 +2,7 @@
 import { sitePath } from "../../../lib/site-paths";
 
 import {
+  getBibleRootPath,
   getBibleVersionPath,
 } from "../../../lib/bible-routes";
 
@@ -17,6 +18,11 @@ const versions =
 
 <BaseLayout
   lang="en"
+  alternateLanguage={{
+    code: "es",
+    label: "Español",
+    href: getBibleRootPath("es"),
+  }}
   title="Bible"
   description="Select an available English Bible version."
 >

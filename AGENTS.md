@@ -2,7 +2,7 @@
 
 ## Proyecto
 
-Bibli es una Enciclopedia Bíblica Visual construida con:
+Bibli es una Biblioteca Bíblica digital construida con:
 
 * Astro
 * TypeScript
@@ -107,9 +107,14 @@ no debe incluirse en Git ni en ZIP u otros archivos compartidos.
 Antes de guardar cambios importantes:
 
 ```bash
+npm run repo:validate
+npm run db:validate
 npm run build
 git status
+git diff --check
 ```
+
+No tratar `node_modules/`, `dist/`, `.astro/` ni snapshots ZIP como código fuente. No borrar `.git/`, `data/enciclopedia.sqlite` ni fuentes privadas de importación necesarias para reconstrucciones locales.
 
 Para cambios relacionados con KJV:
 
@@ -118,3 +123,9 @@ npm run bible:validate:kjv
 npm run bible:audit:kjv
 npm run bible:audit:kjv:spacing
 ```
+
+## Continuidad y legado
+
+Las 20 lecciones SQL de `data/content/` pertenecen a la ruta histórica Panorama Visual y se consideran `legacy/test`, pero siguen siendo una dependencia técnica de `db:reset`. No eliminarlas hasta que el importador de Markdown canónico esté implementado y validado.
+
+La interfaz usa `Bibli` como marca corta, `BIBLIOTECA BÍBLICA` en español y `BIBLICAL LIBRARY` en inglés. Las preferencias de dispositivo usan claves `bibli-*`; solo se mantienen claves `ebv-*` cuando sean necesarias para migración retrocompatible.

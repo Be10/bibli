@@ -36,6 +36,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate repository hygiene
+        run: npm run repo:validate
+
+      - name: Validate database snapshot
+        run: npm run db:validate
+
       - name: Build site
         run: npm run build
 

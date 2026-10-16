@@ -143,7 +143,6 @@ CREATE TABLE lesson_bible_refs (
   reference TEXT NOT NULL,
   note TEXT,
   position INTEGER NOT NULL DEFAULT 1,
-  sort_order INTEGER NOT NULL DEFAULT 1,
   FOREIGN KEY (lesson_id) REFERENCES lessons(id)
 );
 
@@ -152,7 +151,6 @@ CREATE TABLE lesson_points (
   lesson_id TEXT NOT NULL,
   point_text TEXT NOT NULL,
   position INTEGER NOT NULL DEFAULT 1,
-  sort_order INTEGER NOT NULL DEFAULT 1,
   FOREIGN KEY (lesson_id) REFERENCES lessons(id)
 );
 
@@ -161,7 +159,6 @@ CREATE TABLE lesson_questions (
   lesson_id TEXT NOT NULL,
   question_text TEXT NOT NULL,
   position INTEGER NOT NULL DEFAULT 1,
-  sort_order INTEGER NOT NULL DEFAULT 1,
   FOREIGN KEY (lesson_id) REFERENCES lessons(id)
 );
 
