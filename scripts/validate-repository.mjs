@@ -32,6 +32,18 @@ const forbiddenRules = [
     label: "snapshot ZIP del proyecto",
     match: (file) => !file.includes("/") && file.toLowerCase().endsWith(".zip"),
   },
+  {
+    label: "contenido SQL legado",
+    match: (file) => file.startsWith("data/content/"),
+  },
+  {
+    label: "checkout KJV redundante",
+    match: (file) => file.startsWith("data/import/kjv-source/"),
+  },
+  {
+    label: "verificador de checkout KJV retirado",
+    match: (file) => file === "scripts/verify-kjv-source-hashes.mjs",
+  },
 ];
 
 const problems = [];

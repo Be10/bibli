@@ -309,15 +309,14 @@ export function buildSearchIndex(
       makeItem(language, "Lección", {
         title: lesson.title,
         url: sitePath(`/lecciones/${lesson.slug}/`),
-        summary: lesson.main_idea ?? lesson.summary ?? "Lección bíblica.",
+        summary: lesson.primary_reference
+          ? `Estudio de ${lesson.primary_reference}`
+          : lesson.summary ?? "Lección bíblica.",
         searchText: joinSearchText(
           lesson.title,
-          lesson.eyebrow,
-          lesson.main_idea,
-          lesson.summary,
-          lesson.explanation,
-          lesson.remember,
-          lesson.application
+          lesson.primary_reference,
+          lesson.translation,
+          lesson.search_text
         ),
         bookOrder: 999,
         chapterNumber: 999,

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0.0",
+  "lessons": {
+    "pentateuco-principal--genesis--01-01-02-03--l001": {
+      "people": ["per-adan", "per-eva"],
+      "places": ["lug-eden"],
+      "topics": ["tem-creacion"]
+    },
+    "pentateuco-principal--genesis--03-01-24--l003": {
+      "people": ["per-adan", "per-eva", "per-serpiente"],
+      "places": ["lug-eden"],
+      "topics": ["tem-caida", "tem-pecado", "tem-juicio"],
+      "glossary": ["glo-caida", "glo-pecado"]
+    },
+    "pentateuco-principal--genesis--06-09-22--l007": {
+      "people": ["per-noe"],
+      "topics": ["tem-juicio", "tem-gracia", "tem-obediencia", "tem-pacto"],
+      "glossary": ["glo-juicio", "glo-pacto"],
+      "visual_resources": ["vis-noe-juicio-misericordia"]
+    },
+    "pentateuco-principal--genesis--08-20-09-17--l011": {
+      "people": ["per-noe"],
+      "topics": ["tem-pacto", "tem-bendicion", "tem-gracia"],
+      "glossary": ["glo-pacto", "glo-bendicion"]
+    },
+    "pentateuco-principal--genesis--11-01-09--l014": {
+      "people": ["per-humanidad-babel", "per-naciones"],
+      "places": ["lug-babel-sinar"],
+      "events": ["eve-babel-naciones"],
+      "topics": ["tem-orgullo", "tem-naciones", "tem-juicio"],
+      "glossary": ["glo-babel", "glo-naciones", "glo-dispersion"],
+      "visual_resources": ["vis-babel-naciones"]
+    },
+    "pentateuco-principal--genesis--12-01-09--l016": {
+      "people": ["per-abraham", "per-sara"],
+      "places": ["lug-ur-caldeos", "lug-haran", "lug-canaan"],
+      "events": ["eve-llamado-abraham"],
+      "topics": ["tem-promesa", "tem-obediencia", "tem-naciones", "tem-tierra-prometida"],
+      "glossary": ["glo-abraham", "glo-canaan", "glo-promesa", "glo-tierra-prometida"],
+      "visual_resources": ["vis-abraham-promesa"]
+    },
+    "pentateuco-principal--genesis--15-01-21--l020": {
+      "people": ["per-abraham"],
+      "places": ["lug-canaan"],
+      "events": ["eve-pacto-abraham"],
+      "topics": ["tem-pacto", "tem-fe", "tem-promesa", "tem-descendencia"],
+      "glossary": ["glo-pacto", "glo-fe", "glo-promesa", "glo-descendencia"],
+      "visual_resources": ["vis-pacto-abraham"]
+    },
+    "pentateuco-principal--genesis--22-01-19--l031": {
+      "people": ["per-abraham", "per-isaac"],
+      "places": ["lug-moriah"],
+      "topics": ["tem-fe", "tem-sacrificio", "tem-obediencia", "tem-promesa"],
+      "glossary": ["glo-fe", "glo-sacrificio", "glo-promesa"]
+    },
+    "pentateuco-principal--genesis--24-01-67--l034": {
+      "people": ["per-abraham", "per-isaac", "per-rebeca"],
+      "places": ["lug-haran", "lug-canaan"],
+      "topics": ["tem-providencia", "tem-promesa"],
+      "glossary": ["glo-providencia", "glo-promesa"]
+    },
+    "pentateuco-principal--genesis--28-10-22--l041": {
+      "people": ["per-jacob"],
+      "places": ["lug-betel", "lug-beerseba", "lug-haran"],
+      "topics": ["tem-promesa", "tem-presencia-de-dios", "tem-providencia"],
+      "glossary": ["glo-promesa", "glo-presencia-de-dios", "glo-providencia"]
+    },
+    "pentateuco-principal--genesis--32-22-32--l049": {
+      "people": ["per-jacob"],
+      "places": ["lug-peniel"],
+      "topics": ["tem-bendicion", "tem-gracia"],
+      "glossary": ["glo-bendicion"]
+    },
+    "pentateuco-principal--genesis--33-01-20--l050": {
+      "people": ["per-jacob", "per-esau"],
+      "topics": ["tem-restauracion", "tem-gracia"],
+      "glossary": ["glo-bendicion"]
+    }
+  }
+}

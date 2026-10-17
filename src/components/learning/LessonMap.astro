@@ -1,0 +1,90 @@
+---
+import "leaflet/dist/leaflet.css";
+import type { StudyPlace } from "../../lib/queries";
+import { sitePath } from "../../lib/site-paths";
+
+type Props = { places: StudyPlace[] };
+const { places } = Astro.props;
+const points = places
+  .filter((place) => place.latitude !== null && place.longitude !== null)
+  .map((place) => ({
+    title: place.title,
+    slug: place.slug,
+    summary: place.summary,
+    lat: place.latitude,
+    lng: place.longitude,
+    zoom: place.map_zoom ?? 6,
+    href: sitePath(`/lugares/${place.slug}/`),
+  }));
+---
+
+{points.length > 0 && (
+  <div class="lesson-map-shell">
+    <div
+      class="lesson-map"
+      data-lesson-map
+      data-points={JSON.stringify(points)}
+      aria-label="Mapa de lugares relacionados con la lección"
+    ></div>
+    <p class="map-note">Mapa interactivo. Selecciona un punto para abrir su ficha.</p>
+  </div>
+)}
+
+<script>
+  import L from "leaflet";
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
+    }[char] || char));
+  }
+
+  function mountMap(element: HTMLElement) {
+    if (element.dataset.mounted === "true") return;
+    const points = JSON.parse(element.dataset.points || "[]");
+    if (!Array.isArray(points) || points.length === 0) return;
+
+    const map = L.map(element, { scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(map);
+
+    const bounds: [number, number][] = [];
+    for (const point of points) {
+      const latLng: [number, number] = [point.lat, point.lng];
+      bounds.push(latLng);
+      const marker = L.circleMarker(latLng, {
+        radius: 7,
+        weight: 2,
+        fillOpacity: 0.75,
+      }).addTo(map);
+      const href = point.href;
+      marker.bindPopup(
+        `<strong>${escapeHtml(point.title)}</strong>${point.summary ? `<br><small>${escapeHtml(point.summary)}</small>` : ""}<br><a href="${escapeHtml(href)}">Ver ficha</a>`
+      );
+    }
+
+    if (bounds.length === 1) map.setView(bounds[0], points[0].zoom || 7);
+    else map.fitBounds(bounds, { padding: [28, 28] });
+
+    element.dataset.mounted = "true";
+    setTimeout(() => map.invalidateSize(), 50);
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-lesson-map]").forEach((element) => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        mountMap(element);
+        observer.disconnect();
+      }
+    }, { rootMargin: "200px" });
+    observer.observe(element);
+  });
+</script>
+
+<style>
+  .lesson-map-shell { margin-top: .8rem; }
+  .lesson-map { min-height: 280px; border-radius: 16px; overflow: hidden; background: var(--surface-soft, #f3f4f6); }
+  .map-note { margin: .45rem 0 0; font-size: .78rem; opacity: .68; }
+</style>

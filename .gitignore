@@ -32,3 +32,9 @@ data/import/*.private.csv
 # local transfer / snapshot archives
 /*.zip
 /bibli-proyecto.zip
+
+# generated exports
+exports/
+
+# redundant upstream KJV source checkout (canonical import lives in kjv-study)
+data/import/kjv-source/

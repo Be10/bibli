@@ -9,6 +9,17 @@ export type Route = {
   description: string | null;
   level: string | null;
   estimated_duration: string | null;
+  language: string;
+  status: string;
+};
+
+export type RouteModule = {
+  id: string;
+  route_id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  position: number;
   status: string;
 };
 
@@ -27,6 +38,14 @@ export type Lesson = {
   application: string | null;
   estimated_time: string | null;
   status: string;
+  book_id?: string;
+  primary_reference?: string;
+  translation?: string;
+  content_version?: string;
+  source_path?: string;
+  search_text?: string;
+  module_id?: string | null;
+  module_title?: string | null;
 };
 
 export type LessonBibleRef = {
@@ -64,14 +83,56 @@ export function getRouteBySlug(slug: string): Route | undefined {
     .get(slug) as Route | undefined;
 }
 
+export function getRouteModules(routeId: string): RouteModule[] {
+  return db.prepare(`
+    SELECT * FROM route_modules
+    WHERE route_id = ? AND status != 'Borrador'
+    ORDER BY position ASC
+  `).all(routeId) as RouteModule[];
+}
+
+export function getRoutesByLessonId(lessonId: string): Route[] {
+  return db.prepare(`
+    SELECT routes.*
+    FROM route_lessons
+    JOIN routes ON routes.id = route_lessons.route_id
+    WHERE route_lessons.lesson_id = ?
+    ORDER BY route_lessons.is_primary DESC, routes.title ASC
+  `).all(lessonId) as Route[];
+}
+
 export function getLessonsByRouteId(routeId: string): Lesson[] {
   return db
     .prepare(
       `
-      SELECT *
-      FROM lessons
-      WHERE route_id = ?
-      ORDER BY lesson_number ASC
+      SELECT
+        study_lessons.id,
+        route_lessons.route_id,
+        route_lessons.position AS lesson_number,
+        study_lessons.title,
+        study_lessons.slug,
+        NULL AS eyebrow,
+        NULL AS main_idea,
+        NULL AS objective,
+        'Estudio de ' || study_lessons.primary_reference AS summary,
+        NULL AS explanation,
+        NULL AS remember,
+        NULL AS application,
+        CAST(study_lessons.estimated_minutes AS TEXT) || ' min' AS estimated_time,
+        study_lessons.status,
+        study_lessons.book_id,
+        study_lessons.primary_reference,
+        study_lessons.translation,
+        study_lessons.content_version,
+        study_lessons.source_path,
+        study_lessons.search_text,
+        route_lessons.module_id,
+        route_modules.title AS module_title
+      FROM route_lessons
+      JOIN study_lessons ON study_lessons.id = route_lessons.lesson_id
+      LEFT JOIN route_modules ON route_modules.id = route_lessons.module_id
+      WHERE route_lessons.route_id = ?
+      ORDER BY route_lessons.position ASC
       `
     )
     .all(routeId) as Lesson[];
@@ -84,42 +145,26 @@ export function getLessonBySlug(slug: string): Lesson | undefined {
 }
 
 export function getBibleRefsByLessonId(lessonId: string): LessonBibleRef[] {
-  return db
-    .prepare(
-      `
-      SELECT *
-      FROM lesson_bible_refs
-      WHERE lesson_id = ?
-      ORDER BY position ASC
-      `
-    )
-    .all(lessonId) as LessonBibleRef[];
+  const row = db.prepare(
+    `SELECT id, primary_reference FROM study_lessons WHERE id = ?`
+  ).get(lessonId) as { id: string; primary_reference: string } | undefined;
+
+  if (!row) return [];
+  return [{
+    id: `${row.id}--primary`,
+    lesson_id: row.id,
+    reference: row.primary_reference,
+    note: "Referencia principal",
+    position: 1,
+  }];
 }
 
-export function getPointsByLessonId(lessonId: string): LessonPoint[] {
-  return db
-    .prepare(
-      `
-      SELECT *
-      FROM lesson_points
-      WHERE lesson_id = ?
-      ORDER BY position ASC
-      `
-    )
-    .all(lessonId) as LessonPoint[];
+export function getPointsByLessonId(_lessonId: string): LessonPoint[] {
+  return [];
 }
 
-export function getQuestionsByLessonId(lessonId: string): LessonQuestion[] {
-  return db
-    .prepare(
-      `
-      SELECT *
-      FROM lesson_questions
-      WHERE lesson_id = ?
-      ORDER BY position ASC
-      `
-    )
-    .all(lessonId) as LessonQuestion[];
+export function getQuestionsByLessonId(_lessonId: string): LessonQuestion[] {
+  return [];
 }
 
 export function getTopicsByLessonId(lessonId: string): RelatedItem[] {
@@ -178,6 +223,27 @@ export function getPlacesByLessonId(lessonId: string): RelatedItem[] {
       `
     )
     .all(lessonId) as RelatedItem[];
+}
+
+export type StudyPlace = {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  map_zoom: number | null;
+};
+
+export function getStudyPlacesByLessonId(lessonId: string): StudyPlace[] {
+  return db.prepare(`
+    SELECT places.id, places.name AS title, places.slug, places.summary,
+           places.latitude, places.longitude, places.map_zoom
+    FROM lesson_places
+    JOIN places ON places.id = lesson_places.place_id
+    WHERE lesson_places.lesson_id = ?
+    ORDER BY places.name ASC
+  `).all(lessonId) as StudyPlace[];
 }
 
 export function getLessonsByPlaceId(placeId: string): Lesson[] {
@@ -624,6 +690,10 @@ export function getAllBooks(): Book[] {
     .all() as Book[];
 }
 
+export function getBookById(bookId: string): Book | undefined {
+  return db.prepare(`SELECT * FROM books WHERE id = ? LIMIT 1`).get(bookId) as Book | undefined;
+}
+
 export function getAllBooksByLanguage(language: string): Book[] {
   return db
     .prepare(
@@ -949,6 +1019,39 @@ export function getBibleVersesByChapter(
       `
     )
     .all(versionId, bookId, chapterNumber) as BibleVerse[];
+}
+
+export function getBibleVersesForRange(
+  bookId: string,
+  startChapter: number,
+  startVerse: number | null,
+  endChapter: number,
+  endVerse: number | null,
+  versionId = DEFAULT_BIBLE_VERSION_ID
+): BibleVerse[] {
+  return db.prepare(`
+    SELECT *
+    FROM bible_verses
+    WHERE version_id = ?
+      AND book_id = ?
+      AND (chapter_number > ? OR (chapter_number = ? AND (? IS NULL OR verse_number >= ?)))
+      AND (chapter_number < ? OR (chapter_number = ? AND (? IS NULL OR verse_number <= ?)))
+    ORDER BY chapter_number ASC, verse_number ASC
+  `).all(
+    versionId, bookId,
+    startChapter, startChapter, startVerse, startVerse,
+    endChapter, endChapter, endVerse, endVerse
+  ) as BibleVerse[];
+}
+
+export function resolveBibleVersionId(label: string): string | undefined {
+  const normalized = label.trim().toLowerCase();
+  const row = db.prepare(`
+    SELECT id FROM bible_versions
+    WHERE lower(id) = ? OR lower(abbreviation) = ? OR lower(name) = ?
+    LIMIT 1
+  `).get(normalized, normalized, normalized) as { id: string } | undefined;
+  return row?.id;
 }
 
 export type BibleVersion = {

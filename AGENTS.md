@@ -1,131 +1,141 @@
 # Bibli — reglas de desarrollo
 
-## Proyecto
+## Fuentes de verdad
 
-Bibli es una Biblioteca Bíblica digital construida con:
+Bibli usa Astro + TypeScript + SQLite + `better-sqlite3` y se publica estáticamente.
 
-* Astro
-* TypeScript
-* SQLite
-* better-sqlite3
+Para lecciones:
 
-La publicación pública es estática mediante GitHub Pages.
+```text
+Estudios Biblicos/**.md (SharePoint) = fuente editorial canónica
+content/studies/**/*.md             = snapshot publicable del repositorio
+Markdown                            = cuerpo completo de la lección
+data/bibli.sqlite                   = índice/navegación/relaciones para build
+```
 
-## Antes de realizar cambios
+Nunca reconstruir el estudio desde columnas rígidas de SQLite.
 
-Revisar siempre:
+## Antes de modificar aprendizaje o datos
+
+Revisar:
 
 ```text
 data/schema.sql
 data/seed.sql
-data/content/*.sql
+data/editorial.sql
+content/routes.json
+content/study-enrichments.json
+content/studies/manifest.json
+docs/architecture/study-content-contract-v1.md
+docs/architecture/learning-architecture-v1.md
 ```
 
-No inventar nombres de columnas, IDs, relaciones ni rutas.
+No inventar IDs, tablas, slugs, rutas ni relaciones.
 
-## Estructura editorial
+## Modelo de aprendizaje
 
-La arquitectura editorial es modular:
+- `study_lessons`: identidad y metadatos derivados del Markdown.
+- `route_modules`: agrupaciones pedagógicas.
+- `route_lessons`: relación N:M entre rutas y lecciones; una Lección puede reutilizarse sin duplicarse.
+- `lessons`: vista de compatibilidad para módulos históricos todavía no migrados.
+- `lesson_*`: relaciones aprobadas con entidades editoriales.
+
+No reintroducir `lesson_bible_refs`, `lesson_points` ni `lesson_questions`.
+
+No usar posición en una ruta como progreso del usuario. El progreso es estado personal independiente.
+
+## Enriquecimiento editorial
+
+No inferir automáticamente personas, lugares, temas, eventos, glosario, tipologías ni recursos visuales simplemente porque una palabra aparezca en la prosa.
+
+Las relaciones deben venir de:
 
 ```text
-data/schema.sql
-data/seed.sql
-data/content/*.sql
+content/study-enrichments.json
 ```
 
-No centralizar contenido específico de lecciones dentro de `seed.sql`.
+o de metadata explícita futura (`[[glossary:...]]`, `places`, etc.) aprobada editorialmente.
 
-## Lecciones
+## UX de Lección
 
-Las tablas:
+Preservar:
 
-```text
-lesson_bible_refs
-lesson_points
-lesson_questions
-```
+- modo `Estudio` y modo `Lectura bíblica`;
+- navegación anterior/siguiente;
+- módulos y rutas;
+- progreso real por dispositivo;
+- ayudas de estudio ocultables;
+- experiencia responsive/mobile-first;
+- HTML estático como base y JavaScript solo donde aporta interacción.
 
-utilizan:
-
-```text
-position
-```
-
-No utilizar `sort_order`.
-
-La tabla `lessons` incluye campos como:
-
-```text
-eyebrow
-main_idea
-summary
-explanation
-remember
-application
-estimated_time
-status
-```
+No convertir cada párrafo en un componente ni sobrecargar la lección con elementos visuales abiertos por defecto.
 
 ## Biblia
 
-Las versiones bíblicas se identifican mediante `bible_versions` y `bible_verses.version_id`.
-
-Versiones actualmente cargadas:
+Versiones actuales:
 
 ```text
 rvr1960
 kjv
 ```
 
-No crear versículos artificiales para compensar diferencias de versificación entre versiones.
-
-La KJV tiene dos posiciones legítimamente ausentes respecto a RVR1960:
-
-```text
-Salmos 47:10
-3 Juan 1:15
-```
-
-La fuente KJV actual es:
+KJV canónica:
 
 ```text
 data/import/kjv-study/json/verses-1769.json
 ```
 
-## RVR1960
-
-El archivo local:
+RVR1960 local:
 
 ```text
 data/import/rvr1960.csv
 ```
 
-no debe incluirse en Git ni en ZIP u otros archivos compartidos.
+No distribuir ni versionar el CSV RVR1960. No crear versículos artificiales para compensar diferencias de versificación.
+
+## Limpieza
+
+Nunca tratar como fuente:
+
+```text
+node_modules/
+dist/
+.astro/
+exports/
+data/content/
+data/import/kjv-source/
+```
+
+Las dos últimas rutas corresponden a legado/redundancia ya retirados y no deben reaparecer.
+
+No borrar `.git/`, `.github/`, `data/bibli.sqlite`, `data/import/kjv-study/` ni fuentes locales privadas necesarias para reconstrucción.
 
 ## Validación
 
 Antes de guardar cambios importantes:
 
 ```bash
-npm run repo:validate
-npm run db:validate
 npm run build
 git status
 git diff --check
 ```
 
-No tratar `node_modules/`, `dist/`, `.astro/` ni snapshots ZIP como código fuente. No borrar `.git/`, `data/bibli.sqlite` ni fuentes privadas de importación necesarias para reconstrucciones locales.
-
-Para cambios relacionados con KJV:
+Para cambios solo de estudios puede usarse:
 
 ```bash
-npm run bible:validate:kjv
-npm run bible:audit:kjv
-npm run bible:audit:kjv:spacing
+npm run studies:refresh
+npm run db:validate
 ```
 
-## Continuidad y legado
+Para reconstruir desde cero:
 
-Las 20 lecciones SQL de `data/content/` pertenecen a la ruta histórica Panorama Visual y se consideran `legacy/test`, pero siguen siendo una dependencia técnica de `db:reset`. No eliminarlas hasta que el importador de Markdown canónico esté implementado y validado.
-
-La interfaz usa `Bibli` como marca corta, `BIBLIOTECA BÍBLICA` en español y `BIBLICAL LIBRARY` en inglés. Las preferencias de dispositivo usan claves `bibli-*`.
+```bash
+npm run db:reset
+npm run bible:import:rvr1960
+npm run bible:validate:kjv
+npm run bible:import:kjv
+npm run bible:audit:kjv
+npm run bible:audit:kjv:spacing
+npm run db:validate
+npm run build
+```

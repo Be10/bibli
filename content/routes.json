@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "routes": [
+    {
+      "id": "pentateuco-principal",
+      "title": "De la Creación al Pacto",
+      "slug": "de-la-creacion-al-pacto",
+      "subtitle": "Pentateuco · recorrido principal",
+      "description": "Un recorrido progresivo por el Pentateuco para comprender la creación, la caída, la promesa, los patriarcas, el pacto y la formación del pueblo de Dios.",
+      "level": "Progresivo",
+      "language": "es",
+      "status": "Publicado",
+      "modules": [
+        {
+          "id": "pentateuco-origenes",
+          "title": "Creación, caída y primeras generaciones",
+          "slug": "creacion-caida-primeras-generaciones",
+          "description": "Génesis 1–5: creación, vocación humana, caída, expansión del pecado y preservación de la esperanza.",
+          "position": 1,
+          "lesson_number_range": [1, 5]
+        },
+        {
+          "id": "pentateuco-diluvio-naciones",
+          "title": "Diluvio, pacto y naciones",
+          "slug": "diluvio-pacto-naciones",
+          "description": "Génesis 6–11: juicio, preservación, pacto con Noé, desarrollo de las naciones y Babel.",
+          "position": 2,
+          "lesson_number_range": [6, 15]
+        },
+        {
+          "id": "pentateuco-abraham",
+          "title": "Abraham y la promesa",
+          "slug": "abraham-y-la-promesa",
+          "description": "Génesis 12–25: llamado, fe, pacto, espera, provisión y continuidad de la promesa.",
+          "position": 3,
+          "lesson_number_range": [16, 35]
+        },
+        {
+          "id": "pentateuco-isaac-jacob",
+          "title": "Isaac, Esaú y Jacob",
+          "slug": "isaac-esau-jacob",
+          "description": "Génesis 25–28: transición generacional, elección, conflicto, bendición y el encuentro de Jacob con Dios.",
+          "position": 4,
+          "lesson_number_range": [36, 41]
+        },
+        {
+          "id": "pentateuco-jacob-haran-regreso",
+          "title": "Jacob en Harán y el camino de regreso",
+          "slug": "jacob-haran-regreso",
+          "description": "Génesis 29–33: familia, formación, conflictos, regreso, transformación y reconciliación.",
+          "position": 5,
+          "lesson_number_range": [42, 50]
+        }
+      ]
+    }
+  ]
+}

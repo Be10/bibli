@@ -1,0 +1,128 @@
+---
+import { sitePath } from "../../lib/site-paths";
+import LessonMap from "./LessonMap.astro";
+import type { Event, RelatedItem, StudyPlace, VisualResource } from "../../lib/queries";
+
+type Props = {
+  glossary: RelatedItem[];
+  people: RelatedItem[];
+  places: StudyPlace[];
+  topics: RelatedItem[];
+  events: Event[];
+  visualResources: VisualResource[];
+};
+const { glossary, people, places, topics, events, visualResources } = Astro.props;
+const readyVisuals = visualResources.filter((resource) => Boolean(resource.url));
+const count = glossary.length + people.length + places.length + topics.length + events.length + readyVisuals.length;
+---
+
+<aside class="study-aids" data-study-aids-panel aria-label="Ayudas de estudio">
+  <div class="study-aids-heading">
+    <div>
+      <span class="kicker">Explorar sin salir de la lección</span>
+      <h2>Ayudas de estudio</h2>
+    </div>
+    <span class="count">{count}</span>
+  </div>
+
+  {places.length > 0 && (
+    <details open>
+      <summary>🗺️ Lugares y mapa <span>{places.length}</span></summary>
+      <LessonMap places={places} />
+      <ul class="aid-list">
+        {places.map((place) => (
+          <li>
+            <a href={sitePath(`/lugares/${place.slug}/`)}><strong>{place.title}</strong></a>
+            {place.summary && <p>{place.summary}</p>}
+          </li>
+        ))}
+      </ul>
+    </details>
+  )}
+
+  {glossary.length > 0 && (
+    <details>
+      <summary>📚 Glosario <span>{glossary.length}</span></summary>
+      <div class="definition-list">
+        {glossary.map((term) => (
+          <article>
+            <a href={sitePath(`/glosario/${term.slug}/`)}><strong>{term.title}</strong></a>
+            {term.definition && <p>{term.definition}</p>}
+          </article>
+        ))}
+      </div>
+    </details>
+  )}
+
+  {people.length > 0 && (
+    <details>
+      <summary>👤 Personajes <span>{people.length}</span></summary>
+      <div class="chips">
+        {people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)}>{person.title}</a>)}
+      </div>
+    </details>
+  )}
+
+  {topics.length > 0 && (
+    <details>
+      <summary>🧭 Temas <span>{topics.length}</span></summary>
+      <div class="chips">
+        {topics.map((topic) => <a href={sitePath(`/temas/${topic.slug}/`)}>{topic.title}</a>)}
+      </div>
+    </details>
+  )}
+
+  {events.length > 0 && (
+    <details>
+      <summary>⏳ Eventos <span>{events.length}</span></summary>
+      <ul class="aid-list compact">
+        {events.map((event) => (
+          <li><a href={sitePath(`/eventos/${event.slug}/`)}>{event.title}</a></li>
+        ))}
+      </ul>
+    </details>
+  )}
+
+  {readyVisuals.length > 0 && (
+    <details>
+      <summary>🖼️ Recursos visuales <span>{readyVisuals.length}</span></summary>
+      <div class="visual-grid">
+        {readyVisuals.map((resource) => (
+          <a href={sitePath(`/recursos/${resource.slug}/`)} class="visual-card">
+            <img src={resource.url!} alt={resource.alt_text ?? resource.title} loading="lazy" />
+            <strong>{resource.title}</strong>
+          </a>
+        ))}
+      </div>
+    </details>
+  )}
+
+  {count === 0 && (
+    <p class="empty">Esta lección todavía no tiene ayudas editoriales adicionales. El estudio principal permanece completo.</p>
+  )}
+</aside>
+
+<style>
+  .study-aids { display: grid; gap: .8rem; }
+  .study-aids-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; }
+  .study-aids-heading h2 { margin: .15rem 0 0; font-size: 1.15rem; }
+  .kicker { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .65; }
+  .count { min-width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 999px; background: var(--surface-soft, #f2f3f5); font-weight: 700; }
+  details { border: 1px solid var(--border-color, rgba(100,100,100,.2)); border-radius: 14px; overflow: hidden; background: var(--surface, transparent); }
+  summary { cursor: pointer; padding: .85rem 1rem; display: flex; justify-content: space-between; gap: .6rem; font-weight: 700; }
+  details[open] summary { border-bottom: 1px solid var(--border-color, rgba(100,100,100,.15)); }
+  details > :global(:not(summary)) { margin-left: 1rem; margin-right: 1rem; }
+  .aid-list { list-style: none; padding: 0 0 .7rem; margin-top: .8rem; display: grid; gap: .7rem; }
+  .aid-list p, .definition-list p { margin: .2rem 0 0; font-size: .86rem; opacity: .8; line-height: 1.5; }
+  .aid-list.compact { gap: .35rem; }
+  .definition-list { display: grid; gap: .75rem; padding: .85rem 0; }
+  .definition-list article + article { border-top: 1px solid var(--border-color, rgba(100,100,100,.12)); padding-top: .7rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: .45rem; padding: .85rem 0; }
+  .chips a { text-decoration: none; border: 1px solid var(--border-color, rgba(100,100,100,.2)); border-radius: 999px; padding: .38rem .65rem; font-size: .82rem; }
+  .visual-grid { display: grid; gap: .7rem; padding: .85rem 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .visual-card { display: grid; gap: .4rem; text-decoration: none; }
+  .visual-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 10px; }
+  .visual-card strong { font-size: .82rem; }
+  .empty { font-size: .86rem; opacity: .7; }
+  @media (max-width: 700px) { .visual-grid { grid-template-columns: 1fr; } }
+</style>
