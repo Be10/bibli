@@ -144,7 +144,7 @@ const studyRoomZones: StudyRoomZone[] = [
     status: "active",
     actions: [
       { label: "Ver recursos", href: sitePath("/recursos/") },
-      { label: "Explorar enciclopedia", href: sitePath("/explorar/") },
+      { label: "Explorar Bibli", href: sitePath("/explorar/") },
     ],
   },
   {
@@ -230,7 +230,7 @@ const quickAccess = [
   },
   {
     title: "Buscar",
-    description: "Toda la enciclopedia",
+    description: "Todo el contenido de Bibli",
     href: sitePath("/buscar/"),
     icon: "🔎",
   },
@@ -265,7 +265,7 @@ const quickAccess = [
       </div>
 
       <form class="study-search" action={sitePath("/buscar/")} method="get">
-        <label for="study-search-input">Buscar en la enciclopedia</label>
+        <label for="study-search-input">Buscar en Bibli</label>
         <div class="study-search__control">
           <input
             id="study-search-input"

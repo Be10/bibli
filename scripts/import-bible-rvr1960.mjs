@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
 
-const dbPath = path.join(process.cwd(), "data", "enciclopedia.sqlite");
+const dbPath = path.join(process.cwd(), "data", "bibli.sqlite");
 const csvPath = path.join(process.cwd(), "data", "import", "rvr1960.csv");
 
 if (!fs.existsSync(dbPath)) {

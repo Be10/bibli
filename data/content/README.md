@@ -6,7 +6,7 @@ Esta carpeta contiene archivos SQL modulares usados por el flujo actual de recon
 
 Los archivos `010-...sql` a `200-...sql` corresponden a la ruta histórica **Panorama Visual de la Biblia**. En Bibli deben considerarse **contenido legacy/test**, no la fuente editorial canónica de los nuevos estudios bíblicos.
 
-No deben eliminarse todavía: `scripts/reset-db.mjs` los ejecuta y la aplicación actual consulta esas lecciones desde `data/enciclopedia.sqlite`. Se retirarán únicamente cuando exista un importador canónico de los Markdown de Estudio Bíblico y se haya verificado que ninguna ruta, consulta, seed o build depende de estos SQL.
+No deben eliminarse todavía: `scripts/reset-db.mjs` los ejecuta y la aplicación actual consulta esas lecciones desde `data/bibli.sqlite`. Se retirarán únicamente cuando exista un importador canónico de los Markdown de Estudio Bíblico y se haya verificado que ninguna ruta, consulta, seed o build depende de estos SQL.
 
 ## Convención actual
 

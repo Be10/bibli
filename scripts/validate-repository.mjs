@@ -29,8 +29,8 @@ const forbiddenRules = [
     match: (file) => file === ".env" || file.startsWith(".env."),
   },
   {
-    label: "snapshot ZIP legado",
-    match: (file) => file === "enciclopedia-biblica-visual.zip",
+    label: "snapshot ZIP del proyecto",
+    match: (file) => !file.includes("/") && file.toLowerCase().endsWith(".zip"),
   },
 ];
 

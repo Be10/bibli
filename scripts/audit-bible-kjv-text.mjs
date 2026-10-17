@@ -12,7 +12,7 @@ const VERSION_ID = "kjv";
 const dbPath = path.join(
   process.cwd(),
   "data",
-  "enciclopedia.sqlite"
+  "bibli.sqlite"
 );
 
 function fail(message) {

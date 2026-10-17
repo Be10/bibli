@@ -455,19 +455,14 @@ const alternateHref = alternateLanguage
     <script is:inline>
       (() => {
         const currentKey = "bibli-theme";
-        const legacyKey = "ebv-theme";
-
         const storedPreference = localStorage.getItem(currentKey);
-        const legacyPreference = localStorage.getItem(legacyKey);
 
         const preference =
           storedPreference === "auto" ||
           storedPreference === "light" ||
           storedPreference === "dark"
             ? storedPreference
-            : legacyPreference === "light" || legacyPreference === "dark"
-              ? legacyPreference
-              : "auto";
+            : "auto";
 
         const effectiveTheme =
           preference === "auto"
@@ -678,7 +673,6 @@ const alternateHref = alternateLanguage
 
     const ALL_SEARCH_TYPE = "Todos";
     const THEME_KEY = "bibli-theme";
-    const LEGACY_THEME_KEY = "ebv-theme";
     const LANGUAGE_KEY = "bibli-language";
 
     const searchEmptyLabel =
@@ -718,13 +712,6 @@ const alternateHref = alternateLanguage
         storedTheme === "dark"
       ) {
         return storedTheme;
-      }
-
-      const legacyTheme = localStorage.getItem(LEGACY_THEME_KEY);
-
-      if (legacyTheme === "light" || legacyTheme === "dark") {
-        localStorage.setItem(THEME_KEY, legacyTheme);
-        return legacyTheme;
       }
 
       return "auto";
@@ -771,7 +758,6 @@ const alternateHref = alternateLanguage
 
     function setThemePreference(preference) {
       localStorage.setItem(THEME_KEY, preference);
-      localStorage.removeItem(LEGACY_THEME_KEY);
       applyThemePreference(preference);
       syncThemeToggle(preference);
     }

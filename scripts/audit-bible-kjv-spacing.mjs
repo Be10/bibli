@@ -7,7 +7,7 @@ const EXPECTED_VERSES = 31102;
 const dbPath = path.join(
   process.cwd(),
   "data",
-  "enciclopedia.sqlite"
+  "bibli.sqlite"
 );
 
 function addFinding(findings, type, row, match) {

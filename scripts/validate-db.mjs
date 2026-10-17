@@ -5,7 +5,7 @@ import path from "node:path";
 import Database from "better-sqlite3";
 
 const rootDir = process.cwd();
-const dbPath = path.join(rootDir, "data", "enciclopedia.sqlite");
+const dbPath = path.join(rootDir, "data", "bibli.sqlite");
 const schemaPath = path.join(rootDir, "data", "schema.sql");
 const seedPath = path.join(rootDir, "data", "seed.sql");
 const contentDir = path.join(rootDir, "data", "content");

@@ -89,7 +89,7 @@ const ALLOWED_RVR_ONLY_POSITIONS = new Set([
 const dbPath = path.join(
   process.cwd(),
   "data",
-  "enciclopedia.sqlite"
+  "bibli.sqlite"
 );
 
 const sourcePath = path.join(
@@ -231,7 +231,7 @@ console.log("");
 
 if (!fs.existsSync(dbPath)) {
   fail(
-    "No existe data/enciclopedia.sqlite."
+    "No existe data/bibli.sqlite."
   );
 }
 

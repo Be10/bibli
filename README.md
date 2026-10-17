@@ -57,7 +57,7 @@ data/content/*.sql
 La base generada se encuentra en:
 
 ```text
-data/enciclopedia.sqlite
+data/bibli.sqlite
 ```
 
 ## Reconstrucción de la base
@@ -184,7 +184,7 @@ git status
 git diff --check
 ```
 
-`repo:validate` impide versionar dependencias, artefactos generados, archivos privados de RVR1960 y snapshots ZIP obsoletos. `db:validate` verifica integridad, conteos, esquema editorial y sincronía entre SQL y `data/enciclopedia.sqlite`.
+`repo:validate` impide versionar dependencias, artefactos generados, archivos privados de RVR1960 y snapshots ZIP obsoletos. `db:validate` verifica integridad, conteos, esquema editorial y sincronía entre SQL y `data/bibli.sqlite`.
 
 ## Idiomas y preferencias
 
