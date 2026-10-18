@@ -1,51 +1,139 @@
 ---
 import { sitePath } from "../lib/site-paths";
 import Icon from "../components/Icon.astro";
+
+const homeEs = sitePath("/");
+const homeEn = sitePath("/en/");
+const downloadEs = sitePath("/descargar/");
+const downloadEn = sitePath("/en/download/");
 ---
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light" data-accent="plum">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#5f4769" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#765982" />
     <meta name="robots" content="noindex" />
     <title>Sin conexión | Biblioteca Bíblica</title>
     <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
+    <script is:inline>
+      (() => {
+        const storedTheme = localStorage.getItem("bibli-theme");
+        const theme = storedTheme === "dark" || storedTheme === "light"
+          ? storedTheme
+          : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const storedAccent = localStorage.getItem("bibli-accent");
+        const accent = ["earth", "ocean", "forest", "plum", "clay"].includes(storedAccent || "")
+          ? storedAccent
+          : "plum";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.accent = accent;
+      })();
+    </script>
     <style>
-      :root { color-scheme: light dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f7f7f8; color:#25232a; }
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --page:#f7f7f8;
+        --surface:#fff;
+        --text:#25232a;
+        --muted:#69636f;
+        --border:#ddd8e0;
+        --accent:#765982;
+        --accent-hover:#5f4769;
+        --accent-soft:#eadff0;
+        --accent-contrast:#fff;
+        background:var(--page);
+        color:var(--text);
+      }
+      :root[data-accent="earth"] { --accent:#7b5439; --accent-hover:#61412d; --accent-soft:#eee1d6; }
+      :root[data-accent="ocean"] { --accent:#356da8; --accent-hover:#285985; --accent-soft:#dceaf8; }
+      :root[data-accent="forest"] { --accent:#3f725b; --accent-hover:#315b48; --accent-soft:#dfede5; }
+      :root[data-accent="plum"] { --accent:#765982; --accent-hover:#5f4769; --accent-soft:#eadff0; }
+      :root[data-accent="clay"] { --accent:#a25745; --accent-hover:#874737; --accent-soft:#f2dfda; }
+      :root[data-theme="dark"] {
+        color-scheme:dark;
+        --page:#0f1115;
+        --surface:#171a1f;
+        --text:#f7f9fb;
+        --muted:#a6aebb;
+        --border:#33353b;
+        --accent:#b7a0bf;
+        --accent-hover:#cbb6d1;
+        --accent-soft:#312936;
+        --accent-contrast:#19131b;
+      }
+      :root[data-theme="dark"][data-accent="earth"] { --accent:#d0a888; --accent-hover:#e1ba9a; --accent-soft:#362a23; --accent-contrast:#111827; }
+      :root[data-theme="dark"][data-accent="ocean"] { --accent:#82add6; --accent-hover:#9bc0e2; --accent-soft:#202f3f; --accent-contrast:#101820; }
+      :root[data-theme="dark"][data-accent="forest"] { --accent:#91b39f; --accent-hover:#a8c7b5; --accent-soft:#223129; --accent-contrast:#101a15; }
+      :root[data-theme="dark"][data-accent="plum"] { --accent:#b7a0bf; --accent-hover:#cbb6d1; --accent-soft:#312936; --accent-contrast:#19131b; }
+      :root[data-theme="dark"][data-accent="clay"] { --accent:#d99d8d; --accent-hover:#e9b2a4; --accent-soft:#382722; --accent-contrast:#1f1411; }
       * { box-sizing:border-box; }
-      body { min-height:100vh; margin:0; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at top right,#eee5f2 0,transparent 38%),#f7f7f8; }
-      main { width:min(100%,560px); padding:32px; border:1px solid #ddd8e0; border-radius:24px; background:#fff; box-shadow:0 20px 60px rgba(31,24,35,.08); }
-      .brand { display:inline-flex; align-items:center; gap:8px; color:#5f4769; font-size:.8rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
-      h1 { margin:18px 0 10px; font-size:clamp(2rem,7vw,3.2rem); line-height:1; letter-spacing:-.05em; }
-      p { margin:0; color:#69636f; line-height:1.7; }
+      body {
+        min-height:100dvh;
+        margin:0;
+        display:grid;
+        place-items:center;
+        padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+        background:radial-gradient(circle at top right,var(--accent-soft) 0,transparent 38%),var(--page);
+      }
+      main { width:min(100%,580px); padding:32px; border:1px solid var(--border); border-radius:24px; background:var(--surface); box-shadow:0 20px 60px rgb(0 0 0 / .1); }
+      .brand { display:inline-flex; align-items:center; gap:8px; color:var(--accent); font-size:.8rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+      h1 { margin:18px 0 10px; color:var(--text); font-size:clamp(2rem,7vw,3.2rem); line-height:1; letter-spacing:-.05em; }
+      p { margin:0; color:var(--muted); line-height:1.7; }
       .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
       a,button { min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 16px; border-radius:12px; font:inherit; font-weight:760; text-decoration:none; cursor:pointer; }
-      a { background:#5f4769; color:#fff; border:1px solid #5f4769; }
-      button { background:#fff; color:#5f4769; border:1px solid #cbbbd1; }
-      small { display:block; margin-top:20px; color:#8a8490; line-height:1.5; }
-      @media (prefers-color-scheme: dark) {
-        :root { background:#0f1115; color:#f7f9fb; }
-        body { background:radial-gradient(circle at top right,#312936 0,transparent 38%),#0f1115; }
-        main { background:#171a1f; border-color:#33353b; box-shadow:0 20px 60px rgba(0,0,0,.28); }
-        .brand { color:#cbb6d1; }
-        p,small { color:#a6aebb; }
-        a { background:#b7a0bf; border-color:#b7a0bf; color:#19131b; }
-        button { background:#1d2127; color:#cbb6d1; border-color:#48404d; }
-      }
-      @media(max-width:520px){ main{padding:24px;border-radius:20px}.actions{display:grid}.actions>*{width:100%} }
+      .primary { background:var(--accent); color:var(--accent-contrast); border:1px solid var(--accent); }
+      .primary:hover { background:var(--accent-hover); border-color:var(--accent-hover); }
+      .secondary,button { background:var(--surface); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 42%,var(--border)); }
+      small { display:block; margin-top:20px; color:var(--muted); line-height:1.5; }
+      [data-offline-copy][hidden] { display:none !important; }
+      @media(max-width:520px){ main{padding:24px 18px;border-radius:20px}.actions{display:grid}.actions>*{width:100%} }
+      @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
     </style>
   </head>
   <body>
     <main>
       <span class="brand"><Icon name="library" size={17} /> Bibli</span>
-      <h1>Estás sin conexión</h1>
-      <p>Las páginas que ya visitaste pueden seguir disponibles. Para contenido que todavía no se haya guardado en este dispositivo, vuelve a intentarlo cuando recuperes la conexión.</p>
-      <div class="actions">
-        <a href={sitePath("/")}><Icon name="library" size={17} /> Ir al inicio</a>
-        <button type="button" onclick="location.reload()"><Icon name="arrow-right" size={17} /> Reintentar</button>
-      </div>
-      <small>Esta es la base offline de Bibli. La descarga selectiva de paquetes de Biblia, lecciones e imágenes se incorporará como una capa posterior.</small>
+
+      <section data-offline-copy="es">
+        <h1>Estás sin conexión</h1>
+        <p>Bibli intentará mostrar las páginas y paquetes guardados en este dispositivo. El contenido que todavía no se haya descargado necesitará conexión.</p>
+        <div class="actions">
+          <a class="primary" href={homeEs}><Icon name="library" size={17} /> Ir al inicio</a>
+          <a class="secondary" href={downloadEs}><Icon name="download" size={17} /> Ver contenido descargado</a>
+          <button type="button" data-offline-retry><Icon name="arrow-right" size={17} /> Reintentar</button>
+        </div>
+        <small>Puedes preparar con anticipación la aplicación, tus lecciones y una versión bíblica desde “Sin conexión”.</small>
+      </section>
+
+      <section data-offline-copy="en" lang="en" hidden>
+        <h1>You’re offline</h1>
+        <p>Bibli will try to show pages and packages saved on this device. Content that has not been downloaded yet will require a connection.</p>
+        <div class="actions">
+          <a class="primary" href={homeEn}><Icon name="library" size={17} /> Go home</a>
+          <a class="secondary" href={downloadEn}><Icon name="download" size={17} /> View offline content</a>
+          <button type="button" data-offline-retry><Icon name="arrow-right" size={17} /> Try again</button>
+        </div>
+        <small>You can prepare the app and a Bible version in advance from “Offline”.</small>
+      </section>
     </main>
+
+    <script is:inline>
+      (() => {
+        const storedLanguage = localStorage.getItem("bibli-language");
+        const referrerIsEnglish = document.referrer.includes("/en/");
+        const browserIsEnglish = navigator.language?.toLowerCase().startsWith("en");
+        const language = storedLanguage === "en" || (!storedLanguage && (referrerIsEnglish || browserIsEnglish)) ? "en" : "es";
+        document.documentElement.lang = language;
+        document.title = language === "en" ? "Offline | Biblical Library" : "Sin conexión | Biblioteca Bíblica";
+        document.querySelectorAll("[data-offline-copy]").forEach((section) => {
+          section.hidden = section.getAttribute("data-offline-copy") !== language;
+        });
+        document.querySelectorAll("[data-offline-retry]").forEach((button) => {
+          button.addEventListener("click", () => location.reload());
+        });
+      })();
+    </script>
   </body>
 </html>

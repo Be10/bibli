@@ -17,12 +17,14 @@ interface Props {
   description?: string;
   lang?: LanguageCode;
   alternateLanguage?: AlternateLanguage;
+  robots?: string;
 }
 
 const {
   title,
   lang = "es",
   alternateLanguage,
+  robots,
 } = Astro.props;
 
 const ui = {
@@ -51,6 +53,8 @@ const ui = {
     about: "Acerca de Bibli",
     installApp: "Instalar Bibli",
     offlineLibrary: "Sin conexión",
+    connectionOffline: "Sin conexión · usando contenido disponible en este dispositivo",
+    connectionOnline: "Conexión restablecida",
     theme: "Tema",
     themeAuto: "Automático",
     themeLight: "Claro",
@@ -94,6 +98,8 @@ const ui = {
     about: "About Bibli",
     installApp: "Install Bibli",
     offlineLibrary: "Offline",
+    connectionOffline: "Offline · using content available on this device",
+    connectionOnline: "Connection restored",
     theme: "Theme",
     themeAuto: "Automatic",
     themeLight: "Light",
@@ -192,16 +198,17 @@ const alternateHref = alternateLanguage
   : null;
 const languageTarget = alternateLanguage ?? {
   code: (lang === "es" ? "en" : "es") as LanguageCode,
-  label: lang === "es" ? "English" : "Spanish",
-  href: lang === "es" ? getBibleRootPath("en") : getBibleRootPath("es"),
+  label: lang === "es" ? "English" : "Español",
+  href: lang === "es" ? sitePath("/en/") : sitePath("/"),
 };
 ---
 
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     <title>{pageTitle}</title>
     <link rel="canonical" href={canonicalHref} />
     {alternateLanguage && alternateHref && (
@@ -751,6 +758,19 @@ const languageTarget = alternateLanguage ?? {
         </nav>
       </div>
     </footer>
+    <div
+      class="connection-status"
+      data-connection-status
+      data-offline-label={activeUi.connectionOffline}
+      data-online-label={activeUi.connectionOnline}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    >
+      <span class="connection-status-dot" aria-hidden="true"></span>
+      <span data-connection-status-text></span>
+    </div>
     <GlobalTTS lang={lang} />
     <script>
   import {
@@ -783,6 +803,9 @@ const languageTarget = alternateLanguage ?? {
     const searchFilters = document.querySelector("[data-global-search-filters]");
     const searchResults = document.querySelector("[data-global-search-results]");
     const searchAllLink = document.querySelector("[data-global-search-all]");
+    const connectionStatus = document.querySelector("[data-connection-status]");
+    const connectionStatusText = document.querySelector("[data-connection-status-text]");
+    let connectionStatusTimer;
 
     const ALL_SEARCH_TYPE = "Todos";
     const THEME_KEY = "bibli-theme";
@@ -1229,6 +1252,28 @@ const languageTarget = alternateLanguage ?? {
       deferredInstallPrompt = undefined;
       if (installButton) installButton.hidden = true;
     });
+
+    const showConnectionStatus = (state) => {
+      if (!connectionStatus || !connectionStatusText) return;
+
+      window.clearTimeout(connectionStatusTimer);
+      const online = state === "online";
+      const label = connectionStatus.getAttribute(online ? "data-online-label" : "data-offline-label") || "";
+      connectionStatusText.textContent = label;
+      connectionStatus.classList.toggle("is-online", online);
+      connectionStatus.hidden = false;
+
+      if (online) {
+        connectionStatusTimer = window.setTimeout(() => {
+          connectionStatus.hidden = true;
+          connectionStatus.classList.remove("is-online");
+        }, 3500);
+      }
+    };
+
+    if (!navigator.onLine) showConnectionStatus("offline");
+    window.addEventListener("offline", () => showConnectionStatus("offline"));
+    window.addEventListener("online", () => showConnectionStatus("online"));
 
     const serviceWorkerUrl = document.body.dataset.serviceWorkerUrl;
     const serviceWorkerEnabled = document.body.dataset.serviceWorkerEnabled === "true";
@@ -5064,11 +5109,6 @@ box-shadow: 0 0 0 6px var(--page-bg);
     --heading-color: #f7f9fb;
     --border-color: rgba(226, 232, 240, 0.10);
     --border-strong: rgba(226, 232, 240, 0.18);
-    --accent: #82add6;
-    --accent-hover: #9bc0e2;
-    --accent-soft: #202f3f;
-    --accent-contrast: #101820;
-    --focus-ring: rgba(130, 173, 214, 0.22);
     --shadow-sm: 0 10px 28px rgba(0, 0, 0, 0.20);
     --shadow-md: 0 22px 58px rgba(0, 0, 0, 0.32);
   }
@@ -5134,7 +5174,6 @@ box-shadow: 0 0 0 6px var(--page-bg);
     box-shadow: 0 0 0 4px var(--focus-ring);
   }
   .global-search-submit { border-left-color: var(--border-color); }
-  .global-menu { width: min(260px, calc(100vw - 32px)); padding: 8px; border-radius: 18px; }
   .global-menu a { min-height: 42px; border-radius: 11px; color: var(--text-color); font-weight: 720; }
   .global-menu a:hover { background: var(--surface-soft); color: var(--heading-color); }
   .menu-theme-row { border-top-color: var(--border-color); color: var(--text-muted); font-weight: 650; }
@@ -5156,7 +5195,6 @@ box-shadow: 0 0 0 6px var(--page-bg);
 
   /* Interface icon geometry is centralized in components/Icon.astro (Lucide 24x24 language). */
   .global-search-submit, .global-search-toggle, .menu-toggle { position: relative; }
-  .floating-theme-toggle { box-shadow: var(--shadow-sm); }
 
   /* Legacy surfaces still used by secondary sections inherit the same system. */
   .entity-card, .timeline-card, .map-shell, .search-input, .search-result, .explore-card,
@@ -5200,17 +5238,9 @@ box-shadow: 0 0 0 6px var(--page-bg);
     --radius-md: 16px;
     --radius-lg: 22px;
     --control-height: 44px;
-    --accent: #78647e;
-    --accent-hover: #624f69;
-    --accent-soft: #eee8f0;
     --accent-contrast: #fff;
     --focus-ring: color-mix(in srgb, var(--accent) 22%, transparent);
   }
-  html[data-accent="earth"] { --accent:#855f46; --accent-hover:#6d4c37; --accent-soft:#f1e8e2; --accent-contrast:#fff; }
-  html[data-accent="ocean"] { --accent:#456f9d; --accent-hover:#365c86; --accent-soft:#e4edf7; --accent-contrast:#fff; }
-  html[data-accent="forest"] { --accent:#587566; --accent-hover:#456052; --accent-soft:#e5eee9; --accent-contrast:#fff; }
-  html[data-accent="plum"] { --accent:#78647e; --accent-hover:#624f69; --accent-soft:#eee8f0; --accent-contrast:#fff; }
-  html[data-accent="clay"] { --accent:#a05f50; --accent-hover:#864a3e; --accent-soft:#f4e6e2; --accent-contrast:#fff; }
   html[data-theme="dark"] { --accent:#b7a0bf; --accent-hover:#cbb6d1; --accent-soft:#312936; --accent-contrast:#19131b; }
   html[data-theme="dark"][data-accent="earth"] { --accent:#d0a888; --accent-hover:#e1ba9a; --accent-soft:#362a23; --accent-contrast:#111827; }
   html[data-theme="dark"][data-accent="ocean"] { --accent:#82add6; --accent-hover:#9bc0e2; --accent-soft:#202f3f; --accent-contrast:#101820; }
@@ -5223,31 +5253,15 @@ box-shadow: 0 0 0 6px var(--page-bg);
     position: sticky;
     top: 0;
     z-index: 80;
-    width: min(var(--content-max), calc(100% - 32px));
-    min-height: 64px;
-    padding: 10px 0;
     background: color-mix(in srgb, var(--page-bg) 90%, transparent);
     backdrop-filter: blur(18px) saturate(1.2);
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
   }
-  .site-header::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 100vw;
-    height: 1px;
-    transform: translateX(-50%);
-    background: color-mix(in srgb, var(--border-color) 75%, transparent);
-    pointer-events: none;
-  }
   .logo { font-size: 1rem; letter-spacing: -.035em; }
-  .header-actions { gap: .5rem; }
   .page { padding-top: 18px; }
-  .breadcrumb { margin-top: 0 !important; margin-bottom: 14px !important; line-height: 1.25; }
+  .breadcrumb { line-height: 1.25; }
 
   .global-search-form {
-    width: min(330px, 34vw);
     min-height: var(--control-height);
     border-radius: 14px;
     box-shadow: none;
@@ -5322,11 +5336,6 @@ box-shadow: 0 0 0 6px var(--page-bg);
   .accent-options button:hover { background:var(--surface-soft); }
   .accent-options button.is-active { border-color:var(--heading-color); }
   .accent-swatch { width:18px; height:18px; border-radius:6px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.09); }
-  .accent-swatch.earth { background:#855f46; }
-  .accent-swatch.ocean { background:#456f9d; }
-  .accent-swatch.forest { background:#587566; }
-  .accent-swatch.plum { background:#78647e; }
-  .accent-swatch.clay { background:#a05f50; }
   .floating-theme-toggle { display:none !important; }
 
   /* A lighter, contemporary surface language used across legacy pages too. */
@@ -5348,21 +5357,16 @@ box-shadow: 0 0 0 6px var(--page-bg);
   .button.secondary { box-shadow:none; }
 
   @media (max-width:760px) {
-    .site-header { width: min(100% - 20px, var(--content-max)); min-height:58px; padding:7px 0; }
     .global-search-form { width:100%; border-radius:12px; }
     .global-menu { right:0; }
     .theme-options button span { display:none; }
     .page { padding-top: 12px; }
   }
-</style>
 
-<style is:global>
   .search-close-icon { display:none; }
   .global-search-submit.is-close .search-open-icon { display:none; }
   .global-search-submit.is-close .search-close-icon { display:inline-flex; }
-</style>
 
-<style is:global>
   /* Bibli visual system v4 — consistent shell, responsive controls and accent semantics. */
   html, body { max-width:100%; overflow-x:clip; }
   *, *::before, *::after { box-sizing:border-box; }
@@ -5457,9 +5461,7 @@ box-shadow: 0 0 0 6px var(--page-bg);
     .global-menu { top:calc(100% + 8px); right:0; }
     .global-search-popover { top:68px; left:10px; right:10px; width:auto; }
   }
-</style>
 
-<style is:global>
   /* Lucide icon guardrails: keep shell controls on the shared SVG icon system. */
   .global-search-submit::before,
   .global-search-submit::after,
@@ -5505,9 +5507,7 @@ box-shadow: 0 0 0 6px var(--page-bg);
     color:var(--heading-color) !important;
     border-color:var(--border-strong) !important;
   }
-</style>
 
-<style is:global>
   /* Bibli interaction & accessibility layer — shared by every page. */
   html {
     scrollbar-gutter: stable;
@@ -5600,4 +5600,68 @@ box-shadow: 0 0 0 6px var(--page-bg);
   html[data-reader-align="justify"] [data-reader-content] { text-align:justify; text-justify:inter-word; }
   [data-reader-content] { transition:font-size 140ms ease; }
   @media (prefers-reduced-motion: reduce) { [data-reader-content] { transition:none; } }
+
+  /* Responsive safety layer — intentionally last in the cascade. */
+  img, video { max-width:100%; height:auto; }
+  @media (max-width:760px) {
+    .site-header { min-height:60px; }
+    .global-search-toggle,
+    .language-switch,
+    .theme-quick-toggle,
+    .menu-toggle { width:44px; min-width:44px; height:44px; }
+    .global-menu { max-height:calc(100dvh - 76px); overflow-y:auto; overscroll-behavior:contain; padding-bottom:max(10px,env(safe-area-inset-bottom)); }
+    .global-search-popover { max-height:calc(100dvh - 78px); }
+  }
+
+
+  .connection-status {
+    position: fixed;
+    top: max(78px, calc(env(safe-area-inset-top) + 68px));
+    left: 50%;
+    z-index: 140;
+    display: inline-flex;
+    max-width: min(calc(100% - 24px), 620px);
+    min-height: 42px;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--surface-elevated);
+    color: var(--text-color);
+    box-shadow: var(--shadow-md);
+    font-size: .86rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+    transform: translateX(-50%);
+  }
+
+  .connection-status[hidden] { display: none !important; }
+
+  .connection-status-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .connection-status.is-online {
+    border-color: var(--accent-border);
+  }
+
+  .connection-status.is-online .connection-status-dot {
+    background: var(--accent);
+  }
+
+  @media (max-width: 700px) {
+    .connection-status {
+      top: max(70px, calc(env(safe-area-inset-top) + 62px));
+      width: max-content;
+      max-width: calc(100% - 20px);
+      border-radius: var(--radius-md);
+      font-size: .82rem;
+    }
+  }
 </style>

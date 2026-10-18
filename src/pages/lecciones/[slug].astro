@@ -428,14 +428,19 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     });
     aidsClose?.addEventListener("click", () => { setAids(false, false); aidsToggle?.focus(); });
     aidsBackdrop?.addEventListener("click", () => { setAids(false, false); aidsToggle?.focus(); });
-    tocToggle?.addEventListener("click", () => setToc(document.documentElement.dataset.lessonToc !== "visible"));
-    tocClose?.addEventListener("click", () => setToc(false));
-    tocBackdrop?.addEventListener("click", () => setToc(false));
+    tocToggle?.addEventListener("click", () => {
+      const nextVisible = document.documentElement.dataset.lessonToc !== "visible";
+      setToc(nextVisible);
+      if (nextVisible && tocMedia.matches) requestAnimationFrame(() => tocClose?.focus());
+    });
+    tocClose?.addEventListener("click", () => { setToc(false, false); tocToggle?.focus(); });
+    tocBackdrop?.addEventListener("click", () => { setToc(false, false); tocToggle?.focus(); });
 
-    function setRoutesPopover(open: boolean) {
+    function setRoutesPopover(open: boolean, returnFocus = false) {
       if (!routesPopover || !routesToggle) return;
       routesPopover.hidden = !open;
       routesToggle.setAttribute("aria-expanded", String(open));
+      if (!open && returnFocus) routesToggle.focus();
     }
     routesToggle?.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -448,7 +453,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     });
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
-      setRoutesPopover(false);
+      if (routesPopover && !routesPopover.hidden) setRoutesPopover(false, true);
       if (aidsMedia.matches && document.documentElement.dataset.studyAids === "visible") { setAids(false, false); aidsToggle?.focus(); }
       if (tocMedia.matches && document.documentElement.dataset.lessonToc === "visible") { setToc(false, false); tocToggle?.focus(); }
     });
@@ -903,5 +908,21 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 
   @media(prefers-reduced-motion:reduce){
     .back-to-top { transition:none; }
+  }
+</style>
+
+<style>
+  /* Responsive safety layer: dynamic viewport units, safe areas and touch targets. */
+  @media(max-width:920px){
+    html[data-lesson-toc="visible"] .lesson-toc-column { height:100dvh; max-height:100dvh; padding-top:max(.75rem,env(safe-area-inset-top)); padding-bottom:max(.75rem,env(safe-area-inset-bottom)); overflow:auto; overscroll-behavior:contain; }
+    html[data-lesson-toc="visible"] .lesson-toc-card { max-height:calc(100dvh - 1.5rem); }
+    .toc-close { width:44px; height:44px; }
+    .lesson-routes-popover { max-height:calc(100dvh - 94px); overscroll-behavior:contain; }
+    html[data-lesson-mode="study"][data-study-aids="visible"] .aids-column { height:100dvh; max-height:100dvh; padding-top:calc(58px + env(safe-area-inset-top)); padding-bottom:max(18px,env(safe-area-inset-bottom)); overscroll-behavior:contain; }
+    .aids-mobile-close { top:max(12px,env(safe-area-inset-top)); width:44px; height:44px; }
+  }
+  @media(max-width:620px){
+    .back-to-top { width:44px; height:44px; bottom:70px; }
+    .step-button.icon-only,.routes-toggle { width:42px; min-height:42px; }
   }
 </style>

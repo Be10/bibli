@@ -98,6 +98,26 @@ if (!fs.existsSync(catalogFilterPath)) {
 }
 
 
+const routeDetailPath = path.join(root, "src", "pages", "rutas", "[slug].astro");
+if (!fs.existsSync(routeDetailPath)) {
+  problems.push("falta src/pages/rutas/[slug].astro");
+} else {
+  const routeDetail = fs.readFileSync(routeDetailPath, "utf8");
+  for (const token of ["moduleText", "data-route-filter-empty", "[data-route-lesson-id][hidden]"]) {
+    if (!routeDetail.includes(token)) problems.push(`rutas/[slug].astro: falta guardrail de filtro (${token})`);
+  }
+}
+
+const lessonIndexPath = path.join(root, "src", "pages", "lecciones", "index.astro");
+if (!fs.existsSync(lessonIndexPath)) {
+  problems.push("falta src/pages/lecciones/index.astro");
+} else {
+  const lessonIndex = fs.readFileSync(lessonIndexPath, "utf8");
+  for (const token of ["moduleText", "routeText", "data-lesson-filter-empty", "[data-lesson-id][hidden]"]) {
+    if (!lessonIndex.includes(token)) problems.push(`lecciones/index.astro: falta guardrail de filtro (${token})`);
+  }
+}
+
 const readerPreferencesPath = path.join(root, "src", "components", "ReaderPreferences.astro");
 if (!fs.existsSync(readerPreferencesPath)) {
   problems.push("falta src/components/ReaderPreferences.astro");
@@ -118,6 +138,16 @@ if (!fs.existsSync(globalTtsPath)) {
   }
 }
 
+const notFoundPath = path.join(root, "src", "pages", "404.astro");
+if (!fs.existsSync(notFoundPath)) {
+  problems.push("falta src/pages/404.astro");
+} else {
+  const notFound = fs.readFileSync(notFoundPath, "utf8");
+  for (const token of ["BaseLayout", "sitePath", "/buscar/", "/explorar/", "/es/biblia/", "/rutas/", "/en/", 'robots="noindex, follow"']) {
+    if (!notFound.includes(token)) problems.push(`404.astro: falta recuperación requerida (${token})`);
+  }
+}
+
 const pwaRequiredFiles = [
   "src/pages/manifest.webmanifest.ts",
   "src/pages/sw.js.ts",
@@ -131,6 +161,17 @@ const pwaRequiredFiles = [
 for (const requiredFile of pwaRequiredFiles) {
   if (!fs.existsSync(path.join(root, requiredFile))) {
     problems.push(`falta el archivo PWA requerido: ${requiredFile}`);
+  }
+}
+
+const offlineFallbackPath = path.join(root, "src", "pages", "offline.astro");
+if (fs.existsSync(offlineFallbackPath)) {
+  const offlineFallback = fs.readFileSync(offlineFallbackPath, "utf8");
+  for (const token of ["viewport-fit=cover", "data-offline-copy", "/descargar/", "/en/download/", "bibli-accent", "bibli-theme"]) {
+    if (!offlineFallback.includes(token)) problems.push(`offline.astro: falta soporte requerido (${token})`);
+  }
+  if (offlineFallback.includes("fase posterior")) {
+    problems.push("offline.astro: conserva texto obsoleto sobre paquetes offline futuros");
   }
 }
 
@@ -157,6 +198,12 @@ if (fs.existsSync(serviceWorkerPath)) {
 const baseLayoutPath = path.join(root, "src", "layouts", "BaseLayout.astro");
 if (fs.existsSync(baseLayoutPath)) {
   const baseLayout = fs.readFileSync(baseLayoutPath, "utf8");
+  if (!baseLayout.includes("viewport-fit=cover")) {
+    problems.push("BaseLayout.astro: el viewport debe conservar viewport-fit=cover para safe areas");
+  }
+  if (!baseLayout.includes('name="robots"') || !baseLayout.includes("robots?: string")) {
+    problems.push("BaseLayout.astro: falta soporte opcional de robots para páginas especiales");
+  }
   if (!baseLayout.includes("/manifest.webmanifest")) {
     problems.push("BaseLayout.astro: falta el enlace al manifest PWA");
   }
@@ -171,6 +218,12 @@ if (fs.existsSync(baseLayoutPath)) {
   }
   if (!baseLayout.includes("/descargar/") || !baseLayout.includes("/en/download/")) {
     problems.push("BaseLayout.astro: falta navegación hacia paquetes offline ES/EN");
+  }
+  if (!baseLayout.includes('lang === "es" ? sitePath("/en/") : sitePath("/")')) {
+    problems.push("BaseLayout.astro: el cambio de idioma sin equivalente debe volver a las portadas ES/EN");
+  }
+  for (const token of ["data-connection-status", "navigator.onLine", "addEventListener(\"offline\"", "addEventListener(\"online\""]) {
+    if (!baseLayout.includes(token)) problems.push(`BaseLayout.astro: falta estado global de conexión (${token})`);
   }
 }
 

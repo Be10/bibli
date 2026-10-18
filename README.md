@@ -74,7 +74,7 @@ La interfaz es responsive y está diseñada para escritorio y móvil. El progres
 
 Bibli incluye una base PWA instalable: `manifest.webmanifest`, iconos propios, `service worker` y una página de contingencia offline. El service worker usa una estrategia conservadora: las navegaciones intentan primero la red y guardan las páginas visitadas; los assets locales se reutilizan desde caché cuando están disponibles.
 
-Esta capa permite instalar Bibli y volver a abrir contenido ya visitado sin conexión. La descarga selectiva de paquetes completos de Biblia, lecciones e imágenes por idioma/versión sigue siendo una fase posterior y no debe confundirse con esta caché básica.
+Esta capa permite instalar Bibli y volver a abrir contenido ya visitado sin conexión. Además, el gestor de paquetes de `/descargar/` y `/en/download/` permite guardar explícitamente la aplicación, las lecciones/rutas y cada versión bíblica disponible; la caché automática de páginas visitadas y los paquetes descargados se administran por separado.
 
 ## Comandos principales
 

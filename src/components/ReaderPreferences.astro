@@ -55,7 +55,7 @@ const copy = lang === "en"
     <span>{copy.label}</span>
   </button>
 
-  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel hidden>
+  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel role="dialog" aria-label={copy.label} hidden>
     <div class="reader-pref-group">
       <span>{copy.size}</span>
       <div class="reader-pref-options" role="group" aria-label={copy.size}>
@@ -192,21 +192,21 @@ const copy = lang === "en"
 
 <style>
   .reader-preferences { position:relative; flex:0 0 auto; }
-  .reader-preferences-toggle { min-height:40px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .72rem; border:1px solid var(--border-color); border-radius:10px; background:var(--surface); color:var(--text-color); font:inherit; font-size:.78rem; font-weight:760; cursor:pointer; }
+  .reader-preferences-toggle { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .72rem; border:1px solid var(--border-color); border-radius:10px; background:var(--surface); color:var(--text-color); font:inherit; font-size:.78rem; font-weight:760; cursor:pointer; }
   .reader-preferences-toggle:hover,.reader-preferences-toggle[aria-expanded="true"] { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
   .reader-preferences.is-compact .reader-preferences-toggle span { display:none; }
-  .reader-preferences.is-compact .reader-preferences-toggle { width:38px; min-height:38px; padding:0; }
+  .reader-preferences.is-compact .reader-preferences-toggle { width:44px; min-height:44px; padding:0; }
   .reader-preferences-panel { position:absolute; z-index:80; top:calc(100% + 8px); right:0; width:min(310px,calc(100vw - 28px)); display:grid; gap:.85rem; padding:.9rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface-elevated); box-shadow:var(--shadow-md); }
   .reader-preferences-panel[hidden] { display:none !important; }
   .reader-pref-group { display:grid; gap:.4rem; }
   .reader-pref-group > span { color:var(--text-muted); font-size:.68rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
   .reader-pref-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem; padding:.25rem; border-radius:11px; background:var(--surface-soft); }
-  .reader-pref-options button { min-height:36px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
+  .reader-pref-options button { min-height:40px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
   .reader-pref-options button:hover { background:color-mix(in srgb,var(--surface) 72%,transparent); color:var(--heading-color); }
   .reader-pref-options button.is-active { background:var(--surface); color:var(--accent); box-shadow:0 1px 5px rgba(0,0,0,.08); }
   .reader-font-options button,.reader-align-options button { font-size:.7rem; }
   .reader-font-options button[data-reader-font-choice="serif"] { font-family:Georgia,"Times New Roman",serif; }
-  .reader-pref-reset { min-height:36px; border:1px solid var(--border-color); border-radius:9px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
+  .reader-pref-reset { min-height:40px; border:1px solid var(--border-color); border-radius:9px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
   .reader-pref-reset:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-soft); }
-  @media(max-width:600px){ .reader-preferences-toggle span{display:none}.reader-preferences-toggle{width:40px;padding:0}.reader-preferences-panel{position:fixed;top:auto;right:10px;bottom:10px;left:10px;width:auto} }
+  @media(max-width:600px){ .reader-preferences-toggle span{display:none}.reader-preferences-toggle{width:44px;padding:0}.reader-preferences-panel{position:fixed;z-index:160;top:auto;right:10px;bottom:max(10px,env(safe-area-inset-bottom));left:10px;width:auto;max-height:calc(100dvh - 20px);overflow:auto;overscroll-behavior:contain} }
 </style>

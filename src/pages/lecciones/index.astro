@@ -27,9 +27,11 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
           autocomplete="off"
           data-lesson-filter
         />
-        <span data-lesson-filter-count>{totalUnique} lecciones</span>
+        <span data-lesson-filter-count aria-live="polite">{totalUnique} lecciones</span>
       </label>
     </section>
+
+    <p class="lesson-filter-empty" data-lesson-filter-empty hidden>No hay lecciones que coincidan con esta búsqueda.</p>
 
     {sections.map(({ route, modules, lessons }) => (
       <section class="route-section" data-route-section>
@@ -81,6 +83,7 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
 
   const filterInput = document.querySelector<HTMLInputElement>("[data-lesson-filter]");
   const filterCount = document.querySelector<HTMLElement>("[data-lesson-filter-count]");
+  const filterEmpty = document.querySelector<HTMLElement>("[data-lesson-filter-empty]");
   const moduleBlocks = [...document.querySelectorAll<HTMLElement>("[data-lesson-module]")];
   const routeSections = [...document.querySelectorAll<HTMLElement>("[data-route-section]")];
   const normalize = (value: string) =>
@@ -90,7 +93,12 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
     const query = normalize(filterInput?.value || "");
     let visibleCount = 0;
     lessonCards.forEach((card) => {
-      const matches = !query || normalize(card.textContent || "").includes(query);
+      const module = card.closest<HTMLElement>("[data-lesson-module]");
+      const route = card.closest<HTMLElement>("[data-route-section]");
+      const moduleText = normalize(module?.querySelector(".lesson-module-header")?.textContent || "");
+      const routeText = normalize(route?.querySelector(":scope > header")?.textContent || "");
+      const cardText = normalize(card.textContent || "");
+      const matches = !query || cardText.includes(query) || moduleText.includes(query) || routeText.includes(query);
       card.hidden = !matches;
       if (matches) visibleCount += 1;
     });
@@ -103,6 +111,7 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
     if (filterCount) {
       filterCount.textContent = query ? `${visibleCount} de ${lessonCards.length} lecciones` : `${lessonCards.length} lecciones`;
     }
+    if (filterEmpty) filterEmpty.hidden = !query || visibleCount > 0;
   }
 
   filterInput?.addEventListener("input", applyLessonFilter);
@@ -151,5 +160,7 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
   .is-complete .completion-state .pending { display:none; }
   .is-complete .completion-state .done { display:grid; color:var(--accent); }
   [data-lesson-id]:not([data-progress-ready]) .completion-state { visibility:hidden; }
+  [data-lesson-id][hidden], [data-lesson-module][hidden], [data-route-section][hidden], .lesson-filter-empty[hidden] { display:none !important; }
+  .lesson-filter-empty { margin:.9rem 0 0; padding:1rem; border:1px dashed var(--border-color); border-radius:14px; background:var(--surface-soft); color:var(--text-muted); text-align:center; font-size:.86rem; }
   @media(max-width:650px){ .lesson-index-page{padding:10px .7rem 3rem;} .lesson-index-header{align-items:flex-start;flex-direction:column;padding:.8rem 0 1rem;} .lesson-index-tools{top:66px;margin-inline:-.1rem;padding:.45rem;border-radius:13px;} .lesson-filter>span:last-child{display:none;} .route-section{border-radius:15px;} .route-section>header{flex-direction:column;} .lesson-module-header{grid-template-columns:auto 1fr;padding:.65rem .85rem;} .module-count{grid-column:2;} .lesson-catalog-card{grid-template-columns:2rem minmax(0,1fr) 1.8rem;padding:.5rem .85rem;} .lesson-copy strong{font-size:.94rem;} }
 </style>

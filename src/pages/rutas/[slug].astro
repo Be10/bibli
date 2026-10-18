@@ -66,9 +66,11 @@ const lessonIds = lessons.map((lesson) => lesson.id);
           autocomplete="off"
           data-route-filter
         />
-        <span class="route-filter-count" data-route-filter-count>{lessons.length} lecciones</span>
+        <span class="route-filter-count" data-route-filter-count aria-live="polite">{lessons.length} lecciones</span>
       </label>
     </section>
+
+    <p class="route-filter-empty" data-route-filter-empty hidden>No hay lecciones que coincidan con esta búsqueda.</p>
 
     <div class="module-stack">
       {modules.map((module, moduleIndex) => {
@@ -146,6 +148,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
     }
     const filterInput = shell.querySelector<HTMLInputElement>("[data-route-filter]");
     const filterCount = shell.querySelector<HTMLElement>("[data-route-filter-count]");
+    const filterEmpty = shell.querySelector<HTMLElement>("[data-route-filter-empty]");
     const moduleCards = [...shell.querySelectorAll<HTMLElement>("[data-module-card]")];
     const moduleJumpLinks = [...shell.querySelectorAll<HTMLAnchorElement>("[data-module-jump]")];
 
@@ -158,10 +161,12 @@ const lessonIds = lessons.map((lesson) => lesson.id);
 
       moduleCards.forEach((module) => {
         const rows = [...module.querySelectorAll<HTMLElement>("[data-route-lesson-id]")];
+        const moduleText = normalize(module.querySelector(".module-header")?.textContent || "");
         let visibleInModule = 0;
 
         rows.forEach((row) => {
-          const matches = !query || normalize(row.textContent || "").includes(query);
+          const rowText = normalize(row.textContent || "");
+          const matches = !query || rowText.includes(query) || moduleText.includes(query);
           row.hidden = !matches;
           if (matches) { visibleLessons += 1; visibleInModule += 1; }
         });
@@ -176,6 +181,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
           ? `${visibleLessons} de ${ids.length} lecciones`
           : `${ids.length} lecciones`;
       }
+      if (filterEmpty) filterEmpty.hidden = !query || visibleLessons > 0;
     }
 
     filterInput?.addEventListener("input", filterLessons);
@@ -255,6 +261,8 @@ const lessonIds = lessons.map((lesson) => lesson.id);
   .lesson-main strong { color:var(--heading-color); line-height:1.3; }
   .lesson-main small { color:var(--text-muted); font-size:.78rem; }
   .lesson-state { width:30px; height:30px; display:grid; place-items:center; border-radius:10px; color:var(--text-muted); transition:background-color 150ms ease,color 150ms ease; }
+  [data-route-lesson-id][hidden], [data-module-card][hidden], [data-module-jump][hidden], .route-filter-empty[hidden] { display:none !important; }
+  .route-filter-empty { margin:1rem 0 0; padding:1rem; border:1px dashed var(--border-color); border-radius:14px; background:var(--surface-soft); color:var(--text-muted); text-align:center; font-size:.86rem; }
   .state-complete { display:none; }
   .is-complete .state-pending { display:none; }
   .is-complete .state-complete { display:grid; color:var(--accent); }
