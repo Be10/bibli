@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
 import {
   getAllBooks,
   getAllEvents,
@@ -11,6 +12,7 @@ import {
   getAllPlaces,
   getAllRoutes,
   getAllTopics,
+  getAllVisualResources,
 } from "../../lib/queries";
 
 const routesCount = getAllRoutes().filter((item) => item.status !== "Borrador").length;
@@ -22,13 +24,15 @@ const topicsCount = getAllTopics().filter((item) => item.status !== "Borrador").
 const peopleCount = getAllPeople().filter((item) => item.status !== "Borrador").length;
 const placesCount = getAllPlaces().filter((item) => item.status !== "Borrador").length;
 const glossaryCount = getAllGlossaryTerms().filter((item) => item.status !== "Borrador").length;
+const resourcesCount = getAllVisualResources().filter((item) => item.status !== "Borrador").length;
 
 const featuredItems = [
   {
     title: "Búsqueda avanzada",
     eyebrow: "Consulta rápida",
+    icon: "search" as const,
     description:
-      "Busca libros, pasajes, versículos, personajes, lugares, eventos, temas, glosario y lecciones desde un solo lugar.",
+      "Busca Biblia, lecciones, rutas, recursos, libros, pasajes, personajes, lugares, eventos, temas y glosario desde un solo lugar.",
     count: "Índice local",
     url: sitePath("/buscar/"),
     primary: true,
@@ -36,6 +40,7 @@ const featuredItems = [
   {
     title: "Leer la Biblia",
     eyebrow: "RVR1960",
+    icon: "book" as const,
     description:
       "Navega por libros, capítulos y versículos de la versión bíblica objetivo del proyecto.",
     count: `${booksCount} libros`,
@@ -45,9 +50,10 @@ const featuredItems = [
   {
     title: "Recursos visuales",
     eyebrow: "Mapas y cronología",
+    icon: "map" as const,
     description:
       "Accede al mapa bíblico, línea de tiempo, lugares, eventos y recursos visuales futuros.",
-    count: `${placesCount + eventsCount} conexiones`,
+    count: `${resourcesCount} recursos`,
     url: sitePath("/recursos/"),
     primary: false,
   },
@@ -58,8 +64,8 @@ const guidedItems = [
     title: "Ruta principal",
     count: `${routesCount} ruta`,
     description:
-      "Sigue el panorama visual de la Biblia desde creación hasta nueva creación.",
-    url: sitePath("/rutas/panorama-visual-de-la-biblia/"),
+      "Avanza por una ruta progresiva desde la creación, el pacto y la formación del pueblo de Dios.",
+    url: sitePath("/rutas/de-la-creacion-al-pacto/"),
   },
   {
     title: "Lecciones",
@@ -198,12 +204,27 @@ const projectItems = [
 
       <aside class="explore-hero-card" aria-label="Resumen del contenido">
         <span>Contenido conectado</span>
-        <strong>{booksCount + passagesCount + lessonsCount + eventsCount + peopleCount + placesCount + topicsCount + glossaryCount}</strong>
+        <strong>{booksCount + passagesCount + lessonsCount + routesCount + resourcesCount + eventsCount + peopleCount + placesCount + topicsCount + glossaryCount}</strong>
         <p>
           Elementos editoriales, bíblicos y visuales disponibles.
         </p>
       </aside>
     </section>
+
+    <form class="explore-search" action={sitePath("/buscar/")} method="get" role="search">
+      <div class="explore-search-field">
+        <Icon name="search" size={18} />
+        <label class="sr-only" for="explore-search-input">Buscar en todo Bibli</label>
+        <input
+          id="explore-search-input"
+          type="search"
+          name="q"
+          placeholder="Biblia, lecciones, rutas, recursos, personajes…"
+          autocomplete="off"
+        />
+      </div>
+      <button type="submit" class="button">Buscar en todo Bibli</button>
+    </form>
 
     <section class="explore-feature-grid" aria-label="Accesos principales">
       {featuredItems.map((item) => (
@@ -214,6 +235,7 @@ const projectItems = [
             item.primary ? "is-primary" : "",
           ]}
         >
+          <div class="feature-icon"><Icon name={item.icon} size={19} /></div>
           <span>{item.eyebrow}</span>
           <strong>{item.title}</strong>
           <p>{item.description}</p>
@@ -352,8 +374,8 @@ const projectItems = [
   .explore-hero-card,
   .explore-feature-card,
   .explore-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .explore-hero-card {
@@ -361,15 +383,15 @@ const projectItems = [
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .explore-hero-card span,
   .explore-feature-card span,
   .explore-feature-card small,
   .explore-count {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -377,7 +399,7 @@ const projectItems = [
   }
 
   .explore-hero-card strong {
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -386,9 +408,46 @@ const projectItems = [
   .explore-feature-card p,
   .explore-card p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
+
+  .explore-search {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    margin-top:24px;
+    padding:.6rem;
+    border:1px solid var(--border-color);
+    border-radius:18px;
+    background:var(--surface);
+    box-shadow:var(--shadow-sm);
+  }
+
+  .explore-search-field {
+    min-width:0;
+    flex:1;
+    min-height:46px;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    padding:0 .8rem;
+    border-radius:13px;
+    background:var(--surface-soft);
+    color:var(--accent);
+  }
+
+  .explore-search-field input {
+    width:100%;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--heading-color);
+    font:inherit;
+  }
+
+  .explore-search-field input::placeholder { color:var(--text-muted); }
 
   .explore-feature-grid {
     display: grid;
@@ -403,7 +462,7 @@ const projectItems = [
     min-height: 210px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
+    background: var(--surface);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -412,18 +471,18 @@ const projectItems = [
   }
 
   .explore-feature-card.is-primary {
-    background: #fff7e8;
+    background: var(--accent-soft);
   }
 
   .explore-feature-card:hover,
   .explore-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--border-strong);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .explore-feature-card strong {
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.25rem;
     line-height: 1.3;
   }
@@ -449,7 +508,7 @@ const projectItems = [
     min-height: 190px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-elevated);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -459,7 +518,7 @@ const projectItems = [
 
   .explore-card h3 {
     margin: 0;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.1rem;
     line-height: 1.3;
   }
@@ -467,34 +526,34 @@ const projectItems = [
   :global(html[data-theme="dark"]) .explore-hero-card,
   :global(html[data-theme="dark"]) .explore-feature-card,
   :global(html[data-theme="dark"]) .explore-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .explore-feature-card.is-primary,
   :global(html[data-theme="dark"]) .explore-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface-soft);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .explore-hero-card span,
   :global(html[data-theme="dark"]) .explore-feature-card span,
   :global(html[data-theme="dark"]) .explore-feature-card small,
   :global(html[data-theme="dark"]) .explore-count {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .explore-hero-card strong,
   :global(html[data-theme="dark"]) .explore-feature-card strong,
   :global(html[data-theme="dark"]) .explore-card h3 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .explore-hero-card p,
   :global(html[data-theme="dark"]) .explore-feature-card p,
   :global(html[data-theme="dark"]) .explore-card p {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   @media (max-width: 960px) {
@@ -509,6 +568,9 @@ const projectItems = [
   }
 
   @media (max-width: 640px) {
+    .explore-search { align-items:stretch; flex-direction:column; }
+    .explore-search .button { width:100%; }
+
     .explore-feature-grid,
     .explore-grid,
     .project-grid {
@@ -522,4 +584,37 @@ const projectItems = [
       padding: 18px;
     }
   }
+</style>
+<style>
+  /* Explore v3 */
+  .explore-page { padding-top:14px; }
+  .explore-hero { gap:22px; align-items:center; padding:clamp(1.5rem,3vw,2.4rem); border-radius:22px; background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent-soft) 26%,var(--surface))); }
+  .explore-hero h1 { letter-spacing:-.055em; }
+  .explore-hero-card,.explore-feature-card,.explore-card { border-color:var(--border-color); background:var(--surface); box-shadow:0 8px 26px rgba(15, 23, 42, .035); }
+  .explore-hero-card { border-radius:17px; padding:1.15rem; }
+  .explore-hero-card span,.explore-feature-card span,.explore-feature-card small,.explore-count { color:var(--accent); }
+  .explore-hero-card strong,.explore-feature-card strong,.explore-card h3 { color:var(--heading-color); }
+  .explore-hero-card p,.explore-feature-card p,.explore-card p { color:var(--text-muted); }
+  .explore-feature-grid { gap:.8rem; margin-top:.9rem; }
+  .explore-feature-card { min-height:190px; padding:1.15rem; border-radius:17px; }
+  .explore-feature-card.is-primary { background:color-mix(in srgb,var(--accent-soft) 40%,var(--surface)); }
+  .feature-icon { width:38px; height:38px; display:grid; place-items:center; border-radius:11px; background:var(--accent-soft); color:var(--accent); margin-bottom:.2rem; }
+  .explore-grid { gap:.8rem; }
+  .explore-card { min-height:165px; padding:1.05rem; border-radius:16px; }
+  .explore-feature-card:hover,.explore-card:hover { border-color:color-mix(in srgb,var(--accent) 42%,var(--border-color)); box-shadow:var(--shadow-sm); }
+  :global(html[data-theme="dark"]) .explore-hero-card,
+  :global(html[data-theme="dark"]) .explore-feature-card,
+  :global(html[data-theme="dark"]) .explore-section,
+  :global(html[data-theme="dark"]) .explore-card { background:var(--surface); border-color:var(--border-color); box-shadow:0 10px 28px rgba(0,0,0,.16); }
+  :global(html[data-theme="dark"]) .explore-feature-card.is-primary { background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface)); }
+  :global(html[data-theme="dark"]) .explore-hero-card span,
+  :global(html[data-theme="dark"]) .explore-feature-card span,
+  :global(html[data-theme="dark"]) .explore-feature-card small,
+  :global(html[data-theme="dark"]) .explore-count { color:var(--accent); }
+  :global(html[data-theme="dark"]) .explore-hero-card strong,
+  :global(html[data-theme="dark"]) .explore-feature-card strong,
+  :global(html[data-theme="dark"]) .explore-card h3 { color:var(--heading-color); }
+  :global(html[data-theme="dark"]) .explore-hero-card p,
+  :global(html[data-theme="dark"]) .explore-feature-card p,
+  :global(html[data-theme="dark"]) .explore-card p { color:var(--text-muted); }
 </style>

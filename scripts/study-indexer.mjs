@@ -61,6 +61,59 @@ function resolveModule(route, lessonNumber, lessonId) {
   });
 }
 
+function configuredRangeEnd(route) {
+  return Math.max(
+    0,
+    ...(route?.modules || [])
+      .map((module) => module.lesson_number_range)
+      .filter((range) => Array.isArray(range) && range.length === 2 && Number.isInteger(range[1]))
+      .map((range) => range[1]),
+  );
+}
+
+function buildEffectiveRoute(route, documents) {
+  const modules = (route.modules || []).map((module) => ({ ...module }));
+  const routeView = { ...route, modules };
+  const unresolved = documents
+    .filter((document) => document.fm.route_id === route.id)
+    .filter((document) => !resolveModule(routeView, document.fm.route_lesson_number, document.fm.lesson_id))
+    .sort((a, b) => a.fm.route_lesson_number - b.fm.route_lesson_number);
+
+  if (unresolved.length === 0) return routeView;
+
+  const auto = route.auto_append_module;
+  if (auto?.enabled !== true) {
+    const first = unresolved[0];
+    throw new Error(`${first.relativePath}: la lección no pertenece a ningún módulo de ${route.id}`);
+  }
+
+  const start = configuredRangeEnd(routeView) + 1;
+  let expected = start;
+  for (const document of unresolved) {
+    if (document.fm.route_lesson_number !== expected) {
+      throw new Error(
+        `${document.relativePath}: la cola automática de ${route.id} debe ser continua; se esperaba route_lesson_number ${expected} y se encontró ${document.fm.route_lesson_number}`
+      );
+    }
+    expected += 1;
+  }
+
+  const end = unresolved[unresolved.length - 1].fm.route_lesson_number;
+  const position = Math.max(0, ...modules.map((module) => Number(module.position) || 0)) + 1;
+  modules.push({
+    id: auto.id || `${route.id}-continuacion-auto`,
+    title: auto.title || 'Continuación de la ruta',
+    slug: auto.slug || 'continuacion-de-la-ruta',
+    description: auto.description || 'Lecciones nuevas incorporadas automáticamente y pendientes de agrupación editorial definitiva.',
+    position,
+    status: auto.status || 'Publicado',
+    lesson_number_range: [start, end],
+    auto_generated: true,
+  });
+
+  return routeView;
+}
+
 function stablePassageId(bookId, reference) {
   const digest = crypto.createHash("sha256").update(`${bookId}:${normalizeBibleReference(reference)}`).digest("hex").slice(0, 14);
   return `pas-study-${digest}`;
@@ -116,12 +169,9 @@ export function indexStudies(db, options = {}) {
     return { filePath, relativePath, parsed, fm, title: parsed.h1[0] };
   });
 
-  const routeById = new Map(routesConfig.routes.map((route) => [route.id, route]));
+  const effectiveRoutes = routesConfig.routes.map((route) => buildEffectiveRoute(route, documents));
+  const routeById = new Map(effectiveRoutes.map((route) => [route.id, route]));
   const knownBooks = new Set(db.prepare("SELECT id FROM books").all().map((row) => row.id));
-  const passageRows = db.prepare("SELECT id, book_id, display_reference FROM passages").all();
-  const passageByKey = new Map(
-    passageRows.map((row) => [`${row.book_id}::${normalizeBibleReference(row.display_reference)}`, row.id])
-  );
 
   const tx = db.transaction(() => {
     for (const table of [
@@ -137,6 +187,14 @@ export function indexStudies(db, options = {}) {
         AND id NOT IN (SELECT passage_id FROM event_passages)
     `).run();
 
+    // Rebuild the lookup after deleting generated study passages. Building this
+    // map before cleanup leaves stale pas-study-* IDs that no longer exist and
+    // causes lesson_passages foreign-key failures on subsequent imports.
+    const passageRows = db.prepare("SELECT id, book_id, display_reference FROM passages").all();
+    const passageByKey = new Map(
+      passageRows.map((row) => [`${row.book_id}::${normalizeBibleReference(row.display_reference)}`, row.id])
+    );
+
     const insertRoute = db.prepare(`
       INSERT INTO routes (id, title, slug, subtitle, description, level, estimated_duration, language, status)
       VALUES (@id, @title, @slug, @subtitle, @description, @level, NULL, @language, @status)
@@ -146,7 +204,7 @@ export function indexStudies(db, options = {}) {
       VALUES (@id, @route_id, @title, @slug, @description, @position, @status)
     `);
 
-    for (const route of routesConfig.routes) {
+    for (const route of effectiveRoutes) {
       insertRoute.run({
         id: route.id,
         title: route.title,
@@ -250,7 +308,7 @@ export function indexStudies(db, options = {}) {
 
     // A canonical lesson may participate in additional routes without duplicating
     // its Markdown. Secondary routes declare explicit lesson_ids per module.
-    for (const route of routesConfig.routes) {
+    for (const route of effectiveRoutes) {
       let routePosition = 1;
       for (const module of [...(route.modules || [])].sort((a, b) => a.position - b.position)) {
         if (!Array.isArray(module.lesson_ids)) continue;
@@ -269,7 +327,7 @@ export function indexStudies(db, options = {}) {
       }
     }
 
-    for (const route of routesConfig.routes) {
+    for (const route of effectiveRoutes) {
       const row = db.prepare(`
         SELECT COUNT(*) AS lessons, COALESCE(SUM(study_lessons.estimated_minutes), 0) AS minutes
         FROM route_lessons
@@ -285,7 +343,7 @@ export function indexStudies(db, options = {}) {
 
   return {
     lessons: documents.length,
-    routes: routesConfig.routes.length,
-    modules: routesConfig.routes.reduce((sum, route) => sum + (route.modules?.length || 0), 0),
+    routes: effectiveRoutes.length,
+    modules: effectiveRoutes.reduce((sum, route) => sum + (route.modules?.length || 0), 0),
   };
 }

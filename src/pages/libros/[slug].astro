@@ -56,6 +56,7 @@ const abbreviationLabel = book.abbreviation ?? "Pendiente";
 const testamentLabel = book.testament;
 const bibleVersionId =
   getDefaultBibleVersionId("es");
+const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(book.name)}`;
 ---
 
 <BaseLayout
@@ -102,6 +103,10 @@ const bibleVersionId =
               Ver pasajes
             </a>
           )}
+
+          <a href={searchUrl} class="button secondary">
+            Buscar conexiones
+          </a>
         </div>
       </div>
 
@@ -335,7 +340,7 @@ const bibleVersionId =
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -352,8 +357,8 @@ const bibleVersionId =
   .book-lesson-card,
   .book-event-card,
   .book-chapter-link {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .book-hero-card {
@@ -361,8 +366,8 @@ const bibleVersionId =
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .book-hero-card span,
@@ -370,7 +375,7 @@ const bibleVersionId =
   .book-passage-card span,
   .book-lesson-card span,
   .book-event-card span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -378,7 +383,7 @@ const bibleVersionId =
   }
 
   .book-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 2.4rem;
     line-height: 1;
   }
@@ -387,7 +392,7 @@ const bibleVersionId =
   .book-summary-card p,
   .book-empty-section p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -401,7 +406,7 @@ const bibleVersionId =
   .book-meta-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .book-meta-card span {
@@ -411,7 +416,7 @@ const bibleVersionId =
 
   .book-meta-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.2rem;
     line-height: 1.3;
     overflow-wrap: anywhere;
@@ -420,7 +425,7 @@ const bibleVersionId =
   .book-summary-card {
     padding: 26px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .book-summary-card p {
@@ -442,8 +447,8 @@ const bibleVersionId =
     justify-content: center;
     padding: 0 12px;
     border-radius: 16px;
-    background: #fffaf0;
-    color: #5d3212;
+    background: var(--surface-soft);
+    color: var(--accent);
     font-weight: 900;
     text-decoration: none;
     transition:
@@ -454,8 +459,8 @@ const bibleVersionId =
 
   .book-chapter-link:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .book-passages-grid,
@@ -475,7 +480,7 @@ const bibleVersionId =
     min-height: 190px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -487,14 +492,14 @@ const bibleVersionId =
   .book-lesson-card:hover,
   .book-event-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .book-passage-card strong,
   .book-lesson-card strong,
   .book-event-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.12rem;
     line-height: 1.35;
   }
@@ -502,7 +507,7 @@ const bibleVersionId =
   .book-passage-card small,
   .book-lesson-card small,
   .book-event-card small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
   }
@@ -519,9 +524,9 @@ const bibleVersionId =
     width: fit-content;
     padding: 6px 9px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.76rem;
     font-style: normal;
     font-weight: 900;
@@ -543,8 +548,8 @@ const bibleVersionId =
   :global(html[data-theme="dark"]) .book-events-section,
   :global(html[data-theme="dark"]) .book-empty-section,
   :global(html[data-theme="dark"]) .book-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
@@ -553,8 +558,8 @@ const bibleVersionId =
   :global(html[data-theme="dark"]) .book-passage-card,
   :global(html[data-theme="dark"]) .book-lesson-card,
   :global(html[data-theme="dark"]) .book-event-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .book-hero-card span,
@@ -563,7 +568,7 @@ const bibleVersionId =
   :global(html[data-theme="dark"]) .book-lesson-card span,
   :global(html[data-theme="dark"]) .book-event-card span,
   :global(html[data-theme="dark"]) .book-chapter-link {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .book-hero-card strong,
@@ -571,7 +576,7 @@ const bibleVersionId =
   :global(html[data-theme="dark"]) .book-passage-card strong,
   :global(html[data-theme="dark"]) .book-lesson-card strong,
   :global(html[data-theme="dark"]) .book-event-card strong {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .book-hero-card p,
@@ -580,13 +585,13 @@ const bibleVersionId =
   :global(html[data-theme="dark"]) .book-passage-card small,
   :global(html[data-theme="dark"]) .book-lesson-card small,
   :global(html[data-theme="dark"]) .book-event-card small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .book-card-badges em {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #f3d6ad;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent-hover);
   }
 
   @media (max-width: 860px) {

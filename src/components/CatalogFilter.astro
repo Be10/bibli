@@ -1,0 +1,192 @@
+---
+import Icon from "./Icon.astro";
+import { sitePath } from "../lib/site-paths";
+
+type Props = {
+  total: number;
+  placeholder?: string;
+  label?: string;
+  noun?: string;
+  lang?: "es" | "en";
+};
+
+const {
+  total,
+  placeholder = "Buscar en este catálogo…",
+  label = "Buscar en el catálogo",
+  noun = "resultados",
+  lang = "es",
+} = Astro.props;
+
+const copy = lang === "en"
+  ? {
+      clear: "Clear search",
+      global: "Search all Bibli",
+      emptyTitle: "No results",
+      emptyBody: "Try another name, reference, or keyword.",
+    }
+  : {
+      clear: "Limpiar búsqueda",
+      global: "Buscar en todo Bibli",
+      emptyTitle: "Sin resultados",
+      emptyBody: "Prueba con otro nombre, referencia o palabra clave.",
+    };
+
+const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/buscar/");
+---
+
+<div
+  class="catalog-filter"
+  data-catalog-filter
+  data-catalog-total={total}
+  data-catalog-noun={noun}
+  data-global-search-base={globalSearchUrl}
+>
+  <div class="catalog-filter-search">
+    <Icon name="search" size={17} />
+    <input
+      type="search"
+      placeholder={placeholder}
+      autocomplete="off"
+      spellcheck="false"
+      data-catalog-search
+      aria-label={label}
+    />
+    <button type="button" class="catalog-filter-clear" data-catalog-clear hidden aria-label={copy.clear}>
+      <Icon name="close" size={15} />
+    </button>
+  </div>
+
+  <div class="catalog-filter-meta">
+    <p class="catalog-filter-status" aria-live="polite" aria-atomic="true">
+      <strong data-catalog-visible-count>{total}</strong>
+      <span data-catalog-status-label>{noun}</span>
+    </p>
+
+    <a href={globalSearchUrl} class="catalog-filter-global" data-catalog-global-search hidden>
+      {copy.global}
+      <Icon name="arrow-right" size={14} />
+    </a>
+  </div>
+</div>
+
+<div class="catalog-empty" data-catalog-empty hidden>
+  <Icon name="search" size={20} />
+  <div>
+    <strong>{copy.emptyTitle}</strong>
+    <span>{copy.emptyBody}</span>
+    <a href={globalSearchUrl} data-catalog-empty-global>{copy.global}</a>
+  </div>
+</div>
+
+<script>
+  const normalizeCatalogText = (value: string) => value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("es")
+    .trim();
+
+  document.querySelectorAll<HTMLElement>("[data-catalog-filter]").forEach((filter) => {
+    if (filter.dataset.ready === "true") return;
+    const root = filter.closest<HTMLElement>("[data-catalog-root]");
+    if (!root) return;
+
+    const input = filter.querySelector<HTMLInputElement>("[data-catalog-search]");
+    const clear = filter.querySelector<HTMLButtonElement>("[data-catalog-clear]");
+    const count = filter.querySelector<HTMLElement>("[data-catalog-visible-count]");
+    const globalSearch = filter.querySelector<HTMLAnchorElement>("[data-catalog-global-search]");
+    const empty = root.querySelector<HTMLElement>("[data-catalog-empty]");
+    const emptyGlobalSearch = root.querySelector<HTMLAnchorElement>("[data-catalog-empty-global]");
+    const items = [...root.querySelectorAll<HTMLElement>("[data-catalog-item]")];
+    const groups = [...root.querySelectorAll<HTMLElement>("[data-catalog-group]")];
+    const navLinks = [...root.querySelectorAll<HTMLElement>("[data-catalog-nav-target]")];
+
+    const update = () => {
+      const query = normalizeCatalogText(input?.value ?? "");
+      const tokens = query.split(/\s+/).filter(Boolean);
+      let visible = 0;
+
+      items.forEach((item) => {
+        const haystack = normalizeCatalogText(item.dataset.catalogSearch || item.textContent || "");
+        const matches = tokens.length === 0 || tokens.every((token) => haystack.includes(token));
+        item.hidden = !matches;
+        if (matches) visible += 1;
+      });
+
+      groups.forEach((group) => {
+        group.hidden = query.length > 0 && !group.querySelector("[data-catalog-item]:not([hidden])");
+      });
+
+      navLinks.forEach((link) => {
+        const targetId = link.dataset.catalogNavTarget;
+        const target = targetId ? root.querySelector<HTMLElement>(`#${CSS.escape(targetId)}`) : null;
+        link.hidden = query.length > 0 && Boolean(target?.hidden);
+      });
+
+      if (count) count.textContent = String(visible);
+      if (empty) empty.hidden = visible !== 0;
+      if (clear) clear.hidden = query.length === 0;
+
+      const rawQuery = input?.value.trim() ?? "";
+      const globalBase = filter.dataset.globalSearchBase || "/buscar/";
+      const globalUrl = new URL(globalBase, window.location.origin);
+      if (rawQuery) globalUrl.searchParams.set("q", rawQuery);
+      const globalHref = `${globalUrl.pathname}${globalUrl.search}`;
+
+      if (globalSearch) {
+        globalSearch.href = globalHref;
+        globalSearch.hidden = query.length === 0;
+      }
+      if (emptyGlobalSearch) emptyGlobalSearch.href = globalHref;
+
+      filter.dataset.queryActive = query.length > 0 ? "true" : "false";
+    };
+
+    input?.addEventListener("input", update);
+    input?.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && input.value) {
+        input.value = "";
+        update();
+      }
+    });
+    clear?.addEventListener("click", () => {
+      if (!input) return;
+      input.value = "";
+      update();
+      input.focus();
+    });
+
+    filter.dataset.ready = "true";
+    update();
+  });
+</script>
+
+<style>
+  .catalog-filter { margin:1rem 0 1.25rem; display:flex; align-items:center; gap:.8rem; padding:.55rem; border:1px solid var(--border-color); border-radius:15px; background:var(--surface); box-shadow:var(--shadow-sm); }
+  .catalog-filter-search { min-width:0; flex:1; min-height:44px; display:flex; align-items:center; gap:.55rem; padding:0 .65rem; border:1px solid transparent; border-radius:11px; background:var(--surface-soft); color:var(--text-muted); transition:border-color 140ms ease,box-shadow 140ms ease,background-color 140ms ease; }
+  .catalog-filter-search:focus-within { border-color:var(--accent-border); background:var(--surface); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent); }
+  .catalog-filter-search .bibli-icon { flex:0 0 auto; color:var(--accent); }
+  .catalog-filter-search input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--heading-color); font:inherit; font-size:.88rem; }
+  .catalog-filter-search input::placeholder { color:var(--text-muted); }
+  .catalog-filter-clear { width:30px; height:30px; flex:0 0 auto; display:grid; place-items:center; border:0; border-radius:9px; background:transparent; color:var(--text-muted); cursor:pointer; }
+  .catalog-filter-clear:hover { background:var(--accent-soft); color:var(--accent); }
+  .catalog-filter-meta { min-width:125px; display:grid; justify-items:end; gap:.18rem; }
+  .catalog-filter-status { margin:0; display:flex; align-items:baseline; justify-content:center; gap:.32rem; color:var(--text-muted); font-size:.72rem; white-space:nowrap; }
+  .catalog-filter-global { display:inline-flex; align-items:center; gap:.25rem; color:var(--accent); font-size:.68rem; font-weight:800; text-decoration:none; white-space:nowrap; }
+  .catalog-filter-global:hover { text-decoration:underline; }
+  .catalog-filter-global[hidden] { display:none !important; }
+  .catalog-filter-status strong { color:var(--heading-color); font-size:.92rem; font-variant-numeric:tabular-nums; }
+  .catalog-empty { margin:1rem 0 0; min-height:110px; display:flex; align-items:center; justify-content:center; gap:.75rem; padding:1rem; border:1px dashed var(--border-strong); border-radius:15px; background:var(--surface-soft); color:var(--text-muted); text-align:left; }
+  .catalog-empty .bibli-icon { color:var(--accent); }
+  .catalog-empty div { display:grid; gap:.12rem; }
+  .catalog-empty strong { color:var(--heading-color); font-size:.9rem; }
+  .catalog-empty span { font-size:.78rem; }
+  .catalog-empty a { width:max-content; margin-top:.18rem; color:var(--accent); font-size:.75rem; font-weight:800; text-decoration:none; }
+  .catalog-empty a:hover { text-decoration:underline; }
+  :global([data-catalog-item][hidden]),:global([data-catalog-group][hidden]),:global([data-catalog-nav-target][hidden]) { display:none !important; }
+  @media(max-width:620px){
+    .catalog-filter { align-items:stretch; flex-direction:column; gap:.4rem; }
+    .catalog-filter-meta { min-width:0; width:100%; justify-items:start; padding:0 .2rem .1rem; }
+    .catalog-filter-status { justify-content:flex-start; }
+  }
+</style>

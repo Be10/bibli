@@ -70,6 +70,12 @@ Las ayudas pueden ocultarse y admiten Glosario, Personajes, Lugares, mapas, Tema
 
 La interfaz es responsive y está diseñada para escritorio y móvil. El progreso se calcula a partir de lecciones realmente marcadas como completadas, no por la posición editorial de una lección.
 
+## PWA y uso sin conexión
+
+Bibli incluye una base PWA instalable: `manifest.webmanifest`, iconos propios, `service worker` y una página de contingencia offline. El service worker usa una estrategia conservadora: las navegaciones intentan primero la red y guardan las páginas visitadas; los assets locales se reutilizan desde caché cuando están disponibles.
+
+Esta capa permite instalar Bibli y volver a abrir contenido ya visitado sin conexión. La descarga selectiva de paquetes completos de Biblia, lecciones e imágenes por idioma/versión sigue siendo una fase posterior y no debe confundirse con esta caché básica.
+
 ## Comandos principales
 
 Instalar dependencias:
@@ -96,10 +102,22 @@ Importar/reindexar rutas y lecciones en SQLite:
 npm run studies:import
 ```
 
-Sincronizar + validar + importar:
+Sincronizar + validar + importar + mostrar estado editorial:
 
 ```bash
 npm run studies:refresh
+```
+
+Consultar el estado editorial de las lecciones y detectar módulos provisionales:
+
+```bash
+npm run studies:status
+```
+
+Validar guardrails de UI (iconos, búsqueda, referencias eliminadas y paleta legacy):
+
+```bash
+npm run ui:validate
 ```
 
 Compilar producción:
@@ -112,6 +130,7 @@ npm run build
 
 ```text
 repo:validate
+→ ui:validate
 → studies:validate
 → studies:import
 → db:validate
@@ -188,7 +207,31 @@ bibli-language            selección explícita de idioma
 bibli-learning-progress-v1 progreso local de aprendizaje
 bibli-lesson-mode-v1      study | reading
 bibli-study-aids-v1       visible | hidden
+bibli-reader-size-v1       default | small | large
+bibli-reader-font-v1       default | sans | serif
+bibli-reader-align-v1      default | left | justify
+bibli-tts-rate-v1          0.75 | 1 | 1.25 | 1.5
+bibli-tts-voice-es-v1      voz preferida del navegador para español
+bibli-tts-voice-en-v1      voz preferida del navegador para inglés
 ```
+
+## Lectura y texto a voz
+
+Las lecciones y los capítulos bíblicos comparten preferencias de lectura por dispositivo. El valor `default` conserva la presentación editorial original; tamaño, tipografía y alineación solo cambian cuando el usuario los selecciona explícitamente.
+
+Bibli incluye además un reproductor global de texto a voz basado en `SpeechSynthesis`: lee la Biblia por versículo y las lecciones por fragmentos/párrafos, permite pausar, avanzar, retroceder, ajustar velocidad y conservar una voz preferida por idioma. No genera ni almacena archivos de audio. La disponibilidad offline de voces depende de las voces instaladas por el navegador o sistema operativo.
+
+## Paquetes sin conexión
+
+La PWA dispone de una base offline automática para páginas visitadas y de un gestor explícito de paquetes en `/descargar/` y `/en/download/`. Los paquetes se almacenan con Cache Storage únicamente en el dispositivo actual:
+
+- `Aplicación Bibli`: shell y páginas principales.
+- `Lecciones y rutas`: todas las lecciones oficiales y sus rutas publicadas.
+- `Biblia`: un paquete independiente por versión bíblica disponible.
+
+Cada paquete puede descargarse, actualizarse o eliminarse de forma independiente. Durante la descarga también se guardan los recursos locales enlazados por las páginas (CSS, JavaScript, fuentes e imágenes locales). El service worker conserva estos caches durante sus propias actualizaciones.
+
+El navegador puede liberar almacenamiento local bajo presión de espacio; por eso la interfaz muestra el consumo estimado y no debe considerarse Cache Storage como copia de respaldo editorial.
 
 ## Despliegue
 

@@ -142,6 +142,11 @@ try {
     expectedDb.exec(fs.readFileSync(schemaPath, "utf8"));
     expectedDb.exec(fs.readFileSync(seedPath, "utf8"));
     expectedDb.exec(fs.readFileSync(editorialPath, "utf8"));
+
+    // Import twice to verify that study indexing is idempotent. This catches
+    // stale generated-passage references that only surface on a refresh over
+    // an already indexed database.
+    indexStudies(expectedDb, { rootDir });
     indexStudies(expectedDb, { rootDir });
 
     const tables = expectedDb.prepare(`

@@ -9,6 +9,7 @@ import {
 
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
 import BibleVersionSwitcher from "../../../../../components/BibleVersionSwitcher.astro";
+import ReaderPreferences from "../../../../../components/ReaderPreferences.astro";
 
 import {
   getAllBooksByLanguage,
@@ -109,14 +110,19 @@ const spanishVersionId =
   getDefaultBibleVersionId("es");
 const availableVersions =
   getBibleVersionsByLanguage("en");
+const localizedCopyrightNotice =
+  version.id === "kjv"
+    ? "King James Version, 1769 edition. Public domain."
+    : version.copyright_notice;
 
+const searchUrl = `${sitePath("/en/search/")}?q=${encodeURIComponent(chapterReference)}`;
 ---
 
 <BaseLayout
   lang="en"
   alternateLanguage={{
     code: "es",
-    label: "Español",
+    label: "Spanish",
     href: getBibleChapterPath(
       "es",
       getDefaultBibleVersionId("es"),
@@ -198,7 +204,12 @@ const availableVersions =
             )}
             class="button secondary"
           >
-            Leer en Español
+            Read in Spanish
+          </a>
+
+
+          <a href={searchUrl} class="button secondary">
+            Search Bible
           </a>
         </div>
       </div>
@@ -243,6 +254,35 @@ const availableVersions =
       </article>
     </section>
 
+    <nav class="bible-chapter-jump" aria-label="Go to another chapter">
+      <a
+        href={previousChapter
+          ? getBibleChapterPath("en", version.id, book.usfm_code, previousChapter.chapter_number)
+          : getBibleBookPath("en", version.id, book.usfm_code)}
+        class:list={["bible-chapter-jump-button", !previousChapter && "is-disabled"]}
+        aria-disabled={!previousChapter ? "true" : undefined}
+      >←</a>
+
+      <label for="chapter-jump-select">Chapter</label>
+      <select id="chapter-jump-select" data-chapter-jump>
+        {chapters.map((item) => (
+          <option
+            value={getBibleChapterPath("en", version.id, book.usfm_code, item.chapter_number)}
+            selected={item.chapter_number === currentChapterNumber}
+          >{item.chapter_number}</option>
+        ))}
+      </select>
+
+      <a
+        href={nextChapter
+          ? getBibleChapterPath("en", version.id, book.usfm_code, nextChapter.chapter_number)
+          : getBibleBookPath("en", version.id, book.usfm_code)}
+        class:list={["bible-chapter-jump-button", !nextChapter && "is-disabled"]}
+        aria-disabled={!nextChapter ? "true" : undefined}
+      >→</a>
+      <ReaderPreferences lang="en" compact />
+    </nav>
+
     <section
       class="section bible-chapter-reader-section"
       id="reading"
@@ -261,7 +301,7 @@ const availableVersions =
 
       {verses.length > 0 ? (
         <div class="bible-chapter-reader-card">
-          <div class="bible-reader">
+          <div class="bible-reader" data-reader-content>
             {verses.map((verse) => (
               <article
                 class="verse bible-chapter-verse"
@@ -360,11 +400,11 @@ const availableVersions =
       </nav>
     </section>
 
-    {version.copyright_notice && (
+    {localizedCopyrightNotice && (
       <section
         class="copyright-box bible-chapter-copyright-box"
       >
-        {version.copyright_notice}
+        {localizedCopyrightNotice}
       </section>
     )}
 
@@ -396,13 +436,32 @@ const availableVersions =
         )}
         class="button"
       >
-        Español
+        Spanish
       </a>
     </section>
   </main>
 </BaseLayout>
 
+<script>
+  document.querySelectorAll<HTMLSelectElement>("[data-chapter-jump]").forEach((select) => {
+    select.addEventListener("change", () => {
+      if (select.value) window.location.href = select.value;
+    });
+  });
+</script>
+
 <style>
+  .bible-chapter-jump {
+    position:sticky; top:calc(var(--header-height,72px) + 10px); z-index:12; width:max-content; max-width:100%;
+    display:flex; align-items:center; gap:.45rem; margin:24px auto 0; padding:.45rem; border:1px solid var(--border-color);
+    border-radius:14px; background:color-mix(in srgb,var(--surface) 92%,transparent); box-shadow:var(--shadow-sm); backdrop-filter:blur(12px);
+  }
+  .bible-chapter-jump label { color:var(--text-muted); font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+  .bible-chapter-jump select { min-width:74px; min-height:36px; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--heading-color); padding:0 .55rem; font:inherit; font-weight:800; }
+  .bible-chapter-jump-button { width:36px; height:36px; display:grid; place-items:center; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--accent); text-decoration:none; font-weight:900; }
+  .bible-chapter-jump-button:hover { border-color:var(--accent-border); background:var(--accent-soft); }
+  .bible-chapter-jump-button.is-disabled { pointer-events:none; opacity:.38; }
+
   .bible-chapter-hero {
     position: relative;
     display: grid;
@@ -420,7 +479,7 @@ const availableVersions =
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -435,8 +494,8 @@ const availableVersions =
   .bible-chapter-reader-card,
   .bible-chapter-empty-card,
   .bible-chapter-nav-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .bible-chapter-hero-card {
@@ -444,14 +503,14 @@ const availableVersions =
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface-elevated);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .bible-chapter-hero-card span,
   .bible-chapter-meta-card span,
   .bible-chapter-nav-card span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -459,7 +518,7 @@ const availableVersions =
   }
 
   .bible-chapter-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -467,7 +526,7 @@ const availableVersions =
   .bible-chapter-hero-card p,
   .bible-chapter-empty-card p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -481,7 +540,7 @@ const availableVersions =
   .bible-chapter-meta-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface-elevated);
   }
 
   .bible-chapter-meta-card span {
@@ -491,7 +550,7 @@ const availableVersions =
 
   .bible-chapter-meta-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.16rem;
     line-height: 1.35;
     overflow-wrap: anywhere;
@@ -501,7 +560,7 @@ const availableVersions =
   .bible-chapter-empty-card {
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .bible-chapter-empty-card {
@@ -510,12 +569,12 @@ const availableVersions =
   }
 
   .bible-chapter-empty-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.1rem;
   }
 
   .bible-chapter-verse {
-    border-color: #eadcc4;
+    border-color: var(--border-color);
   }
 
   .bible-chapter-nav {
@@ -532,7 +591,7 @@ const availableVersions =
     min-height: 108px;
     padding: 20px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface-elevated);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -542,24 +601,24 @@ const availableVersions =
 
   a.bible-chapter-nav-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .bible-chapter-nav-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.08rem;
     line-height: 1.35;
   }
 
   .bible-chapter-nav-card.center {
     text-align: center;
-    background: #5d3212;
+    background: var(--accent);
   }
 
   .bible-chapter-nav-card.center span,
   .bible-chapter-nav-card.center strong {
-    color: #fffaf0;
+    color: var(--accent-contrast);
   }
 
   .bible-chapter-nav-card.next {
@@ -567,12 +626,12 @@ const availableVersions =
   }
 
   .bible-chapter-nav-card.disabled {
-    background: #f7efe2;
-    color: #7a6a58;
+    background: var(--surface-muted);
+    color: var(--text-muted);
   }
 
   .bible-chapter-nav-card.disabled strong {
-    color: #7a6a58;
+    color: var(--text-muted);
   }
 
   .bible-chapter-copyright-box {
@@ -590,16 +649,16 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-chapter-meta-card,
   :global(html[data-theme="dark"]) .bible-chapter-reader-section,
   :global(html[data-theme="dark"]) .bible-chapter-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-reader-card,
   :global(html[data-theme="dark"]) .bible-chapter-empty-card,
   :global(html[data-theme="dark"]) .bible-chapter-nav-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface-soft);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-hero-card span,
@@ -607,44 +666,44 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-chapter-nav-card span,
   :global(html[data-theme="dark"]) .verse-number,
   :global(html[data-theme="dark"]) .verse-ref-link {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-hero-card strong,
   :global(html[data-theme="dark"]) .bible-chapter-meta-card strong,
   :global(html[data-theme="dark"]) .bible-chapter-empty-card strong,
   :global(html[data-theme="dark"]) .bible-chapter-nav-card strong {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-hero-card p,
   :global(html[data-theme="dark"]) .bible-chapter-empty-card p,
   :global(html[data-theme="dark"]) .verse-text {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-verse {
-    border-color: #3a2a1d;
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.center {
-    background: #e9b872;
-    border-color: #e9b872;
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.center span,
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.center strong {
-    color: #1b120b;
+    color: var(--accent-contrast);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.disabled {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface-muted);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.disabled span,
   :global(html[data-theme="dark"]) .bible-chapter-nav-card.disabled strong {
-    color: #8f7b67;
+    color: var(--text-muted);
   }
 
   @media (max-width: 860px) {

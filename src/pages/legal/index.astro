@@ -1,45 +1,47 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getBibleVersionById } from "../../lib/queries";
+import Icon from "../../components/Icon.astro";
+import { getAllBibleVersions } from "../../lib/queries";
 
-import {
-  DEFAULT_BIBLE_VERSION_ABBREVIATION,
-  DEFAULT_BIBLE_VERSION_ID,
-} from "../../lib/bible-config";
-
-const version = getBibleVersionById(DEFAULT_BIBLE_VERSION_ID);
+const versions = getAllBibleVersions();
 
 const legalChecklist = [
   {
     title: "Uso web",
     description:
       "El contenido bíblico se muestra respetando el permiso, licencia o condición de uso aplicable a cada versión.",
+    icon: "globe" as const,
   },
   {
     title: "Texto completo",
     description:
       "El alcance de publicación de cada versión debe respetar las condiciones aplicables al texto completo, citas, extractos y referencias.",
+    icon: "book" as const,
   },
   {
     title: "Base de datos",
     description:
       "El almacenamiento técnico del texto bíblico en SQLite y artefactos de build debe mantenerse dentro del alcance de uso aplicable.",
+    icon: "layers" as const,
   },
   {
     title: "Repositorio",
     description:
       "Los archivos fuente restringidos de importación no se incluyen en Git ni en paquetes compartidos; permanecen fuera del repositorio público.",
+    icon: "library" as const,
   },
   {
     title: "Atribución",
     description:
       "Los avisos de copyright, atribución y condiciones requeridas se conservan junto a la información de cada versión.",
+    icon: "info" as const,
   },
   {
     title: "Publicación",
     description:
       "Los textos, imágenes, mapas y recursos de terceros deben conservar siempre su atribución y condiciones de uso correspondientes.",
+    icon: "check" as const,
   },
 ];
 
@@ -48,21 +50,25 @@ const resourceNotices = [
     title: "Mapas",
     description:
       "Los mapas pueden utilizar proveedores externos de teselas cartográficas. Cada proveedor puede tener sus propias condiciones de uso y atribución.",
+    icon: "map" as const,
   },
   {
     title: "Ubicaciones bíblicas",
     description:
       "Algunas ubicaciones bíblicas tienen grados distintos de certeza: alta, aproximada, debatida o simbólica. Bibli debe indicarlo cuando corresponda.",
+    icon: "compass" as const,
   },
   {
     title: "Línea de tiempo",
     description:
       "Las fechas bíblicas pueden ser aproximadas, debatidas o dependientes de criterios interpretativos. La línea de tiempo debe leerse como recurso educativo.",
+    icon: "timeline" as const,
   },
   {
     title: "Recursos visuales",
     description:
       "Imágenes, diagramas, ilustraciones e infografías deben tener autoría propia, licencia válida o fuente claramente permitida para uso web.",
+    icon: "image" as const,
   },
 ];
 ---
@@ -72,95 +78,72 @@ const resourceNotices = [
   description="Avisos legales, uso de contenido bíblico, recursos visuales y condiciones generales de la Biblioteca Bíblica."
 >
   <main class="page legal-page">
-    <div class="breadcrumb">
-      <a href={sitePath("/")}>Inicio</a> → Avisos legales
-    </div>
+    <div class="breadcrumb"><a href={sitePath("/")}>Inicio</a> → Avisos legales</div>
 
     <section class="hero legal-hero">
       <div class="legal-hero-content">
         <p class="eyebrow">Avisos legales</p>
-
         <h1>Avisos legales y uso de contenido</h1>
-
-        <p class="subtitle">
-          Información importante sobre el uso del texto bíblico, contenido editorial,
-          mapas, recursos visuales y materiales de terceros dentro de Biblioteca Bíblica.
-        </p>
-
+        <p class="subtitle">Información sobre el uso del texto bíblico, contenido editorial, mapas, recursos visuales y materiales de terceros dentro de Bibli.</p>
         <div class="actions">
-          <a href={sitePath("/es/biblia/")} class="button">
-            Leer la Biblia
-          </a>
-
-          <a href={sitePath("/recursos/")} class="button secondary">
-            Recursos visuales
-          </a>
-
-          <a href={sitePath("/acerca/")} class="button secondary">
-            Acerca de Bibli
-          </a>
+          <a href={sitePath("/es/biblia/")} class="button"><Icon name="bible" size={17} /> Leer la Biblia</a>
+          <a href={sitePath("/recursos/")} class="button secondary"><Icon name="image" size={17} /> Recursos visuales</a>
+          <a href={sitePath("/acerca/")} class="button secondary"><Icon name="info" size={17} /> Acerca de Bibli</a>
         </div>
       </div>
 
       <aside class="legal-hero-card" aria-label="Estado legal del proyecto">
-        <span>Estado</span>
-        <strong>Uso responsable</strong>
-        <p>
-          Esta página resume las condiciones generales de uso y atribución del contenido.
-        </p>
+        <span class="legal-card-icon"><Icon name="check" size={20} /></span>
+        <div><small>Estado</small><strong>Uso responsable</strong></div>
+        <p>Esta página resume criterios generales de uso, atribución y revisión del contenido.</p>
       </aside>
     </section>
 
-    <section class="section legal-section">
-      <div class="section-header">
-        <div>
-          <p class="eyebrow">Texto bíblico</p>
-          <h2>Versión objetivo: {version?.abbreviation ?? DEFAULT_BIBLE_VERSION_ABBREVIATION}</h2>
-        </div>
+    <nav class="legal-nav" aria-label="Secciones de avisos legales">
+      <a href="#texto-biblico">Texto bíblico</a>
+      <a href="#atribucion">Uso y atribución</a>
+      <a href="#contenido-editorial">Contenido editorial</a>
+      <a href="#recursos-terceros">Mapas y recursos</a>
+      <a href="#condiciones">Condiciones generales</a>
+    </nav>
 
-        <span class="section-count">
-          Información vigente
-        </span>
+    <section class="section legal-section" id="texto-biblico">
+      <div class="section-header">
+        <div><p class="eyebrow">Texto bíblico</p><h2>Versiones bíblicas configuradas</h2></div>
+        <span class="section-count">{versions.length} {versions.length === 1 ? "versión" : "versiones"}</span>
+      </div>
+
+      <div class="version-legal-grid">
+        {versions.map((version) => (
+          <article class="version-legal-card">
+            <div class="version-legal-head">
+              <span class="version-badge">{version.abbreviation}</span>
+              <span class="language-badge">{version.language.toUpperCase()}</span>
+            </div>
+            <h3>{version.name}</h3>
+            <p>{version.copyright_notice ?? "Sin aviso adicional configurado para mostrar."}</p>
+            {version.copyright_status && <dl><dt>Estado</dt><dd>{version.copyright_status}</dd></dl>}
+            {version.permission_scope && <dl><dt>Alcance</dt><dd>{version.permission_scope}</dd></dl>}
+            {version.license_notes && <dl><dt>Notas</dt><dd>{version.license_notes}</dd></dl>}
+          </article>
+        ))}
       </div>
 
       <div class="legal-notice-card">
-        <p>
-          Este proyecto está preparado para usar las versiones bíblicas:
-          ({version?.abbreviation ?? DEFAULT_BIBLE_VERSION_ABBREVIATION}).
-        </p>
-
-        {version?.copyright_notice ? (
-          <p>{version.copyright_notice}</p>
-        ) : (
-          <p>
-            Esta versión no tiene un aviso adicional configurado para mostrar en esta página.
-          </p>
-        )}
-
-        <p>
-          El texto bíblico completo debe publicarse únicamente conforme al permiso,
-          licencia o autorización correspondiente. Si el alcance del permiso cambia,
-          esta página debe actualizarse para reflejar las condiciones vigentes.
-        </p>
+        <Icon name="info" size={19} />
+        <p>El texto bíblico completo debe publicarse únicamente conforme al permiso, licencia o condición aplicable a cada versión. Si el alcance cambia, esta página debe actualizarse para reflejar las condiciones vigentes.</p>
       </div>
     </section>
 
-    <section class="section legal-section">
+    <section class="section legal-section" id="atribucion">
       <div class="section-header">
-        <div>
-          <p class="eyebrow">Validación previa</p>
-          <h2>Principios de uso y atribución</h2>
-        </div>
-
-        <span class="section-count">
-          {legalChecklist.length} puntos
-        </span>
+        <div><p class="eyebrow">Validación previa</p><h2>Principios de uso y atribución</h2></div>
+        <span class="section-count">{legalChecklist.length} puntos</span>
       </div>
-
       <div class="legal-checklist-grid">
         {legalChecklist.map((item) => (
           <article class="legal-checklist-card">
-            <span>Principio</span>
+            <span class="legal-card-icon"><Icon name={item.icon} size={19} /></span>
             <strong>{item.title}</strong>
             <p>{item.description}</p>
           </article>
@@ -168,52 +151,24 @@ const resourceNotices = [
       </div>
     </section>
 
-    <section class="section legal-section">
-      <div class="section-header">
-        <div>
-          <p class="eyebrow">Contenido editorial</p>
-          <h2>Material propio del proyecto</h2>
-        </div>
-      </div>
-
-      <div class="content">
-        <p>
-          Los resúmenes, lecciones, definiciones, fichas de personajes, eventos,
-          temas, lugares, rutas y materiales visuales son contenido editorial de la
-          Biblioteca Bíblica, salvo que se indique expresamente otra fuente.
-        </p>
-
-        <p>
-          El contenido tiene propósito educativo y de estudio bíblico. No sustituye
-          la lectura directa de la Biblia, la enseñanza pastoral ni el estudio
-          responsable de las Escrituras.
-        </p>
-
-        <p>
-          Las interpretaciones, síntesis y conexiones editoriales deben revisarse
-          antes de una publicación pública, especialmente cuando traten temas
-          debatidos, fechas aproximadas, lugares inciertos o relaciones históricas
-          complejas.
-        </p>
+    <section class="section legal-section" id="contenido-editorial">
+      <div class="section-header"><div><p class="eyebrow">Contenido editorial</p><h2>Material propio del proyecto</h2></div></div>
+      <div class="content legal-copy">
+        <p>Los resúmenes, lecciones, definiciones, fichas de personajes, eventos, temas, lugares, rutas y materiales visuales son contenido editorial de Biblioteca Bíblica, salvo que se indique expresamente otra fuente.</p>
+        <p>El contenido tiene propósito educativo y de estudio bíblico. No sustituye la lectura directa de la Biblia, la enseñanza pastoral ni el estudio responsable de las Escrituras.</p>
+        <p>Las interpretaciones, síntesis y conexiones editoriales deben revisarse antes de una publicación pública, especialmente cuando traten temas debatidos, fechas aproximadas, lugares inciertos o relaciones históricas complejas.</p>
       </div>
     </section>
 
-    <section class="section legal-section">
+    <section class="section legal-section" id="recursos-terceros">
       <div class="section-header">
-        <div>
-          <p class="eyebrow">Mapas y visualizaciones</p>
-          <h2>Recursos con atribución o incertidumbre</h2>
-        </div>
-
-        <span class="section-count">
-          {resourceNotices.length} áreas
-        </span>
+        <div><p class="eyebrow">Mapas y visualizaciones</p><h2>Recursos con atribución o incertidumbre</h2></div>
+        <span class="section-count">{resourceNotices.length} áreas</span>
       </div>
-
       <div class="legal-resource-grid">
         {resourceNotices.map((item) => (
           <article class="legal-resource-card">
-            <span>Aviso</span>
+            <span class="legal-card-icon"><Icon name={item.icon} size={19} /></span>
             <strong>{item.title}</strong>
             <p>{item.description}</p>
           </article>
@@ -221,59 +176,24 @@ const resourceNotices = [
       </div>
     </section>
 
-    <section class="section legal-section">
-      <div class="section-header">
-        <div>
-          <p class="eyebrow">Uso responsable</p>
-          <h2>Condiciones generales</h2>
-        </div>
-      </div>
-
+    <section class="section legal-section" id="condiciones">
+      <div class="section-header"><div><p class="eyebrow">Uso responsable</p><h2>Condiciones generales</h2></div></div>
       <ul class="legal-list">
-        <li>
-          No deben publicarse recursos visuales, imágenes, mapas, textos extensos o
-          materiales de terceros sin una fuente clara, permiso suficiente o licencia
-          compatible con el uso web del proyecto.
-        </li>
-
-        <li>
-          No debe compartirse públicamente el archivo de importación del texto bíblico
-          si contiene material restringido o sujeto a permiso específico.
-        </li>
-
-        <li>
-          Los datos geográficos, cronológicos y editoriales deben presentarse con
-          prudencia cuando exista incertidumbre académica, histórica o interpretativa.
-        </li>
-
-        <li>
-          Esta página debe actualizarse cuando se agreguen nuevas fuentes, recursos
-          visuales, condiciones de uso, atribuciones o permisos.
-        </li>
+        <li>No deben publicarse recursos visuales, imágenes, mapas, textos extensos o materiales de terceros sin una fuente clara, permiso suficiente o licencia compatible con el uso web del proyecto.</li>
+        <li>No debe compartirse públicamente el archivo de importación del texto bíblico si contiene material restringido o sujeto a permiso específico.</li>
+        <li>Los datos geográficos, cronológicos y editoriales deben presentarse con prudencia cuando exista incertidumbre académica, histórica o interpretativa.</li>
+        <li>Esta página debe actualizarse cuando se agreguen nuevas fuentes, recursos visuales, condiciones de uso, atribuciones o permisos.</li>
       </ul>
     </section>
 
     <section class="section legal-final-section">
       <div class="legal-final-card">
-        <div>
-          <p class="eyebrow">Documento en desarrollo</p>
-          <h2>Antes de publicar oficialmente</h2>
-        </div>
-
-        <p>
-          Esta página debe ser revisada antes de publicar el sitio oficialmente,
-          especialmente si se incorpora texto bíblico completo, recursos visuales
-          licenciados, mapas de terceros o materiales descargables.
-        </p>
-
+        <span class="legal-card-icon"><Icon name="check" size={20} /></span>
+        <div><p class="eyebrow">Revisión editorial</p><h2>Antes de una publicación oficial</h2></div>
+        <p>Conviene revisar esta página nuevamente cuando se incorpore una nueva versión bíblica, un proveedor cartográfico, recursos visuales licenciados o materiales descargables.</p>
         <div class="actions">
-          <a href={sitePath("/recursos/")} class="button secondary">
-            Ver recursos visuales
-          </a>
-
-          <a href={sitePath("/buscar/")} class="button">
-            Búsqueda avanzada
-          </a>
+          <a href={sitePath("/recursos/")} class="button secondary">Ver recursos visuales</a>
+          <a href={sitePath("/buscar/")} class="button">Búsqueda avanzada</a>
         </div>
       </div>
     </section>
@@ -281,196 +201,44 @@ const resourceNotices = [
 </BaseLayout>
 
 <style>
-  .legal-hero {
-    display: grid;
-    grid-template-columns: 1fr minmax(230px, 320px);
-    gap: 32px;
-    align-items: end;
-  }
-
-  .legal-hero-content,
-  .legal-hero-card {
-    position: relative;
-    z-index: 1;
-  }
-
-  .legal-hero-card,
-  .legal-notice-card,
-  .legal-checklist-card,
-  .legal-resource-card,
-  .legal-final-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
-  }
-
-  .legal-hero-card {
-    display: grid;
-    gap: 10px;
-    padding: 24px;
-    border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
-  }
-
-  .legal-hero-card span,
-  .legal-checklist-card span,
-  .legal-resource-card span {
-    color: #8a5a2b;
-    font-size: 0.76rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .legal-hero-card strong {
-    color: #2d2418;
-    font-size: 2rem;
-    line-height: 1;
-  }
-
-  .legal-hero-card p,
-  .legal-checklist-card p,
-  .legal-resource-card p,
-  .legal-final-card p,
-  .legal-notice-card p {
-    margin: 0;
-    color: #6a5c4d;
-    line-height: 1.7;
-  }
-
-  .legal-notice-card {
-    display: grid;
-    gap: 14px;
-    padding: 24px;
-    border-radius: 22px;
-    background: #fffaf0;
-  }
-
-  .legal-notice-card strong {
-    color: #2d2418;
-  }
-
-  .legal-checklist-grid,
-  .legal-resource-grid {
-    display: grid;
-    gap: 16px;
-  }
-
-  .legal-checklist-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .legal-resource-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .legal-checklist-card,
-  .legal-resource-card {
-    display: grid;
-    gap: 10px;
-    align-content: start;
-    min-height: 190px;
-    padding: 22px;
-    border-radius: 22px;
-    background: #fffaf0;
-  }
-
-  .legal-checklist-card strong,
-  .legal-resource-card strong {
-    color: #2d2418;
-    font-size: 1.08rem;
-    line-height: 1.35;
-  }
-
-  .legal-list {
-    display: grid;
-    gap: 14px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  .legal-list li {
-    padding: 18px;
-    border-radius: 18px;
-    background: #fffaf0;
-    border: 1px solid #eadcc4;
-    color: #6a5c4d;
-    line-height: 1.7;
-  }
-
-  .legal-final-card {
-    display: grid;
-    gap: 16px;
-    padding: 26px;
-    border-radius: 24px;
-    background: #fffaf0;
-  }
-
-  .legal-final-card h2 {
-    margin: 0;
-  }
-
-  :global(html[data-theme="dark"]) .legal-hero-card,
-  :global(html[data-theme="dark"]) .legal-section,
-  :global(html[data-theme="dark"]) .legal-final-section {
-    background: #18110c;
-    border-color: #3a2a1d;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-  }
-
-  :global(html[data-theme="dark"]) .legal-notice-card,
-  :global(html[data-theme="dark"]) .legal-checklist-card,
-  :global(html[data-theme="dark"]) .legal-resource-card,
-  :global(html[data-theme="dark"]) .legal-final-card,
-  :global(html[data-theme="dark"]) .legal-list li {
-    background: #21160e;
-    border-color: #3a2a1d;
-  }
-
-  :global(html[data-theme="dark"]) .legal-hero-card span,
-  :global(html[data-theme="dark"]) .legal-checklist-card span,
-  :global(html[data-theme="dark"]) .legal-resource-card span {
-    color: #e9b872;
-  }
-
-  :global(html[data-theme="dark"]) .legal-hero-card strong,
-  :global(html[data-theme="dark"]) .legal-notice-card strong,
-  :global(html[data-theme="dark"]) .legal-checklist-card strong,
-  :global(html[data-theme="dark"]) .legal-resource-card strong,
-  :global(html[data-theme="dark"]) .legal-final-card h2 {
-    color: #fff5e8;
-  }
-
-  :global(html[data-theme="dark"]) .legal-hero-card p,
-  :global(html[data-theme="dark"]) .legal-notice-card p,
-  :global(html[data-theme="dark"]) .legal-checklist-card p,
-  :global(html[data-theme="dark"]) .legal-resource-card p,
-  :global(html[data-theme="dark"]) .legal-final-card p,
-  :global(html[data-theme="dark"]) .legal-list li {
-    color: #d8c8b6;
-  }
-
-  @media (max-width: 960px) {
-    .legal-hero,
-    .legal-checklist-grid,
-    .legal-resource-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .legal-checklist-card,
-    .legal-resource-card {
-      min-height: auto;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .legal-hero-card,
-    .legal-notice-card,
-    .legal-checklist-card,
-    .legal-resource-card,
-    .legal-final-card {
-      padding: 18px;
-    }
-  }
+  .legal-hero { display:grid; grid-template-columns:1fr minmax(250px,330px); gap:2rem; align-items:end; }
+  .legal-hero-content,.legal-hero-card { position:relative; z-index:1; }
+  .legal-hero-card,.legal-notice-card,.legal-checklist-card,.legal-resource-card,.legal-final-card,.version-legal-card { border:1px solid var(--border-color); box-shadow:var(--shadow-sm); }
+  .legal-hero-card { display:grid; grid-template-columns:auto 1fr; gap:.8rem; padding:1.25rem; border-radius:22px; background:var(--surface); }
+  .legal-hero-card p { grid-column:1 / -1; }
+  .legal-hero-card div { display:grid; gap:.2rem; }
+  .legal-hero-card small { color:var(--text-muted); font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+  .legal-hero-card strong { color:var(--heading-color); font-size:1.35rem; }
+  .legal-card-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:var(--accent-soft); color:var(--accent); }
+  .legal-hero-card p,.legal-checklist-card p,.legal-resource-card p,.legal-final-card p,.version-legal-card p { margin:0; color:var(--text-muted); line-height:1.65; }
+  .legal-nav { position:sticky; top:calc(var(--header-height, 64px) + 8px); z-index:6; display:flex; gap:.5rem; overflow-x:auto; margin:1rem 0 0; padding:.55rem; border:1px solid var(--border-color); border-radius:16px; background:color-mix(in srgb,var(--surface-elevated) 94%,transparent); backdrop-filter:blur(14px); scrollbar-width:none; }
+  .legal-nav::-webkit-scrollbar { display:none; }
+  .legal-nav a { flex:0 0 auto; padding:.55rem .75rem; border-radius:10px; color:var(--text-muted); font-size:.82rem; font-weight:800; text-decoration:none; }
+  .legal-nav a:hover { background:var(--accent-soft); color:var(--accent); }
+  .version-legal-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+  .version-legal-card { display:grid; align-content:start; gap:.65rem; padding:1.1rem; border-radius:18px; background:var(--surface); }
+  .version-legal-head { display:flex; justify-content:space-between; align-items:center; gap:.75rem; }
+  .version-badge,.language-badge { display:inline-flex; align-items:center; min-height:28px; padding:.25rem .55rem; border-radius:999px; font-size:.74rem; font-weight:900; }
+  .version-badge { background:var(--accent-soft); color:var(--accent); }
+  .language-badge { background:var(--surface-soft); color:var(--text-muted); border:1px solid var(--border-color); }
+  .version-legal-card h3 { margin:0; color:var(--heading-color); font-size:1.08rem; }
+  .version-legal-card dl { display:grid; grid-template-columns:80px 1fr; gap:.4rem .7rem; margin:0; font-size:.84rem; }
+  .version-legal-card dt { color:var(--text-muted); font-weight:800; }
+  .version-legal-card dd { margin:0; color:var(--text-color); }
+  .legal-notice-card { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; margin-top:.8rem; padding:1rem; border-radius:16px; background:var(--surface-soft); color:var(--accent); }
+  .legal-notice-card p { color:var(--text-muted); }
+  .legal-checklist-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+  .legal-resource-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; }
+  .legal-checklist-card,.legal-resource-card { display:grid; align-content:start; gap:.7rem; min-height:190px; padding:1.1rem; border-radius:18px; background:var(--surface); }
+  .legal-checklist-card strong,.legal-resource-card strong { color:var(--heading-color); font-size:1.02rem; }
+  .legal-copy { columns:2 320px; column-gap:2rem; }
+  .legal-copy p { break-inside:avoid; }
+  .legal-list { display:grid; gap:.65rem; padding:0; margin:0; list-style:none; }
+  .legal-list li { position:relative; padding:1rem 1rem 1rem 2.5rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface); color:var(--text-muted); line-height:1.65; }
+  .legal-list li::before { content:"✓"; position:absolute; left:1rem; top:1rem; color:var(--accent); font-weight:900; }
+  .legal-final-card { display:grid; grid-template-columns:auto 1fr; gap:.75rem 1rem; padding:1.25rem; border-radius:20px; background:var(--surface-soft); }
+  .legal-final-card > p,.legal-final-card > .actions { grid-column:2; }
+  .legal-final-card h2 { margin:0; }
+  @media(max-width:960px){ .legal-hero,.legal-checklist-grid,.legal-resource-grid { grid-template-columns:1fr 1fr; } .legal-hero-content { grid-column:1 / -1; } }
+  @media(max-width:700px){ .version-legal-grid,.legal-checklist-grid,.legal-resource-grid { grid-template-columns:1fr; } .legal-copy { columns:1; } .legal-final-card { grid-template-columns:1fr; } .legal-final-card > p,.legal-final-card > .actions { grid-column:1; } }
 </style>

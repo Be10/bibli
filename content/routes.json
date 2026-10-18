@@ -17,7 +17,10 @@
           "slug": "creacion-caida-primeras-generaciones",
           "description": "Génesis 1–5: creación, vocación humana, caída, expansión del pecado y preservación de la esperanza.",
           "position": 1,
-          "lesson_number_range": [1, 5]
+          "lesson_number_range": [
+            1,
+            5
+          ]
         },
         {
           "id": "pentateuco-diluvio-naciones",
@@ -25,7 +28,10 @@
           "slug": "diluvio-pacto-naciones",
           "description": "Génesis 6–11: juicio, preservación, pacto con Noé, desarrollo de las naciones y Babel.",
           "position": 2,
-          "lesson_number_range": [6, 15]
+          "lesson_number_range": [
+            6,
+            15
+          ]
         },
         {
           "id": "pentateuco-abraham",
@@ -33,7 +39,10 @@
           "slug": "abraham-y-la-promesa",
           "description": "Génesis 12–25: llamado, fe, pacto, espera, provisión y continuidad de la promesa.",
           "position": 3,
-          "lesson_number_range": [16, 35]
+          "lesson_number_range": [
+            16,
+            35
+          ]
         },
         {
           "id": "pentateuco-isaac-jacob",
@@ -41,7 +50,10 @@
           "slug": "isaac-esau-jacob",
           "description": "Génesis 25–28: transición generacional, elección, conflicto, bendición y el encuentro de Jacob con Dios.",
           "position": 4,
-          "lesson_number_range": [36, 41]
+          "lesson_number_range": [
+            36,
+            41
+          ]
         },
         {
           "id": "pentateuco-jacob-haran-regreso",
@@ -49,9 +61,129 @@
           "slug": "jacob-haran-regreso",
           "description": "Génesis 29–33: familia, formación, conflictos, regreso, transformación y reconciliación.",
           "position": 5,
-          "lesson_number_range": [42, 50]
+          "lesson_number_range": [
+            42,
+            50
+          ]
+        },
+        {
+          "id": "pentateuco-jacob-canaan-transicion-jose",
+          "title": "Jacob en Canaán y la transición hacia José",
+          "slug": "jacob-canaan-transicion-jose",
+          "description": "Génesis 34–36: crisis en Siquem, renovación en Bet-el, transiciones familiares y la descendencia de Esaú antes del ciclo de José.",
+          "position": 6,
+          "lesson_number_range": [
+            51,
+            58
+          ]
+        },
+        {
+          "id": "pentateuco-jose-caida-exaltacion",
+          "title": "José: sueños, descenso y exaltación",
+          "slug": "jose-suenos-descenso-exaltacion",
+          "description": "Génesis 37–41: los sueños de José, su descenso a Egipto, fidelidad en la prueba y exaltación providencial ante la crisis.",
+          "position": 7,
+          "lesson_number_range": [
+            59,
+            65
+          ]
+        },
+        {
+          "id": "pentateuco-jose-hermanos-reconciliacion",
+          "title": "José y sus hermanos: prueba y reconciliación",
+          "slug": "jose-hermanos-prueba-reconciliacion",
+          "description": "Génesis 42–45: hambre, reencuentro, transformación de los hermanos, revelación de José y reconciliación familiar.",
+          "position": 8,
+          "lesson_number_range": [
+            66,
+            73
+          ]
+        },
+        {
+          "id": "pentateuco-israel-desciende-egipto",
+          "title": "Israel desciende a Egipto",
+          "slug": "israel-desciende-egipto",
+          "description": "Génesis 46–48: Jacob y su casa descienden a Egipto, la familia es preservada y la promesa continúa a través de nuevas generaciones.",
+          "position": 9,
+          "lesson_number_range": [
+            74,
+            80
+          ]
+        },
+        {
+          "id": "pentateuco-bendiciones-finales-genesis",
+          "title": "Bendiciones finales y cierre de Génesis",
+          "slug": "bendiciones-finales-cierre-genesis",
+          "description": "Génesis 49–50: bendiciones sobre las tribus, muerte de Jacob, reconciliación final y la esperanza de José en la promesa futura.",
+          "position": 10,
+          "lesson_number_range": [
+            81,
+            84
+          ]
+        },
+        {
+          "id": "pentateuco-israel-opresion-moises",
+          "title": "Israel bajo opresión y la preparación de Moisés",
+          "slug": "israel-opresion-preparacion-moises",
+          "description": "Éxodo 1–2: crecimiento de Israel, opresión de Faraón, nacimiento y preservación de Moisés, y el clamor del pueblo.",
+          "position": 11,
+          "lesson_number_range": [
+            85,
+            89
+          ]
+        },
+        {
+          "id": "pentateuco-llamado-moises",
+          "title": "El llamado y la comisión de Moisés",
+          "slug": "llamado-comision-moises",
+          "description": "Éxodo 3–4: Dios se revela, llama a Moisés, responde a sus objeciones y lo envía de regreso a Egipto.",
+          "position": 12,
+          "lesson_number_range": [
+            90,
+            95
+          ]
+        },
+        {
+          "id": "pentateuco-faraon-nombre-plagas",
+          "title": "Faraón, el nombre de Dios y el comienzo de las plagas",
+          "slug": "faraon-nombre-dios-comienzo-plagas",
+          "description": "Éxodo 5–7: primera confrontación con Faraón, reafirmación del pacto, comisión renovada y comienzo de las señales de juicio.",
+          "position": 13,
+          "lesson_number_range": [
+            96,
+            100
+          ]
+        },
+        {
+          "id": "pentateuco-plagas-egipto",
+          "title": "Las plagas sobre Egipto",
+          "slug": "plagas-sobre-egipto",
+          "description": "Éxodo 8–10: Jehová intensifica sus juicios sobre Egipto, distingue a su pueblo y confronta repetidamente la resistencia de Faraón.",
+          "position": 14,
+          "lesson_number_range": [
+            101,
+            108
+          ]
+        },
+        {
+          "id": "pentateuco-pascua-juicio-egipto",
+          "title": "La Pascua y el juicio final sobre Egipto",
+          "slug": "pascua-juicio-final-egipto",
+          "description": "Éxodo 11–12: anuncio del juicio sobre los primogénitos, institución de la Pascua y preparación inmediata de la liberación de Israel.",
+          "position": 15,
+          "lesson_number_range": [
+            109,
+            110
+          ]
         }
-      ]
+      ],
+      "auto_append_module": {
+        "enabled": true,
+        "id": "pentateuco-continuacion-provisional",
+        "title": "Continuación de la ruta",
+        "slug": "continuacion-de-la-ruta",
+        "description": "Lecciones nuevas incorporadas automáticamente y pendientes de agrupación editorial definitiva."
+      }
     }
   ]
 }

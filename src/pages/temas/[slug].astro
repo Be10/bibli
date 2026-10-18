@@ -34,6 +34,7 @@ export function getStaticPaths() {
 const { topic, events, lessons } = Astro.props as Props;
 
 const definitionLabel = topic.definition ?? "Definición pendiente.";
+const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(topic.title)}`;
 ---
 
 <BaseLayout
@@ -73,6 +74,10 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
               Ver eventos relacionados
             </a>
           )}
+
+          <a href={searchUrl} class="button secondary">
+            Buscar conexiones
+          </a>
         </div>
       </div>
 
@@ -203,7 +208,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
         Explorar eventos
       </a>
 
-      <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button">
+      <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button">
         Ir a la ruta principal
       </a>
     </section>
@@ -228,7 +233,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -243,8 +248,8 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   .topic-definition-card,
   .topic-lesson-card,
   .topic-event-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .topic-hero-card {
@@ -252,15 +257,15 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .topic-hero-card span,
   .topic-meta-card span,
   .topic-lesson-card span,
   .topic-event-card span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -268,7 +273,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   }
 
   .topic-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -277,7 +282,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   .topic-definition-card p,
   .topic-empty-section p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -291,7 +296,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   .topic-meta-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .topic-meta-card span {
@@ -301,7 +306,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
 
   .topic-meta-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.35rem;
     line-height: 1.25;
     overflow-wrap: anywhere;
@@ -310,7 +315,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   .topic-definition-card {
     padding: 26px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .topic-definition-card p {
@@ -333,7 +338,7 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
     min-height: 190px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -344,20 +349,20 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   .topic-lesson-card:hover,
   .topic-event-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .topic-lesson-card strong,
   .topic-event-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.12rem;
     line-height: 1.35;
   }
 
   .topic-lesson-card small,
   .topic-event-card small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
   }
@@ -374,9 +379,9 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
     width: fit-content;
     padding: 6px 9px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.76rem;
     font-style: normal;
     font-weight: 900;
@@ -396,30 +401,30 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   :global(html[data-theme="dark"]) .topic-events-section,
   :global(html[data-theme="dark"]) .topic-empty-section,
   :global(html[data-theme="dark"]) .topic-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .topic-definition-card,
   :global(html[data-theme="dark"]) .topic-lesson-card,
   :global(html[data-theme="dark"]) .topic-event-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .topic-hero-card span,
   :global(html[data-theme="dark"]) .topic-meta-card span,
   :global(html[data-theme="dark"]) .topic-lesson-card span,
   :global(html[data-theme="dark"]) .topic-event-card span {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .topic-hero-card strong,
   :global(html[data-theme="dark"]) .topic-meta-card strong,
   :global(html[data-theme="dark"]) .topic-lesson-card strong,
   :global(html[data-theme="dark"]) .topic-event-card strong {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .topic-hero-card p,
@@ -427,13 +432,13 @@ const definitionLabel = topic.definition ?? "Definición pendiente.";
   :global(html[data-theme="dark"]) .topic-empty-section p,
   :global(html[data-theme="dark"]) .topic-lesson-card small,
   :global(html[data-theme="dark"]) .topic-event-card small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .topic-card-badges em {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #f3d6ad;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent-hover);
   }
 
   @media (max-width: 860px) {

@@ -25,6 +25,7 @@ const routesConfigPath = path.join(projectRoot, "content", "routes.json");
 const dbPath = path.join(projectRoot, "data", "bibli.sqlite");
 const problems = [];
 const warnings = [];
+const editorialWarnings = [];
 
 function problem(file, message) {
   problems.push(`${file}: ${message}`);
@@ -64,6 +65,24 @@ function resolveConfiguredModule(route, lessonNumber) {
     return Array.isArray(range) && range.length === 2 && lessonNumber >= range[0] && lessonNumber <= range[1];
   });
 }
+
+function configuredRangeEnd(route) {
+  return Math.max(
+    0,
+    ...(route?.modules || [])
+      .map((module) => module.lesson_number_range)
+      .filter((range) => Array.isArray(range) && range.length === 2 && Number.isInteger(range[1]))
+      .map((range) => range[1]),
+  );
+}
+
+function canUseAutoAppendModule(route, lessonNumber) {
+  return route?.auto_append_module?.enabled === true
+    && Number.isInteger(lessonNumber)
+    && lessonNumber > configuredRangeEnd(route);
+}
+
+const autoAppendCandidates = new Map();
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const manifestMap = new Map((manifest.files || []).map((entry) => [entry.path, entry]));
@@ -145,7 +164,13 @@ for (const filePath of markdownFiles) {
   if (!routeConfig) {
     problem(relativePath, `route_id no existe en content/routes.json: ${fm.route_id}`);
   } else if (!resolveConfiguredModule(routeConfig, fm.route_lesson_number)) {
-    problem(relativePath, `route_lesson_number ${fm.route_lesson_number} no pertenece a ningún módulo configurado de ${fm.route_id}`);
+    if (canUseAutoAppendModule(routeConfig, fm.route_lesson_number)) {
+      const candidates = autoAppendCandidates.get(fm.route_id) || [];
+      candidates.push({ relativePath, lessonNumber: fm.route_lesson_number });
+      autoAppendCandidates.set(fm.route_id, candidates);
+    } else {
+      problem(relativePath, `route_lesson_number ${fm.route_lesson_number} no pertenece a ningún módulo configurado de ${fm.route_id}`);
+    }
   }
 
   if (!Array.isArray(fm.coverage) || fm.coverage.length === 0 || fm.coverage.some((item) => typeof item !== "string" || !item.trim())) {
@@ -244,12 +269,49 @@ if (manifest.file_count !== markdownFiles.length) {
   problems.push(`manifest.json: file_count=${manifest.file_count} pero existen ${markdownFiles.length} Markdown`);
 }
 
+for (const [routeId, candidates] of autoAppendCandidates) {
+  const route = routeConfigById.get(routeId);
+  const sorted = [...candidates].sort((a, b) => a.lessonNumber - b.lessonNumber);
+  const expectedStart = configuredRangeEnd(route) + 1;
+  let expected = expectedStart;
+  let contiguous = true;
+
+  for (const candidate of sorted) {
+    if (candidate.lessonNumber !== expected) {
+      contiguous = false;
+      problems.push(
+        `${candidate.relativePath}: la cola automática de ${routeId} debe ser continua; se esperaba route_lesson_number ${expected} y se encontró ${candidate.lessonNumber}`
+      );
+      break;
+    }
+    expected += 1;
+  }
+
+  if (contiguous && sorted.length > 0) {
+    const start = sorted[0].lessonNumber;
+    const end = sorted[sorted.length - 1].lessonNumber;
+    editorialWarnings.push({
+      routeId,
+      start,
+      end,
+      count: sorted.length,
+      title: route.auto_append_module.title || "Continuación de la ruta",
+    });
+  }
+}
+
 if (problems.length > 0) {
   console.error("Validación de estudios: FAIL");
   for (const item of problems) console.error(`- ${item}`);
   if (warnings.length > 0) {
     console.error("Advertencias:");
     for (const item of warnings) console.error(`- ${item}`);
+  }
+  if (editorialWarnings.length > 0) {
+    console.error("Organización editorial pendiente:");
+    for (const item of editorialWarnings) {
+      console.error(`- ${item.routeId}: ${item.count} lecciones provisionales (${item.start}–${item.end}) en "${item.title}"`);
+    }
   }
   process.exit(1);
 }
@@ -261,4 +323,12 @@ console.log(`Versiones bíblicas resolubles: ${new Set([...versionByLabel.values
 if (warnings.length > 0) {
   console.log(`Advertencias no bloqueantes: ${warnings.length}`);
   for (const item of warnings) console.log(`- ${item}`);
+}
+if (editorialWarnings.length > 0) {
+  console.log("Organización editorial pendiente:");
+  for (const item of editorialWarnings) {
+    console.log(`- ${item.routeId}: ${item.count} lecciones provisionales (${item.start}–${item.end}) en "${item.title}"`);
+  }
+} else {
+  console.log("Organización editorial: al día");
 }

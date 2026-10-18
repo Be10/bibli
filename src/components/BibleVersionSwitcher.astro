@@ -98,28 +98,28 @@ function getTargetPath(versionId: string) {
   }
 
   .bible-version-switcher span {
-    color: #6a5c4d;
+    color: var(--text-muted);
   }
 
   .bible-version-switcher select {
     min-height: 40px;
     max-width: min(100%, 320px);
     padding: 0 38px 0 12px;
-    border: 1px solid #c8a982;
+    border: 1px solid var(--accent-border);
     border-radius: 999px;
-    background: #fffaf0;
-    color: #5d3212;
+    background: var(--surface-soft);
+    color: var(--accent);
     font: inherit;
     cursor: pointer;
   }
 
   :global(html[data-theme="dark"]) .bible-version-switcher span {
-    color: #cbb9a8;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .bible-version-switcher select {
-    border-color: #6c4c2f;
-    background: #18110c;
-    color: #f7ead8;
+    border-color: var(--accent);
+    background: var(--surface);
+    color: var(--heading-color);
   }
 </style>

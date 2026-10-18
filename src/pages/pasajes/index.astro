@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllPassages, type Passage } from "../../lib/queries";
 
 const passages = getAllPassages().filter((passage) => passage.status !== "Borrador");
@@ -43,7 +44,7 @@ function getPassageRange(passage: Passage) {
   title="Pasajes bíblicos"
   description="Explora pasajes bíblicos relacionados con lecciones, eventos, libros y temas."
 >
-  <main class="page">
+  <main class="page" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Pasajes
     </div>
@@ -68,7 +69,7 @@ function getPassageRange(passage: Passage) {
             Explorar libros
           </a>
 
-          <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button secondary">
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button secondary">
             Ruta principal
           </a>
         </div>
@@ -119,7 +120,7 @@ function getPassageRange(passage: Passage) {
 
       <nav class="passages-book-nav" aria-label="Índice de pasajes por libro">
         {passagesByBook.map((group) => (
-          <a href={`#libro-${group.book.slug}`}>
+          <a href={`#libro-${group.book.slug}`} data-catalog-nav-target={`libro-${group.book.slug}`}>
             <span>{group.book.name}</span>
             <strong>{group.passages.length}</strong>
           </a>
@@ -139,9 +140,11 @@ function getPassageRange(passage: Passage) {
         </span>
       </div>
 
+      <CatalogFilter total={passages.length} noun="pasajes" placeholder="Buscar referencia, libro o palabra clave…" label="Buscar pasajes bíblicos" />
+
       <div class="passages-groups">
         {passagesByBook.map((group) => (
-          <section class="passages-group" id={`libro-${group.book.slug}`}>
+          <section class="passages-group" id={`libro-${group.book.slug}`} data-catalog-group>
             <div class="passages-group-heading">
               <span>Libro</span>
               <h3>{group.book.name}</h3>
@@ -156,7 +159,7 @@ function getPassageRange(passage: Passage) {
 
             <div class="passages-directory-grid">
               {group.passages.map((passage) => (
-                <a href={sitePath(`/pasajes/${passage.slug}/`)} class="passage-directory-card">
+                <a href={sitePath(`/pasajes/${passage.slug}/`)} class="passage-directory-card" data-catalog-item data-catalog-search={[passage.display_reference, passage.book_name, getPassageRange(passage), passage.summary].filter(Boolean).join(" ")}>
                   <div class="passage-directory-main">
                     <span>{passage.book_name} {getPassageRange(passage)}</span>
                     <h2>{passage.display_reference}</h2>
@@ -207,7 +210,7 @@ function getPassageRange(passage: Passage) {
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -222,8 +225,8 @@ function getPassageRange(passage: Passage) {
   .passages-book-nav a,
   .passages-group-heading,
   .passage-directory-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .passages-hero-card {
@@ -231,8 +234,8 @@ function getPassageRange(passage: Passage) {
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .passages-hero-card span,
@@ -240,7 +243,7 @@ function getPassageRange(passage: Passage) {
   .passages-book-nav span,
   .passages-group-heading span,
   .passage-directory-main span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -248,7 +251,7 @@ function getPassageRange(passage: Passage) {
   }
 
   .passages-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -257,7 +260,7 @@ function getPassageRange(passage: Passage) {
   .passages-group-heading p,
   .passage-directory-main p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -271,7 +274,7 @@ function getPassageRange(passage: Passage) {
   .passages-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .passages-stat-card span {
@@ -281,7 +284,7 @@ function getPassageRange(passage: Passage) {
 
   .passages-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -300,7 +303,7 @@ function getPassageRange(passage: Passage) {
     min-height: 44px;
     padding: 0 14px;
     border-radius: 999px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -310,8 +313,8 @@ function getPassageRange(passage: Passage) {
 
   .passages-book-nav a:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .passages-book-nav strong {
@@ -321,8 +324,8 @@ function getPassageRange(passage: Passage) {
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background: white;
-    color: #5d3212;
+    background: var(--surface);
+    color: var(--accent);
     font-size: 0.86rem;
     font-weight: 900;
   }
@@ -347,12 +350,12 @@ function getPassageRange(passage: Passage) {
     gap: 8px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .passages-group-heading h3 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.6rem;
     line-height: 1.15;
   }
@@ -361,7 +364,7 @@ function getPassageRange(passage: Passage) {
     display: inline-flex;
     width: fit-content;
     margin-top: 6px;
-    color: #5d3212;
+    color: var(--accent);
     font-weight: 900;
     text-decoration: none;
   }
@@ -383,7 +386,7 @@ function getPassageRange(passage: Passage) {
     min-height: 250px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -393,8 +396,8 @@ function getPassageRange(passage: Passage) {
 
   .passage-directory-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .passage-directory-main {
@@ -406,7 +409,7 @@ function getPassageRange(passage: Passage) {
 
   .passage-directory-main h2 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.22rem;
     line-height: 1.3;
   }
@@ -423,9 +426,9 @@ function getPassageRange(passage: Passage) {
     align-items: center;
     padding: 0 10px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.78rem;
     font-weight: 800;
   }
@@ -437,17 +440,17 @@ function getPassageRange(passage: Passage) {
     justify-content: space-between;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid #eadcc4;
+    border-top: 1px solid var(--border-color);
   }
 
   .passage-directory-footer small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 800;
   }
 
   .passage-directory-footer strong {
-    color: #5d3212;
+    color: var(--accent);
     font-size: 0.92rem;
   }
 
@@ -455,16 +458,16 @@ function getPassageRange(passage: Passage) {
   :global(html[data-theme="dark"]) .passages-stat-card,
   :global(html[data-theme="dark"]) .passages-index-section,
   :global(html[data-theme="dark"]) .passages-directory-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .passages-book-nav a,
   :global(html[data-theme="dark"]) .passages-group-heading,
   :global(html[data-theme="dark"]) .passage-directory-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .passages-hero-card span,
@@ -474,32 +477,32 @@ function getPassageRange(passage: Passage) {
   :global(html[data-theme="dark"]) .passages-group-heading a,
   :global(html[data-theme="dark"]) .passage-directory-main span,
   :global(html[data-theme="dark"]) .passage-directory-footer strong {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .passages-hero-card strong,
   :global(html[data-theme="dark"]) .passages-stat-card strong,
   :global(html[data-theme="dark"]) .passages-group-heading h3,
   :global(html[data-theme="dark"]) .passage-directory-main h2 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .passages-hero-card p,
   :global(html[data-theme="dark"]) .passages-group-heading p,
   :global(html[data-theme="dark"]) .passage-directory-main p,
   :global(html[data-theme="dark"]) .passage-directory-footer small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .passages-book-nav strong,
   :global(html[data-theme="dark"]) .passage-directory-meta span {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #f3d6ad;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent-hover);
   }
 
   :global(html[data-theme="dark"]) .passage-directory-footer {
-    border-color: #3a2a1d;
+    border-color: var(--border-color);
   }
 
   @media (max-width: 920px) {

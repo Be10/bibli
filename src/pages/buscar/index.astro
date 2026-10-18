@@ -6,23 +6,16 @@ import { buildSearchIndex } from "../../lib/search-index";
 const searchItems = buildSearchIndex("es");
 
 const searchStats = [
-  {
-    label: "Lecciones",
-    count: searchItems.filter((item) => item.type === "Lección").length,
-  },
-  {
-    label: "Libros",
-    count: searchItems.filter((item) => item.type === "Libro").length,
-  },
-  {
-    label: "Pasajes",
-    count: searchItems.filter((item) => item.type === "Pasaje").length,
-  },
-  {
-    label: "Versículos",
-    count: searchItems.filter((item) => item.type === "Versículo").length,
-  },
-];
+  { label: "Lecciones", type: "Lección" },
+  { label: "Rutas", type: "Ruta" },
+  { label: "Libros", type: "Libro" },
+  { label: "Pasajes", type: "Pasaje" },
+  { label: "Recursos", type: "Recurso" },
+  { label: "Versículos", type: "Versículo" },
+].map((stat) => ({
+  label: stat.label,
+  count: searchItems.filter((item) => item.type === stat.type).length,
+}));
 
 const searchableTypes = Array.from(
   new Set(searchItems.map((item) => item.type))
@@ -36,6 +29,24 @@ type ExploreItem = {
 };
 
 const exploreItems: ExploreItem[] = [
+  {
+    title: "Lecciones",
+    eyebrow: "Estudios",
+    description: "Encuentra estudios publicados por título, referencia bíblica o contenido.",
+    url: sitePath("/lecciones/"),
+  },
+  {
+    title: "Rutas",
+    eyebrow: "Recorridos guiados",
+    description: "Explora rutas y módulos de estudio organizados progresivamente.",
+    url: sitePath("/rutas/"),
+  },
+  {
+    title: "Recursos",
+    eyebrow: "Apoyo visual",
+    description: "Consulta mapas, cronología, esquemas e infografías conectadas al estudio.",
+    url: sitePath("/recursos/"),
+  },
   {
     title: "Libros",
     eyebrow: "Biblioteca bíblica",
@@ -92,6 +103,9 @@ function getCountByType(type: string) {
 
 function getExploreCount(item: ExploreItem) {
   const typeByTitle: Record<string, string> = {
+    Lecciones: "Lección",
+    Rutas: "Ruta",
+    Recursos: "Recurso",
     Libros: "Libro",
     Temas: "Tema",
     Glosario: "Glosario",
@@ -115,7 +129,7 @@ function getExploreCount(item: ExploreItem) {
   lang="es"
   alternateLanguage={{ code: "en", label: "English", href: sitePath("/en/search/") }}
   title="Búsqueda avanzada"
-  description="Busca libros, pasajes, lecciones, eventos, temas, personajes, lugares, términos del glosario y versículos bíblicos."
+  description="Busca Biblia, libros, pasajes, lecciones, rutas, recursos, eventos, temas, personajes, lugares y términos del glosario desde un solo índice."
 >
   <main class="page advanced-search-page">
     <div class="breadcrumb">
@@ -129,8 +143,8 @@ function getExploreCount(item: ExploreItem) {
         <h1>Buscar en Bibli</h1>
 
         <p class="subtitle">
-          Encuentra libros, pasajes, lecciones, eventos, temas, personajes, lugares,
-          términos del glosario y versículos bíblicos desde un solo lugar.
+          Encuentra Biblia, libros, pasajes, lecciones, rutas, recursos, eventos, temas,
+          personajes, lugares y términos del glosario desde un solo lugar.
         </p>
 
         <div class="actions advanced-search-hero-actions">
@@ -142,7 +156,7 @@ function getExploreCount(item: ExploreItem) {
             Leer la Biblia
           </a>
 
-          <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button secondary">
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button secondary">
             Ruta principal
           </a>
         </div>
@@ -497,8 +511,8 @@ function getExploreCount(item: ExploreItem) {
   .search-stat-card,
   .search-result,
   .advanced-explore-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .advanced-search-hero-card {
@@ -506,8 +520,8 @@ function getExploreCount(item: ExploreItem) {
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .advanced-search-hero-card span,
@@ -516,7 +530,7 @@ function getExploreCount(item: ExploreItem) {
   .search-result-type,
   .advanced-explore-card span,
   .advanced-explore-header span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -524,7 +538,7 @@ function getExploreCount(item: ExploreItem) {
   }
 
   .advanced-search-hero-card strong {
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -533,13 +547,13 @@ function getExploreCount(item: ExploreItem) {
   .search-result p,
   .advanced-explore-card p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.55;
   }
 
   .search-stats {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 16px;
     margin-top: 24px;
   }
@@ -547,7 +561,7 @@ function getExploreCount(item: ExploreItem) {
   .search-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .search-stat-card span {
@@ -557,7 +571,7 @@ function getExploreCount(item: ExploreItem) {
 
   .search-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -569,8 +583,8 @@ function getExploreCount(item: ExploreItem) {
   .enhanced-search-panel {
     padding: 22px;
     border-radius: 24px;
-    background: #fffaf0;
-    border: 1px solid #eadcc4;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
   }
 
   .search-label {
@@ -584,7 +598,7 @@ function getExploreCount(item: ExploreItem) {
     overflow-x: auto;
     padding-bottom: 8px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(93, 50, 18, 0.34) transparent;
+    scrollbar-color: color-mix(in srgb,var(--accent) 35%,transparent) transparent;
   }
 
   :global(.search-filters[hidden]) {
@@ -601,11 +615,11 @@ function getExploreCount(item: ExploreItem) {
 
   :global(.search-filters::-webkit-scrollbar-thumb) {
     border-radius: 999px;
-    background: rgba(93, 50, 18, 0.34);
+    background: color-mix(in srgb,var(--accent) 35%,transparent);
   }
 
   :global(.search-filters::-webkit-scrollbar-thumb:hover) {
-    background: rgba(93, 50, 18, 0.48);
+    background: color-mix(in srgb,var(--accent) 48%,transparent);
   }
 
   :global(.search-filters button) {
@@ -615,10 +629,10 @@ function getExploreCount(item: ExploreItem) {
     align-items: center;
     gap: 6px;
     padding: 0 11px;
-    border: 1px solid #eadcc4;
+    border: 1px solid var(--border-color);
     border-radius: 999px;
-    background: #fffaf0;
-    color: #5d3212;
+    background: var(--surface);
+    color: var(--accent);
     font: inherit;
     font-size: 0.82rem;
     font-weight: 900;
@@ -635,20 +649,20 @@ function getExploreCount(item: ExploreItem) {
   }
 
   :global(.search-filters button.is-active) {
-    background: #5d3212;
-    border-color: #5d3212;
-    color: #fffaf0;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
   }
 
   :global(.search-filters button:hover) {
-    border-color: #c8a982;
-    background: #fff7e8;
+    border-color: var(--border-strong);
+    background: var(--accent-subtle);
   }
 
   :global(.search-filters button.is-active:hover) {
-    background: #5d3212;
-    border-color: #5d3212;
-    color: #fffaf0;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
   }
 
   .advanced-explore-block {
@@ -657,8 +671,8 @@ function getExploreCount(item: ExploreItem) {
     margin-top: 32px;
     padding: 20px;
     border-radius: 24px;
-    background: #fffaf0;
-    border: 1px solid #eadcc4;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
   }
 
   .advanced-explore-header {
@@ -670,7 +684,7 @@ function getExploreCount(item: ExploreItem) {
 
   .advanced-explore-header h3 {
     margin: 0;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.28rem;
   }
 
@@ -684,14 +698,14 @@ function getExploreCount(item: ExploreItem) {
     align-items: center;
     padding: 0 12px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
     white-space: nowrap;
   }
 
   .advanced-explore-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 12px;
   }
 
@@ -701,7 +715,7 @@ function getExploreCount(item: ExploreItem) {
     min-height: 170px;
     padding: 18px;
     border-radius: 20px;
-    background: white;
+    background: var(--surface);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -711,19 +725,19 @@ function getExploreCount(item: ExploreItem) {
 
   .advanced-explore-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--border-strong);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .advanced-explore-card strong {
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.05rem;
     line-height: 1.25;
   }
 
   .advanced-explore-card small {
     align-self: end;
-    color: #5d3212;
+    color: var(--accent);
     font-size: 0.82rem;
     font-weight: 900;
   }
@@ -734,7 +748,7 @@ function getExploreCount(item: ExploreItem) {
 
   .search-results-summary {
     margin-top: 22px;
-    color: #5d3212;
+    color: var(--accent);
     font-weight: 900;
   }
 
@@ -752,7 +766,7 @@ function getExploreCount(item: ExploreItem) {
     min-height: 138px;
     padding: 15px 16px;
     border-radius: 18px;
-    background: white;
+    background: var(--surface);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -762,13 +776,13 @@ function getExploreCount(item: ExploreItem) {
 
   .search-result:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--border-strong);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .search-result h3 {
     margin: 0;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1rem;
     line-height: 1.28;
   }
@@ -784,8 +798,8 @@ function getExploreCount(item: ExploreItem) {
   .search-result mark {
     padding: 0 2px;
     border-radius: 5px;
-    background: #ffe2a8;
-    color: #2d2418;
+    background: var(--accent-soft);
+    color: var(--heading-color);
     font-weight: 900;
   }
 
@@ -794,15 +808,15 @@ function getExploreCount(item: ExploreItem) {
     margin-bottom: 2px;
     padding: 4px 9px;
     border-radius: 999px;
-    background: #fff7e8;
-    border: 1px solid #eadcc4;
+    background: var(--accent-subtle);
+    border: 1px solid var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .advanced-search-hero-card,
   :global(html[data-theme="dark"]) .search-stat-card,
   :global(html[data-theme="dark"]) .search-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
@@ -810,8 +824,8 @@ function getExploreCount(item: ExploreItem) {
   :global(html[data-theme="dark"]) .advanced-explore-block,
   :global(html[data-theme="dark"]) .search-result,
   :global(html[data-theme="dark"]) .advanced-explore-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface-elevated);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .advanced-search-hero-card span,
@@ -822,7 +836,7 @@ function getExploreCount(item: ExploreItem) {
   :global(html[data-theme="dark"]) .advanced-explore-card span,
   :global(html[data-theme="dark"]) .advanced-explore-card small,
   :global(html[data-theme="dark"]) .advanced-explore-header span {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .advanced-search-hero-card strong,
@@ -830,56 +844,56 @@ function getExploreCount(item: ExploreItem) {
   :global(html[data-theme="dark"]) .search-result h3,
   :global(html[data-theme="dark"]) .advanced-explore-header h3,
   :global(html[data-theme="dark"]) .advanced-explore-card strong {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .advanced-search-hero-card p,
   :global(html[data-theme="dark"]) .search-result p,
   :global(html[data-theme="dark"]) .advanced-explore-card p {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .search-result mark {
-    background: #6c4c2f;
-    color: #fff5e8;
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
   }
 
   :global(html[data-theme="dark"]) .advanced-explore-header span,
   :global(html[data-theme="dark"]) .search-result-type {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #f3d6ad;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent-hover);
   }
 
   :global(html[data-theme="dark"] .search-filters) {
-    scrollbar-color: rgba(233, 184, 114, 0.5) transparent;
+    scrollbar-color: color-mix(in srgb,var(--accent) 50%,transparent) transparent;
   }
 
   :global(html[data-theme="dark"] .search-filters::-webkit-scrollbar-thumb) {
-    background: rgba(233, 184, 114, 0.5);
+    background: color-mix(in srgb,var(--accent) 50%,transparent);
   }
 
   :global(html[data-theme="dark"] .search-filters::-webkit-scrollbar-thumb:hover) {
-    background: rgba(233, 184, 114, 0.68);
+    background: color-mix(in srgb,var(--accent) 68%,transparent);
   }
 
   :global(html[data-theme="dark"] .search-filters button) {
-    background: #21160e;
-    border-color: #4a3523;
-    color: #e9b872;
+    background: var(--surface-elevated);
+    border-color: var(--border-strong);
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"] .search-filters button:hover) {
-    background: #312113;
-    border-color: #6c4c2f;
-    color: #fff5e8;
+    background: var(--surface-soft);
+    border-color: var(--accent-hover);
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"] .search-filters button.is-active),
   :global(html[data-theme="dark"] .search-filters button.is-active:hover) {
-    background: #e9b872;
-    border-color: #e9b872;
-    color: #1b120b;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
   }
 
   @media (max-width: 960px) {
@@ -942,7 +956,7 @@ function getExploreCount(item: ExploreItem) {
       overflow-x: auto;
       padding-bottom: 6px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(93, 50, 18, 0.34) transparent;
+      scrollbar-color: color-mix(in srgb,var(--accent) 35%,transparent) transparent;
     }
 
     :global(.search-filters button) {
@@ -965,4 +979,16 @@ function getExploreCount(item: ExploreItem) {
       min-height: auto;
     }
   }
+</style>
+<style>
+  /* Search v4: accent-aware, no horizontal chip scroller. */
+  :global(.search-filters) { flex-wrap:wrap !important; overflow:visible !important; padding-bottom:0 !important; scrollbar-width:none !important; }
+  :global(.search-filters::-webkit-scrollbar) { display:none !important; }
+  :global(.search-filters button) { border-radius:10px !important; background:var(--surface) !important; color:var(--text-muted) !important; }
+  :global(.search-filters button.is-active) { background:var(--accent) !important; border-color:var(--accent) !important; color:var(--accent-contrast) !important; }
+  .enhanced-search-panel,.advanced-explore-block { background:var(--surface-soft) !important; border-color:var(--border-color) !important; }
+  .advanced-search-hero-card,.search-stat-card,.search-result,.advanced-explore-card { background:var(--surface) !important; border-color:var(--border-color) !important; }
+  .search-result-type { background:var(--accent-soft) !important; color:var(--accent) !important; border-color:var(--accent-border) !important; }
+  .search-result mark { background:var(--accent-soft) !important; color:var(--heading-color) !important; }
+  .search-results-summary,.search-label,.advanced-search-hero-card span,.search-stat-card span,.advanced-explore-card span,.advanced-explore-card small { color:var(--accent) !important; }
 </style>

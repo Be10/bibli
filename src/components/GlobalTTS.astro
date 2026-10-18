@@ -1,0 +1,437 @@
+---
+import Icon from "./Icon.astro";
+
+type LanguageCode = "es" | "en";
+interface Props { lang?: LanguageCode; }
+const { lang = "es" } = Astro.props;
+const copy = lang === "en"
+  ? {
+      launcher: "Read aloud",
+      title: "Read aloud",
+      ready: "Ready to read",
+      part: "Part",
+      of: "of",
+      previous: "Previous part",
+      play: "Play",
+      pause: "Pause",
+      next: "Next part",
+      stop: "Stop",
+      close: "Close reader",
+      voice: "Voice",
+      automaticVoice: "Automatic voice",
+      speed: "Speed",
+      unavailable: "Text to speech is not available in this browser.",
+      noContent: "There is no readable content on this page.",
+    }
+  : {
+      launcher: "Escuchar",
+      title: "Lectura en voz alta",
+      ready: "Listo para leer",
+      part: "Fragmento",
+      of: "de",
+      previous: "Fragmento anterior",
+      play: "Reproducir",
+      pause: "Pausar",
+      next: "Fragmento siguiente",
+      stop: "Detener",
+      close: "Cerrar lector",
+      voice: "Voz",
+      automaticVoice: "Voz automática",
+      speed: "Velocidad",
+      unavailable: "La lectura en voz alta no está disponible en este navegador.",
+      noContent: "No hay contenido de lectura en esta página.",
+    };
+---
+
+<div class="global-tts" data-global-tts data-tts-lang={lang} hidden>
+  <button type="button" class="tts-launcher" data-tts-launcher aria-label={copy.launcher} title={copy.launcher}>
+    <Icon name="volume" size={19} />
+    <span>{copy.launcher}</span>
+  </button>
+
+  <section class="tts-player" data-tts-player hidden aria-label={copy.title}>
+    <header class="tts-player-head">
+      <div class="tts-player-copy">
+        <span class="tts-eyebrow">{copy.title}</span>
+        <strong data-tts-status aria-live="polite">{copy.ready}</strong>
+      </div>
+      <button type="button" class="tts-close" data-tts-close aria-label={copy.close} title={copy.close}>
+        <Icon name="close" size={17} />
+      </button>
+    </header>
+
+    <div class="tts-controls" role="group" aria-label={copy.title}>
+      <button type="button" class="tts-control" data-tts-previous aria-label={copy.previous} title={copy.previous}>
+        <Icon name="skip-back" size={18} />
+      </button>
+      <button type="button" class="tts-control tts-play" data-tts-play aria-label={copy.play} title={copy.play}>
+        <span data-tts-play-icon><Icon name="play" size={20} /></span>
+        <span data-tts-pause-icon hidden><Icon name="pause" size={20} /></span>
+      </button>
+      <button type="button" class="tts-control" data-tts-next aria-label={copy.next} title={copy.next}>
+        <Icon name="skip-forward" size={18} />
+      </button>
+      <button type="button" class="tts-control" data-tts-stop aria-label={copy.stop} title={copy.stop}>
+        <Icon name="square" size={16} />
+      </button>
+    </div>
+
+    <div class="tts-options">
+      <label>
+        <span>{copy.speed}</span>
+        <select data-tts-rate>
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.25">1.25×</option>
+          <option value="1.5">1.5×</option>
+        </select>
+      </label>
+      <label class="tts-voice-label">
+        <span>{copy.voice}</span>
+        <select data-tts-voice>
+          <option value="">{copy.automaticVoice}</option>
+        </select>
+      </label>
+    </div>
+  </section>
+</div>
+
+<script define:vars={{ copy }}>
+  (() => {
+    const root = document.querySelector("[data-global-tts]");
+    if (!(root instanceof HTMLElement)) return;
+
+    const synth = window.speechSynthesis;
+    const Utterance = window.SpeechSynthesisUtterance;
+    const lang = root.dataset.ttsLang === "en" ? "en" : "es";
+    const speechLang = lang === "en" ? "en-US" : "es-ES";
+    const voiceKey = `bibli-tts-voice-${lang}-v1`;
+    const rateKey = "bibli-tts-rate-v1";
+
+    const launcher = root.querySelector("[data-tts-launcher]");
+    const player = root.querySelector("[data-tts-player]");
+    const close = root.querySelector("[data-tts-close]");
+    const previous = root.querySelector("[data-tts-previous]");
+    const play = root.querySelector("[data-tts-play]");
+    const next = root.querySelector("[data-tts-next]");
+    const stop = root.querySelector("[data-tts-stop]");
+    const status = root.querySelector("[data-tts-status]");
+    const rateSelect = root.querySelector("[data-tts-rate]");
+    const voiceSelect = root.querySelector("[data-tts-voice]");
+    const playIcon = root.querySelector("[data-tts-play-icon]");
+    const pauseIcon = root.querySelector("[data-tts-pause-icon]");
+
+    if (!synth || !Utterance || !(launcher instanceof HTMLButtonElement) || !(player instanceof HTMLElement)) {
+      root.hidden = true;
+      return;
+    }
+
+    let chunks = [];
+    let currentIndex = 0;
+    let activeSource = null;
+    let session = 0;
+    let playing = false;
+    let paused = false;
+    let voices = [];
+
+    const normalize = (value) => String(value ?? "").replace(/\s+/g, " ").trim();
+    const isVisible = (element) => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0;
+    };
+
+    const splitLongText = (text, source) => {
+      const clean = normalize(text);
+      if (clean.length <= 520) return clean ? [{ text: clean, source }] : [];
+      const sentences = clean.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) ?? [clean];
+      const parts = [];
+      let buffer = "";
+      for (const sentence of sentences) {
+        const nextValue = normalize(`${buffer} ${sentence}`);
+        if (buffer && nextValue.length > 520) {
+          parts.push({ text: buffer, source });
+          buffer = normalize(sentence);
+        } else {
+          buffer = nextValue;
+        }
+      }
+      if (buffer) parts.push({ text: buffer, source });
+      return parts;
+    };
+
+    const getActiveReader = () => {
+      const readers = Array.from(document.querySelectorAll("[data-reader-content]"));
+      return readers.find((element) => isVisible(element)) ?? readers[0] ?? null;
+    };
+
+    const buildChunks = () => {
+      const reader = getActiveReader();
+      if (!(reader instanceof HTMLElement)) return [];
+
+      const bibleVerses = Array.from(reader.querySelectorAll(".bible-chapter-verse"));
+      if (bibleVerses.length) {
+        return bibleVerses.flatMap((verse) => {
+          const number = normalize(verse.querySelector(".verse-number")?.textContent);
+          const text = normalize(verse.querySelector(".verse-text")?.textContent ?? verse.textContent);
+          return splitLongText(number ? `${number}. ${text}` : text, verse);
+        });
+      }
+
+      const readingVerses = Array.from(reader.querySelectorAll(".verse[id^='reading-v']"));
+      if (readingVerses.length) {
+        return readingVerses.flatMap((verse) => splitLongText(verse.textContent, verse));
+      }
+
+      const candidates = Array.from(reader.querySelectorAll("h2, h3, p, li"));
+      return candidates.flatMap((element) => {
+        if (!isVisible(element)) return [];
+        if (element.matches("p") && element.closest("li")) return [];
+        return splitLongText(element.textContent, element);
+      });
+    };
+
+    const setStatus = () => {
+      if (!(status instanceof HTMLElement)) return;
+      if (!chunks.length) {
+        status.textContent = copy.ready;
+        return;
+      }
+      status.textContent = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
+    };
+
+    const setPlayingUi = () => {
+      if (play instanceof HTMLButtonElement) {
+        const pauseMode = playing && !paused;
+        play.setAttribute("aria-label", pauseMode ? copy.pause : copy.play);
+        play.setAttribute("title", pauseMode ? copy.pause : copy.play);
+      }
+      if (playIcon instanceof HTMLElement) playIcon.hidden = playing && !paused;
+      if (pauseIcon instanceof HTMLElement) pauseIcon.hidden = !(playing && !paused);
+      root.classList.toggle("is-playing", playing);
+      root.classList.toggle("is-paused", paused);
+    };
+
+    const clearHighlight = () => {
+      if (activeSource instanceof HTMLElement) activeSource.classList.remove("tts-active-source");
+      activeSource = null;
+    };
+
+    const highlightSource = (source) => {
+      clearHighlight();
+      if (!(source instanceof HTMLElement)) return;
+      activeSource = source;
+      source.classList.add("tts-active-source");
+      const rect = source.getBoundingClientRect();
+      if (rect.top < 92 || rect.bottom > window.innerHeight - 120) {
+        source.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+      }
+    };
+
+    const getRate = () => {
+      if (!(rateSelect instanceof HTMLSelectElement)) return 1;
+      const value = Number(rateSelect.value);
+      return Number.isFinite(value) ? value : 1;
+    };
+
+    const getSelectedVoice = () => {
+      if (!(voiceSelect instanceof HTMLSelectElement) || !voiceSelect.value) return null;
+      return voices.find((voice) => `${voice.name}|||${voice.lang}` === voiceSelect.value) ?? null;
+    };
+
+    const stopSpeech = ({ reset = false } = {}) => {
+      session += 1;
+      synth.cancel();
+      playing = false;
+      paused = false;
+      if (reset) currentIndex = 0;
+      clearHighlight();
+      setStatus();
+      setPlayingUi();
+    };
+
+    const speakCurrent = () => {
+      if (!chunks.length) chunks = buildChunks();
+      if (!chunks.length) {
+        if (status instanceof HTMLElement) status.textContent = copy.noContent;
+        return;
+      }
+      currentIndex = Math.max(0, Math.min(currentIndex, chunks.length - 1));
+      session += 1;
+      const token = session;
+      synth.cancel();
+      const chunk = chunks[currentIndex];
+      const utterance = new Utterance(chunk.text);
+      utterance.lang = speechLang;
+      utterance.rate = getRate();
+      const selectedVoice = getSelectedVoice();
+      if (selectedVoice) utterance.voice = selectedVoice;
+      utterance.onstart = () => {
+        if (token !== session) return;
+        playing = true;
+        paused = false;
+        setStatus();
+        setPlayingUi();
+        highlightSource(chunk.source);
+      };
+      utterance.onend = () => {
+        if (token !== session) return;
+        if (currentIndex < chunks.length - 1) {
+          currentIndex += 1;
+          speakCurrent();
+        } else {
+          playing = false;
+          paused = false;
+          clearHighlight();
+          setStatus();
+          setPlayingUi();
+        }
+      };
+      utterance.onerror = (event) => {
+        if (token !== session || event.error === "canceled" || event.error === "interrupted") return;
+        playing = false;
+        paused = false;
+        clearHighlight();
+        setPlayingUi();
+      };
+      synth.speak(utterance);
+    };
+
+    const openPlayer = ({ autoplay = false } = {}) => {
+      chunks = buildChunks();
+      if (!chunks.length) {
+        if (status instanceof HTMLElement) status.textContent = copy.noContent;
+        return;
+      }
+      player.hidden = false;
+      launcher.hidden = true;
+      setStatus();
+      if (autoplay) speakCurrent();
+    };
+
+    const closePlayer = () => {
+      stopSpeech({ reset: false });
+      player.hidden = true;
+      launcher.hidden = false;
+      launcher.focus();
+    };
+
+    const refreshVoices = () => {
+      voices = synth.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(lang));
+      if (!(voiceSelect instanceof HTMLSelectElement)) return;
+      const storedVoice = localStorage.getItem(voiceKey) ?? "";
+      voiceSelect.querySelectorAll("option:not(:first-child)").forEach((option) => option.remove());
+      voices.forEach((voice) => {
+        const option = document.createElement("option");
+        option.value = `${voice.name}|||${voice.lang}`;
+        option.textContent = `${voice.name} · ${voice.lang}`;
+        voiceSelect.append(option);
+      });
+      const match = Array.from(voiceSelect.options).some((option) => option.value === storedVoice);
+      voiceSelect.value = match ? storedVoice : "";
+    };
+
+    const storedRate = localStorage.getItem(rateKey);
+    if (rateSelect instanceof HTMLSelectElement && ["0.75", "1", "1.25", "1.5"].includes(storedRate ?? "")) {
+      rateSelect.value = storedRate;
+    }
+
+    launcher.addEventListener("click", () => openPlayer({ autoplay: true }));
+    close?.addEventListener("click", closePlayer);
+    stop?.addEventListener("click", () => stopSpeech({ reset: false }));
+    play?.addEventListener("click", () => {
+      if (playing && !paused) {
+        synth.pause();
+        paused = true;
+        setPlayingUi();
+      } else if (playing && paused) {
+        synth.resume();
+        paused = false;
+        setPlayingUi();
+      } else {
+        speakCurrent();
+      }
+    });
+    previous?.addEventListener("click", () => {
+      if (!chunks.length) chunks = buildChunks();
+      currentIndex = Math.max(0, currentIndex - 1);
+      speakCurrent();
+    });
+    next?.addEventListener("click", () => {
+      if (!chunks.length) chunks = buildChunks();
+      currentIndex = Math.min(Math.max(0, chunks.length - 1), currentIndex + 1);
+      speakCurrent();
+    });
+    rateSelect?.addEventListener("change", () => {
+      if (rateSelect instanceof HTMLSelectElement) localStorage.setItem(rateKey, rateSelect.value);
+      if (playing) speakCurrent();
+    });
+    voiceSelect?.addEventListener("change", () => {
+      if (voiceSelect instanceof HTMLSelectElement) localStorage.setItem(voiceKey, voiceSelect.value);
+      if (playing) speakCurrent();
+    });
+
+    document.querySelectorAll("[data-mode-button]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!player.hidden) {
+          stopSpeech({ reset: true });
+          chunks = [];
+          setTimeout(() => {
+            chunks = buildChunks();
+            setStatus();
+          }, 0);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !player.hidden) closePlayer();
+    });
+    window.addEventListener("beforeunload", () => synth.cancel());
+
+    refreshVoices();
+    synth.addEventListener?.("voiceschanged", refreshVoices);
+    if ("onvoiceschanged" in synth) synth.onvoiceschanged = refreshVoices;
+
+    const hasReadableContent = document.querySelector("[data-reader-content]");
+    if (hasReadableContent) {
+      root.hidden = false;
+      launcher.hidden = false;
+      setPlayingUi();
+    }
+  })();
+</script>
+
+<style>
+  .global-tts { position:fixed; right:18px; bottom:max(18px,env(safe-area-inset-bottom)); z-index:145; pointer-events:none; }
+  .global-tts[hidden] { display:none !important; }
+  .tts-launcher,.tts-player { pointer-events:auto; }
+  .tts-launcher { min-height:44px; display:inline-flex; align-items:center; gap:.5rem; padding:0 .85rem; border:1px solid var(--accent-border); border-radius:14px; background:var(--surface-elevated); color:var(--accent); box-shadow:var(--shadow-md); font:inherit; font-size:.8rem; font-weight:800; cursor:pointer; }
+  .tts-launcher:hover { background:var(--accent-soft); border-color:var(--accent); }
+  .tts-player { width:min(430px,calc(100vw - 28px)); display:grid; gap:.75rem; padding:.85rem; border:1px solid var(--border-color); border-radius:18px; background:color-mix(in srgb,var(--surface-elevated) 96%,transparent); box-shadow:0 20px 65px rgba(0,0,0,.18); backdrop-filter:blur(18px); }
+  .tts-player[hidden] { display:none !important; }
+  .tts-player-head { display:flex; align-items:flex-start; justify-content:space-between; gap:.75rem; }
+  .tts-player-copy { display:grid; min-width:0; gap:.12rem; }
+  .tts-eyebrow { color:var(--text-muted); font-size:.64rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+  .tts-player-copy strong { min-width:0; color:var(--heading-color); font-size:.84rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tts-close,.tts-control { display:grid; place-items:center; border:1px solid var(--border-color); background:var(--surface-soft); color:var(--text-color); cursor:pointer; }
+  .tts-close { width:34px; height:34px; flex:0 0 auto; border-radius:10px; }
+  .tts-controls { display:flex; align-items:center; justify-content:center; gap:.4rem; }
+  .tts-control { width:40px; height:40px; border-radius:12px; }
+  .tts-control:hover,.tts-close:hover { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
+  .tts-play { width:48px; height:48px; border-color:var(--accent); background:var(--accent); color:var(--accent-contrast); }
+  .tts-play:hover { background:var(--accent-hover); color:var(--accent-contrast); }
+  .tts-options { display:grid; grid-template-columns:110px minmax(0,1fr); gap:.55rem; }
+  .tts-options label { display:grid; gap:.25rem; min-width:0; }
+  .tts-options label > span { color:var(--text-muted); font-size:.64rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .tts-options select { min-width:0; width:100%; height:36px; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--heading-color); padding:0 .55rem; font:inherit; font-size:.72rem; font-weight:700; }
+  :global(.tts-active-source) { outline:2px solid color-mix(in srgb,var(--accent) 48%,transparent); outline-offset:5px; border-radius:8px; background-color:color-mix(in srgb,var(--accent-soft) 28%,transparent); }
+  @media(max-width:600px){
+    .global-tts { left:10px; right:10px; bottom:max(10px,env(safe-area-inset-bottom)); display:flex; justify-content:flex-end; }
+    .tts-player { width:100%; }
+    .tts-launcher span { display:none; }
+    .tts-launcher { width:46px; padding:0; justify-content:center; }
+    .tts-options { grid-template-columns:92px minmax(0,1fr); }
+  }
+  @media(prefers-reduced-motion:reduce){ :global(.tts-active-source){ scroll-behavior:auto; } }
+</style>

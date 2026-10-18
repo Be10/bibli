@@ -204,6 +204,6 @@ INSERT INTO book_translations (book_id, language, name, slug, abbreviation, test
 ('book-zacarias', 'es', 'Zacarías', 'zacarias', 'Zac', 'Antiguo Testamento', 'Profetas menores', 'Profecía / visiones', 'Anuncia restauración y esperanza mesiánica.');
 
 INSERT INTO bible_versions (id, name, abbreviation, language, copyright_status, copyright_notice, license_notes, permission_scope, source_notes, status) VALUES
-('kjv', 'King James Version', 'KJV', 'en', 'Public Domain', 'King James Version, edición de 1769.', 'La fuente digital utilizada declara el texto como Public Domain.', 'Uso como texto bíblico en Bibli.', 'Fuente de importación: farskipper/kjv, archivo json/verses-1769.json (KJV 1769).', 'Publicado básico'),
+('kjv', 'King James Version', 'KJV', 'en', 'Public Domain', 'King James Version, 1769 edition. Public domain.', 'The digital source declares the text to be in the public domain.', 'Use as an English Bible text in Bibli.', 'Import source: farskipper/kjv, json/verses-1769.json (KJV 1769).', 'Publicado básico'),
 ('rvr1960', 'Reina-Valera 1960', 'RVR1960', 'es', 'Copyright / uso bajo licencia', 'Texto bíblico: Reina-Valera 1960® © Sociedades Bíblicas en América Latina, 1960. Derechos renovados © Sociedades Bíblicas Unidas, 1988. Usado con permiso.', 'La versión Reina-Valera 1960® es una marca registrada y su uso debe ajustarse a la licencia/permiso obtenido.', 'Uso autorizado en Bibli conforme al permiso aplicable.', 'Fuente local de importación no distribuida con el repositorio.', 'Publicado básico');
 

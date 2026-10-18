@@ -1,131 +1,140 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
+import {
+  getAllBibleVersions,
+  getLessonsByRouteId,
+  getRouteBySlug,
+  getRouteModules,
+} from "../../lib/queries";
+
+const primaryRoute = getRouteBySlug("de-la-creacion-al-pacto");
+const primaryModules = primaryRoute ? getRouteModules(primaryRoute.id) : [];
+const primaryLessons = primaryRoute ? getLessonsByRouteId(primaryRoute.id) : [];
+const bibleVersions = getAllBibleVersions();
+
+const projectStats = [
+  { value: primaryLessons.length, label: "lecciones en la ruta principal", icon: "graduation" as const },
+  { value: primaryModules.length, label: "módulos organizados", icon: "layers" as const },
+  { value: bibleVersions.length, label: "versiones bíblicas configuradas", icon: "bible" as const },
+];
+
+const principles = [
+  { title: "Enfoque bíblico", description: "El contenido se organiza alrededor de la historia bíblica completa, desde la creación hasta la nueva creación.", icon: "book" as const },
+  { title: "Enfoque cristocéntrico", description: "Las rutas y lecciones muestran cómo la Escritura avanza hacia el plan de Dios cumplido en Jesucristo.", icon: "sparkles" as const },
+  { title: "Lenguaje claro", description: "Las explicaciones buscan ser accesibles sin perder la estructura y el contexto del texto bíblico.", icon: "info" as const },
+  { title: "Conexiones", description: "Libros, pasajes, temas, personajes, lugares, eventos y recursos se relacionan para facilitar la comprensión.", icon: "layers" as const },
+];
+
+const included = [
+  { title: "Rutas guiadas", description: "Lecciones ordenadas para avanzar paso a paso por el panorama bíblico.", href: "/rutas/", icon: "journey" as const },
+  { title: "Biblia", description: "Versiones, libros, capítulos y versículos disponibles para lectura y estudio.", href: "/es/biblia/", icon: "bible" as const },
+  { title: "Mapa y cronología", description: "Herramientas visuales para ubicar lugares y acontecimientos dentro de la historia bíblica.", href: "/mapa/", icon: "map" as const },
+  { title: "Exploración conectada", description: "Glosario, temas, personas, eventos, pasajes y recursos enlazados entre sí.", href: "/explorar/", icon: "compass" as const },
+];
 ---
 
-<BaseLayout
-  title="Acerca del proyecto"
-  description="Conoce el propósito, enfoque y estructura de la Biblioteca Bíblica."
->
-  <main class="page">
-    <div class="breadcrumb">
-      <a href={sitePath("/")}>Inicio</a> → Acerca
-    </div>
+<BaseLayout title="Acerca del proyecto" description="Conoce el propósito, enfoque y estructura de la Biblioteca Bíblica.">
+  <main class="page about-page">
+    <div class="breadcrumb"><a href={sitePath("/")}>Inicio</a> → Acerca</div>
 
-    <section class="hero">
-      <p class="eyebrow">Acerca del proyecto</p>
+    <section class="hero about-hero">
+      <div>
+        <p class="eyebrow">Acerca del proyecto</p>
+        <h1>Biblioteca Bíblica</h1>
+        <p class="subtitle">Recursos para escudriñar y comprender las Escrituras mediante lectura bíblica, rutas guiadas y conexiones entre contenidos.</p>
+        <div class="actions">
+          <a href={sitePath("/explorar/")} class="button"><Icon name="compass" size={17} /> Explorar Bibli</a>
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button secondary"><Icon name="journey" size={17} /> Empezar ruta principal</a>
+        </div>
+      </div>
 
-      <h1>Biblioteca Bíblica</h1>
+      <aside class="about-summary" aria-label="Estado actual de Bibli">
+        <span class="about-summary-label">Bibli hoy</span>
+        <div class="about-stats">
+          {projectStats.map((stat) => (
+            <div class="about-stat">
+              <span class="about-stat-icon"><Icon name={stat.icon} size={18} /></span>
+              <div><strong>{stat.value}</strong><span>{stat.label}</span></div>
+            </div>
+          ))}
+        </div>
+      </aside>
+    </section>
 
-      <p class="subtitle">
-        Una herramienta educativa para estudiar la Biblia de forma ordenada,
-        visual y conectada, mostrando cómo libros, pasajes, eventos, lugares,
-        personajes y temas forman parte de una sola historia.
-      </p>
-
-      <div class="actions">
-        <a href={sitePath("/explorar/")} class="button">
-          Explorar Bibli
-        </a>
-
-        <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button secondary">
-          Empezar ruta principal
-        </a>
+    <section class="section about-purpose">
+      <div class="section-header"><div><p class="eyebrow">Propósito</p><h2>Comprender mejor el texto y su lugar en la historia bíblica</h2></div></div>
+      <div class="content two-column-copy">
+        <p>Bibli busca ayudar a estudiantes, familias, maestros y lectores de la Biblia a comprender el panorama bíblico con claridad. Su diseño combina lectura bíblica, rutas guiadas, fichas de referencia, mapas, línea de tiempo, glosario y conexiones entre contenidos.</p>
+        <p>El objetivo no es reemplazar la lectura bíblica ni la enseñanza de una iglesia local, sino servir como apoyo visual y estructurado para el estudio personal, familiar o educativo.</p>
       </div>
     </section>
 
     <section class="section">
-      <h2>Propósito</h2>
-
-      <div class="content">
-        <p>
-          La Biblioteca Bíblica busca ayudar a estudiantes, familias,
-          maestros y lectores nuevos de la Biblia a comprender el panorama bíblico
-          con claridad. Su diseño combina rutas guiadas, fichas de referencia,
-          mapas, línea de tiempo, glosario y conexiones entre contenidos.
-        </p>
-
-        <p>
-          El objetivo no es reemplazar la lectura bíblica ni la enseñanza de una
-          iglesia local, sino servir como apoyo visual y estructurado para el
-          estudio personal, familiar o educativo.
-        </p>
+      <div class="section-header"><div><p class="eyebrow">Criterios editoriales</p><h2>Cómo se organiza el contenido</h2></div><span class="section-count">{principles.length} principios</span></div>
+      <div class="principle-grid">
+        {principles.map((item) => (
+          <article class="principle-card">
+            <span class="principle-icon"><Icon name={item.icon} size={20} /></span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))}
       </div>
     </section>
 
     <section class="section">
-      <h2>Enfoque de contenido</h2>
-
-      <ul class="info-list">
-        <li>
-          <strong>Enfoque bíblico:</strong> el contenido se organiza alrededor de
-          la historia bíblica completa, desde la creación hasta la nueva creación.
-        </li>
-
-        <li>
-          <strong>Enfoque cristocéntrico:</strong> las rutas y lecciones muestran
-          cómo la Biblia apunta al plan de Dios cumplido en Jesús.
-        </li>
-
-        <li>
-          <strong>Lenguaje claro:</strong> las explicaciones buscan ser accesibles
-          para niños, nuevos creyentes y personas que necesitan estructura visual.
-        </li>
-
-        <li>
-          <strong>Conexiones visuales:</strong> los temas, personajes, lugares,
-          eventos, libros y pasajes están relacionados entre sí para facilitar
-          la comprensión.
-        </li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>Qué incluye</h2>
-
-      <div class="grid">
-        <article class="card">
-          <h2>Rutas guiadas</h2>
-          <p>
-            Lecciones ordenadas para avanzar paso a paso por el panorama bíblico.
-          </p>
-        </article>
-
-        <article class="card">
-          <h2>Referencia bíblica</h2>
-          <p>
-            Libros, pasajes, capítulos y versículos conectados entre sí en Bibli.
-          </p>
-        </article>
-
-        <article class="card">
-          <h2>Mapa y línea de tiempo</h2>
-          <p>
-            Herramientas visuales para ubicar eventos y lugares dentro de la historia bíblica.
-          </p>
-        </article>
-
-        <article class="card">
-          <h2>Glosario y temas</h2>
-          <p>
-            Explicaciones simples de conceptos bíblicos importantes.
-          </p>
-        </article>
+      <div class="section-header"><div><p class="eyebrow">Qué puedes hacer</p><h2>Un sistema de estudio conectado</h2></div></div>
+      <div class="included-grid">
+        {included.map((item) => (
+          <a class="included-card" href={sitePath(item.href)}>
+            <span class="included-icon"><Icon name={item.icon} size={20} /></span>
+            <div><h3>{item.title}</h3><p>{item.description}</p></div>
+            <Icon name="chevron-right" size={18} class="included-arrow" />
+          </a>
+        ))}
       </div>
     </section>
 
     <section class="section">
-      <h2>Estado actual</h2>
-
-      <div class="notice-box">
-        <p>
-          <strong>Proyecto en desarrollo.</strong> Algunas secciones pueden contener
-          contenido inicial, resúmenes básicos o marcadores de posición. La estructura
-          está preparada para crecer progresivamente con más lecciones, eventos,
-          mapas, recursos visuales y texto bíblico importado conforme a los permisos
-          correspondientes.
-        </p>
+      <div class="notice-box about-notice">
+        <Icon name="info" size={20} />
+        <div>
+          <strong>Proyecto en desarrollo continuo.</strong>
+          <p>La estructura está preparada para crecer con nuevas lecciones, rutas, versiones bíblicas, recursos y conexiones editoriales. Los conteos mostrados arriba se obtienen del estado actual de la base de Bibli.</p>
+        </div>
       </div>
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .about-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,360px); gap:2rem; align-items:end; }
+  .about-summary { position:relative; z-index:1; display:grid; gap:1rem; padding:1.25rem; border:1px solid var(--border-color); border-radius:22px; background:var(--surface); box-shadow:var(--shadow-sm); }
+  .about-summary-label { color:var(--accent); font-size:.76rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+  .about-stats { display:grid; gap:.7rem; }
+  .about-stat { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:center; padding:.7rem; border-radius:14px; background:var(--surface-soft); }
+  .about-stat-icon { width:38px; height:38px; display:grid; place-items:center; border-radius:11px; background:var(--accent-soft); color:var(--accent); }
+  .about-stat div { display:grid; gap:.15rem; }
+  .about-stat strong { color:var(--heading-color); font-size:1.25rem; line-height:1; }
+  .about-stat span:last-child { color:var(--text-muted); font-size:.82rem; line-height:1.35; }
+  .two-column-copy { columns:2 320px; column-gap:2rem; }
+  .two-column-copy p { break-inside:avoid; }
+  .principle-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; }
+  .principle-card { display:grid; align-content:start; gap:.65rem; min-height:210px; padding:1.15rem; border:1px solid var(--border-color); border-radius:18px; background:var(--surface); }
+  .principle-icon,.included-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:var(--accent-soft); color:var(--accent); }
+  .principle-card h3,.included-card h3 { margin:0; color:var(--heading-color); font-size:1.02rem; }
+  .principle-card p,.included-card p { margin:0; color:var(--text-muted); line-height:1.6; font-size:.9rem; }
+  .included-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+  .included-card { display:grid; grid-template-columns:auto 1fr auto; gap:.9rem; align-items:start; padding:1.1rem; border:1px solid var(--border-color); border-radius:18px; background:var(--surface); color:inherit; text-decoration:none; transition:transform 160ms ease,border-color 160ms ease; }
+  .included-card:hover { transform:translateY(-1px); border-color:color-mix(in srgb,var(--accent) 45%,var(--border-color)); }
+  .included-card div { display:grid; gap:.35rem; }
+  .included-arrow { align-self:center; color:var(--text-muted); }
+  .included-card:hover .included-arrow { color:var(--accent); }
+  .about-notice { display:grid; grid-template-columns:auto 1fr; gap:.8rem; align-items:start; }
+  .about-notice > svg { color:var(--accent); margin-top:.15rem; }
+  .about-notice p { margin:.3rem 0 0; }
+  @media(max-width:960px){ .about-hero,.principle-grid { grid-template-columns:1fr 1fr; } .about-hero > div:first-child { grid-column:1 / -1; } .about-summary { grid-column:1 / -1; } }
+  @media(max-width:700px){ .principle-grid,.included-grid { grid-template-columns:1fr; } .two-column-copy { columns:1; } }
+</style>

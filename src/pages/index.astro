@@ -1,82 +1,145 @@
 ---
 import { sitePath } from "../lib/site-paths";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import {
+  getAllBibleVersions,
+  getLessonsByRouteId,
+  getRouteBySlug,
+  getRouteModules,
+} from "../lib/queries";
 
 const siteTitle = "Biblioteca Bíblica";
+const primaryRoute = getRouteBySlug("de-la-creacion-al-pacto");
+const primaryModules = primaryRoute ? getRouteModules(primaryRoute.id) : [];
+const primaryLessons = primaryRoute ? getLessonsByRouteId(primaryRoute.id) : [];
+const bibleVersions = getAllBibleVersions();
+
+const quickLinks = [
+  { title: "Rutas de estudio", description: "Avanza por recorridos guiados, organizados en módulos y lecciones.", href: sitePath("/rutas/"), icon: "journey" as const },
+  { title: "Explorar Bibli", description: "Descubre personajes, lugares, temas, eventos, mapas y recursos conectados.", href: sitePath("/explorar/"), icon: "compass" as const },
+  { title: "Línea de tiempo", description: "Ubica los acontecimientos dentro del desarrollo de la historia bíblica.", href: sitePath("/linea-de-tiempo/"), icon: "timeline" as const },
+];
+
+const stats = [
+  { value: primaryLessons.length, label: "lecciones", icon: "graduation" as const },
+  { value: primaryModules.length, label: "módulos", icon: "layers" as const },
+  { value: bibleVersions.length, label: "versiones bíblicas", icon: "bible" as const },
+];
 ---
 
-<BaseLayout title={siteTitle}>
-  <main class="page">
-    <section class="hero">
-      <p class="eyebrow">Proyecto en construcción</p>
+<BaseLayout
+  title={siteTitle}
+  alternateLanguage={{ code: "en", label: "English", href: sitePath("/en/") }}
+>
+  <main class="home-page">
+    <section class="home-hero">
+      <div class="home-copy">
+        <span class="home-kicker"><Icon name="library" size={15} /> Biblioteca Bíblica</span>
+        <h1>Estudia la Biblia con claridad</h1>
+        <p>Lee y estudia la Biblia en un solo lugar.</p>
 
-      <h1>Biblioteca Bíblica</h1>
+        <form class="home-search" action={sitePath("/buscar/")} method="get" role="search" aria-label="Buscar en toda la Biblioteca Bíblica">
+          <Icon name="search" size={18} />
+          <label class="sr-only" for="home-search-input">Buscar en Bibli</label>
+          <input
+            id="home-search-input"
+            name="q"
+            type="search"
+            placeholder="Biblia, lecciones, rutas, personajes…"
+            autocomplete="off"
+          />
+          <button type="submit">Buscar</button>
+        </form>
 
-      <p class="subtitle">
-        Rutas guiadas, mapas, líneas de tiempo, personajes, lugares, temas y recursos visuales
-        para estudiar la Biblia con claridad.
-      </p>
+        <div class="home-actions">
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="home-button primary">
+            <Icon name="journey" size={18} />
+            <span>Continuar ruta principal</span>
+            <Icon name="arrow-right" size={16} />
+          </a>
+          <a href={sitePath("/es/biblia/")} class="home-button secondary"><Icon name="bible" size={18} /><span>Leer la Biblia</span></a>
+          <a href={sitePath("/explorar/")} class="home-button tertiary"><span>Explorar todo</span><Icon name="arrow-right" size={16} /></a>
+        </div>
+      </div>
 
-      <div class="actions">
-        <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button">
-          Ver ruta principal
-        </a>
-
-        <a href={sitePath("/explorar/")} class="button secondary">
-          Explorar Bibli
-        </a>
-
-        <a href={sitePath("/buscar/")} class="button secondary">
-          Buscar contenido
-        </a>
-
-        <a href={sitePath("/es/biblia/")} class="button secondary">
-          Leer Biblia
-        </a>
-
-        <a href={sitePath("/libros/")} class="button secondary">
-          Ver libros bíblicos
-        </a>
-
-        <a href={sitePath("/pasajes/")} class="button secondary">
-          Ver pasajes
-        </a>
-
-        <a href={sitePath("/linea-de-tiempo/")} class="button secondary">
-          Ver línea de tiempo
-        </a>
-
-        <a href={sitePath("/mapa/")} class="button secondary">
-          Ver mapa bíblico
-        </a>
-
-        <a href={sitePath("/acerca/")} class="button secondary">
-          Acerca del proyecto
-        </a>
+      <div class="home-orbit" aria-hidden="true">
+        <div class="orbit-card main"><Icon name="journey" size={24} /><span>Rutas</span></div>
+        <div class="orbit-card one"><Icon name="bible" size={20} /><span>Biblia</span></div>
+        <div class="orbit-card two"><Icon name="map" size={20} /><span>Mapas</span></div>
+        <div class="orbit-card three"><Icon name="clock" size={20} /><span>Cronología</span></div>
       </div>
     </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>Rutas guiadas</h2>
-        <p>
-          Estudios organizados paso a paso para avanzar con orden y enfoque.
-        </p>
-      </article>
+    <section class="home-stats" aria-label="Estado actual de Bibli">
+      {stats.map((stat) => (
+        <div class="home-stat">
+          <span class="home-stat-icon"><Icon name={stat.icon} size={18} /></span>
+          <strong>{stat.value}</strong>
+          <span>{stat.label}</span>
+        </div>
+      ))}
+    </section>
 
-      <article class="card">
-        <h2>Exploración libre</h2>
-        <p>
-          Personajes, lugares, temas, eventos, glosario y recursos visuales conectados entre sí.
-        </p>
-      </article>
-
-      <article class="card">
-		<h2>Línea de tiempo</h2>
-		<p>
-			Eventos ordenados cronológicamente para entender el desarrollo de la historia bíblica.
-		</p>
-	  </article>
+    <section class="home-grid" aria-label="Áreas principales">
+      {quickLinks.map((item) => (
+        <a href={item.href} class="home-card">
+          <span class="home-card-icon"><Icon name={item.icon} size={20} /></span>
+          <div>
+            <h2>{item.title}</h2>
+            <p>{item.description}</p>
+          </div>
+          <Icon name="chevron-right" size={18} class="home-card-arrow" />
+        </a>
+      ))}
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .home-page { width:min(var(--content-max), calc(100% - 32px)); margin:0 auto; padding:18px 0 72px; }
+  .home-hero { position:relative; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.65fr); gap:clamp(2rem,5vw,5rem); align-items:center; min-height:390px; padding:clamp(1.7rem,4vw,3.1rem); border:1px solid var(--border-color); border-radius:28px; overflow:hidden; background:linear-gradient(135deg,var(--surface) 0%,color-mix(in srgb,var(--accent-soft) 34%,var(--surface)) 100%); box-shadow:var(--shadow-sm); }
+  .home-hero::before { content:""; position:absolute; width:430px; height:430px; right:-180px; top:-220px; border-radius:50%; background:color-mix(in srgb,var(--accent) 9%,transparent); }
+  .home-copy { position:relative; z-index:1; max-width:720px; }
+  .home-kicker { display:inline-flex; align-items:center; gap:.45rem; color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .home-copy h1 { max-width:760px; margin:.75rem 0 1rem; color:var(--heading-color); font-size:clamp(2.5rem,5vw,4.25rem); line-height:.98; letter-spacing:-.06em; text-wrap:balance; }
+  .home-copy > p { max-width:650px; margin:0; color:var(--text-muted); font-size:clamp(1rem,1.8vw,1.16rem); line-height:1.7; }
+  .home-search { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.7rem; align-items:center; max-width:650px; min-height:54px; margin-top:1.35rem; padding:.4rem .45rem .4rem .9rem; border:1px solid var(--border-color); border-radius:16px; background:color-mix(in srgb,var(--surface-elevated) 92%,transparent); color:var(--text-muted); box-shadow:var(--shadow-sm); }
+  .home-search:focus-within { border-color:color-mix(in srgb,var(--accent) 65%,var(--border-color)); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent); }
+  .home-search input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--heading-color); font:inherit; }
+  .home-search input::placeholder { color:var(--text-muted); }
+  .home-search button { min-height:42px; padding:0 .95rem; border:0; border-radius:11px; background:var(--accent); color:var(--accent-contrast); font:inherit; font-weight:800; cursor:pointer; }
+  .home-search button:hover { background:var(--accent-hover); }
+  .home-actions { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:1.3rem; }
+  .home-button { min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:.55rem; padding:0 1rem; border-radius:13px; text-decoration:none; font-weight:720; transition:transform 160ms ease,background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+  .home-button:hover { transform:translateY(-1px); }
+  .home-button.primary { background:var(--accent); color:var(--accent-contrast); box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 20%,transparent); }
+  .home-button.primary:hover { background:var(--accent-hover); }
+  .home-button.secondary { border:1px solid var(--border-color); background:var(--surface); color:var(--heading-color); }
+  .home-button.secondary:hover { border-color:var(--border-strong); background:var(--surface-soft); }
+  .home-button.tertiary { color:var(--accent); padding-inline:.65rem; }
+  .home-button.tertiary:hover { background:var(--accent-soft); }
+  .home-orbit { position:relative; z-index:1; min-height:270px; }
+  .orbit-card { position:absolute; display:flex; align-items:center; gap:.6rem; min-height:54px; padding:.65rem .8rem; border:1px solid var(--border-color); border-radius:14px; background:color-mix(in srgb,var(--surface-elevated) 92%,transparent); color:var(--accent); box-shadow:var(--shadow-sm); font-size:.8rem; font-weight:700; backdrop-filter:blur(12px); }
+  .orbit-card span { color:var(--heading-color); }
+  .orbit-card.main { inset:50% auto auto 50%; min-height:86px; padding:1rem 1.15rem; transform:translate(-50%,-50%); font-size:.95rem; }
+  .orbit-card.one { top:12%; left:4%; }
+  .orbit-card.two { right:0; top:18%; }
+  .orbit-card.three { right:8%; bottom:8%; }
+  .home-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; margin-top:1rem; }
+  .home-stat { display:flex; align-items:center; gap:.65rem; min-height:70px; padding:.85rem 1rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface); box-shadow:0 8px 24px rgba(15,23,42,.025); }
+  .home-stat-icon { width:38px; height:38px; display:grid; place-items:center; flex:0 0 38px; border-radius:11px; background:var(--accent-soft); color:var(--accent); }
+  .home-stat strong { color:var(--heading-color); font-size:1.35rem; line-height:1; }
+  .home-stat > span:last-child { color:var(--text-muted); font-size:.88rem; }
+  .home-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; margin-top:.8rem; }
+  .home-card { position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:.9rem; align-items:start; padding:1.15rem; border:1px solid var(--border-color); border-radius:17px; background:var(--surface); color:inherit; text-decoration:none; box-shadow:0 8px 24px rgba(15,23,42,.035); transition:transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+  .home-card:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--accent) 45%,var(--border-color)); box-shadow:var(--shadow-sm); }
+  .home-card-icon { width:40px; height:40px; display:grid; place-items:center; border-radius:12px; background:var(--accent-soft); color:var(--accent); }
+  .home-card h2 { margin:.05rem 0 .35rem; color:var(--heading-color); font-size:1.08rem; letter-spacing:-.02em; }
+  .home-card p { margin:0; color:var(--text-muted); line-height:1.55; font-size:.88rem; }
+  .home-card-arrow { align-self:center; color:var(--text-muted); transition:transform 160ms ease,color 160ms ease; }
+  .home-card:hover .home-card-arrow { color:var(--accent); transform:translateX(2px); }
+  @media (max-width:900px) { .home-hero { grid-template-columns:1fr; min-height:0; } .home-orbit { display:none; } .home-grid { grid-template-columns:1fr; } }
+  @media (max-width:680px) { .home-stats { grid-template-columns:1fr; } }
+  @media (max-width:600px) { .home-page { width:min(100% - 20px,var(--content-max)); padding-top:10px; } .home-hero { padding:1.35rem; border-radius:20px; } .home-copy h1 { font-size:clamp(2.25rem,12vw,3.35rem); } .home-search { grid-template-columns:auto minmax(0,1fr); padding:.55rem .75rem; } .home-search button { grid-column:1 / -1; width:100%; } .home-actions { display:grid; grid-template-columns:1fr; } .home-button { width:100%; box-sizing:border-box; } }
+</style>

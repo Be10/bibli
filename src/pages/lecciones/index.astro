@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
 import { sitePath } from "../../lib/site-paths";
 import { getAllRoutes, getLessonsByRouteId, getRouteModules } from "../../lib/queries";
 
@@ -11,22 +12,54 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
 <BaseLayout title="Lecciones" description="Lecciones bíblicas canónicas organizadas en rutas y módulos de aprendizaje.">
   <main class="lesson-index-page">
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><span>Lecciones</span></nav>
-    <header class="lesson-index-hero">
-      <div><p class="eyebrow">Biblioteca de aprendizaje</p><h1>Lecciones</h1><p>{totalUnique} estudios canónicos disponibles. Cada lección existe una sola vez y puede reutilizarse en diferentes rutas sin duplicar contenido.</p></div>
-      <a href={sitePath("/rutas/")} class="route-button">Explorar rutas</a>
+    <header class="lesson-index-header">
+      <div class="lesson-index-copy"><span class="header-icon"><Icon name="graduation" size={20} /></span><p class="eyebrow">Aprendizaje</p><h1>Lecciones</h1><p>{totalUnique} estudios disponibles para avanzar por las Escrituras paso a paso.</p></div>
+      <a href={sitePath("/rutas/")} class="route-button"><span>Explorar rutas</span><Icon name="arrow-right" size={16} /></a>
     </header>
 
+    <section class="lesson-index-tools" aria-label="Buscar lecciones">
+      <label class="lesson-filter">
+        <span class="sr-only">Buscar una lección</span>
+        <Icon name="search" size={18} />
+        <input
+          type="search"
+          placeholder="Buscar por título, referencia o módulo…"
+          autocomplete="off"
+          data-lesson-filter
+        />
+        <span data-lesson-filter-count>{totalUnique} lecciones</span>
+      </label>
+    </section>
+
     {sections.map(({ route, modules, lessons }) => (
-      <section class="route-section">
+      <section class="route-section" data-route-section>
         <header><div><p class="eyebrow">Ruta</p><h2><a href={sitePath(`/rutas/${route.slug}/`)}>{route.title}</a></h2><p>{route.description}</p></div><span>{lessons.length} lecciones</span></header>
-        <div class="lesson-catalog">
-          {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="lesson-catalog-card" data-lesson-id={lesson.id}>
-              <span class="lesson-no">{String(lesson.lesson_number).padStart(2,"0")}</span>
-              <span class="lesson-copy"><strong>{lesson.title}</strong><small>{lesson.module_title} · {lesson.primary_reference} · {lesson.estimated_time}</small></span>
-              <span class="completion-dot" data-completion-dot>○</span>
-            </a>
-          ))}
+        <div class="lesson-module-list">
+          {modules.map((module, moduleIndex) => {
+            const moduleLessons = lessons.filter((lesson) => lesson.module_id === module.id);
+            if (moduleLessons.length === 0) return null;
+            return (
+              <section class="lesson-module" data-lesson-module>
+                <header class="lesson-module-header">
+                  <span class="module-order">{String(moduleIndex + 1).padStart(2, "0")}</span>
+                  <div>
+                    <p class="eyebrow">Módulo {moduleIndex + 1}</p>
+                    <h3>{module.title}</h3>
+                  </div>
+                  <span class="module-count">{moduleLessons.length} lecciones</span>
+                </header>
+                <div class="lesson-catalog">
+                  {moduleLessons.map((lesson) => (
+                    <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="lesson-catalog-card" data-lesson-id={lesson.id}>
+                      <span class="lesson-no">{String(lesson.lesson_number).padStart(2,"0")}</span>
+                      <span class="lesson-copy"><strong>{lesson.title}</strong><small>{lesson.primary_reference} · {lesson.estimated_time}</small></span>
+                      <span class="completion-state" data-completion-state aria-label="Pendiente"><span class="pending"><Icon name="circle" size={19} /></span><span class="done"><Icon name="check" size={19} /></span></span>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       </section>
     ))}
@@ -37,14 +70,86 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
   const PROGRESS_KEY = "bibli-learning-progress-v1";
   let completed = new Set<string>();
   try { const value = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); completed = new Set(Array.isArray(value.completed) ? value.completed : []); } catch {}
-  document.querySelectorAll<HTMLElement>("[data-lesson-id]").forEach((card) => {
+  const lessonCards = [...document.querySelectorAll<HTMLElement>("[data-lesson-id]")];
+  lessonCards.forEach((card) => {
     const done = completed.has(card.dataset.lessonId || "");
     card.classList.toggle("is-complete", done);
-    const dot = card.querySelector<HTMLElement>("[data-completion-dot]");
-    if (dot) dot.textContent = done ? "✓" : "○";
+    const state = card.querySelector<HTMLElement>("[data-completion-state]");
+    if (state) state.setAttribute("aria-label", done ? "Completada" : "Pendiente");
+    card.dataset.progressReady = "true";
   });
+
+  const filterInput = document.querySelector<HTMLInputElement>("[data-lesson-filter]");
+  const filterCount = document.querySelector<HTMLElement>("[data-lesson-filter-count]");
+  const moduleBlocks = [...document.querySelectorAll<HTMLElement>("[data-lesson-module]")];
+  const routeSections = [...document.querySelectorAll<HTMLElement>("[data-route-section]")];
+  const normalize = (value: string) =>
+    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("es").trim();
+
+  function applyLessonFilter() {
+    const query = normalize(filterInput?.value || "");
+    let visibleCount = 0;
+    lessonCards.forEach((card) => {
+      const matches = !query || normalize(card.textContent || "").includes(query);
+      card.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+    moduleBlocks.forEach((module) => {
+      module.hidden = !module.querySelector("[data-lesson-id]:not([hidden])");
+    });
+    routeSections.forEach((section) => {
+      section.hidden = !section.querySelector("[data-lesson-module]:not([hidden])");
+    });
+    if (filterCount) {
+      filterCount.textContent = query ? `${visibleCount} de ${lessonCards.length} lecciones` : `${lessonCards.length} lecciones`;
+    }
+  }
+
+  filterInput?.addEventListener("input", applyLessonFilter);
+  applyLessonFilter();
 </script>
 
 <style>
-.lesson-index-page{max-width:1120px;margin:0 auto;padding:1.5rem 1rem 5rem}.breadcrumb{display:flex;gap:.45rem;align-items:center;font-size:.86rem;opacity:.72;margin-bottom:1.2rem}.lesson-index-hero{display:flex;justify-content:space-between;align-items:end;gap:1.2rem;padding:clamp(1.4rem,4vw,2.5rem);border:1px solid var(--border-color,rgba(100,100,100,.18));border-radius:26px;background:linear-gradient(145deg,var(--surface,#fff),var(--surface-soft,#f5f5f5));margin-bottom:1.2rem}.lesson-index-hero h1{font-size:clamp(2rem,5vw,3.4rem);margin:.3rem 0 .6rem}.lesson-index-hero p{max-width:700px;margin:0;line-height:1.65}.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:.74rem;font-weight:800;opacity:.64}.route-button{white-space:nowrap;text-decoration:none;border:1px solid currentColor;border-radius:12px;padding:.72rem .9rem;font-weight:800}.route-section{margin-top:1rem;border:1px solid var(--border-color,rgba(100,100,100,.18));border-radius:22px;overflow:hidden;background:var(--surface,#fff)}.route-section>header{display:flex;justify-content:space-between;gap:1rem;padding:1.1rem;border-bottom:1px solid var(--border-color,rgba(100,100,100,.14))}.route-section h2{margin:.15rem 0 .35rem}.route-section h2 a{text-decoration:none}.route-section header p{margin:0;max-width:720px;line-height:1.5;opacity:.78}.route-section>header>span{font-size:.8rem;opacity:.65;white-space:nowrap}.lesson-catalog{display:grid}.lesson-catalog-card{display:grid;grid-template-columns:3rem minmax(0,1fr) auto;gap:.8rem;align-items:center;padding:.8rem 1.1rem;text-decoration:none}.lesson-catalog-card+.lesson-catalog-card{border-top:1px solid var(--border-color,rgba(100,100,100,.1))}.lesson-catalog-card:hover{background:var(--surface-soft,#f7f7f7)}.lesson-no{font-size:.82rem;opacity:.6;font-variant-numeric:tabular-nums}.lesson-copy{display:grid;gap:.18rem}.lesson-copy small{opacity:.66}.completion-dot{font-weight:900}.is-complete .completion-dot{font-size:1.05rem}@media(max-width:650px){.lesson-index-page{padding-top:1rem}.lesson-index-hero{align-items:flex-start;flex-direction:column;border-radius:20px}.route-section{border-radius:18px}.route-section>header{flex-direction:column}.lesson-catalog-card{grid-template-columns:2.1rem minmax(0,1fr) auto;padding:.75rem .85rem}.lesson-copy strong{font-size:.94rem}.lesson-copy small{font-size:.76rem}}
+  .lesson-index-page { max-width:var(--content-max); margin:0 auto; padding:14px 1rem 5rem; }
+  .breadcrumb { display:flex; gap:.42rem; align-items:center; font-size:.8rem; color:var(--text-muted); }
+  .lesson-index-header { display:flex; justify-content:space-between; align-items:end; gap:1.2rem; padding:1.15rem 0 1.3rem; }
+  .lesson-index-copy { max-width:700px; }
+  .header-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:13px; background:var(--accent-soft); color:var(--accent); margin-bottom:.8rem; }
+  .eyebrow { margin:0; text-transform:uppercase; letter-spacing:.09em; font-size:.7rem; font-weight:800; color:var(--text-muted); }
+  .lesson-index-header h1 { margin:.2rem 0 .45rem; color:var(--heading-color); font-size:clamp(2.15rem,5vw,3.45rem); line-height:1; letter-spacing:-.05em; }
+  .lesson-index-header p:last-child { margin:0; color:var(--text-muted); line-height:1.55; }
+  .route-button { min-height:42px; display:inline-flex; align-items:center; gap:.45rem; padding:0 .85rem; border:1px solid var(--border-color); border-radius:11px; background:var(--surface); color:var(--heading-color); text-decoration:none; font-weight:720; }
+  .route-button:hover { background:var(--surface-soft); border-color:var(--border-strong); }
+  .lesson-index-tools { position:sticky; top:72px; z-index:22; margin:.1rem 0 .9rem; padding:.55rem; border:1px solid var(--border-color); border-radius:15px; background:color-mix(in srgb,var(--page-bg) 90%,transparent); box-shadow:0 8px 24px rgba(15,23,42,.04); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+  .lesson-filter { min-height:44px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.6rem; align-items:center; padding:0 .8rem; border:1px solid var(--border-color); border-radius:12px; background:var(--surface); color:var(--text-muted); }
+  .lesson-filter:focus-within { border-color:var(--accent); box-shadow:0 0 0 4px var(--focus-ring); }
+  .lesson-filter input { min-width:0; width:100%; border:0; outline:0; background:transparent; color:var(--text-color); font-size:.88rem; }
+  .lesson-filter input::placeholder { color:var(--text-muted); }
+  .lesson-filter > span:last-child { white-space:nowrap; color:var(--text-muted); font-size:.74rem; }
+  .route-section { margin-top:.9rem; border:1px solid var(--border-color); border-radius:18px; overflow:hidden; background:var(--surface); box-shadow:0 8px 26px rgba(15, 23, 42, .035); }
+  .route-section>header { display:flex; justify-content:space-between; gap:1rem; padding:1rem 1.1rem; border-bottom:1px solid var(--border-color); background:color-mix(in srgb,var(--accent-soft) 18%,var(--surface)); }
+  .route-section h2 { margin:.15rem 0 .3rem; font-size:1.25rem; }
+  .route-section h2 a { color:var(--heading-color); text-decoration:none; }
+  .route-section>header p { margin:0; max-width:720px; color:var(--text-muted); line-height:1.5; }
+  .route-section>header>span { color:var(--text-muted); font-size:.78rem; white-space:nowrap; }
+  .lesson-module-list { display:grid; }
+  .lesson-module + .lesson-module { border-top:1px solid var(--border-color); }
+  .lesson-module-header { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.75rem; align-items:center; padding:.72rem 1.1rem; background:var(--surface-soft); }
+  .module-order { width:32px; height:32px; display:grid; place-items:center; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-size:.72rem; font-weight:820; font-variant-numeric:tabular-nums; }
+  .lesson-module-header h3 { margin:.1rem 0 0; color:var(--heading-color); font-size:.98rem; letter-spacing:-.015em; }
+  .module-count { color:var(--text-muted); font-size:.72rem; white-space:nowrap; }
+  .lesson-catalog { display:grid; }
+  .lesson-catalog-card { min-height:70px; display:grid; grid-template-columns:2.5rem minmax(0,1fr) 2rem; gap:.85rem; align-items:center; padding:.5rem 1.1rem; color:inherit; text-decoration:none; transition:background-color 150ms ease; }
+  .lesson-catalog-card+.lesson-catalog-card { border-top:1px solid var(--border-color); }
+  .lesson-catalog-card:hover { background:color-mix(in srgb,var(--accent-soft) 28%,var(--surface)); }
+  .lesson-no { color:var(--text-muted); font-size:.78rem; font-variant-numeric:tabular-nums; }
+  .lesson-copy { display:grid; gap:.16rem; }
+  .lesson-copy strong { color:var(--heading-color); }
+  .lesson-copy small { color:var(--text-muted); font-size:.78rem; }
+  .completion-state { width:30px; height:30px; display:grid; place-items:center; border-radius:10px; color:var(--text-muted); }
+  .completion-state .done { display:none; }
+  .is-complete .completion-state .pending { display:none; }
+  .is-complete .completion-state .done { display:grid; color:var(--accent); }
+  [data-lesson-id]:not([data-progress-ready]) .completion-state { visibility:hidden; }
+  @media(max-width:650px){ .lesson-index-page{padding:10px .7rem 3rem;} .lesson-index-header{align-items:flex-start;flex-direction:column;padding:.8rem 0 1rem;} .lesson-index-tools{top:66px;margin-inline:-.1rem;padding:.45rem;border-radius:13px;} .lesson-filter>span:last-child{display:none;} .route-section{border-radius:15px;} .route-section>header{flex-direction:column;} .lesson-module-header{grid-template-columns:auto 1fr;padding:.65rem .85rem;} .module-count{grid-column:2;} .lesson-catalog-card{grid-template-columns:2rem minmax(0,1fr) 1.8rem;padding:.5rem .85rem;} .lesson-copy strong{font-size:.94rem;} }
 </style>

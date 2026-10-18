@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllTopics, type Topic } from "../../lib/queries";
 
 const topics = getAllTopics().filter((topic) => topic.status !== "Borrador");
@@ -30,7 +31,7 @@ function getTopicInitial(topic: Topic) {
   title="Temas bíblicos"
   description="Explora temas bíblicos conectados con lecciones, personajes, lugares y pasajes."
 >
-  <main class="page">
+  <main class="page" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Temas
     </div>
@@ -48,7 +49,7 @@ function getTopicInitial(topic: Topic) {
         </p>
 
         <div class="actions">
-          <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button">
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button">
             Ruta principal
           </a>
 
@@ -107,7 +108,7 @@ function getTopicInitial(topic: Topic) {
 
       <nav class="topics-initial-nav" aria-label="Índice de temas por inicial">
         {topicsByInitial.map((group) => (
-          <a href={`#inicial-${group.initial}`}>
+          <a href={`#inicial-${group.initial}`} data-catalog-nav-target={`inicial-${group.initial}`}>
             <span>{group.initial}</span>
             <strong>{group.topics.length}</strong>
           </a>
@@ -127,9 +128,11 @@ function getTopicInitial(topic: Topic) {
         </span>
       </div>
 
+      <CatalogFilter total={topics.length} noun="temas" placeholder="Buscar tema o concepto…" label="Buscar temas bíblicos" />
+
       <div class="topics-groups">
         {topicsByInitial.map((group) => (
-          <section class="topics-group" id={`inicial-${group.initial}`}>
+          <section class="topics-group" id={`inicial-${group.initial}`} data-catalog-group>
             <div class="topics-group-heading">
               <span>Inicial</span>
               <h3>{group.initial}</h3>
@@ -140,7 +143,7 @@ function getTopicInitial(topic: Topic) {
 
             <div class="topics-directory-grid">
               {group.topics.map((topic) => (
-                <a href={sitePath(`/temas/${topic.slug}/`)} class="topic-directory-card">
+                <a href={sitePath(`/temas/${topic.slug}/`)} class="topic-directory-card" data-catalog-item data-catalog-search={[topic.title, topic.definition].filter(Boolean).join(" ")}>
                   <div class="topic-directory-avatar" aria-hidden="true">
                     {getTopicInitial(topic)}
                   </div>
@@ -183,7 +186,7 @@ function getTopicInitial(topic: Topic) {
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -198,8 +201,8 @@ function getTopicInitial(topic: Topic) {
   .topics-initial-nav a,
   .topics-group-heading,
   .topic-directory-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .topics-hero-card {
@@ -207,8 +210,8 @@ function getTopicInitial(topic: Topic) {
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .topics-hero-card span,
@@ -216,7 +219,7 @@ function getTopicInitial(topic: Topic) {
   .topics-initial-nav span,
   .topics-group-heading span,
   .topic-directory-content span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -224,7 +227,7 @@ function getTopicInitial(topic: Topic) {
   }
 
   .topics-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -233,7 +236,7 @@ function getTopicInitial(topic: Topic) {
   .topics-group-heading p,
   .topic-directory-content p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -247,7 +250,7 @@ function getTopicInitial(topic: Topic) {
   .topics-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .topics-stat-card span {
@@ -257,7 +260,7 @@ function getTopicInitial(topic: Topic) {
 
   .topics-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -276,7 +279,7 @@ function getTopicInitial(topic: Topic) {
     min-height: 44px;
     padding: 0 14px;
     border-radius: 999px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -286,8 +289,8 @@ function getTopicInitial(topic: Topic) {
 
   .topics-initial-nav a:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .topics-initial-nav strong {
@@ -297,8 +300,8 @@ function getTopicInitial(topic: Topic) {
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background: white;
-    color: #5d3212;
+    background: var(--surface);
+    color: var(--accent);
     font-size: 0.86rem;
     font-weight: 900;
   }
@@ -321,12 +324,12 @@ function getTopicInitial(topic: Topic) {
     align-self: start;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .topics-group-heading h3 {
     margin: 8px 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -344,7 +347,7 @@ function getTopicInitial(topic: Topic) {
     min-height: 220px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -354,8 +357,8 @@ function getTopicInitial(topic: Topic) {
 
   .topic-directory-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .topic-directory-avatar {
@@ -365,8 +368,8 @@ function getTopicInitial(topic: Topic) {
     align-items: center;
     justify-content: center;
     border-radius: 18px;
-    background: #5d3212;
-    color: #fffaf0;
+    background: var(--accent);
+    color: var(--accent-contrast);
     font-size: 1.35rem;
     font-weight: 900;
   }
@@ -380,7 +383,7 @@ function getTopicInitial(topic: Topic) {
 
   .topic-directory-content h2 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.2rem;
     line-height: 1.3;
   }
@@ -393,17 +396,17 @@ function getTopicInitial(topic: Topic) {
     justify-content: space-between;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid #eadcc4;
+    border-top: 1px solid var(--border-color);
   }
 
   .topic-directory-footer small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 800;
   }
 
   .topic-directory-footer strong {
-    color: #5d3212;
+    color: var(--accent);
     font-size: 0.92rem;
   }
 
@@ -411,16 +414,16 @@ function getTopicInitial(topic: Topic) {
   :global(html[data-theme="dark"]) .topics-stat-card,
   :global(html[data-theme="dark"]) .topics-index-section,
   :global(html[data-theme="dark"]) .topics-directory-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .topics-initial-nav a,
   :global(html[data-theme="dark"]) .topics-group-heading,
   :global(html[data-theme="dark"]) .topic-directory-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .topics-hero-card span,
@@ -429,35 +432,35 @@ function getTopicInitial(topic: Topic) {
   :global(html[data-theme="dark"]) .topics-group-heading span,
   :global(html[data-theme="dark"]) .topic-directory-content span,
   :global(html[data-theme="dark"]) .topic-directory-footer strong {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .topics-hero-card strong,
   :global(html[data-theme="dark"]) .topics-stat-card strong,
   :global(html[data-theme="dark"]) .topics-group-heading h3,
   :global(html[data-theme="dark"]) .topic-directory-content h2 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .topics-hero-card p,
   :global(html[data-theme="dark"]) .topics-group-heading p,
   :global(html[data-theme="dark"]) .topic-directory-content p,
   :global(html[data-theme="dark"]) .topic-directory-footer small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .topics-initial-nav strong {
-    background: #18110c;
-    color: #f3d6ad;
+    background: var(--surface);
+    color: var(--accent-hover);
   }
 
   :global(html[data-theme="dark"]) .topic-directory-avatar {
-    background: #e9b872;
-    color: #1b120b;
+    background: var(--accent);
+    color: var(--accent-contrast);
   }
 
   :global(html[data-theme="dark"]) .topic-directory-footer {
-    border-color: #3a2a1d;
+    border-color: var(--border-color);
   }
 
   @media (max-width: 920px) {

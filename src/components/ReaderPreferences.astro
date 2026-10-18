@@ -1,0 +1,212 @@
+---
+import Icon from "./Icon.astro";
+
+type LanguageCode = "es" | "en";
+
+interface Props {
+  lang?: LanguageCode;
+  compact?: boolean;
+}
+
+const { lang = "es", compact = false } = Astro.props;
+const panelId = `reader-preferences-panel-${lang}`;
+const copy = lang === "en"
+  ? {
+      label: "Reading preferences",
+      size: "Text size",
+      small: "Small",
+      original: "Original",
+      large: "Large",
+      font: "Typeface",
+      sans: "Sans serif",
+      serif: "Serif",
+      align: "Alignment",
+      left: "Left",
+      justify: "Justified",
+      reset: "Reset",
+    }
+  : {
+      label: "Preferencias de lectura",
+      size: "Tamaño de texto",
+      small: "Pequeño",
+      original: "Original",
+      large: "Grande",
+      font: "Tipografía",
+      sans: "Sans serif",
+      serif: "Serif",
+      align: "Alineación",
+      left: "Izquierda",
+      justify: "Justificada",
+      reset: "Restablecer",
+    };
+---
+
+<div class:list={["reader-preferences", compact && "is-compact"]} data-reader-preferences>
+  <button
+    type="button"
+    class="reader-preferences-toggle"
+    data-reader-preferences-toggle
+    aria-label={copy.label}
+    aria-expanded="false"
+    aria-controls={panelId}
+    title={copy.label}
+  >
+    <Icon name="type" size={17} />
+    <span>{copy.label}</span>
+  </button>
+
+  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel hidden>
+    <div class="reader-pref-group">
+      <span>{copy.size}</span>
+      <div class="reader-pref-options" role="group" aria-label={copy.size}>
+        <button type="button" data-reader-size-choice="small" aria-label={copy.small}>A−</button>
+        <button type="button" data-reader-size-choice="default" aria-label={copy.original}>A</button>
+        <button type="button" data-reader-size-choice="large" aria-label={copy.large}>A+</button>
+      </div>
+    </div>
+
+    <div class="reader-pref-group">
+      <span>{copy.font}</span>
+      <div class="reader-pref-options reader-font-options" role="group" aria-label={copy.font}>
+        <button type="button" data-reader-font-choice="default">{copy.original}</button>
+        <button type="button" data-reader-font-choice="sans">{copy.sans}</button>
+        <button type="button" data-reader-font-choice="serif">{copy.serif}</button>
+      </div>
+    </div>
+
+    <div class="reader-pref-group">
+      <span>{copy.align}</span>
+      <div class="reader-pref-options reader-align-options" role="group" aria-label={copy.align}>
+        <button type="button" data-reader-align-choice="default">{copy.original}</button>
+        <button type="button" data-reader-align-choice="left">{copy.left}</button>
+        <button type="button" data-reader-align-choice="justify">{copy.justify}</button>
+      </div>
+    </div>
+
+    <button type="button" class="reader-pref-reset" data-reader-preferences-reset>{copy.reset}</button>
+  </div>
+</div>
+
+<script>
+  const READER_SIZE_KEY = "bibli-reader-size-v1";
+  const READER_FONT_KEY = "bibli-reader-font-v1";
+  const READER_ALIGN_KEY = "bibli-reader-align-v1";
+
+  const validSizes = ["default", "small", "large"];
+  const validFonts = ["default", "sans", "serif"];
+  const validAlignments = ["default", "left", "justify"];
+
+  function normalizeStored(value: string | null, valid: string[]) {
+    return value && valid.includes(value) ? value : "default";
+  }
+
+  function getReaderPreferences() {
+    return {
+      size: normalizeStored(localStorage.getItem(READER_SIZE_KEY), validSizes),
+      font: normalizeStored(localStorage.getItem(READER_FONT_KEY), validFonts),
+      align: normalizeStored(localStorage.getItem(READER_ALIGN_KEY), validAlignments),
+    };
+  }
+
+  function applyReaderPreferences() {
+    const prefs = getReaderPreferences();
+    document.documentElement.dataset.readerSize = prefs.size;
+    document.documentElement.dataset.readerFont = prefs.font;
+    document.documentElement.dataset.readerAlign = prefs.align;
+    return prefs;
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-reader-preferences]").forEach((root) => {
+    const toggle = root.querySelector<HTMLButtonElement>("[data-reader-preferences-toggle]");
+    const panel = root.querySelector<HTMLElement>("[data-reader-preferences-panel]");
+    const reset = root.querySelector<HTMLButtonElement>("[data-reader-preferences-reset]");
+
+    const syncButtons = () => {
+      const prefs = applyReaderPreferences();
+      root.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
+        const active = button.dataset.readerSizeChoice === prefs.size;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      root.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
+        const active = button.dataset.readerFontChoice === prefs.font;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      root.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
+        const active = button.dataset.readerAlignChoice === prefs.align;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    };
+
+    const setOpen = (open: boolean, returnFocus = false) => {
+      if (!panel || !toggle) return;
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      if (!open && returnFocus) toggle.focus();
+    };
+
+    toggle?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setOpen(Boolean(panel?.hidden));
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        localStorage.setItem(READER_SIZE_KEY, button.dataset.readerSizeChoice || "default");
+        syncButtons();
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        localStorage.setItem(READER_FONT_KEY, button.dataset.readerFontChoice || "default");
+        syncButtons();
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        localStorage.setItem(READER_ALIGN_KEY, button.dataset.readerAlignChoice || "default");
+        syncButtons();
+      });
+    });
+
+    reset?.addEventListener("click", () => {
+      localStorage.removeItem(READER_SIZE_KEY);
+      localStorage.removeItem(READER_FONT_KEY);
+      localStorage.removeItem(READER_ALIGN_KEY);
+      syncButtons();
+    });
+
+    panel?.addEventListener("click", (event) => event.stopPropagation());
+    document.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && panel && !panel.hidden) setOpen(false, true);
+    });
+
+    syncButtons();
+  });
+</script>
+
+<style>
+  .reader-preferences { position:relative; flex:0 0 auto; }
+  .reader-preferences-toggle { min-height:40px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .72rem; border:1px solid var(--border-color); border-radius:10px; background:var(--surface); color:var(--text-color); font:inherit; font-size:.78rem; font-weight:760; cursor:pointer; }
+  .reader-preferences-toggle:hover,.reader-preferences-toggle[aria-expanded="true"] { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
+  .reader-preferences.is-compact .reader-preferences-toggle span { display:none; }
+  .reader-preferences.is-compact .reader-preferences-toggle { width:38px; min-height:38px; padding:0; }
+  .reader-preferences-panel { position:absolute; z-index:80; top:calc(100% + 8px); right:0; width:min(310px,calc(100vw - 28px)); display:grid; gap:.85rem; padding:.9rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface-elevated); box-shadow:var(--shadow-md); }
+  .reader-preferences-panel[hidden] { display:none !important; }
+  .reader-pref-group { display:grid; gap:.4rem; }
+  .reader-pref-group > span { color:var(--text-muted); font-size:.68rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
+  .reader-pref-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem; padding:.25rem; border-radius:11px; background:var(--surface-soft); }
+  .reader-pref-options button { min-height:36px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
+  .reader-pref-options button:hover { background:color-mix(in srgb,var(--surface) 72%,transparent); color:var(--heading-color); }
+  .reader-pref-options button.is-active { background:var(--surface); color:var(--accent); box-shadow:0 1px 5px rgba(0,0,0,.08); }
+  .reader-font-options button,.reader-align-options button { font-size:.7rem; }
+  .reader-font-options button[data-reader-font-choice="serif"] { font-family:Georgia,"Times New Roman",serif; }
+  .reader-pref-reset { min-height:36px; border:1px solid var(--border-color); border-radius:9px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
+  .reader-pref-reset:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-soft); }
+  @media(max-width:600px){ .reader-preferences-toggle span{display:none}.reader-preferences-toggle{width:40px;padding:0}.reader-preferences-panel{position:fixed;top:auto;right:10px;bottom:10px;left:10px;width:auto} }
+</style>

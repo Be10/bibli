@@ -9,6 +9,7 @@ import {
 
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
 import BibleVersionSwitcher from "../../../../components/BibleVersionSwitcher.astro";
+import CatalogFilter from "../../../../components/CatalogFilter.astro";
 
 import {
   getDefaultBibleVersionId,
@@ -100,7 +101,7 @@ const availableVersions =
   title={`Biblia · ${version.abbreviation}`}
   description={`Lee la Biblia en la versión ${version.name}.`}
 >
-  <main class="page">
+  <main class="page" data-catalog-root>
     <div class="bible-version-toolbar">
       <BibleVersionSwitcher
         language="es"
@@ -168,7 +169,14 @@ const availableVersions =
       </article>
     </section>
 
-    <section class="section bible-directory-section">
+    <CatalogFilter
+      total={books.length}
+      noun="libros"
+      label="Buscar libro bíblico"
+      placeholder="Buscar Génesis, profetas, evangelio…"
+    />
+
+    <section class="section bible-directory-section" data-catalog-group>
       <div class="section-header">
         <div>
           <p class="eyebrow">Libros de la Biblia</p>
@@ -185,6 +193,7 @@ const availableVersions =
           <section
             class="bible-testament-group"
             id={group.id}
+            data-catalog-group
           >
             <div class="bible-testament-heading">
               <span>Testamento</span>
@@ -210,6 +219,8 @@ const availableVersions =
                     book.usfm_code
                   )}
                   class="bible-book-card"
+                  data-catalog-item
+                  data-catalog-search={`${book.name} ${book.abbreviation ?? ""} ${book.testament} ${book.category ?? ""} ${book.genre ?? ""} ${book.summary ?? ""} ${book.usfm_code}`}
                 >
                   <div
                     class="bible-book-order"
@@ -271,7 +282,7 @@ const availableVersions =
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -286,8 +297,8 @@ const availableVersions =
   .bible-overview-card,
   .bible-testament-heading,
   .bible-book-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .bible-hero-card {
@@ -295,8 +306,8 @@ const availableVersions =
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .bible-hero-card span,
@@ -304,7 +315,7 @@ const availableVersions =
   .bible-overview-card span,
   .bible-testament-heading span,
   .bible-book-main span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -312,7 +323,7 @@ const availableVersions =
   }
 
   .bible-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -322,7 +333,7 @@ const availableVersions =
   .bible-testament-heading p,
   .bible-book-main p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -336,7 +347,7 @@ const availableVersions =
   .bible-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .bible-stat-card span {
@@ -346,7 +357,7 @@ const availableVersions =
 
   .bible-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -364,7 +375,7 @@ const availableVersions =
     min-height: 180px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -374,12 +385,12 @@ const availableVersions =
 
   a.bible-overview-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .bible-overview-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.25rem;
     line-height: 1.35;
   }
@@ -404,12 +415,12 @@ const availableVersions =
     gap: 8px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .bible-testament-heading h3 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.65rem;
     line-height: 1.15;
   }
@@ -421,9 +432,9 @@ const availableVersions =
     align-items: center;
     padding: 0 12px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.88rem;
   }
 
@@ -440,7 +451,7 @@ const availableVersions =
     min-height: 250px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -450,8 +461,8 @@ const availableVersions =
 
   .bible-book-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .bible-book-order {
@@ -461,8 +472,8 @@ const availableVersions =
     align-items: center;
     justify-content: center;
     border-radius: 18px;
-    background: #5d3212;
-    color: #fffaf0;
+    background: var(--accent);
+    color: var(--accent-contrast);
     font-size: 1.25rem;
     font-weight: 900;
   }
@@ -476,7 +487,7 @@ const availableVersions =
 
   .bible-book-main h2 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.25rem;
     line-height: 1.3;
   }
@@ -494,9 +505,9 @@ const availableVersions =
     align-items: center;
     padding: 0 10px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.78rem;
     font-weight: 800;
   }
@@ -509,17 +520,17 @@ const availableVersions =
     justify-content: space-between;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid #eadcc4;
+    border-top: 1px solid var(--border-color);
   }
 
   .bible-book-footer small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 800;
   }
 
   .bible-book-footer strong {
-    color: #5d3212;
+    color: var(--accent);
     font-size: 0.92rem;
   }
 
@@ -531,16 +542,16 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-stat-card,
   :global(html[data-theme="dark"]) .bible-overview-section,
   :global(html[data-theme="dark"]) .bible-directory-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .bible-overview-card,
   :global(html[data-theme="dark"]) .bible-testament-heading,
   :global(html[data-theme="dark"]) .bible-book-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .bible-hero-card span,
@@ -549,7 +560,7 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-testament-heading span,
   :global(html[data-theme="dark"]) .bible-book-main span,
   :global(html[data-theme="dark"]) .bible-book-footer strong {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .bible-hero-card strong,
@@ -557,7 +568,7 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-overview-card strong,
   :global(html[data-theme="dark"]) .bible-testament-heading h3,
   :global(html[data-theme="dark"]) .bible-book-main h2 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .bible-hero-card p,
@@ -565,23 +576,23 @@ const availableVersions =
   :global(html[data-theme="dark"]) .bible-testament-heading p,
   :global(html[data-theme="dark"]) .bible-book-main p,
   :global(html[data-theme="dark"]) .bible-book-footer small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .bible-book-order {
-    background: #e9b872;
-    color: #1b120b;
+    background: var(--accent);
+    color: var(--accent-contrast);
   }
 
   :global(html[data-theme="dark"]) .bible-testament-heading strong,
   :global(html[data-theme="dark"]) .bible-book-meta span {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #f3d6ad;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent-hover);
   }
 
   :global(html[data-theme="dark"]) .bible-book-footer {
-    border-color: #3a2a1d;
+    border-color: var(--border-color);
   }
 
   @media (max-width: 920px) {

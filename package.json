@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run repo:validate && npm run studies:validate && npm run studies:import && npm run db:validate",
+    "prebuild": "npm run repo:validate && npm run ui:validate && npm run studies:validate && npm run studies:import && npm run db:validate",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -18,12 +18,14 @@
     "studies:sync": "node scripts/sync-studies.mjs",
     "studies:validate": "node scripts/validate-studies.mjs",
     "studies:import": "node scripts/import-studies.mjs",
-    "studies:refresh": "npm run studies:sync && npm run studies:validate && npm run studies:import",
+    "studies:refresh": "npm run studies:sync && npm run studies:validate && npm run studies:import && npm run studies:status",
     "bible:import:rvr1960": "node scripts/import-bible-rvr1960.mjs",
     "bible:validate:kjv": "node scripts/validate-bible-kjv.mjs",
     "bible:import:kjv": "node scripts/import-bible-kjv.mjs",
     "bible:audit:kjv": "node scripts/audit-bible-kjv-text.mjs",
-    "bible:audit:kjv:spacing": "node scripts/audit-bible-kjv-spacing.mjs"
+    "bible:audit:kjv:spacing": "node scripts/audit-bible-kjv-spacing.mjs",
+    "studies:status": "node scripts/studies-status.mjs",
+    "ui:validate": "node scripts/validate-ui.mjs"
   },
   "dependencies": {
     "astro": "^7.0.3",

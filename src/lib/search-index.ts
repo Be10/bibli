@@ -18,6 +18,7 @@ import {
   getAllPlaces,
   getAllRoutes,
   getAllTopics,
+  getAllVisualResources,
   getBibleSearchVerses,
 } from "./queries";
 
@@ -43,11 +44,12 @@ const typePriority: Record<string, number> = {
   Personaje: 4,
   Evento: 5,
   Tema: 6,
-  Lección: 7,
-  Libro: 8,
-  Pasaje: 9,
-  Ruta: 10,
-  Sección: 11,
+  Recurso: 7,
+  Lección: 8,
+  Libro: 9,
+  Pasaje: 10,
+  Ruta: 11,
+  Sección: 12,
 };
 
 const typeLabels: Record<
@@ -61,6 +63,7 @@ const typeLabels: Record<
     Personaje: "Personaje",
     Evento: "Evento",
     Tema: "Tema",
+    Recurso: "Recurso",
     Lección: "Lección",
     Libro: "Libro",
     Pasaje: "Pasaje",
@@ -74,6 +77,7 @@ const typeLabels: Record<
     Personaje: "Person",
     Evento: "Event",
     Tema: "Topic",
+    Recurso: "Resource",
     Lección: "Lesson",
     Libro: "Book",
     Pasaje: "Passage",
@@ -282,7 +286,52 @@ export function buildSearchIndex(
       title: "Mapa",
       url: sitePath("/mapa/"),
       summary: "Mapa bíblico visual con lugares registrados.",
-      searchText: "Mapa bíblico visual lugares registrados",
+      searchText: "Mapa bíblico visual lugares registrados geografía",
+      bookOrder: 999,
+      chapterNumber: 999,
+      verseNumber: 999,
+    }),
+    makeItem(language, "Sección", {
+      title: "Rutas",
+      url: sitePath("/rutas/"),
+      summary: "Rutas guiadas de estudio bíblico.",
+      searchText: "Rutas recorridos itinerarios estudio bíblico guiado",
+      bookOrder: 999,
+      chapterNumber: 999,
+      verseNumber: 999,
+    }),
+    makeItem(language, "Sección", {
+      title: "Recursos visuales",
+      url: sitePath("/recursos/"),
+      summary: "Mapas, cronología, esquemas e infografías para el estudio bíblico.",
+      searchText: "Recursos visuales mapas cronología línea de tiempo esquemas infografías",
+      bookOrder: 999,
+      chapterNumber: 999,
+      verseNumber: 999,
+    }),
+    makeItem(language, "Sección", {
+      title: "Glosario",
+      url: sitePath("/glosario/"),
+      summary: "Términos bíblicos explicados de forma clara.",
+      searchText: "Glosario términos palabras definiciones bíblicas",
+      bookOrder: 999,
+      chapterNumber: 999,
+      verseNumber: 999,
+    }),
+    makeItem(language, "Sección", {
+      title: "Línea de tiempo",
+      url: sitePath("/linea-de-tiempo/"),
+      summary: "Cronología visual de los eventos bíblicos.",
+      searchText: "Línea de tiempo cronología eventos historia bíblica",
+      bookOrder: 999,
+      chapterNumber: 999,
+      verseNumber: 999,
+    }),
+    makeItem(language, "Sección", {
+      title: "Explorar",
+      url: sitePath("/explorar/"),
+      summary: "Centro de navegación por todo el contenido de Bibli.",
+      searchText: "Explorar navegar contenido Bibli biblioteca bíblica",
       bookOrder: 999,
       chapterNumber: 999,
       verseNumber: 999,
@@ -296,7 +345,14 @@ export function buildSearchIndex(
         title: route.title,
         url: sitePath(`/rutas/${route.slug}/`),
         summary: route.description ?? "Ruta guiada.",
-        searchText: joinSearchText(route.title, route.description),
+        searchText: joinSearchText(
+          route.title,
+          route.subtitle,
+          route.description,
+          route.level,
+          route.estimated_duration,
+          route.id
+        ),
         bookOrder: 999,
         chapterNumber: 999,
         verseNumber: 999,
@@ -313,9 +369,18 @@ export function buildSearchIndex(
           ? `Estudio de ${lesson.primary_reference}`
           : lesson.summary ?? "Lección bíblica.",
         searchText: joinSearchText(
+          `Lección ${lesson.lesson_number}`,
+          lesson.lesson_number,
           lesson.title,
+          lesson.eyebrow,
+          lesson.main_idea,
+          lesson.summary,
+          lesson.objective,
           lesson.primary_reference,
           lesson.translation,
+          lesson.book_id,
+          lesson.module_title,
+          lesson.route_id,
           lesson.search_text
         ),
         bookOrder: 999,
@@ -409,6 +474,28 @@ export function buildSearchIndex(
       })
     );
 
+  const resources: SearchIndexItem[] = getAllVisualResources()
+    .filter((resource) => resource.status !== "Borrador")
+    .map((resource) =>
+      makeItem(language, "Recurso", {
+        title: resource.title,
+        url: sitePath(`/recursos/${resource.slug}/`),
+        summary:
+          resource.description ??
+          resource.resource_type ??
+          "Recurso visual para el estudio bíblico.",
+        searchText: joinSearchText(
+          resource.title,
+          resource.resource_type,
+          resource.description,
+          resource.alt_text
+        ),
+        bookOrder: 999,
+        chapterNumber: 999,
+        verseNumber: 999,
+      })
+    );
+
   const glossary: SearchIndexItem[] = getAllGlossaryTerms()
     .filter((term) => term.status !== "Borrador")
     .map((term) =>
@@ -433,6 +520,7 @@ export function buildSearchIndex(
     ...topics,
     ...people,
     ...places,
+    ...resources,
     ...glossary,
     ...bibleVerses,
   ];

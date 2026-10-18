@@ -41,6 +41,7 @@ const coordinatesLabel = hasCoordinates
 const certaintyLabel = place.geographical_certainty ?? "Pendiente";
 const placeTypeLabel = place.place_type ?? "Lugar bíblico";
 const summaryLabel = place.summary ?? "Descripción pendiente.";
+const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
 ---
 
 <BaseLayout
@@ -77,6 +78,11 @@ const summaryLabel = place.summary ?? "Descripción pendiente.";
 
           <a href={sitePath("/lugares/")} class="button secondary">
             Todos los lugares
+          </a>
+
+
+          <a href={searchUrl} class="button secondary">
+            Buscar conexiones
           </a>
         </div>
       </div>
@@ -233,5 +239,13 @@ const summaryLabel = place.summary ?? "Descripción pendiente.";
         </p>
       </section>
     )}
+
+    <section class="section place-footer-nav">
+      <div class="actions">
+        <a href={sitePath("/lugares/")} class="button secondary">Volver a lugares</a>
+        <a href={searchUrl} class="button secondary">Buscar conexiones</a>
+        <a href={sitePath("/explorar/")} class="button">Explorar Bibli</a>
+      </div>
+    </section>
   </main>
 </BaseLayout>

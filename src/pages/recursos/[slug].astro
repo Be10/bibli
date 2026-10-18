@@ -40,6 +40,7 @@ const statusLabel =
   resource.status === "Idea"
     ? "Idea visual"
     : resource.status;
+const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(resource.title)}`;
 ---
 
 <BaseLayout
@@ -73,6 +74,10 @@ const statusLabel =
               Ver lección relacionada
             </a>
           )}
+
+          <a href={searchUrl} class="button secondary">
+            Buscar conexiones
+          </a>
         </div>
       </div>
 
@@ -198,7 +203,7 @@ const statusLabel =
         Explorar Bibli
       </a>
 
-      <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button">
+      <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button">
         Ruta principal
       </a>
     </section>
@@ -246,14 +251,14 @@ const statusLabel =
     display: grid;
     gap: 10px;
     padding: 24px;
-    border: 1px solid #eadcc4;
+    border: 1px solid var(--border-color);
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .visual-resource-status-card span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -264,14 +269,14 @@ const statusLabel =
   }
 
   .visual-resource-status-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.6rem;
     line-height: 1.15;
   }
 
   .visual-resource-status-card p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -281,12 +286,12 @@ const statusLabel =
 
   .visual-resource-preview {
     overflow: hidden;
-    border: 1px solid #eadcc4;
+    border: 1px solid var(--border-color);
     border-radius: 28px;
     background:
-      radial-gradient(circle at top left, rgba(233, 184, 114, 0.28), transparent 36%),
-      linear-gradient(135deg, #fff2d8, #f7dfb7);
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.08);
+      radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 20%, transparent), transparent 36%),
+      linear-gradient(135deg, var(--accent-subtle), var(--accent-soft));
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
   }
 
   .visual-resource-preview img {
@@ -309,7 +314,7 @@ const statusLabel =
 
   .visual-resource-placeholder span {
     max-width: 100%;
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -321,7 +326,7 @@ const statusLabel =
 
   .visual-resource-placeholder strong {
     max-width: 720px;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: clamp(2rem, 5vw, 4rem);
     line-height: 1;
   }
@@ -329,7 +334,7 @@ const statusLabel =
   .visual-resource-placeholder p {
     max-width: 640px;
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.8;
   }
 
@@ -343,30 +348,30 @@ const statusLabel =
   :global(html[data-theme="dark"]) .visual-resource-status-card,
   :global(html[data-theme="dark"]) .visual-resource-preview,
   :global(html[data-theme="dark"]) .visual-resource-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .visual-resource-preview {
     background:
-      radial-gradient(circle at top left, rgba(233, 184, 114, 0.18), transparent 36%),
-      linear-gradient(135deg, #2a1c11, #3a2a1d);
+      radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36%),
+      linear-gradient(135deg, var(--surface-soft), var(--border-color));
   }
 
   :global(html[data-theme="dark"]) .visual-resource-status-card span,
   :global(html[data-theme="dark"]) .visual-resource-placeholder span {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .visual-resource-status-card strong,
   :global(html[data-theme="dark"]) .visual-resource-placeholder strong {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .visual-resource-status-card p,
   :global(html[data-theme="dark"]) .visual-resource-placeholder p {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   @media (max-width: 860px) {

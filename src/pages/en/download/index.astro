@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import OfflinePackages from "../../../components/OfflinePackages.astro";
+import Icon from "../../../components/Icon.astro";
+import { sitePath } from "../../../lib/site-paths";
+---
+
+<BaseLayout title="Bibli offline" lang="en" alternateLanguage={{ code: "es", label: "Español", href: sitePath("/descargar/") }}>
+  <main class="offline-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href={sitePath("/en/")}>Home</a><span>›</span><span>Offline</span></nav>
+    <header class="offline-hero">
+      <span class="offline-hero-icon"><Icon name="download" size={24} /></span>
+      <div><p class="eyebrow">PWA · offline use</p><h1>Download Bibli for offline use</h1><p>Keep only what you need on this device. Each package can be updated or removed independently.</p></div>
+    </header>
+    <OfflinePackages lang="en" />
+  </main>
+</BaseLayout>
+
+<style>
+  .offline-page{width:min(var(--content-max),calc(100% - 32px));margin:0 auto;padding:18px 0 76px}.offline-hero{display:flex;align-items:flex-start;gap:1rem;margin:0 0 1rem;padding:clamp(1.3rem,3vw,2rem);border:1px solid var(--border-color);border-radius:22px;background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent-soft) 30%,var(--surface)));box-shadow:var(--shadow-sm)}.offline-hero-icon{width:52px;height:52px;display:grid;place-items:center;flex:0 0 52px;border-radius:15px;background:var(--accent);color:var(--accent-contrast)}.offline-hero h1{margin:.25rem 0 .55rem;color:var(--heading-color);font-size:clamp(1.8rem,4vw,2.7rem);letter-spacing:-.04em}.offline-hero p:last-child{max-width:760px;margin:0;color:var(--text-muted);line-height:1.65}@media(max-width:600px){.offline-page{width:min(100% - 20px,var(--content-max));padding-top:10px}.offline-hero{padding:1.15rem;border-radius:18px}.offline-hero-icon{width:44px;height:44px;flex-basis:44px}}
+</style>

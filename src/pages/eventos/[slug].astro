@@ -61,6 +61,7 @@ const summaryLabel = event.summary ?? "Resumen pendiente.";
 const descriptionLabel = event.description ?? "Descripción pendiente.";
 const appearsOnTimelineLabel = event.appears_on_timeline ? "Sí" : "No";
 const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
+const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`;
 ---
 
 <BaseLayout
@@ -101,6 +102,11 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
 
           <a href={sitePath("/eventos/")} class="button secondary">
             Todos los eventos
+          </a>
+
+
+          <a href={searchUrl} class="button secondary">
+            Buscar conexiones
           </a>
         </div>
       </div>
@@ -388,7 +394,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -404,8 +410,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-link-panel,
   .event-place-card,
   .event-lesson-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .event-hero-card {
@@ -413,8 +419,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .event-hero-card span,
@@ -422,7 +428,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-visibility-card span,
   .event-place-card span,
   .event-lesson-card span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -430,7 +436,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   }
 
   .event-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.45rem;
     line-height: 1.2;
   }
@@ -441,7 +447,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-place-card p,
   .event-empty-section p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -455,7 +461,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-meta-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .event-meta-card span {
@@ -465,7 +471,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
 
   .event-meta-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.02rem;
     line-height: 1.4;
     overflow-wrap: anywhere;
@@ -474,8 +480,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-story-card {
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
-    border: 1px solid #eadcc4;
+    background: var(--surface-soft);
+    border: 1px solid var(--border-color);
   }
 
   .event-visibility-grid,
@@ -499,7 +505,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-lesson-card {
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .event-visibility-card {
@@ -510,14 +516,14 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-visibility-card strong,
   .event-place-card strong,
   .event-lesson-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.12rem;
     line-height: 1.35;
   }
 
   .event-link-panel h3 {
     margin: 0 0 16px;
-    color: #2d2418;
+    color: var(--text-color);
   }
 
   .event-places-grid {
@@ -533,7 +539,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-place-card small,
   .event-lesson-card small,
   .event-list span {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
   }
@@ -548,7 +554,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   .event-card-actions a {
     display: inline-flex;
     width: fit-content;
-    color: #5d3212;
+    color: var(--accent);
     font-weight: 900;
     text-decoration: none;
   }
@@ -571,7 +577,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   }
 
   .event-list a {
-    color: #5d3212;
+    color: var(--accent);
     font-weight: 900;
     text-decoration: none;
   }
@@ -594,8 +600,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
 
   .event-lesson-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .event-footer-nav {
@@ -615,8 +621,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   :global(html[data-theme="dark"]) .event-lessons-section,
   :global(html[data-theme="dark"]) .event-empty-section,
   :global(html[data-theme="dark"]) .event-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
@@ -625,8 +631,8 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   :global(html[data-theme="dark"]) .event-link-panel,
   :global(html[data-theme="dark"]) .event-place-card,
   :global(html[data-theme="dark"]) .event-lesson-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .event-hero-card span,
@@ -636,7 +642,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   :global(html[data-theme="dark"]) .event-lesson-card span,
   :global(html[data-theme="dark"]) .event-card-actions a,
   :global(html[data-theme="dark"]) .event-list a {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .event-hero-card strong,
@@ -645,7 +651,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   :global(html[data-theme="dark"]) .event-place-card strong,
   :global(html[data-theme="dark"]) .event-lesson-card strong,
   :global(html[data-theme="dark"]) .event-link-panel h3 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .event-hero-card p,
@@ -656,7 +662,7 @@ const appearsOnMapLabel = event.appears_on_map ? "Sí" : "No";
   :global(html[data-theme="dark"]) .event-lesson-card small,
   :global(html[data-theme="dark"]) .event-list span,
   :global(html[data-theme="dark"]) .event-empty-section p {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   @media (max-width: 860px) {

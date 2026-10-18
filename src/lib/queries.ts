@@ -701,17 +701,17 @@ export function getAllBooksByLanguage(language: string): Book[] {
       SELECT
         books.id,
         books.usfm_code,
-        COALESCE(book_translations.name, books.name) AS name,
-        COALESCE(book_translations.slug, books.slug) AS slug,
-        COALESCE(book_translations.abbreviation, books.abbreviation) AS abbreviation,
-        COALESCE(book_translations.testament, books.testament) AS testament,
+        book_translations.name AS name,
+        book_translations.slug AS slug,
+        book_translations.abbreviation AS abbreviation,
+        book_translations.testament AS testament,
         books.order_number,
-        COALESCE(book_translations.category, books.category) AS category,
-        COALESCE(book_translations.genre, books.genre) AS genre,
-        COALESCE(book_translations.summary, books.summary) AS summary,
+        book_translations.category AS category,
+        book_translations.genre AS genre,
+        book_translations.summary AS summary,
         books.status
       FROM books
-      LEFT JOIN book_translations
+      JOIN book_translations
         ON book_translations.book_id = books.id
         AND book_translations.language = ?
       ORDER BY books.order_number ASC
@@ -729,14 +729,15 @@ export function getBookByLocalizedSlug(
       `
       SELECT
         books.id,
-        COALESCE(book_translations.name, books.name) AS name,
-        COALESCE(book_translations.slug, books.slug) AS slug,
-        COALESCE(book_translations.abbreviation, books.abbreviation) AS abbreviation,
-        COALESCE(book_translations.testament, books.testament) AS testament,
+        books.usfm_code,
+        book_translations.name AS name,
+        book_translations.slug AS slug,
+        book_translations.abbreviation AS abbreviation,
+        book_translations.testament AS testament,
         books.order_number,
-        COALESCE(book_translations.category, books.category) AS category,
-        COALESCE(book_translations.genre, books.genre) AS genre,
-        COALESCE(book_translations.summary, books.summary) AS summary,
+        book_translations.category AS category,
+        book_translations.genre AS genre,
+        book_translations.summary AS summary,
         books.status
       FROM books
       JOIN book_translations
@@ -957,8 +958,8 @@ export function getBibleSearchVerses(
       SELECT
         bible_verses.id,
         books.id AS book_id,
-        COALESCE(book_translations.name, books.name) AS book_name,
-        COALESCE(book_translations.slug, books.slug) AS book_slug,
+        book_translations.name AS book_name,
+        book_translations.slug AS book_slug,
         books.usfm_code AS book_usfm_code,
         books.order_number AS book_order,
         bible_verses.chapter_number,
@@ -966,7 +967,7 @@ export function getBibleSearchVerses(
         bible_verses.verse_text
       FROM bible_verses
       JOIN books ON books.id = bible_verses.book_id
-      LEFT JOIN book_translations
+      JOIN book_translations
         ON book_translations.book_id = books.id
         AND book_translations.language = ?
       WHERE bible_verses.version_id = ?

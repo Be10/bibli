@@ -1,0 +1,310 @@
+---
+import Icon from "./Icon.astro";
+import { sitePath } from "../lib/site-paths";
+
+type LanguageCode = "es" | "en";
+interface Props { lang?: LanguageCode; }
+const { lang = "es" } = Astro.props;
+const manifestUrl = sitePath("/offline-packages.json");
+const copy = lang === "en"
+  ? {
+      loading: "Loading offline packages…",
+      unavailable: "Offline downloads are not available in this browser.",
+      online: "Online",
+      offline: "Offline",
+      storage: "Storage used by this site",
+      app: "App",
+      lessons: "Lessons",
+      bible: "Bible",
+      items: "pages",
+      download: "Download",
+      update: "Update",
+      remove: "Remove",
+      installed: "Downloaded",
+      downloading: "Downloading",
+      finalizing: "Saving local resources…",
+      done: "Package ready offline.",
+      removed: "Package removed.",
+      failed: "The download could not be completed. Check your connection and try again.",
+      confirmRemove: "Remove this offline package from this device?",
+      note: "Downloads are stored only on this device. Browser storage policies can remove cached data when space is low.",
+    }
+  : {
+      loading: "Cargando paquetes sin conexión…",
+      unavailable: "Las descargas sin conexión no están disponibles en este navegador.",
+      online: "Con conexión",
+      offline: "Sin conexión",
+      storage: "Almacenamiento usado por este sitio",
+      app: "Aplicación",
+      lessons: "Lecciones",
+      bible: "Biblia",
+      items: "páginas",
+      download: "Descargar",
+      update: "Actualizar",
+      remove: "Eliminar",
+      installed: "Descargado",
+      downloading: "Descargando",
+      finalizing: "Guardando recursos locales…",
+      done: "Paquete listo para usar sin conexión.",
+      removed: "Paquete eliminado.",
+      failed: "No se pudo completar la descarga. Revisa tu conexión e inténtalo nuevamente.",
+      confirmRemove: "¿Eliminar este paquete sin conexión de este dispositivo?",
+      note: "Las descargas se guardan solo en este dispositivo. El navegador puede liberar datos almacenados cuando queda poco espacio.",
+    };
+---
+
+<section class="offline-manager" data-offline-manager data-language={lang} data-manifest-url={manifestUrl}>
+  <header class="offline-manager-head">
+    <div>
+      <span class="offline-kicker"><Icon name="download" size={17} /> {lang === "en" ? "Offline library" : "Bibli sin conexión"}</span>
+      <h2>{lang === "en" ? "Choose what to keep on this device" : "Elige qué guardar en este dispositivo"}</h2>
+    </div>
+    <div class="offline-statuses">
+      <span class="connection-status" data-offline-connection><span class="status-dot"></span><span></span></span>
+      <span class="storage-status" data-offline-storage hidden><Icon name="layers" size={15} /><span></span></span>
+    </div>
+  </header>
+
+  <p class="offline-manager-note"><Icon name="info" size={16} /> <span>{copy.note}</span></p>
+  <div class="offline-feedback" data-offline-feedback aria-live="polite">{copy.loading}</div>
+  <div class="offline-package-list" data-offline-packages></div>
+</section>
+
+<script define:vars={{ copy }}>
+  (() => {
+    const root = document.querySelector("[data-offline-manager]");
+    if (!(root instanceof HTMLElement)) return;
+    const language = root.dataset.language === "en" ? "en" : "es";
+    const manifestUrl = root.dataset.manifestUrl;
+    const list = root.querySelector("[data-offline-packages]");
+    const feedback = root.querySelector("[data-offline-feedback]");
+    const connection = root.querySelector("[data-offline-connection]");
+    const storage = root.querySelector("[data-offline-storage]");
+    const stateKey = "bibli-offline-packages-v1";
+    const cachePrefix = "bibli-package-";
+    let packages = [];
+    let busyPackageId = null;
+
+    const escapeHtml = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+    const cacheName = (id) => `${cachePrefix}${id}-v1`;
+    const loadState = () => {
+      try { return JSON.parse(localStorage.getItem(stateKey) || "{}"); } catch { return {}; }
+    };
+    const saveState = (state) => localStorage.setItem(stateKey, JSON.stringify(state));
+    const formatBytes = (bytes) => {
+      if (!Number.isFinite(bytes) || bytes <= 0) return "0 MB";
+      const mb = bytes / 1024 / 1024;
+      return `${mb < 10 ? mb.toFixed(1) : Math.round(mb)} MB`;
+    };
+    const kindLabel = (kind) => kind === "app" ? copy.app : kind === "lessons" ? copy.lessons : copy.bible;
+    const titleFor = (pkg) => pkg.title?.[language] ?? pkg.title?.es ?? pkg.id;
+    const descriptionFor = (pkg) => pkg.description?.[language] ?? pkg.description?.es ?? "";
+
+    const updateConnection = () => {
+      if (!(connection instanceof HTMLElement)) return;
+      const online = navigator.onLine;
+      connection.classList.toggle("is-offline", !online);
+      const label = connection.querySelector("span:last-child");
+      if (label) label.textContent = online ? copy.online : copy.offline;
+    };
+
+    const updateStorage = async () => {
+      if (!(storage instanceof HTMLElement) || !navigator.storage?.estimate) return;
+      const estimate = await navigator.storage.estimate();
+      const label = storage.querySelector("span:last-child");
+      if (label) label.textContent = `${copy.storage}: ${formatBytes(estimate.usage || 0)}`;
+      storage.hidden = false;
+    };
+
+    const packageVisible = (pkg) => pkg.language === "all" || pkg.kind === "bible" || (language === "es" && pkg.kind === "lessons");
+
+    const getInstalledMap = async () => {
+      const keys = await caches.keys();
+      const state = loadState();
+      const installed = {};
+      for (const pkg of packages) {
+        const exists = keys.includes(cacheName(pkg.id));
+        installed[pkg.id] = { exists, meta: state[pkg.id] ?? null };
+      }
+      return installed;
+    };
+
+    const render = async () => {
+      if (!(list instanceof HTMLElement)) return;
+      const installed = await getInstalledMap();
+      const visible = packages.filter(packageVisible);
+      list.innerHTML = visible.map((pkg) => {
+        const info = installed[pkg.id];
+        const current = info?.exists;
+        const working = busyPackageId === pkg.id;
+        return `<article class="offline-package-card" data-package-id="${escapeHtml(pkg.id)}">
+          <div class="package-copy">
+            <span class="package-kind">${escapeHtml(kindLabel(pkg.kind))}</span>
+            <h3>${escapeHtml(titleFor(pkg))}</h3>
+            <p>${escapeHtml(descriptionFor(pkg))}</p>
+            <div class="package-meta"><span>${pkg.urlCount} ${escapeHtml(copy.items)}</span>${pkg.language !== "all" ? `<span>${escapeHtml(String(pkg.language).toUpperCase())}</span>` : ""}${current ? `<strong>${escapeHtml(copy.installed)}</strong>` : ""}</div>
+          </div>
+          <div class="package-actions">
+            <button type="button" class="package-download" data-package-download="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${escapeHtml(current ? copy.update : copy.download)}</button>
+            ${current ? `<button type="button" class="package-remove" data-package-remove="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${escapeHtml(copy.remove)}</button>` : ""}
+          </div>
+          <div class="package-progress" data-package-progress="${escapeHtml(pkg.id)}" ${working ? "" : "hidden"}><span></span><small></small></div>
+        </article>`;
+      }).join("");
+
+      list.querySelectorAll("[data-package-download]").forEach((button) => button.addEventListener("click", () => downloadPackage(button.getAttribute("data-package-download"))));
+      list.querySelectorAll("[data-package-remove]").forEach((button) => button.addEventListener("click", () => removePackage(button.getAttribute("data-package-remove"))));
+    };
+
+    const normalizeAssetUrl = (value, baseUrl) => {
+      try {
+        const url = new URL(value, baseUrl);
+        if (url.origin !== location.origin || ["data:", "blob:"].includes(url.protocol)) return null;
+        url.hash = "";
+        return url.href;
+      } catch { return null; }
+    };
+
+    const discoverDependencies = async (response, url) => {
+      const contentType = response.headers.get("content-type") || "";
+      const found = [];
+      if (contentType.includes("text/html")) {
+        const html = await response.clone().text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        doc.querySelectorAll('script[src],link[rel="stylesheet"][href],link[rel="modulepreload"][href],link[rel="preload"][href],img[src],source[src]').forEach((element) => {
+          const value = element.getAttribute("src") || element.getAttribute("href");
+          const normalized = value && normalizeAssetUrl(value, url);
+          if (normalized) found.push(normalized);
+        });
+        doc.querySelectorAll("img[srcset],source[srcset]").forEach((element) => {
+          const srcset = element.getAttribute("srcset") || "";
+          srcset.split(",").forEach((part) => {
+            const value = part.trim().split(/\s+/)[0];
+            const normalized = value && normalizeAssetUrl(value, url);
+            if (normalized) found.push(normalized);
+          });
+        });
+      } else if (contentType.includes("text/css")) {
+        const css = await response.clone().text();
+        for (const match of css.matchAll(/url\((['"]?)(.*?)\1\)/g)) {
+          const value = match[2]?.trim();
+          if (!value || value.startsWith("data:")) continue;
+          const normalized = normalizeAssetUrl(value, url);
+          if (normalized) found.push(normalized);
+        }
+      }
+      return found;
+    };
+
+    const setProgress = (id, completed, total, finalizing = false) => {
+      const card = list?.querySelector(`[data-package-id="${CSS.escape(id)}"]`);
+      const progress = card?.querySelector("[data-package-progress]");
+      if (!(progress instanceof HTMLElement)) return;
+      progress.hidden = false;
+      const bar = progress.querySelector("span");
+      const label = progress.querySelector("small");
+      const pct = total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+      if (bar instanceof HTMLElement) bar.style.width = `${pct}%`;
+      if (label) label.textContent = finalizing ? copy.finalizing : `${copy.downloading} ${completed}/${total}`;
+    };
+
+    async function downloadPackage(id) {
+      if (!id || busyPackageId) return;
+      const pkg = packages.find((item) => item.id === id);
+      if (!pkg || !navigator.onLine) {
+        if (feedback) feedback.textContent = copy.failed;
+        return;
+      }
+      busyPackageId = id;
+      await render();
+      if (feedback) feedback.textContent = `${copy.downloading}: ${titleFor(pkg)}`;
+      const name = cacheName(id);
+      await caches.delete(name);
+      const cache = await caches.open(name);
+      const queue = pkg.urls.map((value) => new URL(value, location.origin).href);
+      const seen = new Set(queue);
+      let completed = 0;
+      let cursor = 0;
+
+      try {
+        while (cursor < queue.length) {
+          const batch = queue.slice(cursor, cursor + 5);
+          cursor += batch.length;
+          const results = await Promise.all(batch.map(async (url) => {
+            const response = await fetch(url, { cache: "no-cache", credentials: "same-origin" });
+            if (!response.ok) throw new Error(`${response.status} ${url}`);
+            await cache.put(url, response.clone());
+            const dependencies = await discoverDependencies(response, url);
+            completed += 1;
+            setProgress(id, completed, queue.length);
+            return dependencies;
+          }));
+          for (const dependencies of results) {
+            for (const dependency of dependencies) {
+              if (!seen.has(dependency)) {
+                seen.add(dependency);
+                queue.push(dependency);
+              }
+            }
+          }
+        }
+        setProgress(id, completed, queue.length, true);
+        const state = loadState();
+        state[id] = { revision: pkg.revision, urlCount: pkg.urlCount, cachedEntries: queue.length, installedAt: new Date().toISOString() };
+        saveState(state);
+        if (feedback) feedback.textContent = `${titleFor(pkg)}: ${copy.done}`;
+      } catch (error) {
+        console.error("Bibli offline package failed", error);
+        await caches.delete(name);
+        if (feedback) feedback.textContent = copy.failed;
+      } finally {
+        busyPackageId = null;
+        await render();
+        await updateStorage();
+      }
+    }
+
+    async function removePackage(id) {
+      if (!id || busyPackageId || !confirm(copy.confirmRemove)) return;
+      busyPackageId = id;
+      await render();
+      await caches.delete(cacheName(id));
+      const state = loadState();
+      delete state[id];
+      saveState(state);
+      busyPackageId = null;
+      if (feedback) feedback.textContent = copy.removed;
+      await render();
+      await updateStorage();
+    }
+
+    const init = async () => {
+      updateConnection();
+      addEventListener("online", updateConnection);
+      addEventListener("offline", updateConnection);
+      if (!("caches" in window) || !manifestUrl) {
+        if (feedback) feedback.textContent = copy.unavailable;
+        return;
+      }
+      try {
+        const response = await fetch(manifestUrl, { cache: "no-cache" });
+        if (!response.ok) throw new Error(String(response.status));
+        const payload = await response.json();
+        packages = Array.isArray(payload.packages) ? payload.packages : [];
+        if (feedback) feedback.textContent = "";
+        await render();
+        await updateStorage();
+      } catch (error) {
+        console.error("Bibli offline manifest failed", error);
+        if (feedback) feedback.textContent = copy.failed;
+      }
+    };
+
+    init();
+  })();
+</script>
+
+<style>
+  .offline-manager{display:grid;gap:1rem}.offline-manager-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}.offline-manager-head h2{margin:.35rem 0 0;color:var(--heading-color);font-size:clamp(1.35rem,2.5vw,1.8rem)}.offline-kicker{display:inline-flex;align-items:center;gap:.45rem;color:var(--accent);font-size:.72rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.offline-statuses{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.45rem}.connection-status,.storage-status{min-height:34px;display:inline-flex;align-items:center;gap:.4rem;padding:0 .65rem;border:1px solid var(--border-color);border-radius:999px;background:var(--surface);color:var(--text-muted);font-size:.7rem;font-weight:750}.status-dot{width:7px;height:7px;border-radius:50%;background:#2f8a57}.connection-status.is-offline .status-dot{background:#a25745}.offline-manager-note{display:flex;align-items:flex-start;gap:.5rem;margin:0;padding:.8rem .9rem;border:1px solid var(--border-color);border-radius:13px;background:var(--surface-soft);color:var(--text-muted);font-size:.78rem;line-height:1.55}.offline-manager-note :global(.bibli-icon){flex:0 0 auto;color:var(--accent);margin-top:.1rem}.offline-feedback{min-height:20px;color:var(--text-muted);font-size:.78rem}.offline-package-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.offline-package-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:1rem;border:1px solid var(--border-color);border-radius:17px;background:var(--surface);box-shadow:0 7px 22px rgba(15,23,42,.025)}.package-copy{min-width:0}.package-kind{color:var(--accent);font-size:.64rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.package-copy h3{margin:.32rem 0 .35rem;color:var(--heading-color);font-size:1rem}.package-copy p{margin:0;color:var(--text-muted);font-size:.78rem;line-height:1.55}.package-meta{display:flex;gap:.55rem;margin-top:.6rem;color:var(--text-muted);font-size:.68rem}.package-meta strong{color:var(--accent)}.package-actions{display:flex;flex-direction:column;gap:.4rem;align-self:center}.package-actions button{min-width:92px;min-height:38px;border-radius:10px;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}.package-download{border:1px solid var(--accent);background:var(--accent);color:var(--accent-contrast)}.package-remove{border:1px solid var(--border-color);background:transparent;color:var(--text-muted)}.package-actions button:disabled{opacity:.55;cursor:wait}.package-progress{grid-column:1/-1;position:relative;height:24px;padding-top:15px;border-top:1px solid var(--border-color)}.package-progress::before{content:"";position:absolute;left:0;right:0;top:8px;height:4px;border-radius:999px;background:var(--surface-muted)}.package-progress>span{position:absolute;left:0;top:8px;height:4px;border-radius:999px;background:var(--accent);transition:width .15s ease}.package-progress small{position:absolute;right:0;top:13px;color:var(--text-muted);font-size:.62rem}.package-progress[hidden]{display:none}.offline-package-card:has(.package-meta strong){border-color:color-mix(in srgb,var(--accent) 35%,var(--border-color));background:color-mix(in srgb,var(--accent-soft) 13%,var(--surface))}
+  @media(max-width:760px){.offline-manager-head{align-items:flex-start;flex-direction:column}.offline-statuses{justify-content:flex-start}.offline-package-list{grid-template-columns:1fr}.offline-package-card{grid-template-columns:1fr}.package-actions{flex-direction:row;align-self:auto}.package-actions button{flex:1}.package-progress{grid-column:1}}
+</style>

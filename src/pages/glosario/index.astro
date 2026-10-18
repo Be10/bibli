@@ -1,39 +1,97 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
+import Icon from "../../components/Icon.astro";
 import { getAllGlossaryTerms } from "../../lib/queries";
 
 const terms = getAllGlossaryTerms().filter((term) => term.status !== "Borrador");
 ---
 
 <BaseLayout
-  title="Glosario visual"
-  description="Explora términos bíblicos explicados de forma simple y visual."
+  title="Glosario bíblico"
+  description="Consulta términos bíblicos explicados con claridad y con acceso directo a la búsqueda global de Bibli."
 >
-  <main class="page">
+  <main class="page glossary-page" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Glosario
     </div>
 
-    <section class="hero">
-      <p class="eyebrow">Glosario visual</p>
+    <section class="hero glossary-hero">
+      <div>
+        <p class="eyebrow">Glosario bíblico</p>
+        <h1>Palabras para comprender mejor</h1>
+        <p class="subtitle">
+          Consulta términos importantes del estudio bíblico y encuentra rápidamente
+          la definición que necesitas.
+        </p>
+        <div class="actions">
+          <a href={sitePath("/buscar/")} class="button">Buscar en todo Bibli</a>
+          <a href={sitePath("/explorar/")} class="button secondary">Explorar Bibli</a>
+        </div>
+      </div>
 
-      <h1>Glosario visual</h1>
-
-      <p class="subtitle">
-        Palabras y conceptos importantes explicados de forma sencilla para ayudar
-        al estudio bíblico personal.
-      </p>
+      <aside class="glossary-hero-card" aria-label="Resumen del glosario">
+        <span>Términos publicados</span>
+        <strong>{terms.length}</strong>
+        <p>Definiciones editoriales disponibles para consulta rápida.</p>
+      </aside>
     </section>
 
-    <section class="entity-list">
-      {terms.map((term) => (
-        <a href={sitePath(`/glosario/${term.slug}/`)} class="entity-card">
-          <span class="meta">Término</span>
-          <h2>{term.term}</h2>
-          <p>{term.definition ?? "Definición pendiente."}</p>
-        </a>
-      ))}
+    <CatalogFilter
+      total={terms.length}
+      noun="términos"
+      label="Buscar en el glosario"
+      placeholder="Buscar término o definición…"
+    />
+
+    <section class="section glossary-section" data-catalog-group>
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Directorio</p>
+          <h2>Todos los términos</h2>
+        </div>
+        <span class="section-count">{terms.length} términos</span>
+      </div>
+
+      {terms.length > 0 ? (
+        <div class="glossary-grid">
+          {terms.map((term) => (
+            <a
+              href={sitePath(`/glosario/${term.slug}/`)}
+              class="glossary-card"
+              data-catalog-item
+              data-catalog-search={`${term.term} ${term.definition ?? ""}`}
+            >
+              <span class="glossary-icon"><Icon name="book" size={18} /></span>
+              <span class="meta">Término</span>
+              <h3>{term.term}</h3>
+              <p>{term.definition ?? "Definición pendiente."}</p>
+              <small>Ver definición →</small>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="content"><p>Todavía no hay términos publicados.</p></div>
+      )}
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .glossary-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,320px); gap:32px; align-items:end; }
+  .glossary-hero-card { display:grid; gap:10px; padding:24px; border:1px solid var(--border-color); border-radius:24px; background:var(--surface); box-shadow:0 18px 42px rgba(15,23,42,.08); }
+  .glossary-hero-card span,.glossary-card .meta,.glossary-card small { color:var(--accent); font-size:.74rem; font-weight:900; letter-spacing:.07em; text-transform:uppercase; }
+  .glossary-hero-card strong { color:var(--heading-color); font-size:3rem; line-height:1; }
+  .glossary-hero-card p { margin:0; color:var(--text-muted); line-height:1.6; }
+  .glossary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+  .glossary-card { position:relative; display:grid; align-content:start; gap:8px; min-width:0; min-height:190px; padding:22px; border:1px solid var(--border-color); border-radius:20px; background:var(--surface-elevated); color:inherit; text-decoration:none; transition:transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+  .glossary-card:hover { transform:translateY(-2px); border-color:var(--border-strong); box-shadow:0 14px 30px rgba(15,23,42,.08); }
+  .glossary-icon { width:36px; height:36px; display:grid; place-items:center; border-radius:11px; background:var(--accent-soft); color:var(--accent); }
+  .glossary-card h3 { margin:2px 0 0; color:var(--heading-color); font-size:1.12rem; line-height:1.3; }
+  .glossary-card p { margin:0; color:var(--text-muted); line-height:1.65; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .glossary-card small { margin-top:auto; padding-top:8px; }
+  :global(html[data-theme="dark"]) .glossary-hero-card,:global(html[data-theme="dark"]) .glossary-card { background:var(--surface-soft); border-color:var(--border-color); }
+  @media(max-width:960px){ .glossary-hero{grid-template-columns:1fr}.glossary-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  @media(max-width:640px){ .glossary-grid{grid-template-columns:1fr}.glossary-card{min-height:0} }
+</style>

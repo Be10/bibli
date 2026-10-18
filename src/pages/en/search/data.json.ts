@@ -4,7 +4,7 @@ export function GET() {
   return new Response(JSON.stringify(buildSearchIndex("en")), {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "no-cache, must-revalidate",
     },
   });
 }

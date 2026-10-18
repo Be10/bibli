@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
 import {
   getAllPlaces,
   getEventsByPlaceId,
@@ -33,7 +34,7 @@ const placeTypesCount = new Set(
   title="Lugares bíblicos"
   description="Explora lugares bíblicos conectados con eventos, lecciones y el mapa interactivo."
 >
-  <main class="page">
+  <main class="page" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Lugares
     </div>
@@ -105,9 +106,11 @@ const placeTypesCount = new Set(
         </span>
       </div>
 
+      <CatalogFilter total={places.length} noun="lugares" placeholder="Buscar lugar, tipo o descripción…" label="Buscar lugares bíblicos" />
+
       <div class="places-directory-grid">
         {places.map((place) => (
-          <article class="place-directory-card">
+          <article class="place-directory-card" data-catalog-item data-catalog-search={[place.name, place.summary, place.place_type, place.geographical_certainty].filter(Boolean).join(" ")}>
             <div class="place-directory-card-main">
               <span>{place.place_type ?? "Lugar bíblico"}</span>
               <h2>{place.name}</h2>

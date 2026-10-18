@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllPeople, type Person } from "../../lib/queries";
 
 const people = getAllPeople().filter((person) => person.status !== "Borrador");
@@ -30,7 +31,7 @@ function getPersonInitial(person: Person) {
   title="Personajes bíblicos"
   description="Explora personajes bíblicos conectados con eventos, temas, lugares y lecciones."
 >
-  <main class="page">
+  <main class="page" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Personajes
     </div>
@@ -55,7 +56,7 @@ function getPersonInitial(person: Person) {
             Explorar lugares
           </a>
 
-          <a href={sitePath("/rutas/panorama-visual-de-la-biblia/")} class="button secondary">
+          <a href={sitePath("/rutas/de-la-creacion-al-pacto/")} class="button secondary">
             Ruta principal
           </a>
         </div>
@@ -106,7 +107,7 @@ function getPersonInitial(person: Person) {
 
       <nav class="people-initial-nav" aria-label="Índice de personajes por inicial">
         {peopleByInitial.map((group) => (
-          <a href={`#inicial-${group.initial}`}>
+          <a href={`#inicial-${group.initial}`} data-catalog-nav-target={`inicial-${group.initial}`}>
             <span>{group.initial}</span>
             <strong>{group.people.length}</strong>
           </a>
@@ -126,9 +127,11 @@ function getPersonInitial(person: Person) {
         </span>
       </div>
 
+      <CatalogFilter total={people.length} noun="personajes" placeholder="Buscar personaje o palabra clave…" label="Buscar personajes bíblicos" />
+
       <div class="people-groups">
         {peopleByInitial.map((group) => (
-          <section class="people-group" id={`inicial-${group.initial}`}>
+          <section class="people-group" id={`inicial-${group.initial}`} data-catalog-group>
             <div class="people-group-heading">
               <span>Inicial</span>
               <h3>{group.initial}</h3>
@@ -139,7 +142,7 @@ function getPersonInitial(person: Person) {
 
             <div class="people-directory-grid">
               {group.people.map((person) => (
-                <a href={sitePath(`/personajes/${person.slug}/`)} class="person-directory-card">
+                <a href={sitePath(`/personajes/${person.slug}/`)} class="person-directory-card" data-catalog-item data-catalog-search={[person.name, person.summary].filter(Boolean).join(" ")}>
                   <div class="person-directory-avatar" aria-hidden="true">
                     {getPersonInitial(person)}
                   </div>
@@ -182,7 +185,7 @@ function getPersonInitial(person: Person) {
     width: 320px;
     height: 320px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(200, 169, 130, 0.28), transparent 68%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
     pointer-events: none;
   }
 
@@ -197,8 +200,8 @@ function getPersonInitial(person: Person) {
   .people-initial-nav a,
   .people-group-heading,
   .person-directory-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .people-hero-card {
@@ -206,8 +209,8 @@ function getPersonInitial(person: Person) {
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .people-hero-card span,
@@ -215,7 +218,7 @@ function getPersonInitial(person: Person) {
   .people-initial-nav span,
   .people-group-heading span,
   .person-directory-content span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -223,7 +226,7 @@ function getPersonInitial(person: Person) {
   }
 
   .people-hero-card strong {
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -232,7 +235,7 @@ function getPersonInitial(person: Person) {
   .people-group-heading p,
   .person-directory-content p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.7;
   }
 
@@ -246,7 +249,7 @@ function getPersonInitial(person: Person) {
   .people-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .people-stat-card span {
@@ -256,7 +259,7 @@ function getPersonInitial(person: Person) {
 
   .people-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -275,7 +278,7 @@ function getPersonInitial(person: Person) {
     min-height: 44px;
     padding: 0 14px;
     border-radius: 999px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -285,8 +288,8 @@ function getPersonInitial(person: Person) {
 
   .people-initial-nav a:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .people-initial-nav strong {
@@ -296,8 +299,8 @@ function getPersonInitial(person: Person) {
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background: white;
-    color: #5d3212;
+    background: var(--surface);
+    color: var(--accent);
     font-size: 0.86rem;
     font-weight: 900;
   }
@@ -320,12 +323,12 @@ function getPersonInitial(person: Person) {
     align-self: start;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
   }
 
   .people-group-heading h3 {
     margin: 8px 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -343,7 +346,7 @@ function getPersonInitial(person: Person) {
     min-height: 210px;
     padding: 22px;
     border-radius: 22px;
-    background: #fffaf0;
+    background: var(--surface-soft);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -353,8 +356,8 @@ function getPersonInitial(person: Person) {
 
   .person-directory-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--accent-border);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .person-directory-avatar {
@@ -364,8 +367,8 @@ function getPersonInitial(person: Person) {
     align-items: center;
     justify-content: center;
     border-radius: 18px;
-    background: #5d3212;
-    color: #fffaf0;
+    background: var(--accent);
+    color: var(--accent-contrast);
     font-size: 1.35rem;
     font-weight: 900;
   }
@@ -379,7 +382,7 @@ function getPersonInitial(person: Person) {
 
   .person-directory-content h2 {
     margin: 0;
-    color: #2d2418;
+    color: var(--text-color);
     font-size: 1.2rem;
     line-height: 1.3;
   }
@@ -392,17 +395,17 @@ function getPersonInitial(person: Person) {
     justify-content: space-between;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid #eadcc4;
+    border-top: 1px solid var(--border-color);
   }
 
   .person-directory-footer small {
-    color: #6a5c4d;
+    color: var(--text-muted);
     font-size: 0.88rem;
     font-weight: 800;
   }
 
   .person-directory-footer strong {
-    color: #5d3212;
+    color: var(--accent);
     font-size: 0.92rem;
   }
 
@@ -410,16 +413,16 @@ function getPersonInitial(person: Person) {
   :global(html[data-theme="dark"]) .people-stat-card,
   :global(html[data-theme="dark"]) .people-index-section,
   :global(html[data-theme="dark"]) .people-directory-section {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .people-initial-nav a,
   :global(html[data-theme="dark"]) .people-group-heading,
   :global(html[data-theme="dark"]) .person-directory-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .people-hero-card span,
@@ -428,35 +431,35 @@ function getPersonInitial(person: Person) {
   :global(html[data-theme="dark"]) .people-group-heading span,
   :global(html[data-theme="dark"]) .person-directory-content span,
   :global(html[data-theme="dark"]) .person-directory-footer strong {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .people-hero-card strong,
   :global(html[data-theme="dark"]) .people-stat-card strong,
   :global(html[data-theme="dark"]) .people-group-heading h3,
   :global(html[data-theme="dark"]) .person-directory-content h2 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .people-hero-card p,
   :global(html[data-theme="dark"]) .people-group-heading p,
   :global(html[data-theme="dark"]) .person-directory-content p,
   :global(html[data-theme="dark"]) .person-directory-footer small {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .people-initial-nav strong {
-    background: #18110c;
-    color: #f3d6ad;
+    background: var(--surface);
+    color: var(--accent-hover);
   }
 
   :global(html[data-theme="dark"]) .person-directory-avatar {
-    background: #e9b872;
-    color: #1b120b;
+    background: var(--accent);
+    color: var(--accent-contrast);
   }
 
   :global(html[data-theme="dark"]) .person-directory-footer {
-    border-color: #3a2a1d;
+    border-color: var(--border-color);
   }
 
   @media (max-width: 920px) {

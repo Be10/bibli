@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllEvents, type Event } from "../../lib/queries";
 
 const events = getAllEvents()
@@ -39,7 +40,7 @@ function getEventMeta(event: Event) {
   title="Línea de tiempo bíblica"
   description="Explora una línea de tiempo visual de eventos bíblicos principales, organizada por períodos, fechas aproximadas y conexiones narrativas."
 >
-  <main class="page timeline-page timeline-ready">
+  <main class="page timeline-page timeline-ready" data-catalog-root>
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Línea de tiempo
     </div>
@@ -102,7 +103,14 @@ function getEventMeta(event: Event) {
       </article>
     </section>
 
-    <section class="section timeline-section">
+    <CatalogFilter
+      total={events.length}
+      noun="eventos"
+      label="Buscar en la línea de tiempo"
+      placeholder="Buscar evento, período, fecha o tema…"
+    />
+
+    <section class="section timeline-section" data-catalog-group>
       <div class="section-header">
         <div>
           <p class="eyebrow">Secuencia narrativa</p>
@@ -117,7 +125,7 @@ function getEventMeta(event: Event) {
       {events.length > 0 ? (
         <div class="timeline-periods">
           {eventsByPeriod.map((group) => (
-            <section class="timeline-period" aria-label={group.period}>
+            <section class="timeline-period" aria-label={group.period} data-catalog-group>
               <div class="timeline-period-header">
                 <div>
                   <span>Período</span>
@@ -131,7 +139,11 @@ function getEventMeta(event: Event) {
 
               <div class="timeline-list">
                 {group.events.map((event) => (
-                  <article class="timeline-item">
+                  <article
+                    class="timeline-item"
+                    data-catalog-item
+                    data-catalog-search={`${event.title} ${event.summary ?? ""} ${event.biblical_period ?? ""} ${event.approximate_date ?? ""} ${event.event_type ?? ""} ${event.temporal_certainty ?? ""}`}
+                  >
                     <div class="timeline-marker" aria-hidden="true">
                       <span></span>
                     </div>
@@ -210,8 +222,8 @@ function getEventMeta(event: Event) {
   .timeline-stat-card,
   .timeline-period,
   .timeline-card {
-    border: 1px solid #eadcc4;
-    box-shadow: 0 14px 34px rgba(45, 36, 24, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
   }
 
   .timeline-hero-card {
@@ -219,8 +231,8 @@ function getEventMeta(event: Event) {
     gap: 10px;
     padding: 24px;
     border-radius: 24px;
-    background: white;
-    box-shadow: 0 18px 42px rgba(45, 36, 24, 0.1);
+    background: var(--surface);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
   }
 
   .timeline-hero-card span,
@@ -229,7 +241,7 @@ function getEventMeta(event: Event) {
   .timeline-date,
   .timeline-order,
   .timeline-meta span {
-    color: #8a5a2b;
+    color: var(--accent);
     font-size: 0.76rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -237,7 +249,7 @@ function getEventMeta(event: Event) {
   }
 
   .timeline-hero-card strong {
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 3rem;
     line-height: 1;
   }
@@ -245,7 +257,7 @@ function getEventMeta(event: Event) {
   .timeline-hero-card p,
   .timeline-card p {
     margin: 0;
-    color: #6a5c4d;
+    color: var(--text-muted);
     line-height: 1.65;
   }
 
@@ -259,7 +271,7 @@ function getEventMeta(event: Event) {
   .timeline-stat-card {
     padding: 22px;
     border-radius: 22px;
-    background: white;
+    background: var(--surface);
   }
 
   .timeline-stat-card span {
@@ -269,7 +281,7 @@ function getEventMeta(event: Event) {
 
   .timeline-stat-card strong {
     display: block;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 2rem;
     line-height: 1;
   }
@@ -284,7 +296,7 @@ function getEventMeta(event: Event) {
     gap: 18px;
     padding: 22px;
     border-radius: 24px;
-    background: #fffaf0;
+    background: var(--surface);
   }
 
   .timeline-period-header {
@@ -296,7 +308,7 @@ function getEventMeta(event: Event) {
 
   .timeline-period-header h3 {
     margin: 4px 0 0;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.35rem;
     line-height: 1.25;
   }
@@ -308,9 +320,9 @@ function getEventMeta(event: Event) {
     align-items: center;
     padding: 0 12px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid #eadcc4;
-    color: #5d3212;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
     font-size: 0.86rem;
     line-height: 1.2;
     white-space: normal;
@@ -330,7 +342,7 @@ function getEventMeta(event: Event) {
     bottom: 12px;
     left: 13px;
     width: 2px;
-    background: #eadcc4;
+    background: var(--border-color);
   }
 
   .timeline-item {
@@ -352,9 +364,9 @@ function getEventMeta(event: Event) {
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: #8a5a2b;
-    border: 3px solid #fffaf0;
-    box-shadow: 0 0 0 1px #c8a982;
+    background: var(--accent);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--border-strong);
   }
 
   .timeline-card {
@@ -363,7 +375,7 @@ function getEventMeta(event: Event) {
     min-width: 0;
     padding: 18px;
     border-radius: 20px;
-    background: white;
+    background: var(--surface);
     text-decoration: none;
     transition:
       transform 160ms ease,
@@ -373,8 +385,8 @@ function getEventMeta(event: Event) {
 
   .timeline-card:hover {
     transform: translateY(-2px);
-    border-color: #c8a982;
-    box-shadow: 0 14px 30px rgba(45, 36, 24, 0.08);
+    border-color: var(--border-strong);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
   .timeline-card-header {
@@ -393,8 +405,8 @@ function getEventMeta(event: Event) {
     align-items: center;
     padding: 7px 12px;
     border-radius: 18px;
-    background: #fff7e8;
-    border: 1px solid #eadcc4;
+    background: var(--accent-subtle);
+    border: 1px solid var(--border-color);
     line-height: 1.22;
     white-space: normal;
     overflow-wrap: anywhere;
@@ -402,7 +414,7 @@ function getEventMeta(event: Event) {
 
   .timeline-card h4 {
     margin: 0;
-    color: #2d2418;
+    color: var(--heading-color);
     font-size: 1.08rem;
     line-height: 1.3;
   }
@@ -424,25 +436,25 @@ function getEventMeta(event: Event) {
   :global(html[data-theme="dark"]) .timeline-stat-card,
   :global(html[data-theme="dark"]) .timeline-section,
   :global(html[data-theme="dark"]) .timeline-footer-nav {
-    background: #18110c;
-    border-color: #3a2a1d;
+    background: var(--surface);
+    border-color: var(--border-color);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
   }
 
   :global(html[data-theme="dark"]) .timeline-period,
   :global(html[data-theme="dark"]) .timeline-card {
-    background: #21160e;
-    border-color: #3a2a1d;
+    background: var(--surface-elevated);
+    border-color: var(--border-color);
   }
 
   :global(html[data-theme="dark"]) .timeline-list::before {
-    background: #4a3523;
+    background: var(--border-strong);
   }
 
   :global(html[data-theme="dark"]) .timeline-marker span {
-    background: #e9b872;
-    border-color: #21160e;
-    box-shadow: 0 0 0 1px #6c4c2f;
+    background: var(--accent);
+    border-color: var(--surface-elevated);
+    box-shadow: 0 0 0 1px var(--accent-hover);
   }
 
   :global(html[data-theme="dark"]) .timeline-hero-card span,
@@ -451,28 +463,28 @@ function getEventMeta(event: Event) {
   :global(html[data-theme="dark"]) .timeline-date,
   :global(html[data-theme="dark"]) .timeline-order,
   :global(html[data-theme="dark"]) .timeline-meta span {
-    color: #e9b872;
+    color: var(--accent);
   }
 
   :global(html[data-theme="dark"]) .timeline-hero-card strong,
   :global(html[data-theme="dark"]) .timeline-stat-card strong,
   :global(html[data-theme="dark"]) .timeline-period-header h3,
   :global(html[data-theme="dark"]) .timeline-card h4 {
-    color: #fff5e8;
+    color: var(--heading-color);
   }
 
   :global(html[data-theme="dark"]) .timeline-hero-card p,
   :global(html[data-theme="dark"]) .timeline-card p {
-    color: #d8c8b6;
+    color: var(--text-muted);
   }
 
   :global(html[data-theme="dark"]) .timeline-period-header strong,
   :global(html[data-theme="dark"]) .timeline-date,
   :global(html[data-theme="dark"]) .timeline-order,
   :global(html[data-theme="dark"]) .timeline-meta span {
-    background: #18110c;
-    border-color: #3a2a1d;
-    color: #e9b872;
+    background: var(--surface);
+    border-color: var(--border-color);
+    color: var(--accent);
   }
 
   @media (max-width: 960px) {

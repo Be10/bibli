@@ -48,6 +48,28 @@ const forbiddenRules = [
 
 const problems = [];
 
+// OneDrive puede crear copias de conflicto de SQLite con el nombre del equipo
+// (por ejemplo, data/bibli-EQUIPO.sqlite). Bibli solo debe tener un snapshot
+// SQLite canónico en data/: data/bibli.sqlite.
+const sqliteFiles = fs
+  .readdirSync("data", { withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".sqlite"))
+  .map((entry) => entry.name)
+  .sort();
+
+if (!sqliteFiles.includes("bibli.sqlite")) {
+  problems.push("falta el snapshot SQLite canónico: data/bibli.sqlite");
+}
+
+const unexpectedSqliteFiles = sqliteFiles.filter((name) => name !== "bibli.sqlite");
+
+if (unexpectedSqliteFiles.length > 0) {
+  problems.push(
+    `copias SQLite inesperadas en data/: ${unexpectedSqliteFiles.join(", ")}. ` +
+      "Revisar posibles conflictos de sincronización de OneDrive antes de continuar.",
+  );
+}
+
 for (const rule of forbiddenRules) {
   const matches = tracked.filter(rule.match);
 

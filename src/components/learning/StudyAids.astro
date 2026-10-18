@@ -1,5 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
+import Icon from "../Icon.astro";
 import LessonMap from "./LessonMap.astro";
 import type { Event, RelatedItem, StudyPlace, VisualResource } from "../../lib/queries";
 
@@ -18,16 +19,13 @@ const count = glossary.length + people.length + places.length + topics.length + 
 
 <aside class="study-aids" data-study-aids-panel aria-label="Ayudas de estudio">
   <div class="study-aids-heading">
-    <div>
-      <span class="kicker">Explorar sin salir de la lección</span>
-      <h2>Ayudas de estudio</h2>
-    </div>
-    <span class="count">{count}</span>
+    <div><span class="heading-icon"><Icon name="sparkles" size={17} /></span><h2>Ayudas de estudio</h2></div>
+    <span class="count" aria-label={`${count} ayudas disponibles`}>{count}</span>
   </div>
 
   {places.length > 0 && (
     <details open>
-      <summary>🗺️ Lugares y mapa <span>{places.length}</span></summary>
+      <summary><span class="summary-main"><Icon name="map" size={17} />Lugares y mapa</span><span class="summary-meta"><span>{places.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
       <LessonMap places={places} />
       <ul class="aid-list">
         {places.map((place) => (
@@ -42,7 +40,7 @@ const count = glossary.length + people.length + places.length + topics.length + 
 
   {glossary.length > 0 && (
     <details>
-      <summary>📚 Glosario <span>{glossary.length}</span></summary>
+      <summary><span class="summary-main"><Icon name="library" size={17} />Glosario</span><span class="summary-meta"><span>{glossary.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
       <div class="definition-list">
         {glossary.map((term) => (
           <article>
@@ -56,36 +54,28 @@ const count = glossary.length + people.length + places.length + topics.length + 
 
   {people.length > 0 && (
     <details>
-      <summary>👤 Personajes <span>{people.length}</span></summary>
-      <div class="chips">
-        {people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)}>{person.title}</a>)}
-      </div>
+      <summary><span class="summary-main"><Icon name="users" size={17} />Personajes</span><span class="summary-meta"><span>{people.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
+      <div class="chips">{people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)}>{person.title}</a>)}</div>
     </details>
   )}
 
   {topics.length > 0 && (
     <details>
-      <summary>🧭 Temas <span>{topics.length}</span></summary>
-      <div class="chips">
-        {topics.map((topic) => <a href={sitePath(`/temas/${topic.slug}/`)}>{topic.title}</a>)}
-      </div>
+      <summary><span class="summary-main"><Icon name="tag" size={17} />Temas</span><span class="summary-meta"><span>{topics.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
+      <div class="chips">{topics.map((topic) => <a href={sitePath(`/temas/${topic.slug}/`)}>{topic.title}</a>)}</div>
     </details>
   )}
 
   {events.length > 0 && (
     <details>
-      <summary>⏳ Eventos <span>{events.length}</span></summary>
-      <ul class="aid-list compact">
-        {events.map((event) => (
-          <li><a href={sitePath(`/eventos/${event.slug}/`)}>{event.title}</a></li>
-        ))}
-      </ul>
+      <summary><span class="summary-main"><Icon name="timeline" size={17} />Eventos</span><span class="summary-meta"><span>{events.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
+      <ul class="aid-list compact">{events.map((event) => <li><a href={sitePath(`/eventos/${event.slug}/`)}>{event.title}</a></li>)}</ul>
     </details>
   )}
 
   {readyVisuals.length > 0 && (
     <details>
-      <summary>🖼️ Recursos visuales <span>{readyVisuals.length}</span></summary>
+      <summary><span class="summary-main"><Icon name="image" size={17} />Recursos visuales</span><span class="summary-meta"><span>{readyVisuals.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
       <div class="visual-grid">
         {readyVisuals.map((resource) => (
           <a href={sitePath(`/recursos/${resource.slug}/`)} class="visual-card">
@@ -96,33 +86,39 @@ const count = glossary.length + people.length + places.length + topics.length + 
       </div>
     </details>
   )}
-
-  {count === 0 && (
-    <p class="empty">Esta lección todavía no tiene ayudas editoriales adicionales. El estudio principal permanece completo.</p>
-  )}
 </aside>
 
 <style>
-  .study-aids { display: grid; gap: .8rem; }
-  .study-aids-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; }
-  .study-aids-heading h2 { margin: .15rem 0 0; font-size: 1.15rem; }
-  .kicker { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; opacity: .65; }
-  .count { min-width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 999px; background: var(--surface-soft, #f2f3f5); font-weight: 700; }
-  details { border: 1px solid var(--border-color, rgba(100,100,100,.2)); border-radius: 14px; overflow: hidden; background: var(--surface, transparent); }
-  summary { cursor: pointer; padding: .85rem 1rem; display: flex; justify-content: space-between; gap: .6rem; font-weight: 700; }
-  details[open] summary { border-bottom: 1px solid var(--border-color, rgba(100,100,100,.15)); }
-  details > :global(:not(summary)) { margin-left: 1rem; margin-right: 1rem; }
-  .aid-list { list-style: none; padding: 0 0 .7rem; margin-top: .8rem; display: grid; gap: .7rem; }
-  .aid-list p, .definition-list p { margin: .2rem 0 0; font-size: .86rem; opacity: .8; line-height: 1.5; }
-  .aid-list.compact { gap: .35rem; }
-  .definition-list { display: grid; gap: .75rem; padding: .85rem 0; }
-  .definition-list article + article { border-top: 1px solid var(--border-color, rgba(100,100,100,.12)); padding-top: .7rem; }
-  .chips { display: flex; flex-wrap: wrap; gap: .45rem; padding: .85rem 0; }
-  .chips a { text-decoration: none; border: 1px solid var(--border-color, rgba(100,100,100,.2)); border-radius: 999px; padding: .38rem .65rem; font-size: .82rem; }
-  .visual-grid { display: grid; gap: .7rem; padding: .85rem 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .visual-card { display: grid; gap: .4rem; text-decoration: none; }
-  .visual-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 10px; }
-  .visual-card strong { font-size: .82rem; }
-  .empty { font-size: .86rem; opacity: .7; }
-  @media (max-width: 700px) { .visual-grid { grid-template-columns: 1fr; } }
+  .study-aids { display:grid; gap:6px; }
+  .study-aids-heading { min-height:34px; display:flex; align-items:center; justify-content:space-between; gap:.7rem; padding:0 .1rem .35rem; }
+  .study-aids-heading > div { display:flex; align-items:center; gap:.5rem; }
+  .heading-icon { width:28px; height:28px; display:grid; place-items:center; border-radius:9px; background:var(--accent-soft); color:var(--accent); }
+  .study-aids-heading h2 { margin:0; color:var(--heading-color); font-size:.95rem; letter-spacing:-.02em; }
+  .count { min-width:24px; height:24px; padding:0 5px; display:grid; place-items:center; border-radius:8px; background:var(--surface-soft); color:var(--text-muted); font-size:.68rem; font-weight:800; }
+  details { border:1px solid var(--border-color); border-radius:13px; overflow:hidden; background:var(--surface); box-shadow:0 5px 18px rgba(15, 23, 42, .03); }
+  summary { min-height:44px; box-sizing:border-box; cursor:pointer; padding:.65rem .75rem; display:flex; align-items:center; justify-content:space-between; gap:.6rem; color:var(--heading-color); font-size:.82rem; font-weight:700; list-style:none; transition:background-color 140ms ease; }
+  summary::-webkit-details-marker { display:none; }
+  .summary-main { display:flex; align-items:center; gap:.55rem; }
+  .summary-main .bibli-icon { color:var(--accent); }
+  .summary-meta { display:inline-flex; align-items:center; gap:.32rem; color:var(--text-muted); font-size:.7rem; }
+  .summary-chevron { transition:transform 160ms ease; }
+  details[open] .summary-chevron { transform:rotate(180deg); }
+  summary:hover { background:var(--surface-soft); }
+  details[open] summary { border-bottom:1px solid var(--border-color); background:color-mix(in srgb,var(--accent-soft) 24%,var(--surface)); }
+  details > :global(:not(summary)) { margin-left:.75rem; margin-right:.75rem; }
+  .aid-list { list-style:none; padding:0 0 .7rem; margin-top:.7rem; display:grid; gap:.6rem; }
+  .aid-list a,.definition-list a { color:var(--heading-color); text-underline-offset:.18em; }
+  .aid-list p,.definition-list p { margin:.18rem 0 0; color:var(--text-muted); font-size:.81rem; line-height:1.5; }
+  .aid-list.compact { gap:.32rem; }
+  .definition-list { display:grid; gap:.65rem; padding:.7rem 0; }
+  .definition-list article + article { border-top:1px solid var(--border-color); padding-top:.6rem; }
+  .chips { display:flex; flex-wrap:wrap; gap:.35rem; padding:.7rem 0; }
+  .chips a { padding:.36rem .55rem; border:1px solid var(--border-color); border-radius:9px; background:var(--surface-soft); color:var(--text-color); text-decoration:none; font-size:.76rem; transition:background-color 140ms ease,border-color 140ms ease; }
+  .chips a:hover { background:var(--accent-soft); border-color:color-mix(in srgb,var(--accent) 40%,var(--border-color)); }
+  .visual-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; padding:.7rem 0; }
+  .visual-card { display:grid; gap:.35rem; color:var(--text-color); text-decoration:none; }
+  .visual-card img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:9px; }
+  .visual-card strong { font-size:.78rem; }
+  @media(max-width:700px){ .visual-grid{grid-template-columns:1fr;} }
+  @media(prefers-reduced-motion:reduce){ .summary-chevron{transition:none;} }
 </style>
