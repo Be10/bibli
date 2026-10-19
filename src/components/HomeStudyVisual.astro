@@ -1,0 +1,262 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang?: "es" | "en";
+}
+
+const { lang = "es" } = Astro.props;
+const labels = lang === "en"
+  ? { observe: "Observe", context: "Context", connect: "Connect" }
+  : { observe: "Observar", context: "Contexto", connect: "Conectar" };
+---
+
+<div class="study-visual" data-home-study-visual aria-hidden="true">
+  <span class="study-visual-glow"></span>
+  <span class="study-visual-spark spark-a"><Icon name="sparkles" size={22} strokeWidth={1.7} /></span>
+  <span class="study-visual-spark spark-b"><Icon name="sparkles" size={14} strokeWidth={1.7} /></span>
+
+  <div class="study-book-wrap">
+    <div class="study-book">
+      <div class="study-page left-page">
+        <span class="page-heading"></span>
+        <span class="page-line long"></span>
+        <span class="page-line medium"></span>
+        <span class="page-line short"></span>
+        <span class="page-line long"></span>
+        <span class="page-highlight"></span>
+        <span class="page-line medium"></span>
+        <span class="page-line short"></span>
+      </div>
+      <span class="study-spine"></span>
+      <div class="study-page right-page">
+        <span class="page-heading"></span>
+        <span class="page-line medium"></span>
+        <span class="page-line long"></span>
+        <span class="page-line short"></span>
+        <span class="page-note"></span>
+        <span class="page-line long"></span>
+        <span class="page-line medium"></span>
+      </div>
+      <span class="study-bookmark"></span>
+    </div>
+  </div>
+
+  <div class="study-lens"><Icon name="search" size={28} strokeWidth={1.8} /></div>
+  <div class="study-tool tool-observe"><Icon name="search" size={16} /><span>{labels.observe}</span></div>
+  <div class="study-tool tool-context"><Icon name="layers" size={16} /><span>{labels.context}</span></div>
+  <div class="study-tool tool-connect"><Icon name="journey" size={16} /><span>{labels.connect}</span></div>
+</div>
+
+<style>
+  .study-visual {
+    position: relative;
+    min-height: 320px;
+    isolation: isolate;
+    perspective: 1100px;
+  }
+
+  .study-visual-glow {
+    position: absolute;
+    width: 290px;
+    height: 290px;
+    left: 50%;
+    top: 49%;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 48%, transparent 70%);
+    filter: blur(2px);
+  }
+
+  .study-book-wrap {
+    position: absolute;
+    left: 50%;
+    top: 51%;
+    width: min(90%, 390px);
+    translate: -50% -50%;
+    transform: rotate(-2deg) rotateX(3deg);
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 26px 28px color-mix(in srgb, #111827 17%, transparent));
+  }
+
+  .study-book {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 222px;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border-color));
+    border-radius: 26px 26px 20px 20px;
+    background: color-mix(in srgb, var(--surface-elevated) 96%, var(--accent-soft));
+    overflow: hidden;
+  }
+
+  .study-book::before,
+  .study-book::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    width: 45%;
+    height: 18px;
+    border: 1px solid color-mix(in srgb, var(--accent) 13%, var(--border-color));
+    background: var(--surface-soft);
+    z-index: -1;
+  }
+
+  .study-book::before { left: 4%; border-radius: 0 0 8px 18px; transform: skewY(2deg); }
+  .study-book::after { right: 4%; border-radius: 0 0 18px 8px; transform: skewY(-2deg); }
+
+  .study-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 30px 24px 28px;
+    background:
+      linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 3%, transparent)),
+      color-mix(in srgb, var(--surface-elevated) 98%, var(--accent-soft));
+  }
+
+  .left-page { border-radius: 25px 0 0 18px; padding-right: 30px; }
+  .right-page { border-radius: 0 25px 18px 0; padding-left: 30px; }
+
+  .study-spine {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 12px;
+    bottom: 12px;
+    width: 16px;
+    translate: -50% 0;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--heading-color) 8%, transparent), transparent);
+    pointer-events: none;
+  }
+
+  .page-heading {
+    width: 40%;
+    height: 9px;
+    margin-bottom: 4px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 42%, var(--surface-muted));
+  }
+
+  .page-line {
+    display: block;
+    height: 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text-muted) 30%, transparent);
+  }
+
+  .page-line.long { width: 94%; }
+  .page-line.medium { width: 75%; }
+  .page-line.short { width: 58%; }
+
+  .page-highlight {
+    width: 86%;
+    height: 13px;
+    margin: 2px 0;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) 74%, transparent);
+  }
+
+  .page-note {
+    width: 56%;
+    height: 30px;
+    margin: 3px 0 1px auto;
+    border: 1px solid color-mix(in srgb, var(--accent) 23%, var(--border-color));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent-soft) 74%, var(--surface));
+    transform: rotate(1.5deg);
+  }
+
+  .study-bookmark {
+    position: absolute;
+    z-index: 4;
+    left: 55%;
+    top: -1px;
+    width: 18px;
+    height: 66px;
+    background: var(--accent);
+    opacity: .82;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  }
+
+  .study-lens {
+    position: absolute;
+    z-index: 7;
+    right: 9%;
+    bottom: 18%;
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--border-color));
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface-elevated) 91%, transparent);
+    color: var(--accent);
+    box-shadow: 0 16px 36px color-mix(in srgb, #111827 18%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .study-lens::after {
+    content: "";
+    position: absolute;
+    width: 34px;
+    height: 8px;
+    right: -25px;
+    bottom: -13px;
+    border-radius: 999px;
+    background: var(--accent);
+    transform: rotate(48deg);
+    transform-origin: left center;
+  }
+
+  .study-tool {
+    position: absolute;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: .42rem;
+    min-height: 38px;
+    padding: .48rem .68rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface-elevated) 93%, transparent);
+    color: var(--accent);
+    box-shadow: 0 10px 24px color-mix(in srgb, #111827 9%, transparent);
+    backdrop-filter: blur(12px);
+    font-size: .69rem;
+    font-weight: 760;
+    letter-spacing: .01em;
+  }
+
+  .study-tool span { color: var(--heading-color); }
+  .tool-observe { left: 0; top: 14%; transform: rotate(-2deg); }
+  .tool-context { right: 0; top: 13%; transform: rotate(2deg); }
+  .tool-connect { left: 7%; bottom: 8%; transform: rotate(1deg); }
+
+  .study-visual-spark {
+    position: absolute;
+    z-index: 5;
+    display: grid;
+    color: color-mix(in srgb, var(--accent) 78%, var(--text-muted));
+    opacity: .68;
+  }
+
+  .spark-a { right: 10%; top: 1%; }
+  .spark-b { left: 13%; bottom: 1%; opacity: .48; }
+
+  html[data-theme="dark"] .study-book-wrap {
+    filter: drop-shadow(0 28px 32px rgba(0, 0, 0, .3));
+  }
+
+  @media (max-width: 900px) {
+    .study-visual { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .study-book-wrap,
+    .study-tool,
+    .study-lens { transform: none; }
+  }
+</style>

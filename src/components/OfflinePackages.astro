@@ -21,6 +21,10 @@ const copy = lang === "en"
       update: "Update",
       remove: "Remove",
       installed: "Downloaded",
+      upToDate: "Up to date",
+      updateAvailable: "Update available",
+      packagesReady: "packages ready",
+      updates: "updates",
       downloading: "Downloading",
       finalizing: "Saving local resources…",
       done: "Package ready offline.",
@@ -43,6 +47,10 @@ const copy = lang === "en"
       update: "Actualizar",
       remove: "Eliminar",
       installed: "Descargado",
+      upToDate: "Actualizado",
+      updateAvailable: "Actualización disponible",
+      packagesReady: "paquetes listos",
+      updates: "actualizaciones",
       downloading: "Descargando",
       finalizing: "Guardando recursos locales…",
       done: "Paquete listo para usar sin conexión.",
@@ -62,11 +70,12 @@ const copy = lang === "en"
     <div class="offline-statuses">
       <span class="connection-status" data-offline-connection><span class="status-dot"></span><span></span></span>
       <span class="storage-status" data-offline-storage hidden><Icon name="layers" size={15} /><span></span></span>
+      <span class="package-summary" data-offline-summary hidden></span>
     </div>
   </header>
 
   <p class="offline-manager-note"><Icon name="info" size={16} /> <span>{copy.note}</span></p>
-  <div class="offline-feedback" data-offline-feedback aria-live="polite">{copy.loading}</div>
+  <div class="offline-feedback" data-offline-feedback role="status" aria-live="polite">{copy.loading}</div>
   <div class="offline-package-list" data-offline-packages></div>
 </section>
 
@@ -80,6 +89,7 @@ const copy = lang === "en"
     const feedback = root.querySelector("[data-offline-feedback]");
     const connection = root.querySelector("[data-offline-connection]");
     const storage = root.querySelector("[data-offline-storage]");
+    const summary = root.querySelector("[data-offline-summary]");
     const stateKey = "bibli-offline-packages-v1";
     const cachePrefix = "bibli-package-";
     let packages = [];
@@ -106,13 +116,21 @@ const copy = lang === "en"
       connection.classList.toggle("is-offline", !online);
       const label = connection.querySelector("span:last-child");
       if (label) label.textContent = online ? copy.online : copy.offline;
+      if (packages.length > 0) void render();
     };
 
     const updateStorage = async () => {
       if (!(storage instanceof HTMLElement) || !navigator.storage?.estimate) return;
       const estimate = await navigator.storage.estimate();
+      const usage = estimate.usage || 0;
+      const quota = estimate.quota || 0;
+      const percentage = quota > 0 ? Math.min(100, Math.round((usage / quota) * 100)) : null;
       const label = storage.querySelector("span:last-child");
-      if (label) label.textContent = `${copy.storage}: ${formatBytes(estimate.usage || 0)}`;
+      if (label) {
+        label.textContent = quota > 0
+          ? `${copy.storage}: ${formatBytes(usage)} / ${formatBytes(quota)}${percentage === null ? "" : ` · ${percentage}%`}`
+          : `${copy.storage}: ${formatBytes(usage)}`;
+      }
       storage.hidden = false;
     };
 
@@ -133,22 +151,36 @@ const copy = lang === "en"
       if (!(list instanceof HTMLElement)) return;
       const installed = await getInstalledMap();
       const visible = packages.filter(packageVisible);
+      const installedCount = visible.filter((pkg) => installed[pkg.id]?.exists).length;
+      const outdatedCount = visible.filter((pkg) => {
+        const info = installed[pkg.id];
+        return info?.exists && info?.meta?.revision !== pkg.revision;
+      }).length;
+
+      if (summary instanceof HTMLElement) {
+        summary.hidden = false;
+        summary.textContent = `${installedCount}/${visible.length} ${copy.packagesReady}${outdatedCount ? ` · ${outdatedCount} ${copy.updates}` : ""}`;
+      }
+
       list.innerHTML = visible.map((pkg) => {
         const info = installed[pkg.id];
-        const current = info?.exists;
+        const current = Boolean(info?.exists);
+        const outdated = current && info?.meta?.revision !== pkg.revision;
         const working = busyPackageId === pkg.id;
-        return `<article class="offline-package-card" data-package-id="${escapeHtml(pkg.id)}">
+        const downloadDisabled = working || !navigator.onLine;
+        const statusLabel = outdated ? copy.updateAvailable : copy.upToDate;
+        return `<article class="offline-package-card${outdated ? " has-update" : ""}" data-package-id="${escapeHtml(pkg.id)}" aria-busy="${working}">
           <div class="package-copy">
             <span class="package-kind">${escapeHtml(kindLabel(pkg.kind))}</span>
             <h3>${escapeHtml(titleFor(pkg))}</h3>
             <p>${escapeHtml(descriptionFor(pkg))}</p>
-            <div class="package-meta"><span>${pkg.urlCount} ${escapeHtml(copy.items)}</span>${pkg.language !== "all" ? `<span>${escapeHtml(String(pkg.language).toUpperCase())}</span>` : ""}${current ? `<strong>${escapeHtml(copy.installed)}</strong>` : ""}</div>
+            <div class="package-meta"><span>${pkg.urlCount} ${escapeHtml(copy.items)}</span>${pkg.language !== "all" ? `<span>${escapeHtml(String(pkg.language).toUpperCase())}</span>` : ""}${current ? `<strong class="${outdated ? "is-outdated" : "is-current"}">${escapeHtml(statusLabel)}</strong>` : ""}</div>
           </div>
           <div class="package-actions">
-            <button type="button" class="package-download" data-package-download="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${escapeHtml(current ? copy.update : copy.download)}</button>
+            <button type="button" class="package-download" data-package-download="${escapeHtml(pkg.id)}" ${downloadDisabled ? "disabled" : ""}>${escapeHtml(current ? copy.update : copy.download)}</button>
             ${current ? `<button type="button" class="package-remove" data-package-remove="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${escapeHtml(copy.remove)}</button>` : ""}
           </div>
-          <div class="package-progress" data-package-progress="${escapeHtml(pkg.id)}" ${working ? "" : "hidden"}><span></span><small></small></div>
+          <div class="package-progress" data-package-progress="${escapeHtml(pkg.id)}" role="progressbar" aria-label="${escapeHtml(titleFor(pkg))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" ${working ? "" : "hidden"}><span></span><small></small></div>
         </article>`;
       }).join("");
 
@@ -204,6 +236,7 @@ const copy = lang === "en"
       const bar = progress.querySelector("span");
       const label = progress.querySelector("small");
       const pct = total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+      progress.setAttribute("aria-valuenow", String(pct));
       if (bar instanceof HTMLElement) bar.style.width = `${pct}%`;
       if (label) label.textContent = finalizing ? copy.finalizing : `${copy.downloading} ${completed}/${total}`;
     };
@@ -305,6 +338,6 @@ const copy = lang === "en"
 </script>
 
 <style>
-  .offline-manager{display:grid;gap:1rem}.offline-manager-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}.offline-manager-head h2{margin:.35rem 0 0;color:var(--heading-color);font-size:clamp(1.35rem,2.5vw,1.8rem)}.offline-kicker{display:inline-flex;align-items:center;gap:.45rem;color:var(--accent);font-size:.72rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.offline-statuses{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.45rem}.connection-status,.storage-status{min-height:34px;display:inline-flex;align-items:center;gap:.4rem;padding:0 .65rem;border:1px solid var(--border-color);border-radius:999px;background:var(--surface);color:var(--text-muted);font-size:.7rem;font-weight:750}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}.connection-status.is-offline .status-dot{background:var(--text-muted)}.offline-manager-note{display:flex;align-items:flex-start;gap:.5rem;margin:0;padding:.8rem .9rem;border:1px solid var(--border-color);border-radius:13px;background:var(--surface-soft);color:var(--text-muted);font-size:.78rem;line-height:1.55}.offline-manager-note :global(.bibli-icon){flex:0 0 auto;color:var(--accent);margin-top:.1rem}.offline-feedback{min-height:20px;color:var(--text-muted);font-size:.78rem}.offline-package-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.offline-package-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:1rem;border:1px solid var(--border-color);border-radius:17px;background:var(--surface);box-shadow:0 7px 22px rgba(15,23,42,.025)}.package-copy{min-width:0}.package-kind{color:var(--accent);font-size:.64rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.package-copy h3{margin:.32rem 0 .35rem;color:var(--heading-color);font-size:1rem}.package-copy p{margin:0;color:var(--text-muted);font-size:.78rem;line-height:1.55}.package-meta{display:flex;gap:.55rem;margin-top:.6rem;color:var(--text-muted);font-size:.68rem}.package-meta strong{color:var(--accent)}.package-actions{display:flex;flex-direction:column;gap:.4rem;align-self:center}.package-actions button{min-width:92px;min-height:44px;border-radius:10px;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}.package-download{border:1px solid var(--accent);background:var(--accent);color:var(--accent-contrast)}.package-remove{border:1px solid var(--border-color);background:transparent;color:var(--text-muted)}.package-actions button:disabled{opacity:.55;cursor:wait}.package-progress{grid-column:1/-1;position:relative;height:24px;padding-top:15px;border-top:1px solid var(--border-color)}.package-progress::before{content:"";position:absolute;left:0;right:0;top:8px;height:4px;border-radius:999px;background:var(--surface-muted)}.package-progress>span{position:absolute;left:0;top:8px;height:4px;border-radius:999px;background:var(--accent);transition:width .15s ease}.package-progress small{position:absolute;right:0;top:13px;color:var(--text-muted);font-size:.62rem}.package-progress[hidden]{display:none}.offline-package-card:has(.package-meta strong){border-color:color-mix(in srgb,var(--accent) 35%,var(--border-color));background:color-mix(in srgb,var(--accent-soft) 13%,var(--surface))}
+  .offline-manager{display:grid;gap:1rem}.offline-manager-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}.offline-manager-head h2{margin:.35rem 0 0;color:var(--heading-color);font-size:clamp(1.35rem,2.5vw,1.8rem)}.offline-kicker{display:inline-flex;align-items:center;gap:.45rem;color:var(--accent);font-size:.72rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.offline-statuses{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.45rem}.connection-status,.storage-status,.package-summary{min-height:34px;display:inline-flex;align-items:center;gap:.4rem;padding:0 .65rem;border:1px solid var(--border-color);border-radius:999px;background:var(--surface);color:var(--text-muted);font-size:.7rem;font-weight:750}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}.connection-status.is-offline .status-dot{background:var(--text-muted)}.offline-manager-note{display:flex;align-items:flex-start;gap:.5rem;margin:0;padding:.8rem .9rem;border:1px solid var(--border-color);border-radius:13px;background:var(--surface-soft);color:var(--text-muted);font-size:.78rem;line-height:1.55}.offline-manager-note :global(.bibli-icon){flex:0 0 auto;color:var(--accent);margin-top:.1rem}.offline-feedback{min-height:20px;color:var(--text-muted);font-size:.78rem}.offline-package-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.offline-package-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:1rem;border:1px solid var(--border-color);border-radius:17px;background:var(--surface);box-shadow:0 7px 22px rgba(15,23,42,.025)}.package-copy{min-width:0}.package-kind{color:var(--accent);font-size:.64rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.package-copy h3{margin:.32rem 0 .35rem;color:var(--heading-color);font-size:1rem}.package-copy p{margin:0;color:var(--text-muted);font-size:.78rem;line-height:1.55}.package-meta{display:flex;gap:.55rem;margin-top:.6rem;color:var(--text-muted);font-size:.68rem}.package-meta strong{color:var(--accent)}.package-meta strong.is-outdated{color:var(--accent);font-weight:900}.package-meta strong.is-current{color:var(--text-muted)}.package-actions{display:flex;flex-direction:column;gap:.4rem;align-self:center}.package-actions button{min-width:92px;min-height:44px;border-radius:10px;font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}.package-download{border:1px solid var(--accent);background:var(--accent);color:var(--accent-contrast)}.package-remove{border:1px solid var(--border-color);background:transparent;color:var(--text-muted)}.package-actions button:disabled{opacity:.55;cursor:wait}.package-progress{grid-column:1/-1;position:relative;height:24px;padding-top:15px;border-top:1px solid var(--border-color)}.package-progress::before{content:"";position:absolute;left:0;right:0;top:8px;height:4px;border-radius:999px;background:var(--surface-muted)}.package-progress>span{position:absolute;left:0;top:8px;height:4px;border-radius:999px;background:var(--accent);transition:width .15s ease}.package-progress small{position:absolute;right:0;top:13px;color:var(--text-muted);font-size:.62rem}.package-progress[hidden]{display:none}.offline-package-card:has(.package-meta strong){border-color:color-mix(in srgb,var(--accent) 35%,var(--border-color));background:color-mix(in srgb,var(--accent-soft) 13%,var(--surface))}.offline-package-card.has-update{border-color:color-mix(in srgb,var(--accent) 58%,var(--border-color));box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 12%,transparent),0 7px 22px rgba(15,23,42,.035)}
   @media(max-width:760px){.offline-manager-head{align-items:flex-start;flex-direction:column}.offline-statuses{justify-content:flex-start}.offline-package-list{grid-template-columns:1fr}.offline-package-card{grid-template-columns:1fr}.package-actions{flex-direction:row;align-self:auto}.package-actions button{flex:1}.package-progress{grid-column:1}}@media(max-width:420px){.package-actions{flex-direction:column}.package-actions button{width:100%}}
 </style>

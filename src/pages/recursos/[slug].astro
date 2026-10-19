@@ -47,7 +47,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(resource.title
   title={resource.title}
   description={description}
 >
-  <main class="page visual-resource-page">
+  <main class="page visual-resource-page" data-detail-root data-detail-kind="resource">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/recursos/")}>Recursos visuales</a> →

@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import Icon from "../../components/Icon.astro";
 import { getAllGlossaryTerms } from "../../lib/queries";
 
@@ -12,7 +11,7 @@ const terms = getAllGlossaryTerms().filter((term) => term.status !== "Borrador")
   title="Glosario bíblico"
   description="Consulta términos bíblicos explicados con claridad y con acceso directo a la búsqueda global de Bibli."
 >
-  <main class="page glossary-page" data-catalog-root>
+  <main class="page glossary-page" data-catalog-root data-catalog-kind="glossary">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Glosario
     </div>
@@ -37,14 +36,6 @@ const terms = getAllGlossaryTerms().filter((term) => term.status !== "Borrador")
         <p>Definiciones editoriales disponibles para consulta rápida.</p>
       </aside>
     </section>
-
-    <CatalogFilter
-      total={terms.length}
-      noun="términos"
-      label="Buscar en el glosario"
-      placeholder="Buscar término o definición…"
-    />
-
     <section class="section glossary-section" data-catalog-group>
       <div class="section-header">
         <div>

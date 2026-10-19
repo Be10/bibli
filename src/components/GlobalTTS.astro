@@ -18,7 +18,13 @@ const copy = lang === "en"
       stop: "Stop",
       close: "Close reader",
       voice: "Voice",
-      automaticVoice: "Automatic voice",
+      automaticVoice: "Bibli · Automatic",
+      bibliVoices: "Bibli voices",
+      bibliSpanishVoice: "Bibli · Natural Spanish",
+      bibliEnglishVoice: "Bibli · Natural English",
+      deviceSpanishVoices: "Spanish voices on this device",
+      deviceEnglishVoices: "English voices on this device",
+      verse: "Verse",
       speed: "Speed",
       unavailable: "Text to speech is not available in this browser.",
       noContent: "There is no readable content on this page.",
@@ -36,7 +42,13 @@ const copy = lang === "en"
       stop: "Detener",
       close: "Cerrar lector",
       voice: "Voz",
-      automaticVoice: "Voz automática",
+      automaticVoice: "Bibli · Automática",
+      bibliVoices: "Voces de Bibli",
+      bibliSpanishVoice: "Bibli · Natural en español",
+      bibliEnglishVoice: "Bibli · Natural en inglés",
+      deviceSpanishVoices: "Voces en español del dispositivo",
+      deviceEnglishVoices: "Voces en inglés del dispositivo",
+      verse: "Versículo",
       speed: "Velocidad",
       unavailable: "La lectura en voz alta no está disponible en este navegador.",
       noContent: "No hay contenido de lectura en esta página.",
@@ -89,7 +101,7 @@ const copy = lang === "en"
       <label class="tts-voice-label">
         <span>{copy.voice}</span>
         <select data-tts-voice>
-          <option value="">{copy.automaticVoice}</option>
+          <option value="profile:auto">{copy.automaticVoice}</option>
         </select>
       </label>
     </div>
@@ -104,7 +116,7 @@ const copy = lang === "en"
     const synth = window.speechSynthesis;
     const Utterance = window.SpeechSynthesisUtterance;
     const lang = root.dataset.ttsLang === "en" ? "en" : "es";
-    const speechLang = lang === "en" ? "en-US" : "es-ES";
+    const pageSpeechLang = lang === "en" ? "en-US" : "es-PE";
     const voiceKey = `bibli-tts-voice-${lang}-v1`;
     const rateKey = "bibli-tts-rate-v1";
 
@@ -134,7 +146,74 @@ const copy = lang === "en"
     let paused = false;
     let voices = [];
 
+    const syncFloatingUiOffset = () => {
+      const rootElement = document.documentElement;
+      if (player.hidden) {
+        delete rootElement.dataset.ttsPlayerOpen;
+        rootElement.style.setProperty("--tts-player-offset", "0px");
+        return;
+      }
+      const height = Math.ceil(player.getBoundingClientRect().height + 12);
+      rootElement.dataset.ttsPlayerOpen = "true";
+      rootElement.style.setProperty("--tts-player-offset", `${height}px`);
+    };
+
     const normalize = (value) => String(value ?? "").replace(/\s+/g, " ").trim();
+    const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const spanishBooks = [
+      "Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut",
+      "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes", "1 Crónicas", "2 Crónicas", "Esdras",
+      "Nehemías", "Ester", "Job", "Salmo", "Salmos", "Proverbios", "Eclesiastés", "Cantares",
+      "Isaías", "Jeremías", "Lamentaciones", "Ezequiel", "Daniel", "Oseas", "Joel", "Amós",
+      "Abdías", "Jonás", "Miqueas", "Nahúm", "Habacuc", "Sofonías", "Hageo", "Zacarías",
+      "Malaquías", "Mateo", "Marcos", "Lucas", "Juan", "Hechos", "Romanos", "1 Corintios",
+      "2 Corintios", "Gálatas", "Efesios", "Filipenses", "Colosenses", "1 Tesalonicenses",
+      "2 Tesalonicenses", "1 Timoteo", "2 Timoteo", "Tito", "Filemón", "Hebreos", "Santiago",
+      "1 Pedro", "2 Pedro", "1 Juan", "2 Juan", "3 Juan", "Judas", "Apocalipsis",
+    ];
+    const englishBooks = [
+      "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
+      "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
+      "Nehemiah", "Esther", "Job", "Psalm", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon",
+      "Song of Songs", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel",
+      "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai",
+      "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans",
+      "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians",
+      "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon",
+      "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation",
+    ];
+    const referenceBooks = [...spanishBooks, ...englishBooks]
+      .sort((a, b) => b.length - a.length)
+      .map(escapeRegExp)
+      .join("|");
+    const bibleReferencePattern = new RegExp(
+      `(^|[^\\p{L}\\p{N}])(${referenceBooks})\\s+(\\d{1,3})\\s*:\\s*(\\d{1,3})(?:\\s*[–—-]\\s*(?:(\\d{1,3})\\s*:\\s*)?(\\d{1,3}))?(?=$|[^\\p{L}\\p{N}])`,
+      "giu",
+    );
+
+    const speakBibleReference = (_match, prefix, book, chapter, verse, endChapter, endVerse) => {
+      if (lang === "en") {
+        if (endVerse && endChapter) return `${prefix}${book}, chapter ${chapter}, verse ${verse}, to chapter ${endChapter}, verse ${endVerse}`;
+        if (endVerse) return `${prefix}${book}, chapter ${chapter}, verses ${verse} to ${endVerse}`;
+        return `${prefix}${book}, chapter ${chapter}, verse ${verse}`;
+      }
+      if (endVerse && endChapter) return `${prefix}${book}, capítulo ${chapter}, versículo ${verse}, al capítulo ${endChapter}, versículo ${endVerse}`;
+      if (endVerse) return `${prefix}${book}, capítulo ${chapter}, versículos ${verse} al ${endVerse}`;
+      return `${prefix}${book}, capítulo ${chapter}, versículo ${verse}`;
+    };
+
+    const prepareSpeechText = (value) => {
+      let text = String(value ?? "")
+        .replace(/[\p{Extended_Pictographic}\p{Emoji_Modifier}\uFE0F\u200D]/gu, " ")
+        .replace(/[•▪◦✦✧✝✓◌≡↝⌖◇]/g, ", ");
+      text = text.replace(bibleReferencePattern, speakBibleReference);
+      text = text.replace(/(\d+)\s*[–—-]\s*(\d+)/g, (_match, start, end) =>
+        lang === "en" ? `${start} to ${end}` : `${start} al ${end}`,
+      );
+      text = text.replace(/(\d+)\s*:\s*(\d+)/g, "$1, $2");
+      return normalize(text);
+    };
+
     const isVisible = (element) => {
       if (!(element instanceof HTMLElement)) return false;
       const style = getComputedStyle(element);
@@ -142,7 +221,7 @@ const copy = lang === "en"
     };
 
     const splitLongText = (text, source) => {
-      const clean = normalize(text);
+      const clean = prepareSpeechText(text);
       if (clean.length <= 520) return clean ? [{ text: clean, source }] : [];
       const sentences = clean.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) ?? [clean];
       const parts = [];
@@ -169,26 +248,39 @@ const copy = lang === "en"
       const reader = getActiveReader();
       if (!(reader instanceof HTMLElement)) return [];
 
+      const lessonIntro = [];
+      if (reader.matches("[data-study-content]")) {
+        const title = document.querySelector("[data-tts-lesson-title]");
+        const reference = document.querySelector("[data-tts-lesson-reference]");
+        if (title instanceof HTMLElement && isVisible(title)) lessonIntro.push(...splitLongText(title.textContent, title));
+        if (reference instanceof HTMLElement && isVisible(reference)) lessonIntro.push(...splitLongText(reference.textContent, reference));
+      }
+
       const bibleVerses = Array.from(reader.querySelectorAll(".bible-chapter-verse"));
       if (bibleVerses.length) {
-        return bibleVerses.flatMap((verse) => {
+        return [...lessonIntro, ...bibleVerses.flatMap((verse) => {
           const number = normalize(verse.querySelector(".verse-number")?.textContent);
           const text = normalize(verse.querySelector(".verse-text")?.textContent ?? verse.textContent);
-          return splitLongText(number ? `${number}. ${text}` : text, verse);
-        });
+          return splitLongText(number ? `${copy.verse} ${number}. ${text}` : text, verse);
+        })];
       }
 
       const readingVerses = Array.from(reader.querySelectorAll(".verse[id^='reading-v']"));
       if (readingVerses.length) {
-        return readingVerses.flatMap((verse) => splitLongText(verse.textContent, verse));
+        return [...lessonIntro, ...readingVerses.flatMap((verse) => {
+          const number = normalize(verse.querySelector("sup")?.textContent);
+          const text = normalize(verse.textContent?.replace(number, ""));
+          return splitLongText(number ? `${copy.verse} ${number}. ${text}` : text, verse);
+        })];
       }
 
       const candidates = Array.from(reader.querySelectorAll("h2, h3, p, li"));
-      return candidates.flatMap((element) => {
+      const bodyChunks = candidates.flatMap((element) => {
         if (!isVisible(element)) return [];
         if (element.matches("p") && element.closest("li")) return [];
         return splitLongText(element.textContent, element);
       });
+      return [...lessonIntro, ...bodyChunks];
     };
 
     const setStatus = () => {
@@ -223,7 +315,14 @@ const copy = lang === "en"
       activeSource = source;
       source.classList.add("tts-active-source");
       const rect = source.getBoundingClientRect();
-      if (rect.top < 92 || rect.bottom > window.innerHeight - 120) {
+      const headerHeight = Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+      ) || 62;
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const playerHeight = player.hidden ? 0 : player.getBoundingClientRect().height;
+      const topLimit = headerHeight + 18;
+      const bottomLimit = viewportHeight - Math.max(110, playerHeight + 24);
+      if (rect.top < topLimit || rect.bottom > bottomLimit) {
         source.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
       }
     };
@@ -234,9 +333,44 @@ const copy = lang === "en"
       return Number.isFinite(value) ? value : 1;
     };
 
-    const getSelectedVoice = () => {
-      if (!(voiceSelect instanceof HTMLSelectElement) || !voiceSelect.value) return null;
-      return voices.find((voice) => `${voice.name}|||${voice.lang}` === voiceSelect.value) ?? null;
+    const getVoiceValue = (voice) => `${voice.name}|||${voice.lang}`;
+
+    const getBestVoice = (targetLanguage) => {
+      const targetBase = targetLanguage === "en" ? "en" : "es";
+      const preferredLocales = targetBase === "en"
+        ? ["en-US", "en-GB", "en-AU", "en-CA"]
+        : ["es-PE", "es-MX", "es-US", "es-ES", "es-CO", "es-AR"];
+      const naturalName = /(natural|neural|premium|enhanced|online|google|siri|aria|jenny|guy|elvira|dalia|paulina|raul|raúl|jorge|lucia|lucía)/i;
+      const legacyName = /(desktop|compact|basic|eloquence|espeak|festival)/i;
+      return [...voices]
+        .filter((voice) => voice.lang?.toLowerCase().startsWith(targetBase))
+        .sort((a, b) => {
+          const score = (voice) => {
+            const localeIndex = preferredLocales.findIndex((locale) => locale.toLowerCase() === voice.lang?.toLowerCase());
+            return (localeIndex >= 0 ? 100 - localeIndex * 8 : 50)
+              + (naturalName.test(voice.name) ? 90 : 0)
+              + (!voice.localService ? 18 : 0)
+              + (voice.default ? 6 : 0)
+              - (legacyName.test(voice.name) ? 45 : 0);
+          };
+          return score(b) - score(a) || a.name.localeCompare(b.name);
+        })[0] ?? null;
+    };
+
+    const getSelectedVoiceConfiguration = () => {
+      const value = voiceSelect instanceof HTMLSelectElement ? voiceSelect.value : "profile:auto";
+      if (value === "profile:es" || value === "profile:en" || value === "profile:auto" || !value) {
+        const targetLanguage = value === "profile:es" ? "es" : value === "profile:en" ? "en" : lang;
+        const voice = getBestVoice(targetLanguage);
+        return {
+          voice,
+          language: voice?.lang || (targetLanguage === "en" ? "en-US" : "es-PE"),
+          rateMultiplier: .96,
+          pitch: targetLanguage === "en" ? 1 : 1.01,
+        };
+      }
+      const voice = voices.find((candidate) => getVoiceValue(candidate) === value) ?? null;
+      return { voice, language: voice?.lang || pageSpeechLang, rateMultiplier: 1, pitch: 1 };
     };
 
     const stopSpeech = ({ reset = false } = {}) => {
@@ -262,10 +396,12 @@ const copy = lang === "en"
       synth.cancel();
       const chunk = chunks[currentIndex];
       const utterance = new Utterance(chunk.text);
-      utterance.lang = speechLang;
-      utterance.rate = getRate();
-      const selectedVoice = getSelectedVoice();
-      if (selectedVoice) utterance.voice = selectedVoice;
+      const selectedVoice = getSelectedVoiceConfiguration();
+      utterance.lang = selectedVoice.language;
+      utterance.rate = Math.max(.6, Math.min(1.6, getRate() * selectedVoice.rateMultiplier));
+      utterance.pitch = selectedVoice.pitch;
+      utterance.volume = 1;
+      if (selectedVoice.voice) utterance.voice = selectedVoice.voice;
       utterance.onstart = () => {
         if (token !== session) return;
         playing = true;
@@ -298,6 +434,7 @@ const copy = lang === "en"
     };
 
     const openPlayer = ({ autoplay = false } = {}) => {
+      document.dispatchEvent(new CustomEvent("bibli:tts-opening"));
       chunks = buildChunks();
       if (!chunks.length) {
         if (status instanceof HTMLElement) status.textContent = copy.noContent;
@@ -305,8 +442,10 @@ const copy = lang === "en"
       }
       player.hidden = false;
       launcher.hidden = true;
+      root.classList.add("is-open");
       setStatus();
       requestAnimationFrame(() => {
+        syncFloatingUiOffset();
         if (close instanceof HTMLButtonElement) close.focus();
       });
       if (autoplay) speakCurrent();
@@ -316,22 +455,47 @@ const copy = lang === "en"
       stopSpeech({ reset: false });
       player.hidden = true;
       launcher.hidden = false;
+      root.classList.remove("is-open");
+      syncFloatingUiOffset();
       launcher.focus();
     };
 
     const refreshVoices = () => {
-      voices = synth.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(lang));
+      voices = synth.getVoices().filter((voice) => /^(es|en)(-|$)/i.test(voice.lang || ""));
       if (!(voiceSelect instanceof HTMLSelectElement)) return;
-      const storedVoice = localStorage.getItem(voiceKey) ?? "";
-      voiceSelect.querySelectorAll("option:not(:first-child)").forEach((option) => option.remove());
-      voices.forEach((voice) => {
+      const storedVoice = localStorage.getItem(voiceKey) ?? "profile:auto";
+      voiceSelect.replaceChildren();
+
+      const addOption = (parent, value, label) => {
         const option = document.createElement("option");
-        option.value = `${voice.name}|||${voice.lang}`;
-        option.textContent = `${voice.name} · ${voice.lang}`;
-        voiceSelect.append(option);
-      });
+        option.value = value;
+        option.textContent = label;
+        parent.append(option);
+      };
+
+      const bibliGroup = document.createElement("optgroup");
+      bibliGroup.label = copy.bibliVoices;
+      addOption(bibliGroup, "profile:auto", copy.automaticVoice);
+      addOption(bibliGroup, "profile:es", copy.bibliSpanishVoice);
+      addOption(bibliGroup, "profile:en", copy.bibliEnglishVoice);
+      voiceSelect.append(bibliGroup);
+
+      const appendDeviceGroup = (targetLanguage, label) => {
+        const groupVoices = voices
+          .filter((voice) => voice.lang?.toLowerCase().startsWith(targetLanguage))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        if (!groupVoices.length) return;
+        const group = document.createElement("optgroup");
+        group.label = label;
+        groupVoices.forEach((voice) => addOption(group, getVoiceValue(voice), `${voice.name} · ${voice.lang}`));
+        voiceSelect.append(group);
+      };
+
+      appendDeviceGroup("es", copy.deviceSpanishVoices);
+      appendDeviceGroup("en", copy.deviceEnglishVoices);
+
       const match = Array.from(voiceSelect.options).some((option) => option.value === storedVoice);
-      voiceSelect.value = match ? storedVoice : "";
+      voiceSelect.value = match ? storedVoice : "profile:auto";
     };
 
     const storedRate = localStorage.getItem(rateKey);
@@ -387,10 +551,22 @@ const copy = lang === "en"
       });
     });
 
+    document.addEventListener("bibli:tts-open", () => openPlayer({ autoplay: true }));
+    document.addEventListener("bibli:tts-close", () => { if (!player.hidden) closePlayer(); });
+    document.addEventListener("bibli:reader-preferences-opening", () => { if (!player.hidden) closePlayer(); });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !player.hidden) closePlayer();
     });
-    window.addEventListener("beforeunload", () => synth.cancel());
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(() => {
+        if (!player.hidden) syncFloatingUiOffset();
+      }).observe(player);
+    }
+    window.addEventListener("beforeunload", () => {
+      synth.cancel();
+      document.documentElement.style.setProperty("--tts-player-offset", "0px");
+      delete document.documentElement.dataset.ttsPlayerOpen;
+    });
 
     refreshVoices();
     synth.addEventListener?.("voiceschanged", refreshVoices);
@@ -409,6 +585,7 @@ const copy = lang === "en"
   .global-tts { position:fixed; right:18px; bottom:max(18px,env(safe-area-inset-bottom)); z-index:145; pointer-events:none; }
   .global-tts[hidden] { display:none !important; }
   .tts-launcher,.tts-player { pointer-events:auto; }
+  .tts-launcher[hidden],.global-tts.is-open .tts-launcher { display:none !important; }
   .tts-launcher { min-height:44px; display:inline-flex; align-items:center; gap:.5rem; padding:0 .85rem; border:1px solid var(--accent-border); border-radius:14px; background:var(--surface-elevated); color:var(--accent); box-shadow:var(--shadow-md); font:inherit; font-size:.8rem; font-weight:800; cursor:pointer; }
   .tts-launcher:hover { background:var(--accent-soft); border-color:var(--accent); }
   .tts-player { width:min(430px,calc(100vw - 28px)); display:grid; gap:.75rem; padding:.85rem; border:1px solid var(--border-color); border-radius:18px; background:color-mix(in srgb,var(--surface-elevated) 96%,transparent); box-shadow:0 20px 65px rgba(0,0,0,.18); backdrop-filter:blur(18px); }
@@ -437,4 +614,6 @@ const copy = lang === "en"
     .tts-options { grid-template-columns:92px minmax(0,1fr); }
   }
   @media(prefers-reduced-motion:reduce){ :global(.tts-active-source){ scroll-behavior:auto; } }
+
+  :global(html[data-lesson-dock="true"]) .tts-launcher { display:none !important; }
 </style>

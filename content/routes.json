@@ -166,24 +166,236 @@
           ]
         },
         {
-          "id": "pentateuco-pascua-juicio-egipto",
-          "title": "La Pascua y el juicio final sobre Egipto",
-          "slug": "pascua-juicio-final-egipto",
-          "description": "Éxodo 11–12: anuncio del juicio sobre los primogénitos, institución de la Pascua y preparación inmediata de la liberación de Israel.",
+          "id": "pentateuco-pascua-juicio-salida-egipto",
+          "title": "La Pascua, el juicio final y la salida de Egipto",
+          "slug": "pascua-juicio-final-salida-egipto",
+          "description": "Éxodo 11–12: anuncio y ejecución del juicio sobre los primogénitos, institución y ordenanzas de la Pascua, y salida de Israel de Egipto.",
           "position": 15,
           "lesson_number_range": [
             109,
-            110
+            112
           ]
+        },
+        {
+          "id": "pentateuco-camino-mar-rojo-cantico",
+          "title": "El camino, el mar Rojo y el cántico de liberación",
+          "slug": "camino-mar-rojo-cantico-liberacion",
+          "description": "Éxodo 13–15: consagración de los primogénitos, guía de Dios, paso por el mar Rojo y celebración de la liberación.",
+          "position": 16,
+          "lesson_number_range": [
+            113,
+            117
+          ]
+        },
+        {
+          "id": "pentateuco-provision-desierto-organizacion",
+          "title": "Provisión, prueba y organización en el desierto",
+          "slug": "provision-prueba-organizacion-desierto",
+          "description": "Éxodo 15:22–18: Dios provee agua y alimento, sostiene a Israel frente a Amalec y prepara una administración más sabia antes de Sinaí.",
+          "position": 17,
+          "lesson_number_range": [
+            118,
+            125
+          ]
+        },
+        {
+          "id": "pentateuco-sinai-decalogo",
+          "title": "Sinaí y los Diez Mandamientos",
+          "slug": "sinai-diez-mandamientos",
+          "description": "Éxodo 19–20: Israel llega al Sinaí, es preparado para encontrarse con Dios y recibe las palabras fundamentales del pacto.",
+          "position": 18,
+          "lesson_number_range": [
+            126,
+            131
+          ]
+        },
+        {
+          "id": "pentateuco-libro-pacto",
+          "title": "El libro del pacto: justicia, culto y vida comunitaria",
+          "slug": "libro-pacto-justicia-culto-comunidad",
+          "description": "Éxodo 21–23: ordenanzas para la vida del pueblo, protección del prójimo, justicia, descanso, fiestas y fidelidad al Dios del pacto.",
+          "position": 19,
+          "lesson_number_range": [
+            132,
+            143
+          ]
+        },
+        {
+          "id": "pentateuco-ratificacion-pacto-sinai",
+          "title": "La ratificación del pacto en Sinaí",
+          "slug": "ratificacion-pacto-sinai",
+          "description": "Éxodo 24: el pacto es ratificado, los representantes de Israel comparecen ante Dios y Moisés sube al monte para recibir sus instrucciones.",
+          "position": 20,
+          "lesson_number_range": [
+            144,
+            145
+          ]
+        },
+        {
+          "id": "pentateuco-tabernaculo-santuario-mobiliario",
+          "title": "El santuario y su mobiliario",
+          "slug": "santuario-tabernaculo-mobiliario",
+          "description": "Éxodo 25–27: ofrendas para el santuario e instrucciones sobre el arca, la mesa, el candelero, la estructura del tabernáculo, el altar y el atrio.",
+          "position": 21,
+          "lesson_number_range": [
+            146,
+            155
+          ]
+        },
+        {
+          "id": "pentateuco-sacerdocio-vestiduras-consagracion",
+          "title": "El sacerdocio: vestiduras y consagración",
+          "slug": "sacerdocio-vestiduras-consagracion",
+          "description": "Éxodo 28–29: vestiduras sacerdotales, consagración de Aarón y sus hijos, sacrificios de ordenación y servicio continuo delante de Dios.",
+          "position": 22,
+          "lesson_number_range": [
+            156,
+            166
+          ]
+        },
+        {
+          "id": "pentateuco-culto-santidad-artesanos-sabado",
+          "title": "Culto, santidad, artesanos y sábado",
+          "slug": "culto-santidad-artesanos-sabado",
+          "description": "Éxodo 30–31: altar del incienso, rescate, lavacro, aceite e incienso santos, artesanos llamados por Dios y señal del sábado.",
+          "position": 23,
+          "lesson_number_range": [
+            167,
+            173
+          ]
+        },
+        {
+          "id": "pentateuco-becerro-oro-ruptura-pacto",
+          "title": "El becerro de oro y la ruptura del pacto",
+          "slug": "becerro-oro-ruptura-pacto",
+          "description": "Éxodo 31:18–32: idolatría del becerro de oro, ira, intercesión de Moisés, juicio y gravedad de quebrantar el pacto.",
+          "position": 24,
+          "lesson_number_range": [
+            174,
+            178
+          ]
+        },
+        {
+          "id": "pentateuco-presencia-renovacion-pacto",
+          "title": "La presencia de Dios y la renovación del pacto",
+          "slug": "presencia-dios-renovacion-pacto",
+          "description": "Éxodo 33–34: crisis por la presencia divina, intercesión de Moisés, revelación del carácter de Dios y renovación de las tablas y del pacto.",
+          "position": 25,
+          "lesson_number_range": [
+            179,
+            184
+          ]
+        },
+        {
+          "id": "pentateuco-construccion-tabernaculo",
+          "title": "La construcción del tabernáculo",
+          "slug": "construccion-tabernaculo",
+          "description": "Éxodo 35–39: el pueblo aporta voluntariamente, los artesanos ejecutan la obra y se completan el tabernáculo, sus utensilios y las vestiduras sacerdotales.",
+          "position": 26,
+          "lesson_number_range": [
+            185,
+            193
+          ]
+        },
+        {
+          "id": "pentateuco-tabernaculo-gloria",
+          "title": "El tabernáculo levantado y la gloria de Jehová",
+          "slug": "tabernaculo-levantado-gloria-jehova",
+          "description": "Éxodo 40: el santuario es erigido y consagrado; la nube y la gloria de Jehová llenan el tabernáculo y guían a Israel.",
+          "position": 27,
+          "lesson_number_range": [
+            194,
+            196
+          ]
+        },
+        {
+          "id": "pentateuco-levitico-ofrendas-fundamentales",
+          "title": "Levítico: las ofrendas fundamentales",
+          "slug": "levitico-ofrendas-fundamentales",
+          "description": "Levítico 1–4: holocausto, ofrenda de cereal, sacrificio de paz y sacrificios por el pecado como comienzo de la enseñanza sobre acercarse a Dios en santidad.",
+          "position": 28,
+          "lesson_number_range": [
+            197,
+            200
+          ]
+        },
+        {
+          "id": "pentateuco-levitico-culpa-confesion-reparacion",
+          "title": "Levítico: culpa, confesión y reparación",
+          "slug": "levitico-culpa-confesion-reparacion",
+          "description": "Levítico 5:1–6:7: culpa reconocida, confesión, provisión sacrificial accesible, ofrenda por la culpa y restitución como respuesta al daño.",
+          "position": 29
+        },
+        {
+          "id": "pentateuco-levitico-instrucciones-sacerdotales-ofrendas",
+          "title": "Levítico: instrucciones sacerdotales sobre las ofrendas",
+          "slug": "levitico-instrucciones-sacerdotales-ofrendas",
+          "description": "Levítico 6:8–7:38: responsabilidades sacerdotales en la administración del holocausto, la ofrenda vegetal, las ofrendas por el pecado y la culpa y los sacrificios de paz, con sus porciones y límites santos.",
+          "position": 30
+        },
+        {
+          "id": "pentateuco-levitico-consagracion-inicio-sacerdocio",
+          "title": "Levítico: consagración e inicio del sacerdocio",
+          "slug": "levitico-consagracion-inicio-sacerdocio",
+          "description": "Levítico 8–10: consagración de Aarón y sus hijos, comienzo del ministerio sacerdotal, manifestación de la gloria de Jehová, juicio sobre Nadab y Abiú y responsabilidades de discernimiento, enseñanza y administración de lo santo.",
+          "position": 31
+        },
+        {
+          "id": "pentateuco-levitico-limpio-inmundo",
+          "title": "Levítico: lo limpio, lo inmundo y la vida santa",
+          "slug": "levitico-limpio-inmundo-vida-santa",
+          "description": "Levítico 11–15: leyes de pureza ritual relacionadas con alimentos, parto, afecciones de la piel y otros estados corporales, para enseñar a Israel a distinguir entre limpio e inmundo y vivir delante del Dios santo.",
+          "position": 32
+        },
+        {
+          "id": "pentateuco-levitico-dia-expiacion",
+          "title": "Levítico: el Día de la Expiación",
+          "slug": "levitico-dia-expiacion",
+          "description": "Levítico 16: el Día de la Expiación, con la entrada anual del sumo sacerdote, la purificación del santuario, la confesión y remoción de los pecados de Israel y la provisión de Dios para mantener su presencia en medio del pueblo.",
+          "position": 33,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-sangre-sacrificio-vida",
+          "title": "Levítico: sangre, sacrificio y santidad de la vida",
+          "slug": "levitico-sangre-sacrificio-santidad-vida",
+          "description": "Levítico 17: centralización del sacrificio, rechazo de cultos rivales, prohibición de consumir sangre y enseñanza de que la vida pertenece a Dios y la sangre ha sido dada para expiación.",
+          "position": 34,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-santidad-vida-pacto",
+          "title": "Levítico: santidad en la vida del pacto",
+          "slug": "levitico-santidad-vida-pacto",
+          "description": "Levítico 18–20: santidad en la sexualidad, la familia, la vida comunitaria, la justicia y la fidelidad exclusiva a Jehová, con sus responsabilidades y consecuencias dentro del pacto.",
+          "position": 35,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-santidad-sacerdocio",
+          "title": "Levítico: santidad del sacerdocio",
+          "slug": "levitico-santidad-sacerdocio",
+          "description": "Levítico 21–22: santidad particular de los sacerdotes y del sumo sacerdote, aptitud cultual, participación en las cosas santas y requisitos de integridad para las ofrendas presentadas a Jehová.",
+          "position": 36,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-tiempos-santos-fiestas",
+          "title": "Levítico: tiempos santos y fiestas de Jehová",
+          "slug": "levitico-tiempos-santos-fiestas",
+          "description": "Levítico 23: el sábado y las convocaciones señaladas por Jehová que ordenan el calendario de Israel alrededor del descanso, la memoria, la adoración y las obras redentoras de Dios.",
+          "position": 37,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-presencia-nombre-justicia",
+          "title": "Levítico: presencia santa, nombre santo y justicia",
+          "slug": "levitico-presencia-nombre-justicia",
+          "description": "Levítico 24: servicio continuo del santuario mediante las lámparas y los panes, santidad del nombre de Jehová y principios de justicia proporcional, reparación e igualdad jurídica dentro del pacto.",
+          "position": 38,
+          "status": "Publicado"
         }
-      ],
-      "auto_append_module": {
-        "enabled": true,
-        "id": "pentateuco-continuacion-provisional",
-        "title": "Continuación de la ruta",
-        "slug": "continuacion-de-la-ruta",
-        "description": "Lecciones nuevas incorporadas automáticamente y pendientes de agrupación editorial definitiva."
-      }
+      ]
     }
   ]
 }

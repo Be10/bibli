@@ -48,7 +48,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
   title={person.name}
   description={person.summary ?? "Personaje de la Biblioteca Bíblica."}
 >
-  <main class="page">
+  <main class="page" data-detail-root data-detail-kind="person">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/personajes/")}>Personajes</a> →

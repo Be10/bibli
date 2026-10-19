@@ -45,7 +45,7 @@ function getTargetPath(versionId: string) {
 ---
 
 {versions.length > 1 && (
-  <label class="bible-version-switcher">
+  <label class="bible-version-switcher" data-bible-version-switcher>
     <span>{label}</span>
     <select
       data-bible-version-switch
@@ -81,7 +81,10 @@ function getTargetPath(versionId: string) {
         }
 
         if (element.value) {
-          window.location.assign(element.value);
+          const target = new URL(element.value, window.location.href);
+          target.search = window.location.search;
+          target.hash = window.location.hash;
+          window.location.assign(target.toString());
         }
       });
     });
@@ -102,7 +105,7 @@ function getTargetPath(versionId: string) {
   }
 
   .bible-version-switcher select {
-    min-height: 40px;
+    min-height: 44px;
     max-width: min(100%, 320px);
     padding: 0 38px 0 12px;
     border: 1px solid var(--accent-border);
@@ -111,6 +114,27 @@ function getTargetPath(versionId: string) {
     color: var(--accent);
     font: inherit;
     cursor: pointer;
+  }
+
+
+  .bible-version-switcher select:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 520px) {
+    .bible-version-switcher {
+      width: 100%;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bible-version-switcher select {
+      width: 100%;
+      max-width: none;
+    }
   }
 
   :global(html[data-theme="dark"]) .bible-version-switcher span {

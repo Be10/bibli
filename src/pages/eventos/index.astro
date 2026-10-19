@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllEvents, type Event } from "../../lib/queries";
 
 const events = getAllEvents().filter((event) => event.status !== "Borrador");
@@ -139,9 +138,6 @@ function getMapLabel(event: Event) {
           {events.length} {events.length === 1 ? "evento" : "eventos"}
         </span>
       </div>
-
-      <CatalogFilter total={events.length} noun="eventos" placeholder="Buscar evento, período, fecha o tipo…" label="Buscar eventos bíblicos" />
-
       <div class="timeline-groups">
         {eventsByPeriod.map((group) => (
           <section class="timeline-group" id={group.slug} data-catalog-group>
@@ -243,7 +239,7 @@ function getMapLabel(event: Event) {
   .timeline-period,
   .event-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .events-hero-card {
@@ -252,7 +248,7 @@ function getMapLabel(event: Event) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .events-hero-card span,
@@ -328,7 +324,7 @@ function getMapLabel(event: Event) {
   .period-nav a:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .period-nav strong {
@@ -477,7 +473,7 @@ function getMapLabel(event: Event) {
   :global(html[data-theme="dark"]) .events-timeline {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .period-nav a,

@@ -2,7 +2,9 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-export const STUDY_CONTRACT_VERSION = "1.0.0";
+export const STUDY_CONTRACT_VERSION = "1.1.0";
+
+export const CONTENT_VERSION_PATTERN = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
 export const IMPORTABLE_ARTIFACT_TYPE = "bible_study_lesson";
 export const IMPORTABLE_MODE = "official";
@@ -176,6 +178,41 @@ export function slugify(value) {
   return normalizeText(value)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+export function parseContentVersion(value, label = "content_version") {
+  const raw = String(value ?? "").trim();
+  const match = raw.match(CONTENT_VERSION_PATTERN);
+  if (!match) {
+    throw new Error(`${label} debe usar SemVer MAJOR.MINOR.PATCH y es ${raw || "<vacío>"}`);
+  }
+
+  const major = Number(match[1]);
+  const minor = Number(match[2]);
+  const patch = Number(match[3]);
+  return { major, minor, patch, normalized: `${major}.${minor}.${patch}` };
+}
+
+export function compareContentVersions(left, right) {
+  const a = parseContentVersion(left, "versión izquierda");
+  const b = parseContentVersion(right, "versión derecha");
+  if (a.major !== b.major) return a.major - b.major;
+  if (a.minor !== b.minor) return a.minor - b.minor;
+  return a.patch - b.patch;
+}
+
+export function stripStudyVersionSuffix(value) {
+  return String(value ?? "").replace(/-v\d+\.\d+\.\d+$/i, "");
+}
+
+export function versionedStudyFilename(fileName, contentVersion) {
+  const { normalized } = parseContentVersion(contentVersion);
+  const extension = path.extname(fileName);
+  if (extension.toLowerCase() !== ".md") {
+    throw new Error(`el archivo de estudio debe terminar en .md y es ${fileName}`);
+  }
+  const stem = path.basename(fileName, extension);
+  return `${stripStudyVersionSuffix(stem)}-v${normalized}.md`;
 }
 
 export function splitReadingLine(value) {

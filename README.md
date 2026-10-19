@@ -2,11 +2,18 @@
 
 Bibli es una plataforma bíblica web construida con Astro, TypeScript, SQLite y `better-sqlite3`. Su objetivo es ofrecer lectura bíblica, rutas de aprendizaje, lecciones canónicas, búsqueda, glosario, personajes, lugares, eventos, mapas y recursos visuales sin convertir el estudio en una página plana de texto.
 
+### Estructura editorial de estudios
+
+La fuente canónica de rutas y módulos vive en `Estudios Biblicos/Sistema/Estructura-Editorial.yaml`. `npm run studies:sync` la copia a `content/editorial-structure.yaml` y regenera `content/routes.json` para compatibilidad. Desde la Lección 201 de `pentateuco-principal`, cada Markdown oficial debe incluir `section_id`; una lección sin sección válida bloquea `studies:validate` y el build en lugar de publicarse en un módulo provisional.
+
+
 ## Arquitectura actual
 
 ### Fuente canónica de las lecciones
 
-Las lecciones oficiales viven editorialmente en SharePoint (`Estudios Biblicos/**.md`). El repositorio contiene un snapshot publicable y reproducible en:
+Las lecciones oficiales viven editorialmente en SharePoint (`Estudios Biblicos/**.md`). Cada archivo oficial usa un nombre versionado con el mismo SemVer de su `content_version`, por ejemplo `pentateuco-leccion-248-levitico-19-29-a-37-v1.0.1.md`. Varias revisiones de un mismo `lesson_id` pueden coexistir en la fuente canónica; `studies:sync` publica únicamente la revisión con el `content_version` más alto.
+
+El repositorio contiene un snapshot publicable y reproducible en:
 
 ```text
 content/studies/
@@ -52,7 +59,8 @@ Ruta
 data/schema.sql       # esquema relacional
 data/seed.sql         # libros, traducciones y versiones bíblicas
 data/editorial.sql    # temas, eventos, personas, lugares, glosario y recursos
-content/routes.json   # rutas y módulos
+content/editorial-structure.yaml # snapshot canónico de rutas/módulos
+content/routes.json              # snapshot derivado de compatibilidad
 content/study-enrichments.json # relaciones editoriales explícitas por lección
 content/studies/      # Markdown canónico publicado
 ```
@@ -84,7 +92,7 @@ Instalar dependencias:
 npm ci
 ```
 
-Sincronizar las lecciones oficiales desde la carpeta local de OneDrive:
+Sincronizar las lecciones oficiales desde la carpeta local de OneDrive. Si existen varias revisiones del mismo `lesson_id`, se selecciona automáticamente la versión SemVer más alta:
 
 ```bash
 npm run studies:sync
@@ -229,7 +237,7 @@ La PWA dispone de una base offline automática para páginas visitadas y de un g
 - `Lecciones y rutas`: todas las lecciones oficiales y sus rutas publicadas.
 - `Biblia`: un paquete independiente por versión bíblica disponible.
 
-Cada paquete puede descargarse, actualizarse o eliminarse de forma independiente. Durante la descarga también se guardan los recursos locales enlazados por las páginas (CSS, JavaScript, fuentes e imágenes locales). El service worker conserva estos caches durante sus propias actualizaciones.
+Cada paquete puede descargarse, actualizarse o eliminarse de forma independiente. Durante la descarga también se guardan los recursos locales enlazados por las páginas (CSS, JavaScript, fuentes e imágenes locales). El service worker conserva estos caches durante sus propias actualizaciones. Los caches internos de shell/runtime reciben una versión nueva en cada build para que una instalación existente no conserve indefinidamente páginas básicas antiguas; los caches `bibli-package-*` del usuario no se eliminan por ese proceso.
 
 El navegador puede liberar almacenamiento local bajo presión de espacio; por eso la interfaz muestra el consumo estimado y no debe considerarse Cache Storage como copia de respaldo editorial.
 

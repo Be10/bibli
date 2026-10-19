@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import {
   getAllPlaces,
   getEventsByPlaceId,
@@ -105,9 +104,6 @@ const placeTypesCount = new Set(
           {places.length} {places.length === 1 ? "lugar" : "lugares"}
         </span>
       </div>
-
-      <CatalogFilter total={places.length} noun="lugares" placeholder="Buscar lugar, tipo o descripción…" label="Buscar lugares bíblicos" />
-
       <div class="places-directory-grid">
         {places.map((place) => (
           <article class="place-directory-card" data-catalog-item data-catalog-search={[place.name, place.summary, place.place_type, place.geographical_certainty].filter(Boolean).join(" ")}>
@@ -149,3 +145,273 @@ const placeTypesCount = new Set(
     </section>
   </main>
 </BaseLayout>
+
+<style is:global>
+  .places-index-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr minmax(220px, 300px);
+    gap: 28px;
+    align-items: end;
+    overflow: hidden;
+  }
+
+  .places-index-hero::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    bottom: -120px;
+    width: 320px;
+    height: 320px;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%);
+    pointer-events: none;
+  }
+
+  .places-index-hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .places-index-hero-card {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 8px;
+    padding: 24px;
+    border-radius: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .places-index-hero-card span,
+  .places-summary-card span,
+  .place-directory-card-main span {
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .places-index-hero-card strong {
+    color: var(--heading-color);
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  .places-index-hero-card p,
+  .places-summary-card p,
+  .place-directory-card-main p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .places-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .places-summary-card {
+    display: grid;
+    gap: 8px;
+    padding: 22px;
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+  }
+
+  .places-summary-card strong {
+    color: var(--heading-color);
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .places-directory-section {
+    background: var(--surface);
+  }
+
+  .places-directory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .place-directory-card {
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    gap: 16px;
+    min-height: 330px;
+    padding: 22px;
+    border-radius: 22px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    transition:
+      transform 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .place-directory-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .place-directory-card-main {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+  }
+
+  .place-directory-card-main h2 {
+    margin: 0;
+    color: var(--heading-color);
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
+  .place-directory-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .place-directory-meta span {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .place-directory-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .place-directory-link {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .place-directory-link.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  .place-directory-link:hover {
+    background: var(--accent-soft);
+  }
+
+  .place-directory-link.primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .place-directory-link.disabled {
+    cursor: default;
+    opacity: 0.66;
+  }
+
+  html[data-theme="dark"] .places-index-hero-card,
+  html[data-theme="dark"] .places-summary-card,
+  html[data-theme="dark"] .places-directory-section {
+    background: var(--surface);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-panel);
+  }
+
+  html[data-theme="dark"] .place-directory-card {
+    background: var(--surface-soft);
+    border-color: var(--border-color);
+  }
+
+  html[data-theme="dark"] .places-index-hero-card span,
+  html[data-theme="dark"] .places-summary-card span,
+  html[data-theme="dark"] .place-directory-card-main span,
+  html[data-theme="dark"] .place-directory-meta span,
+  html[data-theme="dark"] .place-directory-link {
+    color: var(--accent);
+  }
+
+  html[data-theme="dark"] .places-index-hero-card strong,
+  html[data-theme="dark"] .places-summary-card strong,
+  html[data-theme="dark"] .place-directory-card-main h2 {
+    color: var(--heading-color);
+  }
+
+  html[data-theme="dark"] .places-index-hero-card p,
+  html[data-theme="dark"] .places-summary-card p,
+  html[data-theme="dark"] .place-directory-card-main p {
+    color: var(--text-muted);
+  }
+
+  html[data-theme="dark"] .place-directory-meta span {
+    background: var(--surface);
+    border-color: var(--border-color);
+  }
+
+  html[data-theme="dark"] .place-directory-link {
+    background: transparent;
+    border-color: var(--accent-hover);
+  }
+
+  html[data-theme="dark"] .place-directory-link.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  html[data-theme="dark"] .place-directory-link:hover {
+    background: var(--surface-muted);
+  }
+
+  html[data-theme="dark"] .place-directory-link.primary:hover {
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
+  }
+
+  @media (max-width: 760px) {
+    .places-index-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .places-index-hero-card {
+      padding: 20px;
+    }
+
+    .places-summary-grid,
+    .places-directory-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .place-directory-card {
+      min-height: auto;
+    }
+
+  }
+</style>

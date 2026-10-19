@@ -68,7 +68,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
   title={event.title}
   description={event.summary ?? "Evento bíblico de la Biblioteca Bíblica."}
 >
-  <main class="page">
+  <main class="page" data-detail-root data-detail-kind="event">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/eventos/")}>Eventos</a> →

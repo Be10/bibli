@@ -41,7 +41,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(topic.title)}`
   title={topic.title}
   description={topic.definition ?? "Tema de la Biblioteca Bíblica."}
 >
-  <main class="page">
+  <main class="page" data-detail-root data-detail-kind="topic">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/temas/")}>Temas</a> →

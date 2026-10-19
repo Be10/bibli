@@ -184,7 +184,7 @@ const projectItems = [
   title="Explorar"
   description="Explora la Biblioteca Bíblica por búsqueda avanzada, Biblia, recursos visuales, rutas, lecciones, libros, pasajes, eventos, temas, personajes, lugares y glosario."
 >
-  <main class="page explore-page">
+  <main class="page explore-page" data-catalog-root data-catalog-variant="explore">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Explorar
     </div>
@@ -199,7 +199,7 @@ const projectItems = [
           Navega por las áreas principales del proyecto: búsqueda avanzada, lectura bíblica,
           recursos visuales, aprendizaje guiado y entidades bíblicas conectadas.
         </p>
-        
+
       </div>
 
       <aside class="explore-hero-card" aria-label="Resumen del contenido">
@@ -211,25 +211,11 @@ const projectItems = [
       </aside>
     </section>
 
-    <form class="explore-search" action={sitePath("/buscar/")} method="get" role="search">
-      <div class="explore-search-field">
-        <Icon name="search" size={18} />
-        <label class="sr-only" for="explore-search-input">Buscar en todo Bibli</label>
-        <input
-          id="explore-search-input"
-          type="search"
-          name="q"
-          placeholder="Biblia, lecciones, rutas, recursos, personajes…"
-          autocomplete="off"
-        />
-      </div>
-      <button type="submit" class="button">Buscar en todo Bibli</button>
-    </form>
-
     <section class="explore-feature-grid" aria-label="Accesos principales">
       {featuredItems.map((item) => (
         <a
           href={item.url}
+          data-catalog-item
           class:list={[
             "explore-feature-card",
             item.primary ? "is-primary" : "",
@@ -258,7 +244,7 @@ const projectItems = [
 
       <div class="explore-grid">
         {guidedItems.map((item) => (
-          <a href={item.url} class="explore-card">
+          <a href={item.url} class="explore-card" data-catalog-item>
             <span class="explore-count">{item.count}</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -281,7 +267,7 @@ const projectItems = [
 
       <div class="explore-grid">
         {bibleItems.map((item) => (
-          <a href={item.url} class="explore-card">
+          <a href={item.url} class="explore-card" data-catalog-item>
             <span class="explore-count">{item.count}</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -304,7 +290,7 @@ const projectItems = [
 
       <div class="explore-grid">
         {visualItems.map((item) => (
-          <a href={item.url} class="explore-card">
+          <a href={item.url} class="explore-card" data-catalog-item>
             <span class="explore-count">{item.count}</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -327,7 +313,7 @@ const projectItems = [
 
       <div class="explore-grid">
         {entityItems.map((item) => (
-          <a href={item.url} class="explore-card">
+          <a href={item.url} class="explore-card" data-catalog-item>
             <span class="explore-count">{item.count}</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -346,7 +332,7 @@ const projectItems = [
 
       <div class="explore-grid project-grid">
         {projectItems.map((item) => (
-          <a href={item.url} class="explore-card">
+          <a href={item.url} class="explore-card" data-catalog-item>
             <span class="explore-count">{item.count}</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
@@ -375,7 +361,7 @@ const projectItems = [
   .explore-feature-card,
   .explore-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .explore-hero-card {
@@ -384,7 +370,7 @@ const projectItems = [
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .explore-hero-card span,
@@ -412,43 +398,6 @@ const projectItems = [
     line-height: 1.7;
   }
 
-  .explore-search {
-    display:flex;
-    align-items:center;
-    gap:.75rem;
-    margin-top:24px;
-    padding:.6rem;
-    border:1px solid var(--border-color);
-    border-radius:18px;
-    background:var(--surface);
-    box-shadow:var(--shadow-sm);
-  }
-
-  .explore-search-field {
-    min-width:0;
-    flex:1;
-    min-height:46px;
-    display:flex;
-    align-items:center;
-    gap:.6rem;
-    padding:0 .8rem;
-    border-radius:13px;
-    background:var(--surface-soft);
-    color:var(--accent);
-  }
-
-  .explore-search-field input {
-    width:100%;
-    min-width:0;
-    border:0;
-    outline:0;
-    background:transparent;
-    color:var(--heading-color);
-    font:inherit;
-  }
-
-  .explore-search-field input::placeholder { color:var(--text-muted); }
-
   .explore-feature-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -470,15 +419,11 @@ const projectItems = [
       box-shadow 160ms ease;
   }
 
-  .explore-feature-card.is-primary {
-    background: var(--accent-soft);
-  }
-
   .explore-feature-card:hover,
   .explore-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .explore-feature-card strong {
@@ -528,32 +473,13 @@ const projectItems = [
   :global(html[data-theme="dark"]) .explore-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .explore-feature-card.is-primary,
   :global(html[data-theme="dark"]) .explore-card {
     background: var(--surface-soft);
     border-color: var(--border-color);
-  }
-
-  :global(html[data-theme="dark"]) .explore-hero-card span,
-  :global(html[data-theme="dark"]) .explore-feature-card span,
-  :global(html[data-theme="dark"]) .explore-feature-card small,
-  :global(html[data-theme="dark"]) .explore-count {
-    color: var(--accent);
-  }
-
-  :global(html[data-theme="dark"]) .explore-hero-card strong,
-  :global(html[data-theme="dark"]) .explore-feature-card strong,
-  :global(html[data-theme="dark"]) .explore-card h3 {
-    color: var(--heading-color);
-  }
-
-  :global(html[data-theme="dark"]) .explore-hero-card p,
-  :global(html[data-theme="dark"]) .explore-feature-card p,
-  :global(html[data-theme="dark"]) .explore-card p {
-    color: var(--text-muted);
   }
 
   @media (max-width: 960px) {
@@ -568,8 +494,6 @@ const projectItems = [
   }
 
   @media (max-width: 640px) {
-    .explore-search { align-items:stretch; flex-direction:column; }
-    .explore-search .button { width:100%; }
 
     .explore-feature-grid,
     .explore-grid,
@@ -584,9 +508,9 @@ const projectItems = [
       padding: 18px;
     }
   }
-</style>
-<style>
-  /* Explore v3 */
+
+
+  /* Compact Explore cards and accent-aware states. */
   .explore-page { padding-top:14px; }
   .explore-hero { gap:22px; align-items:center; padding:clamp(1.5rem,3vw,2.4rem); border-radius:22px; background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent-soft) 26%,var(--surface))); }
   .explore-hero h1 { letter-spacing:-.055em; }

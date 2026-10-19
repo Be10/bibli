@@ -84,7 +84,7 @@ Todo artefacto `test` debe ser rechazado explícitamente por el importador de pr
 
 ## 4. Frontmatter oficial v1
 
-Los 50 Markdown canónicos actuales comparten exactamente estos campos:
+Los Markdown canónicos oficiales comparten estos campos base:
 
 ```yaml
 artifact_type: bible_study_lesson
@@ -111,7 +111,10 @@ Para `lesson` y `synthesis_lesson` estos campos son obligatorios en v1, salvo lo
 - `lesson_id` es la identidad estable de una Lección.
 - `route_lesson_number` es orden visible dentro de la ruta, no identidad primaria.
 - El título visible se obtiene del primer `# H1` del cuerpo, no de la Bitácora.
-- `content_version` versiona el contenido editorial.
+- `content_version` versiona el contenido editorial con SemVer estricto `MAJOR.MINOR.PATCH`.
+- El nombre físico debe terminar en `-v<content_version>.md`; por ejemplo, `pentateuco-leccion-248-levitico-19-29-a-37-v1.0.1.md`.
+- Varias revisiones del mismo `lesson_id` pueden coexistir en SharePoint. El snapshot publicable conserva solo la revisión de SemVer más alta.
+- El sufijo `-vX.Y.Z` nunca forma parte del slug público, de modo que actualizar contenido no cambia la URL estable de la Lección.
 
 ## 5. Tipos de contenido preparados
 
@@ -282,9 +285,9 @@ places
 publication_status
 ```
 
-Ninguno es obligatorio para importar las 50 Lecciones actuales.
+Para contenido histórico se permite compatibilidad por rango según `metadata_policy`. Para Lecciones nuevas, `section_id` pasa a ser obligatorio desde el umbral definido por ruta en `Estructura-Editorial.yaml` (en `pentateuco-principal`, desde la Lección 201).
 
-No inferir estos campos en el importador mediante heurísticas de texto.
+No inferir `section_id` desde la prosa ni desde el número de capítulo. Debe venir de decisión editorial explícita; el importador solo usa rangos para el legado anterior al umbral.
 
 ## 12. Modelo de persistencia implementado en Bibli
 
@@ -343,10 +346,12 @@ Flujo local implementado:
 ```text
 SharePoint / OneDrive
 Estudios Biblicos/**.md
+Estudios Biblicos/Sistema/Estructura-Editorial.yaml
         ↓
 npm run studies:sync
         ↓
 content/studies/**.md + manifest.json
+content/editorial-structure.yaml + content/routes.json (derivado)
         ↓
 npm run studies:validate
         ↓
@@ -360,12 +365,16 @@ npm run build
 `studies:sync`:
 
 1. lee la raíz local sincronizada de `Estudios Biblicos`;
-2. excluye `Sistema` y `Pruebas`;
-3. acepta solo `artifact_type: bible_study_lesson` + `mode: official`;
-4. copia de forma determinista los archivos aprobados;
-5. genera hashes SHA-256 y `manifest.json`;
-6. elimina del snapshot solo archivos obsoletos dentro de la carpeta que administra;
-7. no modifica la fuente de SharePoint.
+2. exige y valida `Sistema/Estructura-Editorial.yaml`;
+3. excluye `Sistema` y `Pruebas` del snapshot de Lecciones;
+4. acepta solo `artifact_type: bible_study_lesson` + `mode: official`;
+5. exige `content_version` SemVer y un nombre físico terminado en `-v<content_version>.md`;
+6. agrupa revisiones por `lesson_id`, rechaza una versión duplicada dentro del mismo `lesson_id` y selecciona la revisión SemVer más alta;
+7. copia de forma determinista solo las revisiones vigentes;
+8. copia la estructura a `content/editorial-structure.yaml` y regenera `content/routes.json` como compatibilidad;
+9. genera hashes SHA-256 y `manifest.json`, incluyendo `section_id`, `available_versions`, conteo de archivos fuente y revisiones históricas omitidas;
+10. elimina del snapshot solo archivos obsoletos dentro de la carpeta que administra;
+11. no modifica la fuente de SharePoint.
 
 ## 14. `studies:validate` — compuerta obligatoria
 
@@ -375,9 +384,13 @@ El validador comprueba, entre otros:
 - ningún artefacto `test`;
 - ausencia de `Pruebas`/`Sistema`;
 - frontmatter obligatorio;
-- `lesson_id` único;
+- `content_version` SemVer válido;
+- nombre físico `-v<content_version>.md` coherente con el frontmatter;
+- `lesson_id` único en el snapshot vigente;
 - `(route_id, route_lesson_number)` único;
-- ruta y módulo resolubles contra `content/routes.json`;
+- ruta y módulo resolubles contra `content/editorial-structure.yaml`;
+- `section_id` obligatorio desde el umbral editorial configurado;
+- ningún módulo provisional generado automáticamente;
 - libro y traducción resolubles contra Bibli;
 - `coverage` no vacía;
 - un único H1;
@@ -423,7 +436,7 @@ Implementado:
 1. contrato de contenido;
 2. `studies:sync`;
 3. `studies:validate`;
-4. snapshot de las 50 Lecciones oficiales de Génesis;
+4. snapshot de las Lecciones oficiales vigentes;
 5. modelo `study_lessons` + módulos + relación N:M de rutas;
 6. importador idempotente Markdown → SQLite;
 7. Astro Content Collection para renderizar el Markdown canónico;

@@ -4,7 +4,26 @@ export type StudyEntry = CollectionEntry<"studies">;
 
 export function getStudySlug(entry: StudyEntry) {
   const candidate = entry.id.split(/[\\/]/).pop() ?? entry.id;
-  return candidate.replace(/\.md$/i, "");
+  const stem = candidate.replace(/\.md$/i, "");
+  const contentVersion = String(entry.data.content_version ?? "").trim();
+
+  if (!contentVersion) return stem;
+
+  // Astro's glob loader can normalize an entry id such as `-v1.0.0` to
+  // `-v100`. Public lesson URLs must remain revision-independent, so strip
+  // either representation using the canonical content_version from frontmatter.
+  const versionSuffixes = [
+    `-v${contentVersion}`,
+    `-v${contentVersion.replace(/[^0-9]/g, "")}`,
+  ];
+
+  for (const suffix of versionSuffixes) {
+    if (suffix !== "-v" && stem.toLowerCase().endsWith(suffix.toLowerCase())) {
+      return stem.slice(0, -suffix.length);
+    }
+  }
+
+  return stem;
 }
 
 export function getStudyTitle(entry: StudyEntry) {

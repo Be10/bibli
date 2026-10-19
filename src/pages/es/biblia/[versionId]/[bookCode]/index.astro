@@ -101,7 +101,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(book.name)}`;
   title={`Biblia · ${book.name}`}
   description={book.summary ?? `Lee el libro de ${book.name}.`}
 >
-  <main class="page">
+  <main class="page bible-book-page" data-detail-root data-detail-kind="bible-book">
     <div class="bible-version-toolbar">
       <BibleVersionSwitcher
         language="es"

@@ -5,27 +5,35 @@ import {
   IMPORTABLE_ARTIFACT_TYPE,
   IMPORTABLE_MODE,
   KNOWN_CONTENT_TYPES,
+  STUDY_CONTRACT_VERSION,
   REQUIRED_LESSON_FIELDS,
   RESERVED_H2,
   SUPPORTED_CONTENT_TYPES,
   canonicalBookId,
   normalizeText,
   normalizeBibleReference,
+  parseContentVersion,
   parseStudyDocument,
   sha256Buffer,
   splitReadingLine,
   toPosixPath,
+  versionedStudyFilename,
   walkFiles,
 } from "./study-markdown-utils.mjs";
+import {
+  EDITORIAL_STRUCTURE_FILE,
+  loadEditorialConfig,
+  resolveEditorialModule,
+  sectionIdRequiredFromLesson,
+} from "./study-editorial-config.mjs";
 
 const projectRoot = process.cwd();
 const studiesRoot = path.join(projectRoot, "content", "studies");
 const manifestPath = path.join(studiesRoot, "manifest.json");
-const routesConfigPath = path.join(projectRoot, "content", "routes.json");
+const editorialConfigPath = path.join(projectRoot, "content", EDITORIAL_STRUCTURE_FILE);
 const dbPath = path.join(projectRoot, "data", "bibli.sqlite");
 const problems = [];
 const warnings = [];
-const editorialWarnings = [];
 
 function problem(file, message) {
   problems.push(`${file}: ${message}`);
@@ -50,41 +58,29 @@ if (!fs.existsSync(dbPath)) {
 }
 
 
-if (!fs.existsSync(routesConfigPath)) {
+if (!fs.existsSync(editorialConfigPath)) {
   console.error("Validación de estudios: FAIL");
-  console.error("Falta content/routes.json.");
+  console.error(`Falta content/${EDITORIAL_STRUCTURE_FILE}. Ejecuta npm run studies:sync.`);
   process.exit(1);
 }
 
-const routesConfig = JSON.parse(fs.readFileSync(routesConfigPath, "utf8"));
-const routeConfigById = new Map((routesConfig.routes || []).map((route) => [route.id, route]));
-
-function resolveConfiguredModule(route, lessonNumber) {
-  return (route?.modules || []).find((module) => {
-    const range = module.lesson_number_range;
-    return Array.isArray(range) && range.length === 2 && lessonNumber >= range[0] && lessonNumber <= range[1];
-  });
+let editorialConfig;
+try {
+  editorialConfig = loadEditorialConfig(projectRoot);
+} catch (error) {
+  console.error("Validación de estudios: FAIL");
+  console.error(error.message);
+  process.exit(1);
 }
-
-function configuredRangeEnd(route) {
-  return Math.max(
-    0,
-    ...(route?.modules || [])
-      .map((module) => module.lesson_number_range)
-      .filter((range) => Array.isArray(range) && range.length === 2 && Number.isInteger(range[1]))
-      .map((range) => range[1]),
-  );
-}
-
-function canUseAutoAppendModule(route, lessonNumber) {
-  return route?.auto_append_module?.enabled === true
-    && Number.isInteger(lessonNumber)
-    && lessonNumber > configuredRangeEnd(route);
-}
-
-const autoAppendCandidates = new Map();
+const routeConfigById = new Map(editorialConfig.routes.map((route) => [route.id, route]));
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+if (manifest.schema_version !== STUDY_CONTRACT_VERSION) {
+  problems.push(`manifest.json: schema_version=${manifest.schema_version} pero se esperaba ${STUDY_CONTRACT_VERSION}; ejecuta studies:sync`);
+}
+if (manifest.revision_policy !== "highest_semver_per_lesson_id") {
+  problems.push("manifest.json: revision_policy inválida o ausente; ejecuta studies:sync");
+}
 const manifestMap = new Map((manifest.files || []).map((entry) => [entry.path, entry]));
 const markdownFiles = walkFiles(studiesRoot, (filePath) => filePath.toLowerCase().endsWith(".md"));
 
@@ -107,6 +103,8 @@ db.close();
 const lessonIds = new Map();
 const routeNumbers = new Map();
 const seenPaths = new Set();
+let explicitSectionAssignments = 0;
+let legacySectionAssignments = 0;
 
 for (const filePath of markdownFiles) {
   const relativePath = toPosixPath(path.relative(studiesRoot, filePath));
@@ -160,16 +158,50 @@ for (const filePath of markdownFiles) {
     problem(relativePath, "route_lesson_number debe ser entero positivo");
   }
 
+  let normalizedContentVersion = null;
+  try {
+    normalizedContentVersion = parseContentVersion(fm.content_version, `${relativePath}: content_version`).normalized;
+  } catch (error) {
+    problem(relativePath, error.message.replace(`${relativePath}: `, ""));
+  }
+
+  if (normalizedContentVersion) {
+    const actualFileName = path.basename(filePath);
+    const expectedFileName = versionedStudyFilename(actualFileName, normalizedContentVersion);
+    if (actualFileName !== expectedFileName) {
+      problem(relativePath, `nombre de archivo inconsistente con content_version; se esperaba ${expectedFileName}`);
+    }
+  }
+
   const routeConfig = routeConfigById.get(fm.route_id);
   if (!routeConfig) {
-    problem(relativePath, `route_id no existe en content/routes.json: ${fm.route_id}`);
-  } else if (!resolveConfiguredModule(routeConfig, fm.route_lesson_number)) {
-    if (canUseAutoAppendModule(routeConfig, fm.route_lesson_number)) {
-      const candidates = autoAppendCandidates.get(fm.route_id) || [];
-      candidates.push({ relativePath, lessonNumber: fm.route_lesson_number });
-      autoAppendCandidates.set(fm.route_id, candidates);
+    problem(relativePath, `route_id no existe en content/${EDITORIAL_STRUCTURE_FILE}: ${fm.route_id}`);
+  } else {
+    if (normalizeText(routeConfig.title) !== normalizeText(fm.route_name)) {
+      problem(relativePath, `route_name no coincide con la estructura editorial (${fm.route_name} vs ${routeConfig.title})`);
+    }
+
+    const requiredFrom = sectionIdRequiredFromLesson(editorialConfig, fm.route_id);
+    const missingRequiredSection = fm.route_lesson_number >= requiredFrom
+      && (!fm.section_id || typeof fm.section_id !== "string" || !fm.section_id.trim());
+    if (missingRequiredSection) {
+      problem(
+        relativePath,
+        `section_id es obligatorio desde la Lección ${requiredFrom} de ${fm.route_id}; define la sección editorial antes de publicar`,
+      );
+    }
+
+    const module = missingRequiredSection ? null : resolveEditorialModule(routeConfig, fm);
+    if (!missingRequiredSection && !module) {
+      if (fm.section_id) {
+        problem(relativePath, `section_id ${fm.section_id} no existe dentro de ${fm.route_id}`);
+      } else {
+        problem(relativePath, `la Lección ${fm.route_lesson_number} no tiene una sección editorial resoluble en ${fm.route_id}`);
+      }
+    } else if (module && fm.section_id) {
+      explicitSectionAssignments += 1;
     } else {
-      problem(relativePath, `route_lesson_number ${fm.route_lesson_number} no pertenece a ningún módulo configurado de ${fm.route_id}`);
+      legacySectionAssignments += 1;
     }
   }
 
@@ -252,6 +284,15 @@ for (const filePath of markdownFiles) {
     if (manifestEntry.lesson_id !== fm.lesson_id) {
       problem(relativePath, "lesson_id no coincide con manifest.json");
     }
+    if (String(manifestEntry.content_version) !== String(fm.content_version)) {
+      problem(relativePath, "content_version no coincide con manifest.json; vuelve a ejecutar studies:sync");
+    }
+    if (!Array.isArray(manifestEntry.available_versions) || !manifestEntry.available_versions.includes(String(fm.content_version))) {
+      problem(relativePath, "available_versions no contiene la revisión publicada; vuelve a ejecutar studies:sync");
+    }
+    if ((manifestEntry.section_id ?? null) !== (fm.section_id ?? null)) {
+      problem(relativePath, "section_id no coincide con manifest.json; vuelve a ejecutar studies:sync");
+    }
   }
 
   if ((sectionCounts.get("🧵 Hilo Invisible") || 0) === 0) {
@@ -268,36 +309,11 @@ for (const manifestPathKey of manifestMap.keys()) {
 if (manifest.file_count !== markdownFiles.length) {
   problems.push(`manifest.json: file_count=${manifest.file_count} pero existen ${markdownFiles.length} Markdown`);
 }
-
-for (const [routeId, candidates] of autoAppendCandidates) {
-  const route = routeConfigById.get(routeId);
-  const sorted = [...candidates].sort((a, b) => a.lessonNumber - b.lessonNumber);
-  const expectedStart = configuredRangeEnd(route) + 1;
-  let expected = expectedStart;
-  let contiguous = true;
-
-  for (const candidate of sorted) {
-    if (candidate.lessonNumber !== expected) {
-      contiguous = false;
-      problems.push(
-        `${candidate.relativePath}: la cola automática de ${routeId} debe ser continua; se esperaba route_lesson_number ${expected} y se encontró ${candidate.lessonNumber}`
-      );
-      break;
-    }
-    expected += 1;
-  }
-
-  if (contiguous && sorted.length > 0) {
-    const start = sorted[0].lessonNumber;
-    const end = sorted[sorted.length - 1].lessonNumber;
-    editorialWarnings.push({
-      routeId,
-      start,
-      end,
-      count: sorted.length,
-      title: route.auto_append_module.title || "Continuación de la ruta",
-    });
-  }
+if (!Number.isInteger(manifest.source_file_count) || manifest.source_file_count < manifest.file_count) {
+  problems.push("manifest.json: source_file_count inválido");
+}
+if (manifest.superseded_revision_count !== manifest.source_file_count - manifest.file_count) {
+  problems.push("manifest.json: superseded_revision_count no coincide con source_file_count - file_count");
 }
 
 if (problems.length > 0) {
@@ -306,12 +322,6 @@ if (problems.length > 0) {
   if (warnings.length > 0) {
     console.error("Advertencias:");
     for (const item of warnings) console.error(`- ${item}`);
-  }
-  if (editorialWarnings.length > 0) {
-    console.error("Organización editorial pendiente:");
-    for (const item of editorialWarnings) {
-      console.error(`- ${item.routeId}: ${item.count} lecciones provisionales (${item.start}–${item.end}) en "${item.title}"`);
-    }
   }
   process.exit(1);
 }
@@ -324,11 +334,6 @@ if (warnings.length > 0) {
   console.log(`Advertencias no bloqueantes: ${warnings.length}`);
   for (const item of warnings) console.log(`- ${item}`);
 }
-if (editorialWarnings.length > 0) {
-  console.log("Organización editorial pendiente:");
-  for (const item of editorialWarnings) {
-    console.log(`- ${item.routeId}: ${item.count} lecciones provisionales (${item.start}–${item.end}) en "${item.title}"`);
-  }
-} else {
-  console.log("Organización editorial: al día");
-}
+console.log(`Lecciones con section_id explícito: ${explicitSectionAssignments}`);
+console.log(`Lecciones con compatibilidad heredada por rango: ${legacySectionAssignments}`);
+console.log("Organización editorial: al día");

@@ -63,7 +63,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(book.name)}`;
   title={book.name}
   description={book.summary ?? "Libro bíblico de la Biblioteca Bíblica."}
 >
-  <main class="page">
+  <main class="page" data-detail-root data-detail-kind="book">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/libros/")}>Libros</a> →

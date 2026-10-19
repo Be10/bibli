@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllPeople, type Person } from "../../lib/queries";
 
 const people = getAllPeople().filter((person) => person.status !== "Borrador");
@@ -126,9 +125,6 @@ function getPersonInitial(person: Person) {
           {people.length} {people.length === 1 ? "personaje" : "personajes"}
         </span>
       </div>
-
-      <CatalogFilter total={people.length} noun="personajes" placeholder="Buscar personaje o palabra clave…" label="Buscar personajes bíblicos" />
-
       <div class="people-groups">
         {peopleByInitial.map((group) => (
           <section class="people-group" id={`inicial-${group.initial}`} data-catalog-group>
@@ -201,7 +197,7 @@ function getPersonInitial(person: Person) {
   .people-group-heading,
   .person-directory-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .people-hero-card {
@@ -210,7 +206,7 @@ function getPersonInitial(person: Person) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .people-hero-card span,
@@ -289,7 +285,7 @@ function getPersonInitial(person: Person) {
   .people-initial-nav a:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .people-initial-nav strong {
@@ -357,7 +353,7 @@ function getPersonInitial(person: Person) {
   .person-directory-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .person-directory-avatar {
@@ -415,7 +411,7 @@ function getPersonInitial(person: Person) {
   :global(html[data-theme="dark"]) .people-directory-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .people-initial-nav a,

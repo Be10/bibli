@@ -88,7 +88,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(passage.displa
   title={passage.display_reference}
   description={passage.summary ?? "Pasaje bíblico de la Biblioteca Bíblica."}
 >
-  <main class="page">
+  <main class="page" data-detail-root data-detail-kind="passage">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/pasajes/")}>Pasajes</a> →

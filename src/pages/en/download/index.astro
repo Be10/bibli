@@ -6,7 +6,7 @@ import { sitePath } from "../../../lib/site-paths";
 ---
 
 <BaseLayout title="Bibli offline" lang="en" alternateLanguage={{ code: "es", label: "Español", href: sitePath("/descargar/") }}>
-  <main class="offline-page">
+  <main class="page offline-page" data-utility-root data-utility-kind="offline-library">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href={sitePath("/en/")}>Home</a><span>›</span><span>Offline</span></nav>
     <header class="offline-hero">
       <span class="offline-hero-icon"><Icon name="download" size={24} /></span>

@@ -21,7 +21,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(term.term)}`;
 ---
 
 <BaseLayout title={term.term} description={definition}>
-  <main class="page glossary-detail-page">
+  <main class="page glossary-detail-page" data-detail-root data-detail-kind="glossary">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> →
       <a href={sitePath("/glosario/")}>Glosario</a> →

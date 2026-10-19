@@ -7,13 +7,22 @@ Bibli usa Astro + TypeScript + SQLite + `better-sqlite3` y se publica estáticam
 Para lecciones:
 
 ```text
-Estudios Biblicos/**.md (SharePoint) = fuente editorial canónica
-content/studies/**/*.md             = snapshot publicable del repositorio
-Markdown                            = cuerpo completo de la lección
-data/bibli.sqlite                   = índice/navegación/relaciones para build
+Estudios Biblicos/**.md (SharePoint)                         = fuente canónica del contenido de Lecciones
+Estudios Biblicos/Sistema/Estructura-Editorial.yaml (SharePoint) = fuente canónica de rutas/módulos
+content/studies/**/*.md                                       = snapshot publicable del contenido
+content/editorial-structure.yaml                              = snapshot publicable de estructura editorial
+content/routes.json                                           = snapshot derivado de compatibilidad; no editar manualmente
+Markdown                                                      = cuerpo completo de la lección
+data/bibli.sqlite                                             = índice/navegación/relaciones para build
 ```
 
 Nunca reconstruir el estudio desde columnas rígidas de SQLite.
+
+## Versionado de Markdown
+
+Los Markdown oficiales deben llamarse `...-vMAJOR.MINOR.PATCH.md`, y el sufijo debe coincidir exactamente con `content_version`. Varias revisiones del mismo `lesson_id` pueden coexistir en `Estudios Biblicos`; `studies:sync` debe publicar solo la revisión SemVer más alta. El sufijo de versión es físico/editorial y nunca debe formar parte del slug público de la Lección, para que una revisión no cambie su URL.
+
+No borrar revisiones históricas solo para evitar duplicados: la deduplicación de publicación se hace por `lesson_id` + `content_version`. Dos archivos con el mismo `lesson_id` y el mismo `content_version` son un error y deben bloquear la sincronización.
 
 ## Antes de modificar aprendizaje o datos
 
@@ -23,6 +32,7 @@ Revisar:
 data/schema.sql
 data/seed.sql
 data/editorial.sql
+content/editorial-structure.yaml
 content/routes.json
 content/study-enrichments.json
 content/studies/manifest.json
@@ -35,8 +45,9 @@ No inventar IDs, tablas, slugs, rutas ni relaciones.
 ## Modelo de aprendizaje
 
 - `study_lessons`: identidad y metadatos derivados del Markdown.
-- `route_modules`: agrupaciones pedagógicas.
+- `route_modules`: agrupaciones pedagógicas derivadas de `Estructura-Editorial.yaml`.
 - `route_lessons`: relación N:M entre rutas y lecciones; una Lección puede reutilizarse sin duplicarse.
+- `section_id` en el frontmatter asigna explícitamente una Lección a un módulo. Desde el umbral definido por `metadata_policy`, es obligatorio.
 - `lessons`: vista de compatibilidad para módulos históricos todavía no migrados.
 - `lesson_*`: relaciones aprobadas con entidades editoriales.
 
@@ -139,3 +150,10 @@ npm run bible:audit:kjv:spacing
 npm run db:validate
 npm run build
 ```
+
+## Estructura editorial
+
+No crear módulos automáticos publicables. `npm run studies:sync` debe copiar `Estudios Biblicos/Sistema/Estructura-Editorial.yaml` a `content/editorial-structure.yaml` y generar `content/routes.json` solo como snapshot compatible.
+
+Las Lecciones históricas pueden conservar membresía por `lesson_number_range` hasta el umbral migrado. Las Lecciones nuevas deben declarar `section_id`. Si una Lección oficial no puede resolverse a un módulo, `studies:validate` y el build deben fallar antes de modificar SQLite.
+

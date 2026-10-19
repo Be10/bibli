@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllTopics, type Topic } from "../../lib/queries";
 
 const topics = getAllTopics().filter((topic) => topic.status !== "Borrador");
@@ -127,9 +126,6 @@ function getTopicInitial(topic: Topic) {
           {topics.length} {topics.length === 1 ? "tema" : "temas"}
         </span>
       </div>
-
-      <CatalogFilter total={topics.length} noun="temas" placeholder="Buscar tema o concepto…" label="Buscar temas bíblicos" />
-
       <div class="topics-groups">
         {topicsByInitial.map((group) => (
           <section class="topics-group" id={`inicial-${group.initial}`} data-catalog-group>
@@ -202,7 +198,7 @@ function getTopicInitial(topic: Topic) {
   .topics-group-heading,
   .topic-directory-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .topics-hero-card {
@@ -211,7 +207,7 @@ function getTopicInitial(topic: Topic) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .topics-hero-card span,
@@ -290,7 +286,7 @@ function getTopicInitial(topic: Topic) {
   .topics-initial-nav a:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .topics-initial-nav strong {
@@ -358,7 +354,7 @@ function getTopicInitial(topic: Topic) {
   .topic-directory-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .topic-directory-avatar {
@@ -416,7 +412,7 @@ function getTopicInitial(topic: Topic) {
   :global(html[data-theme="dark"]) .topics-directory-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .topics-initial-nav a,

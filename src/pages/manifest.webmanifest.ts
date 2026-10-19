@@ -15,9 +15,9 @@ export function GET() {
     start_url: url("/"),
     scope: url("/"),
     display: "standalone",
-    display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
+    display_override: ["standalone", "minimal-ui"],
     background_color: "#f7f7f8",
-    theme_color: "#5f4769",
+    theme_color: "#765982",
     categories: ["education", "books", "reference"],
     icons: [
       {

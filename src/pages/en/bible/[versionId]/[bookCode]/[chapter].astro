@@ -301,7 +301,7 @@ const searchUrl = `${sitePath("/en/search/")}?q=${encodeURIComponent(chapterRefe
 
       {verses.length > 0 ? (
         <div class="bible-chapter-reader-card">
-          <div class="bible-reader" data-reader-content>
+          <div class="bible-reader" data-reader-content data-reader-surface="bible">
             {verses.map((verse) => (
               <article
                 class="verse bible-chapter-verse"
@@ -452,7 +452,7 @@ const searchUrl = `${sitePath("/en/search/")}?q=${encodeURIComponent(chapterRefe
 
 <style>
   .bible-chapter-jump {
-    position:sticky; top:calc(var(--header-height,72px) + 10px); z-index:12; width:max-content; max-width:100%;
+    position:sticky; top:calc(var(--header-height,62px) + 8px); z-index:12; width:max-content; max-width:100%;
     display:flex; align-items:center; gap:.45rem; margin:24px auto 0; padding:.45rem; border:1px solid var(--border-color);
     border-radius:14px; background:color-mix(in srgb,var(--surface) 92%,transparent); box-shadow:var(--shadow-sm); backdrop-filter:blur(12px);
   }

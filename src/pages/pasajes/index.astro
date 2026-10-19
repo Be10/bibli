@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllPassages, type Passage } from "../../lib/queries";
 
 const passages = getAllPassages().filter((passage) => passage.status !== "Borrador");
@@ -139,9 +138,6 @@ function getPassageRange(passage: Passage) {
           {passages.length} {passages.length === 1 ? "pasaje" : "pasajes"}
         </span>
       </div>
-
-      <CatalogFilter total={passages.length} noun="pasajes" placeholder="Buscar referencia, libro o palabra clave…" label="Buscar pasajes bíblicos" />
-
       <div class="passages-groups">
         {passagesByBook.map((group) => (
           <section class="passages-group" id={`libro-${group.book.slug}`} data-catalog-group>
@@ -226,7 +222,7 @@ function getPassageRange(passage: Passage) {
   .passages-group-heading,
   .passage-directory-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .passages-hero-card {
@@ -235,7 +231,7 @@ function getPassageRange(passage: Passage) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .passages-hero-card span,
@@ -314,7 +310,7 @@ function getPassageRange(passage: Passage) {
   .passages-book-nav a:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .passages-book-nav strong {
@@ -397,7 +393,7 @@ function getPassageRange(passage: Passage) {
   .passage-directory-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .passage-directory-main {
@@ -460,7 +456,7 @@ function getPassageRange(passage: Passage) {
   :global(html[data-theme="dark"]) .passages-directory-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .passages-book-nav a,

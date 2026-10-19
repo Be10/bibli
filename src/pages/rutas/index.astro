@@ -10,24 +10,32 @@ const routeCards = routes.map((route) => ({
   lessons: getLessonsByRouteId(route.id),
   modules: getRouteModules(route.id),
 }));
+const totalModules = routeCards.reduce((total, item) => total + item.modules.length, 0);
+const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((lesson) => lesson.id))).size;
 ---
 
 <BaseLayout title="Rutas de estudio" description="Recorridos guiados para estudiar la Biblia progresivamente.">
-  <main class="route-index-page">
+  <main class="page route-index-page" data-catalog-root data-catalog-variant="learning">
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><span>Rutas</span></nav>
 
-    <header class="route-index-header">
+    <header class="route-index-header catalog-index-hero">
       <div>
         <span class="route-index-icon"><Icon name="route" size={20} /></span>
         <p class="eyebrow">Aprendizaje guiado</p>
         <h1>Rutas de estudio</h1>
         <p>Recorridos organizados para estudiar la Biblia paso a paso.</p>
       </div>
+
+      <aside class="catalog-learning-summary" aria-label="Resumen de rutas de estudio">
+        <span>Rutas disponibles</span>
+        <strong>{routes.length}</strong>
+        <small>{totalModules} módulos · {totalLessons} lecciones</small>
+      </aside>
     </header>
 
     <section class="route-grid" aria-label="Rutas disponibles">
       {routeCards.map(({ route, lessons, modules }) => (
-        <article class="route-card" data-route-card data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
+        <article class="route-card" data-catalog-item data-route-card data-persisted-root data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
           <div class="route-card-top">
             <div class="route-card-icon"><Icon name="layers" size={20} /></div>
             <span class="route-count">{modules.length} módulos · {lessons.length} lecciones</span>
@@ -39,12 +47,12 @@ const routeCards = routes.map((route) => ({
           </div>
           <div class="route-progress-row">
             <span>{route.estimated_duration ?? "Duración progresiva"}</span>
-            <strong data-progress-label>0%</strong>
+            <strong data-progress-label data-persisted-value>0%</strong>
           </div>
-          <div class="progress-track" aria-label="Progreso personal"><span data-progress-bar></span></div>
+          <div class="progress-track" role="progressbar" aria-label="Progreso personal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-track><span data-progress-bar></span></div>
           <div class="route-actions">
             <a class="primary" href={sitePath(`/rutas/${route.slug}/`)}><span>Abrir ruta</span><Icon name="arrow-right" size={16} /></a>
-            {lessons[0] && <a class="secondary" href={sitePath(`/lecciones/${lessons[0].slug}/`)} data-continue-link>Comenzar</a>}
+            {lessons[0] && <a class="secondary" href={sitePath(`/lecciones/${lessons[0].slug}/`)} data-continue-link data-persisted-value>Comenzar</a>}
           </div>
         </article>
       ))}
@@ -54,37 +62,59 @@ const routeCards = routes.map((route) => ({
 
 <script>
   const PROGRESS_KEY = "bibli-learning-progress-v1";
+  const routeCards = [...document.querySelectorAll<HTMLElement>("[data-route-card]")];
+
   function readProgress() {
     try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); } catch { return {}; }
   }
-  document.querySelectorAll<HTMLElement>("[data-route-card]").forEach((card) => {
+
+  function refreshRouteProgress() {
     const progress = readProgress();
     const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
-    let ids: string[] = [];
-    try { ids = JSON.parse(card.dataset.routeLessonIds || "[]"); } catch {}
-    const count = ids.filter((id) => completed.has(id)).length;
-    const percent = ids.length ? Math.round((count / ids.length) * 100) : 0;
-    const bar = card.querySelector<HTMLElement>("[data-progress-bar]");
-    const label = card.querySelector<HTMLElement>("[data-progress-label]");
-    if (bar) bar.style.width = `${percent}%`;
-    if (label) label.textContent = `${percent}%`;
 
-    const routeId = card.dataset.routeId || "";
-    const lastLesson = progress.lastLessonByRoute?.[routeId];
-    const continueLink = card.querySelector<HTMLAnchorElement>("[data-continue-link]");
-    let lessonMap: Array<{ id: string; href: string }> = [];
-    try { lessonMap = JSON.parse(card.dataset.routeLessonMap || "[]"); } catch {}
-    if (lastLesson && continueLink) {
-      const target = lessonMap.find((item) => item.id === lastLesson);
-      if (target?.href) continueLink.href = target.href;
-      continueLink.textContent = "Continuar";
-    } else if (count > 0 && count < ids.length && continueLink) {
-      const firstPending = lessonMap.find((item) => !completed.has(item.id));
-      if (firstPending?.href) continueLink.href = firstPending.href;
-      continueLink.textContent = "Continuar";
-    }
-    card.dataset.progressReady = "true";
+    routeCards.forEach((card) => {
+      let ids: string[] = [];
+      try { ids = JSON.parse(card.dataset.routeLessonIds || "[]"); } catch {}
+      const count = ids.filter((id) => completed.has(id)).length;
+      const percent = ids.length ? Math.round((count / ids.length) * 100) : 0;
+      const bar = card.querySelector<HTMLElement>("[data-progress-bar]");
+      const label = card.querySelector<HTMLElement>("[data-progress-label]");
+      const track = card.querySelector<HTMLElement>("[data-progress-track]");
+      if (bar) bar.style.width = `${percent}%`;
+      if (label) {
+        label.textContent = `${percent}%`;
+        label.dataset.persistedReady = "true";
+      }
+      if (track) track.setAttribute("aria-valuenow", String(percent));
+      card.dataset.progressState = percent >= 100 ? "complete" : percent > 0 ? "started" : "new";
+
+      const routeId = card.dataset.routeId || "";
+      const lastLesson = progress.lastLessonByRoute?.[routeId];
+      const continueLink = card.querySelector<HTMLAnchorElement>("[data-continue-link]");
+      let lessonMap: Array<{ id: string; href: string }> = [];
+      try { lessonMap = JSON.parse(card.dataset.routeLessonMap || "[]"); } catch {}
+
+      if (continueLink) {
+        const lastTarget = lastLesson ? lessonMap.find((item) => item.id === lastLesson) : null;
+        const firstPending = lessonMap.find((item) => !completed.has(item.id));
+        const target = lastTarget ?? (count > 0 && count < ids.length ? firstPending : null);
+        if (target?.href) continueLink.href = target.href;
+        continueLink.textContent = ids.length > 0 && count >= ids.length ? "Revisar" : count > 0 ? "Continuar" : "Comenzar";
+        continueLink.dataset.persistedReady = "true";
+      }
+
+      card.dataset.progressReady = "true";
+      card.dataset.persistedReady = "true";
+    });
+  }
+
+  refreshRouteProgress();
+  requestAnimationFrame(refreshRouteProgress);
+  window.addEventListener("storage", (event) => {
+    if (event.key === PROGRESS_KEY) refreshRouteProgress();
   });
+  window.addEventListener("bibli:learning-progress-change", refreshRouteProgress);
+  window.addEventListener("pageshow", refreshRouteProgress);
 </script>
 
 <style>
@@ -109,7 +139,6 @@ const routeCards = routes.map((route) => ({
   .route-card p { margin:0; color:var(--text-muted); line-height:1.6; }
   .route-progress-row { display:flex; justify-content:space-between; gap:1rem; color:var(--text-muted); font-size:.78rem; }
   .route-progress-row strong { color:var(--heading-color); }
-  [data-route-card]:not([data-progress-ready]) [data-progress-label], [data-route-card]:not([data-progress-ready]) [data-progress-bar] { visibility:hidden; }
   .progress-track { height:6px; background:var(--surface-soft); border-radius:999px; overflow:hidden; }
   .progress-track span { display:block; height:100%; width:0; border-radius:inherit; background:var(--accent); transition:width .28s ease; }
   .route-actions { display:flex; align-items:center; justify-content:space-between; gap:.65rem; }

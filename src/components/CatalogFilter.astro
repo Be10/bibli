@@ -41,6 +41,7 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
   data-catalog-total={total}
   data-catalog-noun={noun}
   data-global-search-base={globalSearchUrl}
+  data-catalog-lang={lang}
 >
   <div class="catalog-filter-search">
     <Icon name="search" size={17} />
@@ -49,6 +50,8 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
       placeholder={placeholder}
       autocomplete="off"
       spellcheck="false"
+      autocapitalize="none"
+      enterkeyhint="search"
       data-catalog-search
       aria-label={label}
     />
@@ -80,10 +83,10 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
 </div>
 
 <script>
-  const normalizeCatalogText = (value: string) => value
+  const normalizeCatalogText = (value: string, locale = "es") => value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("es")
+    .toLocaleLowerCase(locale)
     .trim();
 
   document.querySelectorAll<HTMLElement>("[data-catalog-filter]").forEach((filter) => {
@@ -100,14 +103,32 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
     const items = [...root.querySelectorAll<HTMLElement>("[data-catalog-item]")];
     const groups = [...root.querySelectorAll<HTMLElement>("[data-catalog-group]")];
     const navLinks = [...root.querySelectorAll<HTMLElement>("[data-catalog-nav-target]")];
+    const locale = filter.dataset.catalogLang === "en" ? "en" : "es";
+    const normalizedText = new WeakMap<HTMLElement, string>();
+    items.forEach((item) => {
+      normalizedText.set(
+        item,
+        normalizeCatalogText(item.dataset.catalogSearch || item.textContent || "", locale),
+      );
+    });
+    let updateFrame = 0;
 
-    const update = () => {
-      const query = normalizeCatalogText(input?.value ?? "");
+    const syncUrlQuery = () => {
+      if (!input) return;
+      const url = new URL(window.location.href);
+      const rawQuery = input.value.trim();
+      if (rawQuery) url.searchParams.set("q", rawQuery);
+      else url.searchParams.delete("q");
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    };
+
+    const update = ({ syncUrl = true } = {}) => {
+      const query = normalizeCatalogText(input?.value ?? "", locale);
       const tokens = query.split(/\s+/).filter(Boolean);
       let visible = 0;
 
       items.forEach((item) => {
-        const haystack = normalizeCatalogText(item.dataset.catalogSearch || item.textContent || "");
+        const haystack = normalizedText.get(item) ?? "";
         const matches = tokens.length === 0 || tokens.every((token) => haystack.includes(token));
         item.hidden = !matches;
         if (matches) visible += 1;
@@ -140,9 +161,18 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
       if (emptyGlobalSearch) emptyGlobalSearch.href = globalHref;
 
       filter.dataset.queryActive = query.length > 0 ? "true" : "false";
+      if (syncUrl) syncUrlQuery();
     };
 
-    input?.addEventListener("input", update);
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(updateFrame);
+      updateFrame = window.requestAnimationFrame(() => update());
+    };
+
+    const initialQuery = new URL(window.location.href).searchParams.get("q")?.trim() ?? "";
+    if (input && initialQuery) input.value = initialQuery;
+
+    input?.addEventListener("input", scheduleUpdate);
     input?.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && input.value) {
         input.value = "";
@@ -157,12 +187,12 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
     });
 
     filter.dataset.ready = "true";
-    update();
+    update({ syncUrl: false });
   });
 </script>
 
 <style>
-  .catalog-filter { margin:1rem 0 1.25rem; display:flex; align-items:center; gap:.8rem; padding:.55rem; border:1px solid var(--border-color); border-radius:15px; background:var(--surface); box-shadow:var(--shadow-sm); }
+  .catalog-filter { position:sticky; top:calc(var(--header-height,62px) + 8px); z-index:24; margin:1rem 0 1.25rem; display:flex; align-items:center; gap:.8rem; padding:.55rem; border:1px solid var(--border-color); border-radius:15px; background:color-mix(in srgb,var(--surface) 94%,transparent); box-shadow:var(--shadow-sm); backdrop-filter:blur(14px) saturate(1.08); -webkit-backdrop-filter:blur(14px) saturate(1.08); }
   .catalog-filter-search { min-width:0; flex:1; min-height:44px; display:flex; align-items:center; gap:.55rem; padding:0 .65rem; border:1px solid transparent; border-radius:11px; background:var(--surface-soft); color:var(--text-muted); transition:border-color 140ms ease,box-shadow 140ms ease,background-color 140ms ease; }
   .catalog-filter-search:focus-within { border-color:var(--accent-border); background:var(--surface); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent); }
   .catalog-filter-search .bibli-icon { flex:0 0 auto; color:var(--accent); }
@@ -184,8 +214,10 @@ const globalSearchUrl = lang === "en" ? sitePath("/en/search/") : sitePath("/bus
   .catalog-empty a { width:max-content; margin-top:.18rem; color:var(--accent); font-size:.75rem; font-weight:800; text-decoration:none; }
   .catalog-empty a:hover { text-decoration:underline; }
   :global([data-catalog-item][hidden]),:global([data-catalog-group][hidden]),:global([data-catalog-nav-target][hidden]) { display:none !important; }
+  :global([data-catalog-group]) { scroll-margin-top:calc(var(--header-height,62px) + 82px); }
   @media(max-width:620px){
-    .catalog-filter { align-items:stretch; flex-direction:column; gap:.4rem; }
+    .catalog-filter { position:static; align-items:stretch; flex-direction:column; gap:.4rem; }
+    .catalog-filter-search input { font-size:16px; }
     .catalog-filter-meta { min-width:0; width:100%; justify-items:start; padding:0 .2rem .1rem; }
     .catalog-filter-status { justify-content:flex-start; }
   }

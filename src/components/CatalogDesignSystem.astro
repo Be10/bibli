@@ -1,0 +1,930 @@
+---
+// Shared visual system for catalog, discovery and learning index pages.
+// Intentionally contains no markup: Astro hoists the global stylesheet once from BaseLayout.
+---
+
+<style is:global>
+  /* Catalog design system -------------------------------------------------- */
+  main.page[data-catalog-root] {
+    --catalog-gap: clamp(.85rem, 1.7vw, 1.2rem);
+    --catalog-pad: clamp(1rem, 2.2vw, 1.55rem);
+    --catalog-card-radius: 16px;
+    --catalog-card-border: color-mix(in srgb, var(--border-color) 88%, var(--accent) 12%);
+    padding-bottom: clamp(3rem, 7vw, 5rem);
+  }
+
+  main.page[data-catalog-root] > .breadcrumb {
+    margin-bottom: 14px !important;
+  }
+
+  main.page[data-catalog-root] > .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 245px);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: stretch;
+    margin: 0;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--catalog-card-border);
+    border-radius: clamp(18px, 2vw, 24px);
+    overflow: hidden;
+  }
+
+  main.page[data-catalog-root] > .hero > :first-child {
+    align-self: center;
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  main.page[data-catalog-root] > .hero h1 {
+    margin: .28rem 0 .65rem;
+    max-width: 16ch;
+    font-size: clamp(2.05rem, 5vw, 3.45rem);
+    line-height: .98;
+    letter-spacing: -.052em;
+  }
+
+  main.page[data-catalog-root] > .hero .subtitle {
+    max-width: 68ch;
+    margin: 0;
+    font-size: clamp(.96rem, 1.4vw, 1.04rem);
+    line-height: 1.65;
+  }
+
+  main.page[data-catalog-root] > .hero .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .58rem;
+    margin-top: 1.05rem;
+  }
+
+  main.page[data-catalog-root] > .hero .actions .button {
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,
+    .people-hero-card,
+    .topics-hero-card,
+    .events-hero-card,
+    .places-index-hero-card,
+    .passages-hero-card,
+    .resources-hero-card,
+    .explore-hero-card
+  ) {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    min-height: 158px;
+    display: grid;
+    align-content: center;
+    gap: .32rem;
+    padding: clamp(1rem, 2vw, 1.3rem);
+    border: 1px solid var(--accent-border);
+    border-radius: 18px;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--accent-soft) 58%, var(--surface)), var(--surface));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 24%, transparent);
+    overflow: hidden;
+  }
+
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,
+    .people-hero-card,
+    .topics-hero-card,
+    .events-hero-card,
+    .places-index-hero-card,
+    .passages-hero-card,
+    .resources-hero-card,
+    .explore-hero-card
+  )::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    right: -34px;
+    bottom: -42px;
+    width: 126px;
+    height: 126px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 68%);
+    pointer-events: none;
+  }
+
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,
+    .people-hero-card,
+    .topics-hero-card,
+    .events-hero-card,
+    .places-index-hero-card,
+    .passages-hero-card,
+    .resources-hero-card,
+    .explore-hero-card
+  ) > span {
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .075em;
+    text-transform: uppercase;
+  }
+
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,
+    .people-hero-card,
+    .topics-hero-card,
+    .events-hero-card,
+    .places-index-hero-card,
+    .passages-hero-card,
+    .resources-hero-card,
+    .explore-hero-card
+  ) > strong {
+    color: var(--heading-color);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -.045em;
+  }
+
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,
+    .people-hero-card,
+    .topics-hero-card,
+    .events-hero-card,
+    .places-index-hero-card,
+    .passages-hero-card,
+    .resources-hero-card,
+    .explore-hero-card
+  ) > p {
+    margin: .1rem 0 0;
+    color: var(--text-muted);
+    font-size: .78rem;
+    line-height: 1.48;
+  }
+
+  main.page[data-catalog-root] > :is(
+    .books-stats,
+    .people-stats,
+    .topics-stats,
+    .events-stats,
+    .passages-stats,
+    .resources-stats,
+    .places-summary-grid
+  ) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: .7rem;
+    margin: var(--catalog-gap) 0 0;
+  }
+
+  main.page[data-catalog-root] > :is(
+    .books-stats,
+    .people-stats,
+    .topics-stats,
+    .events-stats,
+    .passages-stats,
+    .resources-stats,
+    .places-summary-grid
+  ) > :is(
+    .books-stat-card,
+    .people-stat-card,
+    .topics-stat-card,
+    .events-stat-card,
+    .passages-stat-card,
+    .resources-stat-card,
+    .places-summary-card
+  ) {
+    min-width: 0;
+    min-height: 104px;
+    display: grid;
+    align-content: center;
+    gap: .3rem;
+    padding: 1rem;
+    border: 1px solid var(--catalog-card-border);
+    border-radius: 15px;
+    background: var(--surface);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .035);
+  }
+
+  main.page[data-catalog-root] > :is(
+    .books-stats,
+    .people-stats,
+    .topics-stats,
+    .events-stats,
+    .passages-stats,
+    .resources-stats,
+    .places-summary-grid
+  ) > :is(
+    .books-stat-card,
+    .people-stat-card,
+    .topics-stat-card,
+    .events-stat-card,
+    .passages-stat-card,
+    .resources-stat-card,
+    .places-summary-card
+  ) > span {
+    color: var(--text-muted);
+    font-size: .73rem;
+    font-weight: 720;
+    line-height: 1.35;
+  }
+
+  main.page[data-catalog-root] > :is(
+    .books-stats,
+    .people-stats,
+    .topics-stats,
+    .events-stats,
+    .passages-stats,
+    .resources-stats,
+    .places-summary-grid
+  ) > :is(
+    .books-stat-card,
+    .people-stat-card,
+    .topics-stat-card,
+    .events-stat-card,
+    .passages-stat-card,
+    .resources-stat-card,
+    .places-summary-card
+  ) > strong {
+    color: var(--heading-color);
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  main.page[data-catalog-root] > .section {
+    margin: var(--catalog-gap) 0 0;
+    padding: var(--catalog-pad);
+    border: 1px solid var(--catalog-card-border);
+    border-radius: 18px;
+  }
+
+  main.page[data-catalog-root] .section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  main.page[data-catalog-root] .section-header > div {
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  main.page[data-catalog-root] .section-header h2 {
+    margin: .2rem 0 0;
+    font-size: clamp(1.28rem, 2.8vw, 1.72rem);
+    line-height: 1.12;
+    letter-spacing: -.025em;
+  }
+
+  main.page[data-catalog-root] .section-count {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .35rem .62rem;
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    background: var(--accent-subtle);
+    color: var(--accent-hover);
+    font-size: .72rem;
+    font-weight: 780;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  /* Directory navigation chips. */
+  main.page[data-catalog-root] :is(
+    .people-initial-nav,
+    .topics-initial-nav,
+    .passages-book-nav,
+    .period-nav
+  ) {
+    display: flex;
+    gap: .48rem;
+    overflow-x: auto;
+    padding: .05rem .05rem .38rem;
+    scroll-padding-inline: .05rem;
+    scrollbar-width: thin;
+    overscroll-behavior-inline: contain;
+  }
+
+  main.page[data-catalog-root] :is(
+    .people-initial-nav,
+    .topics-initial-nav,
+    .passages-book-nav,
+    .period-nav
+  ) a {
+    min-height: 42px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .38rem;
+    padding: 0 .72rem;
+    border: 1px solid var(--border-color);
+    border-radius: 11px;
+    background: var(--surface-soft);
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: .78rem;
+    font-weight: 720;
+    transition: background-color var(--motion-fast) ease, border-color var(--motion-fast) ease, color var(--motion-fast) ease;
+  }
+
+  main.page[data-catalog-root] :is(
+    .people-initial-nav,
+    .topics-initial-nav,
+    .passages-book-nav,
+    .period-nav
+  ) a strong {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Shared group headings. */
+  main.page[data-catalog-root] :is(
+    .people-group,
+    .topics-group,
+    .passages-group,
+    .timeline-group,
+    .books-testament-group
+  ) {
+    scroll-margin-top: calc(var(--header-height, 62px) + 86px);
+  }
+
+  main.page[data-catalog-root] :is(
+    .people-group-heading,
+    .topics-group-heading,
+    .passages-group-heading,
+    .books-testament-heading,
+    .timeline-period
+  ) {
+    border-color: var(--border-color);
+  }
+
+  /* Shared catalog grids. */
+  main.page[data-catalog-root] :is(
+    .books-overview-grid,
+    .books-directory-grid,
+    .people-directory-grid,
+    .topics-directory-grid,
+    .passages-directory-grid,
+    .places-directory-grid,
+    .visual-resource-grid,
+    .resources-feature-grid,
+    .resources-grid,
+    .explore-feature-grid,
+    .explore-grid
+  ) {
+    gap: .78rem;
+  }
+
+  main.page[data-catalog-root] :is(
+    .book-directory-card,
+    .person-directory-card,
+    .topic-directory-card,
+    .passage-directory-card,
+    .place-directory-card,
+    .event-card,
+    .visual-resource-card,
+    .resources-card,
+    .books-overview-card,
+    .explore-feature-card,
+    .explore-card
+  ) {
+    position: relative;
+    min-width: 0;
+    border-color: var(--catalog-card-border);
+    border-radius: var(--catalog-card-radius);
+    background: var(--surface);
+    box-shadow: 0 7px 22px rgba(15, 23, 42, .035);
+    transition:
+      transform var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) ease,
+      box-shadow var(--motion-medium) var(--ease-out),
+      background-color var(--motion-fast) ease;
+  }
+
+  main.page[data-catalog-root] :is(
+    .book-directory-card,
+    .person-directory-card,
+    .topic-directory-card,
+    .passage-directory-card,
+    .place-directory-card,
+    .event-card,
+    .resources-card,
+    .books-overview-card,
+    .explore-feature-card,
+    .explore-card
+  ) {
+    min-height: 100%;
+  }
+
+  main.page[data-catalog-root] :is(
+    .book-directory-card,
+    .person-directory-card,
+    .topic-directory-card,
+    .passage-directory-card,
+    .place-directory-card,
+    .event-card,
+    .resources-card,
+    .books-overview-card,
+    .explore-feature-card,
+    .explore-card
+  ) :is(h3, strong) {
+    text-wrap: balance;
+  }
+
+  main.page[data-catalog-root] :is(
+    .book-directory-card,
+    .person-directory-card,
+    .topic-directory-card,
+    .passage-directory-card,
+    .place-directory-card,
+    .event-card,
+    .resources-card,
+    .books-overview-card,
+    .explore-feature-card,
+    .explore-card
+  ) p {
+    line-height: 1.55;
+  }
+
+  main.page[data-catalog-root] .visual-resource-card {
+    overflow: hidden;
+  }
+
+  main.page[data-catalog-root] .visual-resource-media {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--surface-soft);
+  }
+
+  main.page[data-catalog-root] .visual-resource-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-slow) var(--ease-out);
+  }
+
+  /* Explore is a catalog of catalogs. */
+  main.page[data-catalog-root].explore-page .explore-search {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .6rem;
+    margin: var(--catalog-gap) 0 0;
+    padding: .6rem;
+    border: 1px solid var(--catalog-card-border);
+    border-radius: 15px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .035);
+  }
+
+  main.page[data-catalog-root].explore-page .explore-search-field {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: .58rem;
+    padding: 0 .72rem;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: var(--surface-soft);
+    color: var(--accent);
+  }
+
+  main.page[data-catalog-root].explore-page .explore-search-field:focus-within {
+    border-color: var(--accent-border);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  main.page[data-catalog-root].explore-page .explore-search-field input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--heading-color);
+  }
+
+  /* Learning index pages use the same surface language without rewriting their content model. */
+  main.page[data-catalog-root].route-index-page,
+  main.page[data-catalog-root].lesson-index-page {
+    padding-top: 14px;
+  }
+
+  main.page[data-catalog-root] .catalog-index-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem 1.4rem;
+    align-items: end;
+    margin: 0 0 var(--catalog-gap);
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+    border: 1px solid var(--catalog-card-border);
+    border-radius: 20px;
+    background: linear-gradient(145deg, var(--surface), color-mix(in srgb, var(--accent-soft) 38%, var(--surface)));
+    box-shadow: 0 10px 30px rgba(15, 23, 42, .045);
+    overflow: hidden;
+  }
+
+  main.page[data-catalog-root] .catalog-index-hero > :first-child {
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  main.page[data-catalog-root] .catalog-index-hero h1 {
+    margin: .25rem 0 .5rem;
+    font-size: clamp(2.05rem, 5vw, 3.35rem);
+    line-height: .98;
+    letter-spacing: -.05em;
+  }
+
+  main.page[data-catalog-root] .catalog-index-hero p:last-child {
+    max-width: 64ch;
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+
+  main.page[data-catalog-root] .catalog-learning-summary {
+    min-width: min(230px, 28vw);
+    display: grid;
+    gap: .24rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid var(--accent-border);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--accent-soft) 42%, var(--surface));
+  }
+
+  main.page[data-catalog-root] .catalog-learning-summary span {
+    color: var(--text-muted);
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  main.page[data-catalog-root] .catalog-learning-summary strong {
+    color: var(--heading-color);
+    font-size: 1.65rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  main.page[data-catalog-root] .catalog-learning-summary small {
+    color: var(--text-muted);
+    font-size: .75rem;
+    line-height: 1.4;
+  }
+
+  main.page[data-catalog-root] .catalog-learning-summary .route-button {
+    width: 100%;
+    min-height: 40px;
+    margin-top: .42rem;
+    justify-content: center;
+    border-color: var(--accent-border);
+    background: var(--surface);
+    color: var(--accent);
+  }
+
+  main.page[data-catalog-root].route-index-page .route-grid {
+    gap: .78rem;
+  }
+
+  main.page[data-catalog-root].route-index-page .route-card,
+  main.page[data-catalog-root].lesson-index-page .route-section {
+    border-color: var(--catalog-card-border);
+    border-radius: 17px;
+    box-shadow: 0 8px 26px rgba(15, 23, 42, .035);
+  }
+
+  main.page[data-catalog-root].route-index-page .route-card {
+    min-height: 100%;
+  }
+
+  main.page[data-catalog-root].route-index-page .progress-track {
+    height: 7px;
+    outline: 1px solid color-mix(in srgb, var(--border-color) 78%, transparent);
+    outline-offset: -1px;
+  }
+
+  main.page[data-catalog-root].lesson-index-page .lesson-index-tools {
+    top: calc(var(--header-height, 62px) + 8px);
+  }
+
+  main.page[data-catalog-root].lesson-index-page .lesson-filter {
+    min-height: 46px;
+  }
+
+  main.page[data-catalog-root].lesson-index-page .lesson-catalog-card {
+    min-height: 72px;
+  }
+
+  main.page[data-catalog-root].lesson-index-page .lesson-copy strong {
+    line-height: 1.32;
+  }
+
+  main.page[data-catalog-root].lesson-index-page .lesson-copy small {
+    line-height: 1.4;
+  }
+
+  html[data-theme="dark"] main.page[data-catalog-root] :is(
+    .book-directory-card,
+    .person-directory-card,
+    .topic-directory-card,
+    .passage-directory-card,
+    .place-directory-card,
+    .event-card,
+    .visual-resource-card,
+    .resources-card,
+    .books-overview-card,
+    .explore-feature-card,
+    .explore-card,
+    .route-card,
+    .route-section
+  ) {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    main.page[data-catalog-root] :is(
+      .book-directory-card,
+      .person-directory-card,
+      .topic-directory-card,
+      .passage-directory-card,
+      .place-directory-card,
+      .event-card,
+      .visual-resource-card,
+      .resources-card,
+      .books-overview-card,
+      .explore-feature-card,
+      .explore-card,
+      .route-card
+    ):hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--border-color));
+      box-shadow: 0 13px 32px color-mix(in srgb, var(--accent) 8%, rgba(15, 23, 42, .12));
+    }
+
+    main.page[data-catalog-root] .visual-resource-card:hover .visual-resource-media img {
+      transform: scale(1.025);
+    }
+
+    main.page[data-catalog-root] :is(
+      .people-initial-nav,
+      .topics-initial-nav,
+      .passages-book-nav,
+      .period-nav
+    ) a:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent-hover);
+    }
+  }
+
+  @media (max-width: 900px) {
+    main.page[data-catalog-root] > .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(175px, 215px);
+    }
+
+    main.page[data-catalog-root] > :is(
+      .books-stats,
+      .people-stats,
+      .topics-stats,
+      .events-stats,
+      .passages-stats,
+      .resources-stats,
+      .places-summary-grid
+    ) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    main.page[data-catalog-root] {
+      --catalog-gap: .72rem;
+      --catalog-pad: .9rem;
+    }
+
+    main.page[data-catalog-root] > .hero {
+      grid-template-columns: minmax(0, 1fr);
+      gap: .9rem;
+      padding: 1rem;
+      border-radius: 17px;
+    }
+
+    main.page[data-catalog-root] > .hero h1 {
+      max-width: none;
+      font-size: clamp(1.95rem, 11vw, 2.7rem);
+    }
+
+    main.page[data-catalog-root] > .hero :is(
+      .books-hero-card,
+      .people-hero-card,
+      .topics-hero-card,
+      .events-hero-card,
+      .places-index-hero-card,
+      .passages-hero-card,
+      .resources-hero-card,
+      .explore-hero-card
+    ) {
+      min-height: 0;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      align-content: initial;
+      column-gap: .8rem;
+      padding: .85rem .95rem;
+      border-radius: 14px;
+    }
+
+    main.page[data-catalog-root] > .hero :is(
+      .books-hero-card,
+      .people-hero-card,
+      .topics-hero-card,
+      .events-hero-card,
+      .places-index-hero-card,
+      .passages-hero-card,
+      .resources-hero-card,
+      .explore-hero-card
+    ) > span,
+    main.page[data-catalog-root] > .hero :is(
+      .books-hero-card,
+      .people-hero-card,
+      .topics-hero-card,
+      .events-hero-card,
+      .places-index-hero-card,
+      .passages-hero-card,
+      .resources-hero-card,
+      .explore-hero-card
+    ) > p {
+      grid-column: 2;
+    }
+
+    main.page[data-catalog-root] > .hero :is(
+      .books-hero-card,
+      .people-hero-card,
+      .topics-hero-card,
+      .events-hero-card,
+      .places-index-hero-card,
+      .passages-hero-card,
+      .resources-hero-card,
+      .explore-hero-card
+    ) > strong {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      font-size: 2rem;
+    }
+
+    main.page[data-catalog-root] > .section {
+      border-radius: 15px;
+    }
+
+    main.page[data-catalog-root] .section-header {
+      align-items: flex-start;
+    }
+
+    main.page[data-catalog-root].explore-page .explore-search {
+      grid-template-columns: minmax(0, 1fr);
+      padding: .48rem;
+      border-radius: 13px;
+    }
+
+    main.page[data-catalog-root].explore-page .explore-search .button {
+      width: 100%;
+    }
+
+    main.page[data-catalog-root] .catalog-index-hero {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      padding: 1rem;
+      border-radius: 17px;
+    }
+
+    main.page[data-catalog-root] .catalog-learning-summary {
+      width: 100%;
+      min-width: 0;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: .75rem;
+      border-radius: 14px;
+    }
+
+    main.page[data-catalog-root] .catalog-learning-summary strong {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      font-size: 1.8rem;
+    }
+
+    main.page[data-catalog-root] .catalog-learning-summary span,
+    main.page[data-catalog-root] .catalog-learning-summary small {
+      grid-column: 2;
+    }
+
+    main.page[data-catalog-root] .catalog-learning-summary .route-button {
+      grid-column: 1 / -1;
+      margin-top: .25rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    main.page[data-catalog-root] > .hero .actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    main.page[data-catalog-root] > .hero .actions .button {
+      width: 100%;
+      padding-inline: .72rem;
+      font-size: .82rem;
+    }
+
+    main.page[data-catalog-root] > .hero .actions .button:nth-child(3):last-child {
+      grid-column: 1 / -1;
+    }
+
+    main.page[data-catalog-root] > :is(
+      .books-stats,
+      .people-stats,
+      .topics-stats,
+      .events-stats,
+      .passages-stats,
+      .resources-stats,
+      .places-summary-grid
+    ) {
+      gap: .55rem;
+    }
+
+    main.page[data-catalog-root] > :is(
+      .books-stats,
+      .people-stats,
+      .topics-stats,
+      .events-stats,
+      .passages-stats,
+      .resources-stats,
+      .places-summary-grid
+    ) > :is(
+      .books-stat-card,
+      .people-stat-card,
+      .topics-stat-card,
+      .events-stat-card,
+      .passages-stat-card,
+      .resources-stat-card,
+      .places-summary-card
+    ) {
+      min-height: 92px;
+      padding: .82rem;
+      border-radius: 13px;
+    }
+
+    main.page[data-catalog-root] .section-count {
+      min-height: 30px;
+      padding-inline: .55rem;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    main.page[data-catalog-root] :is(
+      .book-directory-card,
+      .person-directory-card,
+      .topic-directory-card,
+      .passage-directory-card,
+      .place-directory-card,
+      .event-card,
+      .visual-resource-card,
+      .resources-card,
+      .books-overview-card,
+      .explore-feature-card,
+      .explore-card,
+      .route-card,
+      .visual-resource-media img
+    ) {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    main.page[data-catalog-root] > .hero,
+    main.page[data-catalog-root] > .section,
+    main.page[data-catalog-root] :is(
+      .book-directory-card,
+      .person-directory-card,
+      .topic-directory-card,
+      .passage-directory-card,
+      .place-directory-card,
+      .event-card,
+      .visual-resource-card,
+      .resources-card,
+      .books-overview-card,
+      .explore-feature-card,
+      .explore-card,
+      .route-card,
+      .route-section
+    ) {
+      box-shadow: none;
+    }
+  }
+</style>

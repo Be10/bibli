@@ -8,7 +8,7 @@ import { sitePath } from "../../lib/site-paths";
   title="Mapa bíblico 3D"
   description="Mapa bíblico experimental con perspectiva, relieve, lugares seleccionados y rutas visuales."
 >
-  <main class="page map3d-page">
+  <main class="page map3d-page" data-utility-root data-utility-kind="map-3d">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Mapa bíblico 3D
     </div>
@@ -37,15 +37,16 @@ import { sitePath } from "../../lib/site-paths";
       data-boat-base={sitePath("/images/mapa-3d/barcos/")}
     >
       <div class="map3d-toolbar" aria-label="Controles del mapa">
-        <button type="button" data-map-action="israel">Israel</button>
-        <button type="button" data-map-action="mediterraneo">Mediterráneo</button>
-        <button type="button" data-map-action="mesopotamia">Mesopotamia</button>
-        <button type="button" data-map-action="ruta">Ruta marítima</button>
+        <button type="button" data-map-action="overview" aria-pressed="true">Vista general</button>
+        <button type="button" data-map-action="israel" aria-pressed="false">Israel</button>
+        <button type="button" data-map-action="mediterraneo" aria-pressed="false">Mediterráneo</button>
+        <button type="button" data-map-action="mesopotamia" aria-pressed="false">Mesopotamia</button>
+        <button type="button" data-map-action="ruta" aria-pressed="false">Ruta marítima</button>
       </div>
 
-      <div class="map3d-status">
+      <div class="map3d-status" role="status" aria-live="polite">
         <span class="map3d-status-dot"></span>
-        Mapa experimental
+        <span data-map3d-status-text>Mapa experimental · Vista general</span>
       </div>
 
       <div id="biblical-map-3d"></div>
@@ -434,6 +435,12 @@ import { sitePath } from "../../lib/site-paths";
   ];
 
   const cameraPresets: Record<string, CameraPreset> = {
+    overview: {
+      center: [35.2137, 31.7683],
+      zoom: 5.5,
+      pitch: 62,
+      bearing: -18,
+    },
     israel: {
       center: [35.2137, 31.7683],
       zoom: 7,
@@ -459,6 +466,9 @@ import { sitePath } from "../../lib/site-paths";
       bearing: -28,
     },
   };
+
+  const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const prefersReducedMotion = () => reducedMotionMedia.matches;
 
   const map = new maplibregl.Map({
     container: "biblical-map-3d",
@@ -999,6 +1009,10 @@ import { sitePath } from "../../lib/site-paths";
       },
     });
 
+    if (prefersReducedMotion()) {
+      return;
+    }
+
     function frame(now: number) {
       const waterSource = map.getSource("water-motion") as
         | maplibregl.GeoJSONSource
@@ -1204,6 +1218,11 @@ import { sitePath } from "../../lib/site-paths";
       .setLngLat(initialPoint.coordinates)
       .addTo(map);
 
+    if (prefersReducedMotion()) {
+      boatElement.dataset.direction = getBoatDirection(initialPoint.from, initialPoint.to);
+      return;
+    }
+
     const duration = 52000;
     const start = performance.now();
 
@@ -1261,7 +1280,17 @@ import { sitePath } from "../../lib/site-paths";
   }
 
   function bindToolbar() {
-    document.querySelectorAll("[data-map-action]").forEach((button) => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-map-action]"));
+    const statusText = document.querySelector<HTMLElement>("[data-map3d-status-text]");
+    const labels: Record<string, string> = {
+      overview: "Vista general",
+      israel: "Israel",
+      mediterraneo: "Mediterráneo",
+      mesopotamia: "Mesopotamia",
+      ruta: "Ruta marítima",
+    };
+
+    buttons.forEach((button) => {
       button.addEventListener("click", () => {
         const action = button.getAttribute("data-map-action");
 
@@ -1269,11 +1298,24 @@ import { sitePath } from "../../lib/site-paths";
           return;
         }
 
+        buttons.forEach((currentButton) => {
+          currentButton.setAttribute("aria-pressed", String(currentButton === button));
+        });
+
+        if (statusText) {
+          statusText.textContent = `Mapa experimental · ${labels[action] ?? action}`;
+        }
+
+        if (prefersReducedMotion()) {
+          map.jumpTo(cameraPresets[action]);
+          return;
+        }
+
         map.flyTo({
           ...cameraPresets[action],
           speed: 0.8,
           curve: 1.35,
-          essential: true,
+          essential: false,
         });
       });
     });
@@ -1320,6 +1362,7 @@ import { sitePath } from "../../lib/site-paths";
   #biblical-map-3d {
     width: 100%;
     height: min(74vh, 760px);
+    height: min(74dvh, 760px);
     min-height: 560px;
     background: #152027;
   }
@@ -1769,10 +1812,22 @@ import { sitePath } from "../../lib/site-paths";
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    :global(.map3d-directional-boat-float),
+    :global(.map3d-boat-wake-main),
+    :global(.map3d-boat-wake-soft) {
+      animation: none !important;
+    }
+
+    .map3d-toolbar button {
+      transition: none;
+    }
+  }
+
   @media (max-width: 760px) {
     #biblical-map-3d {
-      height: 68vh;
-      min-height: 500px;
+      height: clamp(360px, 68dvh, 620px);
+      min-height: 0;
     }
 
     .map3d-shell {
@@ -1780,19 +1835,31 @@ import { sitePath } from "../../lib/site-paths";
     }
 
     .map3d-toolbar {
-      top: 12px;
-      left: 12px;
+      top: max(12px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
       max-width: calc(100% - 74px);
       gap: 8px;
     }
 
     .map3d-toolbar button {
-      padding: 8px 11px;
+      min-height: 44px;
+      padding: 8px 12px;
       font-size: 0.8rem;
     }
 
     .map3d-status {
       display: none;
+    }
+
+    :global(.maplibregl-ctrl-group button) {
+      width: 44px;
+      height: 44px;
+    }
+
+    :global(.maplibregl-popup-close-button) {
+      width: 44px;
+      height: 44px;
+      line-height: 36px;
     }
 
     :global(.maplibregl-ctrl-attrib) {

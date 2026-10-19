@@ -1,6 +1,7 @@
 ---
 import { sitePath } from "../lib/site-paths";
 import Icon from "../components/Icon.astro";
+import BibliLogo from "../components/BibliLogo.astro";
 
 const homeEs = sitePath("/");
 const homeEn = sitePath("/en/");
@@ -12,7 +13,7 @@ const downloadEn = sitePath("/en/download/");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#765982" />
+    <meta name="theme-color" content="#765982" data-theme-color />
     <meta name="robots" content="noindex" />
     <title>Sin conexión | Biblioteca Bíblica</title>
     <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
@@ -28,6 +29,15 @@ const downloadEn = sitePath("/en/download/");
           : "plum";
         document.documentElement.dataset.theme = theme;
         document.documentElement.dataset.accent = accent;
+        const accentColors = {
+          earth: { light: "#7b5439", dark: "#d0a888" },
+          ocean: { light: "#356da8", dark: "#82add6" },
+          forest: { light: "#3f725b", dark: "#91b39f" },
+          plum: { light: "#765982", dark: "#b7a0bf" },
+          clay: { light: "#a25745", dark: "#d99d8d" },
+        };
+        const themeColor = document.querySelector("[data-theme-color]");
+        if (themeColor) themeColor.setAttribute("content", accentColors[accent][theme]);
       })();
     </script>
     <style>
@@ -78,7 +88,12 @@ const downloadEn = sitePath("/en/download/");
         background:radial-gradient(circle at top right,var(--accent-soft) 0,transparent 38%),var(--page);
       }
       main { width:min(100%,580px); padding:32px; border:1px solid var(--border); border-radius:24px; background:var(--surface); box-shadow:0 20px 60px rgb(0 0 0 / .1); }
-      .brand { display:inline-flex; align-items:center; gap:8px; color:var(--accent); font-size:.8rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+      .brand { display:inline-flex; align-items:center; gap:0; color:var(--accent); text-decoration:none; }
+      .brand-word { margin-left:.05rem; font-family:Baskerville,"Baskerville Old Face","Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif; font-size:1.55rem; font-weight:400; font-synthesis:none; line-height:.9; letter-spacing:.01em;transform:translateY(.06em); }
+      .network-state { display:flex; align-items:center; gap:8px; margin-top:18px; padding:9px 11px; border:1px solid var(--border); border-radius:12px; background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface)); color:var(--muted); font-size:.78rem; }
+      .network-state > span { width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:var(--muted); }
+      .network-state.is-online > span { background:var(--accent); }
+      .network-state strong { color:var(--text); font-weight:760; }
       h1 { margin:18px 0 10px; color:var(--text); font-size:clamp(2rem,7vw,3.2rem); line-height:1; letter-spacing:-.05em; }
       p { margin:0; color:var(--muted); line-height:1.7; }
       .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
@@ -94,7 +109,8 @@ const downloadEn = sitePath("/en/download/");
   </head>
   <body>
     <main>
-      <span class="brand"><Icon name="library" size={17} /> Bibli</span>
+      <span class="brand" aria-label="Bibli"><BibliLogo size={30} class="offline-logo" /><span class="brand-word" aria-hidden="true">ibli</span></span>
+      <div class="network-state" data-offline-network role="status" aria-live="polite"><span aria-hidden="true"></span><strong></strong></div>
 
       <section data-offline-copy="es">
         <h1>Estás sin conexión</h1>
@@ -130,6 +146,21 @@ const downloadEn = sitePath("/en/download/");
         document.querySelectorAll("[data-offline-copy]").forEach((section) => {
           section.hidden = section.getAttribute("data-offline-copy") !== language;
         });
+        const networkState = document.querySelector("[data-offline-network]");
+        const updateNetworkState = () => {
+          if (!(networkState instanceof HTMLElement)) return;
+          const online = navigator.onLine;
+          networkState.classList.toggle("is-online", online);
+          const label = networkState.querySelector("strong");
+          if (label) {
+            label.textContent = language === "en"
+              ? (online ? "Connection available" : "Offline mode")
+              : (online ? "Conexión disponible" : "Modo sin conexión");
+          }
+        };
+        updateNetworkState();
+        addEventListener("online", updateNetworkState);
+        addEventListener("offline", updateNetworkState);
         document.querySelectorAll("[data-offline-retry]").forEach((button) => {
           button.addEventListener("click", () => location.reload());
         });

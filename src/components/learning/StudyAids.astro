@@ -23,6 +23,16 @@ const count = glossary.length + people.length + places.length + topics.length + 
     <span class="count" aria-label={`${count} ayudas disponibles`}>{count}</span>
   </div>
 
+  {count === 0 && (
+    <div class="study-aids-empty" role="status">
+      <Icon name="info" size={18} />
+      <div>
+        <strong>Sin ayudas relacionadas</strong>
+        <p>Esta lección todavía no tiene lugares, personajes, temas o recursos vinculados.</p>
+      </div>
+    </div>
+  )}
+
   {places.length > 0 && (
     <details open>
       <summary><span class="summary-main"><Icon name="map" size={17} />Lugares y mapa</span><span class="summary-meta"><span>{places.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
@@ -95,6 +105,10 @@ const count = glossary.length + people.length + places.length + topics.length + 
   .heading-icon { width:28px; height:28px; display:grid; place-items:center; border-radius:9px; background:var(--accent-soft); color:var(--accent); }
   .study-aids-heading h2 { margin:0; color:var(--heading-color); font-size:.95rem; letter-spacing:-.02em; }
   .count { min-width:24px; height:24px; padding:0 5px; display:grid; place-items:center; border-radius:8px; background:var(--surface-soft); color:var(--text-muted); font-size:.68rem; font-weight:800; }
+  .study-aids-empty { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.65rem; align-items:start; padding:.8rem; border:1px dashed var(--border-color); border-radius:13px; background:var(--surface-soft); color:var(--text-muted); }
+  .study-aids-empty > .bibli-icon { color:var(--accent); margin-top:.08rem; }
+  .study-aids-empty strong { display:block; margin-bottom:.15rem; color:var(--heading-color); font-size:.8rem; }
+  .study-aids-empty p { margin:0; font-size:.75rem; line-height:1.45; }
   details { border:1px solid var(--border-color); border-radius:13px; overflow:hidden; background:var(--surface); box-shadow:0 5px 18px rgba(15, 23, 42, .03); }
   summary { min-height:44px; box-sizing:border-box; cursor:pointer; padding:.65rem .75rem; display:flex; align-items:center; justify-content:space-between; gap:.6rem; color:var(--heading-color); font-size:.82rem; font-weight:700; list-style:none; transition:background-color 140ms ease; }
   summary::-webkit-details-marker { display:none; }

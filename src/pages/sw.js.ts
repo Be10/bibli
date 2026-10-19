@@ -4,15 +4,18 @@ export function GET() {
   const rawBase = import.meta.env.BASE_URL ?? "/";
   const base = rawBase === "/" ? "" : rawBase.replace(/\/$/, "");
   const scope = base ? `${base}/` : "/";
+  const cacheVersion = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
 
   const source = `
 const BASE = ${JSON.stringify(base)};
-const SHELL_CACHE = "bibli-shell-v2";
-const RUNTIME_CACHE = "bibli-runtime-v2";
+const CACHE_VERSION = ${JSON.stringify(cacheVersion)};
+const SHELL_CACHE = "bibli-shell-" + CACHE_VERSION;
+const RUNTIME_CACHE = "bibli-runtime-" + CACHE_VERSION;
 const MAX_RUNTIME_ENTRIES = 140;
 const PACKAGE_CACHE_PREFIX = "bibli-package-";
 const CORE_URLS = [
   BASE + "/",
+  BASE + "/en/",
   BASE + "/offline/",
   BASE + "/manifest.webmanifest",
   BASE + "/favicon.svg",
@@ -38,12 +41,28 @@ async function cacheResponse(cacheName, request, response) {
   return response;
 }
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(SHELL_CACHE)
-      .then((cache) => cache.addAll(CORE_URLS))
-      .then(() => self.skipWaiting())
+async function warmShell() {
+  const cache = await caches.open(SHELL_CACHE);
+  const results = await Promise.allSettled(
+    CORE_URLS.map(async (url) => {
+      const response = await fetch(url, { cache: "reload", credentials: "same-origin" });
+      if (!response.ok) throw new Error("Shell asset failed: " + response.status + " " + url);
+      await cache.put(url, response.clone());
+    })
   );
+  const offlineReady = await cache.match(BASE + "/offline/");
+  if (!offlineReady) {
+    throw new Error("Bibli offline fallback was not cached during install");
+  }
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.warn("Bibli shell asset skipped", CORE_URLS[index], result.reason);
+    }
+  });
+}
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(warmShell().then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {
@@ -94,7 +113,12 @@ self.addEventListener("fetch", (event) => {
         return response;
       } catch {
         return (await caches.match(request)) || new Response("[]", {
-          headers: { "Content-Type": "application/json; charset=utf-8" }
+          status: 503,
+          statusText: "Search index unavailable offline",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Cache-Control": "no-store"
+          }
         });
       }
     })());

@@ -116,9 +116,12 @@ Astro genera HTML estático para el cuerpo de la Lección. Solo se hidratan/inte
 ## Fuentes de configuración
 
 ```text
-content/routes.json
+content/editorial-structure.yaml
+content/routes.json              # derivado para compatibilidad
 content/study-enrichments.json
 content/studies/**/*.md
 ```
 
-Las rutas y módulos pueden evolucionar sin mover o duplicar los Markdown.
+La fuente canónica de rutas/módulos es `Estudios Biblicos/Sistema/Estructura-Editorial.yaml`; `content/editorial-structure.yaml` es su snapshot y `content/routes.json` se regenera para compatibilidad.
+
+La pertenencia nueva se expresa mediante `section_id` en el frontmatter. Los rangos numéricos quedan como compatibilidad heredada para Lecciones anteriores a la política de migración. Una Lección oficial sin sección resoluble bloquea la importación antes de llegar a SQLite. Las rutas y módulos pueden evolucionar sin mover o duplicar los Markdown.

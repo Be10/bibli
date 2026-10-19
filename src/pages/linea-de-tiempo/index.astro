@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllEvents, type Event } from "../../lib/queries";
 
 const events = getAllEvents()
@@ -40,7 +39,7 @@ function getEventMeta(event: Event) {
   title="Línea de tiempo bíblica"
   description="Explora una línea de tiempo visual de eventos bíblicos principales, organizada por períodos, fechas aproximadas y conexiones narrativas."
 >
-  <main class="page timeline-page timeline-ready" data-catalog-root>
+  <main class="page timeline-page timeline-ready" data-catalog-root data-utility-root data-utility-kind="timeline">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Línea de tiempo
     </div>
@@ -103,12 +102,15 @@ function getEventMeta(event: Event) {
       </article>
     </section>
 
-    <CatalogFilter
-      total={events.length}
-      noun="eventos"
-      label="Buscar en la línea de tiempo"
-      placeholder="Buscar evento, período, fecha o tema…"
-    />
+    <nav class="timeline-period-nav" aria-label="Saltar a un período bíblico">
+      {eventsByPeriod.map((group, index) => (
+        <a href={`#timeline-period-${index + 1}`}>
+          {group.period}
+          <span>{group.events.length}</span>
+        </a>
+      ))}
+    </nav>
+
 
     <section class="section timeline-section" data-catalog-group>
       <div class="section-header">
@@ -124,8 +126,13 @@ function getEventMeta(event: Event) {
 
       {events.length > 0 ? (
         <div class="timeline-periods">
-          {eventsByPeriod.map((group) => (
-            <section class="timeline-period" aria-label={group.period} data-catalog-group>
+          {eventsByPeriod.map((group, index) => (
+            <section
+              class="timeline-period"
+              id={`timeline-period-${index + 1}`}
+              aria-label={group.period}
+              data-catalog-group
+            >
               <div class="timeline-period-header">
                 <div>
                   <span>Período</span>
@@ -204,6 +211,34 @@ function getEventMeta(event: Event) {
   </main>
 </BaseLayout>
 
+<script>
+  const periodLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>(".timeline-period-nav a"));
+  const periodSections = Array.from(document.querySelectorAll<HTMLElement>("[id^='timeline-period-']"));
+
+  function setCurrentPeriod(id) {
+    periodLinks.forEach((link) => {
+      const isCurrent = link.getAttribute("href") === `#${id}`;
+      if (isCurrent) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  if ("IntersectionObserver" in window && periodSections.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target instanceof HTMLElement) setCurrentPeriod(visible.target.id);
+      },
+      { rootMargin: "-28% 0px -58% 0px", threshold: [0.08, 0.2, 0.45] }
+    );
+    periodSections.forEach((section) => observer.observe(section));
+  }
+
+  periodLinks[0]?.setAttribute("aria-current", "location");
+</script>
+
 <style>
   .timeline-hero {
     display: grid;
@@ -223,7 +258,7 @@ function getEventMeta(event: Event) {
   .timeline-period,
   .timeline-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .timeline-hero-card {
@@ -232,7 +267,7 @@ function getEventMeta(event: Event) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .timeline-hero-card span,
@@ -386,7 +421,7 @@ function getEventMeta(event: Event) {
   .timeline-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .timeline-card-header {
@@ -438,7 +473,7 @@ function getEventMeta(event: Event) {
   :global(html[data-theme="dark"]) .timeline-footer-nav {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .timeline-period,

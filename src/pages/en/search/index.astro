@@ -16,7 +16,7 @@ const searchItems = buildSearchIndex("en");
     href: sitePath("/buscar/"),
   }}
 >
-  <main class="page advanced-search-page">
+  <main class="page advanced-search-page" data-utility-root data-utility-kind="search">
     <div class="breadcrumb">
       <a href={sitePath("/en/bible/")}>Bible</a> → Advanced search
     </div>
@@ -29,9 +29,13 @@ const searchItems = buildSearchIndex("en");
           Search KJV verses and localized English book names without falling back
           to untranslated Spanish editorial content.
         </p>
+        <div class="actions">
+          <a href={sitePath("/en/bible/")} class="button">Read the Bible</a>
+          <a href={sitePath("/buscar/")} class="button secondary">Search in Spanish</a>
+        </div>
       </div>
 
-      <aside class="search-summary-card" aria-label="Search index summary">
+      <aside class="search-summary-card advanced-search-hero-card" aria-label="Search index summary">
         <span>Local index</span>
         <strong>{searchItems.length}</strong>
         <p>English Bible entries</p>
@@ -43,17 +47,25 @@ const searchItems = buildSearchIndex("en");
         Enter a word, phrase, book, or Bible reference
       </label>
 
-      <input
-        id="search-input"
-        class="search-input"
-        type="search"
-        placeholder="Try: John 3:16, grace, Genesis, in the beginning..."
-        autocomplete="off"
-      />
+      <div class="search-control">
+        <input
+          id="search-input"
+          class="search-input"
+          type="search"
+          placeholder="Try: John 3:16, grace, Genesis, in the beginning..."
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          enterkeyhint="search"
+          aria-controls="search-results"
+        />
+        <button type="button" class="search-clear" data-search-clear hidden>Clear</button>
+      </div>
+      <p class="search-help">Use ↑ and ↓ to move through results. Press Esc to clear the query.</p>
 
       <div id="search-empty" class="search-state" hidden></div>
       <div id="search-filters" class="search-filters" hidden></div>
-      <div id="search-results-summary" class="search-results-summary" hidden></div>
+      <div id="search-results-summary" class="search-results-summary" role="status" aria-live="polite" aria-atomic="true" hidden></div>
       <div id="search-results" class="search-results"></div>
 
       <script type="application/json" id="search-data" set:html={JSON.stringify(searchItems)} />
@@ -78,6 +90,7 @@ const searchItems = buildSearchIndex("en");
   const emptyElement = document.getElementById("search-empty");
   const resultsSummaryElement = document.getElementById("search-results-summary");
   const filtersElement = document.getElementById("search-filters");
+  const clearButton = document.querySelector("[data-search-clear]");
 
   const items = dataElement?.textContent
     ? JSON.parse(dataElement.textContent)
@@ -96,6 +109,28 @@ const searchItems = buildSearchIndex("en");
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
+  }
+
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function getHighlightWords(query) {
+    return Array.from(
+      new Set(
+        normalizeSearchText(query)
+          .split(/\s+/)
+          .filter((word) => word.length >= 3)
+      )
+    );
+  }
+
+  function highlightMatches(value, query) {
+    const safeValue = escapeHtml(value);
+    const words = getHighlightWords(query);
+    if (words.length === 0) return safeValue;
+    const pattern = new RegExp(`(${words.map(escapeRegExp).join("|")})`, "gi");
+    return safeValue.replace(pattern, "<mark>$1</mark>");
   }
 
   function updateUrl(value) {
@@ -133,18 +168,17 @@ const searchItems = buildSearchIndex("en");
     const filters = getAvailableSearchFilters(results);
     filtersElement.hidden = false;
     filtersElement.innerHTML = [
-      `<button type="button" data-search-filter="${ALL_TYPE}">All <span>${results.length}</span></button>`,
+      `<button type="button" data-search-filter="${ALL_TYPE}" aria-pressed="${activeSearchType === ALL_TYPE}">All <span>${results.length}</span></button>`,
       ...filters.map(
         ({ type, count }) =>
-          `<button type="button" data-search-filter="${escapeHtml(type)}">${escapeHtml(getTypeLabel(type))} <span>${count}</span></button>`
+          `<button type="button" data-search-filter="${escapeHtml(type)}" aria-pressed="${activeSearchType === type}">${escapeHtml(getTypeLabel(type))} <span>${count}</span></button>`
       ),
     ].join("");
 
     filtersElement.querySelectorAll("[data-search-filter]").forEach((button) => {
-      button.classList.toggle(
-        "is-active",
-        button.getAttribute("data-search-filter") === activeSearchType
-      );
+      const isActive = button.getAttribute("data-search-filter") === activeSearchType;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
 
       button.addEventListener("click", () => {
         activeSearchType =
@@ -155,11 +189,12 @@ const searchItems = buildSearchIndex("en");
   }
 
   function renderResultCard(item) {
+    const query = input?.value ?? "";
     return `
       <a href="${escapeHtml(item.url)}" class="search-result">
-        <span>${escapeHtml(item.typeLabel ?? item.type)}</span>
-        <strong>${escapeHtml(item.title)}</strong>
-        <p>${escapeHtml(item.summary)}</p>
+        <span class="search-result-type">${escapeHtml(item.typeLabel ?? item.type)}</span>
+        <strong>${highlightMatches(item.title, query)}</strong>
+        <p>${highlightMatches(item.summary, query)}</p>
       </a>
     `;
   }
@@ -216,18 +251,76 @@ const searchItems = buildSearchIndex("en");
     renderFilteredResults();
   }
 
+
+  function syncClearButton(value) {
+    if (clearButton instanceof HTMLButtonElement) {
+      clearButton.hidden = !normalizeSearchText(value);
+    }
+  }
+
+  function clearSearch() {
+    if (!(input instanceof HTMLInputElement)) return;
+    input.value = "";
+    activeSearchType = ALL_TYPE;
+    updateUrl("");
+    renderResults("");
+    syncClearButton("");
+    input.focus();
+  }
+
+  function getResultLinks() {
+    return resultsElement
+      ? [...resultsElement.querySelectorAll<HTMLAnchorElement>("a.search-result")]
+      : [];
+  }
+
+  input?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && input instanceof HTMLInputElement && input.value) {
+      event.preventDefault();
+      clearSearch();
+      return;
+    }
+    if (event.key !== "ArrowDown") return;
+    const links = getResultLinks();
+    if (links.length === 0) return;
+    event.preventDefault();
+    links[0]?.focus();
+  });
+
+  resultsElement?.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const links = getResultLinks();
+    const active = document.activeElement;
+    const currentIndex = links.indexOf(active as HTMLAnchorElement);
+    if (currentIndex === -1) return;
+
+    event.preventDefault();
+    if (event.key === "ArrowDown") {
+      links[Math.min(currentIndex + 1, links.length - 1)]?.focus();
+    } else if (currentIndex === 0) {
+      input?.focus();
+    } else {
+      links[currentIndex - 1]?.focus();
+    }
+  });
+
   input?.addEventListener("input", (event) => {
     const value = event.target.value;
     activeSearchType = ALL_TYPE;
     updateUrl(value);
+    syncClearButton(value);
     window.clearTimeout(searchDebounceTimer);
     searchDebounceTimer = window.setTimeout(() => renderResults(value), 120);
   });
 
-  if (input && initialQuery) {
+  clearButton?.addEventListener("click", clearSearch);
+
+  if (input instanceof HTMLInputElement && initialQuery) {
     input.value = initialQuery;
+    syncClearButton(initialQuery);
     renderResults(initialQuery);
-    input.focus();
+  } else {
+    syncClearButton("");
   }
 </script>
 
@@ -299,7 +392,7 @@ const searchItems = buildSearchIndex("en");
   }
 
   :global(.search-filters button) {
-    min-height: 34px;
+    min-height: 40px;
     padding: 0 12px;
     border: 1px solid var(--border-color);
     border-radius: 999px;
@@ -364,6 +457,10 @@ const searchItems = buildSearchIndex("en");
   @media (max-width: 760px) {
     .advanced-search-hero {
       grid-template-columns: 1fr;
+    }
+
+    :global(.search-filters button) {
+      min-height: 44px;
     }
   }
 </style>

@@ -26,7 +26,7 @@ const versions =
   title="Biblia"
   description="Selecciona una versión de la Biblia disponible en español."
 >
-  <main class="page">
+  <main class="page bible-root-page" data-catalog-root data-catalog-kind="bible-root">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Biblia
     </div>
@@ -83,6 +83,8 @@ const versions =
               version.id
             )}
             class="bible-book-card"
+            data-catalog-item
+            data-catalog-search={`${version.abbreviation} ${version.name} Español`}
           >
             <div class="bible-book-main">
               <span>Versión bíblica</span>
@@ -137,7 +139,7 @@ const versions =
   .bible-testament-heading,
   .bible-book-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .bible-hero-card {
@@ -146,7 +148,7 @@ const versions =
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .bible-hero-card span,
@@ -225,7 +227,7 @@ const versions =
   a.bible-overview-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .bible-overview-card strong {
@@ -301,7 +303,7 @@ const versions =
   .bible-book-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .bible-book-order {
@@ -383,7 +385,7 @@ const versions =
   :global(html[data-theme="dark"]) .bible-directory-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .bible-overview-card,

@@ -23,7 +23,12 @@ const copy = lang === "en"
       align: "Alignment",
       left: "Left",
       justify: "Justified",
+      spacing: "Line spacing",
+      compactSpacing: "Compact",
+      comfortableSpacing: "Comfortable",
+      relaxedSpacing: "Relaxed",
       reset: "Reset",
+      close: "Close reading preferences",
     }
   : {
       label: "Preferencias de lectura",
@@ -37,7 +42,12 @@ const copy = lang === "en"
       align: "Alineación",
       left: "Izquierda",
       justify: "Justificada",
+      spacing: "Interlineado",
+      compactSpacing: "Compacto",
+      comfortableSpacing: "Cómodo",
+      relaxedSpacing: "Amplio",
       reset: "Restablecer",
+      close: "Cerrar preferencias de lectura",
     };
 ---
 
@@ -55,7 +65,16 @@ const copy = lang === "en"
     <span>{copy.label}</span>
   </button>
 
-  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel role="dialog" aria-label={copy.label} hidden>
+  <button type="button" class="reader-preferences-backdrop" data-reader-preferences-backdrop aria-label={copy.close} hidden></button>
+
+  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel role="dialog" aria-modal="false" aria-label={copy.label} hidden>
+    <header class="reader-preferences-panel-head">
+      <strong>{copy.label}</strong>
+      <button type="button" class="reader-preferences-close" data-reader-preferences-close aria-label={copy.close} title={copy.close}>
+        <Icon name="close" size={17} />
+      </button>
+    </header>
+
     <div class="reader-pref-group">
       <span>{copy.size}</span>
       <div class="reader-pref-options" role="group" aria-label={copy.size}>
@@ -83,6 +102,15 @@ const copy = lang === "en"
       </div>
     </div>
 
+    <div class="reader-pref-group">
+      <span>{copy.spacing}</span>
+      <div class="reader-pref-options reader-spacing-options" role="group" aria-label={copy.spacing}>
+        <button type="button" data-reader-spacing-choice="compact">{copy.compactSpacing}</button>
+        <button type="button" data-reader-spacing-choice="default">{copy.comfortableSpacing}</button>
+        <button type="button" data-reader-spacing-choice="relaxed">{copy.relaxedSpacing}</button>
+      </div>
+    </div>
+
     <button type="button" class="reader-pref-reset" data-reader-preferences-reset>{copy.reset}</button>
   </div>
 </div>
@@ -91,10 +119,12 @@ const copy = lang === "en"
   const READER_SIZE_KEY = "bibli-reader-size-v1";
   const READER_FONT_KEY = "bibli-reader-font-v1";
   const READER_ALIGN_KEY = "bibli-reader-align-v1";
+  const READER_SPACING_KEY = "bibli-reader-spacing-v1";
 
   const validSizes = ["default", "small", "large"];
   const validFonts = ["default", "sans", "serif"];
   const validAlignments = ["default", "left", "justify"];
+  const validSpacings = ["default", "compact", "relaxed"];
 
   function normalizeStored(value: string | null, valid: string[]) {
     return value && valid.includes(value) ? value : "default";
@@ -105,6 +135,7 @@ const copy = lang === "en"
       size: normalizeStored(localStorage.getItem(READER_SIZE_KEY), validSizes),
       font: normalizeStored(localStorage.getItem(READER_FONT_KEY), validFonts),
       align: normalizeStored(localStorage.getItem(READER_ALIGN_KEY), validAlignments),
+      spacing: normalizeStored(localStorage.getItem(READER_SPACING_KEY), validSpacings),
     };
   }
 
@@ -113,28 +144,61 @@ const copy = lang === "en"
     document.documentElement.dataset.readerSize = prefs.size;
     document.documentElement.dataset.readerFont = prefs.font;
     document.documentElement.dataset.readerAlign = prefs.align;
+    document.documentElement.dataset.readerSpacing = prefs.spacing;
     return prefs;
   }
 
   document.querySelectorAll<HTMLElement>("[data-reader-preferences]").forEach((root) => {
     const toggle = root.querySelector<HTMLButtonElement>("[data-reader-preferences-toggle]");
     const panel = root.querySelector<HTMLElement>("[data-reader-preferences-panel]");
+    const backdrop = root.querySelector<HTMLButtonElement>("[data-reader-preferences-backdrop]");
+    const closeButton = root.querySelector<HTMLButtonElement>("[data-reader-preferences-close]");
     const reset = root.querySelector<HTMLButtonElement>("[data-reader-preferences-reset]");
+    const mobileViewport = window.matchMedia("(max-width: 920px)");
+    const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
+    const backdropAnchor = document.createComment("reader-preferences-backdrop");
+    const panelAnchor = document.createComment("reader-preferences-panel");
+    backdrop?.before(backdropAnchor);
+    panel?.before(panelAnchor);
+    let portaled = false;
+
+    const mountForViewport = () => {
+      if (!panel || !backdrop) return;
+      if (mobileViewport.matches || lessonDockActive()) {
+        if (!portaled) {
+          document.body.append(backdrop, panel);
+          portaled = true;
+        }
+        panel.setAttribute("aria-modal", String(mobileViewport.matches));
+        return;
+      }
+      if (portaled) {
+        backdropAnchor.after(backdrop);
+        panelAnchor.after(panel);
+        portaled = false;
+      }
+      panel.setAttribute("aria-modal", "false");
+    };
 
     const syncButtons = () => {
       const prefs = applyReaderPreferences();
-      root.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
+      panel?.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
         const active = button.dataset.readerSizeChoice === prefs.size;
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
-      root.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
+      panel?.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
         const active = button.dataset.readerFontChoice === prefs.font;
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
-      root.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
+      panel?.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
         const active = button.dataset.readerAlignChoice === prefs.align;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      panel?.querySelectorAll<HTMLButtonElement>("[data-reader-spacing-choice]").forEach((button) => {
+        const active = button.dataset.readerSpacingChoice === prefs.spacing;
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
@@ -142,9 +206,24 @@ const copy = lang === "en"
 
     const setOpen = (open: boolean, returnFocus = false) => {
       if (!panel || !toggle) return;
+      if (open) {
+        document.dispatchEvent(new CustomEvent("bibli:reader-preferences-opening"));
+        mountForViewport();
+      }
       panel.hidden = !open;
+      if (backdrop) backdrop.hidden = !open || !(mobileViewport.matches || lessonDockActive());
       toggle.setAttribute("aria-expanded", String(open));
-      if (!open && returnFocus) toggle.focus();
+      root.classList.toggle("is-open", open);
+      if (open) {
+        document.documentElement.dataset.readerPreferencesOpen = "true";
+        if (mobileViewport.matches || lessonDockActive()) {
+          requestAnimationFrame(() => closeButton?.focus());
+        }
+      } else {
+        delete document.documentElement.dataset.readerPreferencesOpen;
+        if (!mobileViewport.matches) mountForViewport();
+        if (returnFocus) toggle.focus();
+      }
     };
 
     toggle?.addEventListener("click", (event) => {
@@ -152,23 +231,30 @@ const copy = lang === "en"
       setOpen(Boolean(panel?.hidden));
     });
 
-    root.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
+    panel?.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
       button.addEventListener("click", () => {
         localStorage.setItem(READER_SIZE_KEY, button.dataset.readerSizeChoice || "default");
         syncButtons();
       });
     });
 
-    root.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
+    panel?.querySelectorAll<HTMLButtonElement>("[data-reader-font-choice]").forEach((button) => {
       button.addEventListener("click", () => {
         localStorage.setItem(READER_FONT_KEY, button.dataset.readerFontChoice || "default");
         syncButtons();
       });
     });
 
-    root.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
+    panel?.querySelectorAll<HTMLButtonElement>("[data-reader-align-choice]").forEach((button) => {
       button.addEventListener("click", () => {
         localStorage.setItem(READER_ALIGN_KEY, button.dataset.readerAlignChoice || "default");
+        syncButtons();
+      });
+    });
+
+    panel?.querySelectorAll<HTMLButtonElement>("[data-reader-spacing-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        localStorage.setItem(READER_SPACING_KEY, button.dataset.readerSpacingChoice || "default");
         syncButtons();
       });
     });
@@ -177,36 +263,119 @@ const copy = lang === "en"
       localStorage.removeItem(READER_SIZE_KEY);
       localStorage.removeItem(READER_FONT_KEY);
       localStorage.removeItem(READER_ALIGN_KEY);
+      localStorage.removeItem(READER_SPACING_KEY);
       syncButtons();
     });
 
     panel?.addEventListener("click", (event) => event.stopPropagation());
+    backdrop?.addEventListener("click", () => setOpen(false, true));
+    closeButton?.addEventListener("click", () => setOpen(false, true));
     document.addEventListener("click", () => setOpen(false));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && panel && !panel.hidden) setOpen(false, true);
     });
+    window.addEventListener("storage", (event) => {
+      if ([READER_SIZE_KEY, READER_FONT_KEY, READER_ALIGN_KEY, READER_SPACING_KEY].includes(event.key ?? "")) {
+        syncButtons();
+      }
+    });
+    mobileViewport.addEventListener("change", () => {
+      mountForViewport();
+      if (backdrop) backdrop.hidden = panel?.hidden !== false || !(mobileViewport.matches || lessonDockActive());
+    });
+    document.addEventListener("bibli:reader-preferences-open", () => setOpen(true));
+    document.addEventListener("bibli:reader-preferences-close", () => setOpen(false));
+    document.addEventListener("bibli:tts-opening", () => setOpen(false));
 
     syncButtons();
   });
 </script>
 
 <style>
+  @media(max-width:920px){ :global(html[data-reader-preferences-open="true"]) { overflow:hidden; } }
   .reader-preferences { position:relative; flex:0 0 auto; }
   .reader-preferences-toggle { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .72rem; border:1px solid var(--border-color); border-radius:10px; background:var(--surface); color:var(--text-color); font:inherit; font-size:.78rem; font-weight:760; cursor:pointer; }
   .reader-preferences-toggle:hover,.reader-preferences-toggle[aria-expanded="true"] { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
   .reader-preferences.is-compact .reader-preferences-toggle span { display:none; }
   .reader-preferences.is-compact .reader-preferences-toggle { width:44px; min-height:44px; padding:0; }
+  .reader-preferences-backdrop { display:none; }
   .reader-preferences-panel { position:absolute; z-index:80; top:calc(100% + 8px); right:0; width:min(310px,calc(100vw - 28px)); display:grid; gap:.85rem; padding:.9rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface-elevated); box-shadow:var(--shadow-md); }
-  .reader-preferences-panel[hidden] { display:none !important; }
+  .reader-preferences-panel[hidden],.reader-preferences-backdrop[hidden] { display:none !important; }
+  .reader-preferences-panel-head { display:none; }
   .reader-pref-group { display:grid; gap:.4rem; }
   .reader-pref-group > span { color:var(--text-muted); font-size:.68rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
   .reader-pref-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem; padding:.25rem; border-radius:11px; background:var(--surface-soft); }
-  .reader-pref-options button { min-height:40px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
+  .reader-pref-options button { min-width:0; min-height:40px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
   .reader-pref-options button:hover { background:color-mix(in srgb,var(--surface) 72%,transparent); color:var(--heading-color); }
   .reader-pref-options button.is-active { background:var(--surface); color:var(--accent); box-shadow:0 1px 5px rgba(0,0,0,.08); }
-  .reader-font-options button,.reader-align-options button { font-size:.7rem; }
+  .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.7rem; }
   .reader-font-options button[data-reader-font-choice="serif"] { font-family:Georgia,"Times New Roman",serif; }
   .reader-pref-reset { min-height:40px; border:1px solid var(--border-color); border-radius:9px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
   .reader-pref-reset:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-soft); }
-  @media(max-width:600px){ .reader-preferences-toggle span{display:none}.reader-preferences-toggle{width:44px;padding:0}.reader-preferences-panel{position:fixed;z-index:160;top:auto;right:10px;bottom:max(10px,env(safe-area-inset-bottom));left:10px;width:auto;max-height:calc(100dvh - 20px);overflow:auto;overscroll-behavior:contain} }
+
+  @media(max-width:920px){
+    .reader-preferences-toggle span{display:none}
+    .reader-preferences-toggle{width:44px;padding:0}
+    .reader-preferences-backdrop { position:fixed; inset:0; z-index:174; display:block; border:0; background:rgba(8,12,18,.42); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+    .reader-preferences-panel {
+      position:fixed; z-index:175; top:auto; right:auto;
+      bottom:max(10px,env(safe-area-inset-bottom)); left:50%;
+      width:min(560px,calc(100vw - 20px)); max-height:min(58dvh,470px);
+      transform:translateX(-50%); overflow:auto; overscroll-behavior:contain;
+      grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; padding:.72rem;
+      border-radius:20px; box-shadow:0 24px 80px rgba(0,0,0,.28);
+    }
+    .reader-preferences-panel-head {
+      grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:44px;
+      align-items:center; justify-content:space-between; gap:1rem; margin:-.72rem -.72rem 0;
+      padding:.62rem .72rem .48rem; background:color-mix(in srgb,var(--surface-elevated) 96%,transparent);
+      border-bottom:1px solid var(--border-color);
+    }
+    .reader-preferences-panel-head strong { color:var(--heading-color); font-size:.88rem; }
+    .reader-preferences-close { width:40px; height:40px; flex:0 0 40px; display:grid; place-items:center; border:1px solid var(--border-color); border-radius:11px; background:var(--surface-soft); color:var(--text-color); cursor:pointer; }
+    .reader-preferences-close:hover { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
+    .reader-pref-group { min-width:0; gap:.32rem; }
+    .reader-pref-group > span { font-size:.64rem; }
+    .reader-pref-options { gap:.22rem; padding:.2rem; }
+    .reader-pref-options button { min-height:42px; padding-inline:.25rem; font-size:.68rem; }
+    .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.64rem; }
+    .reader-pref-reset { grid-column:1/-1; min-height:42px; }
+    :global(html[data-lesson-dock="true"]) .reader-preferences-panel { bottom:calc(82px + env(safe-area-inset-bottom)); }
+  }
+
+  @media(max-width:430px){
+    .reader-preferences-panel { bottom:max(7px,env(safe-area-inset-bottom)); width:calc(100vw - 14px); max-height:min(62dvh,450px); gap:.5rem; padding:.62rem; }
+    .reader-preferences-panel-head { top:-.62rem; margin:-.62rem -.62rem 0; padding:.52rem .62rem .4rem; }
+    .reader-pref-options button { min-height:40px; font-size:.64rem; }
+    .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.6rem; }
+    :global(html[data-lesson-dock="true"]) .reader-preferences-panel { bottom:calc(78px + env(safe-area-inset-bottom)); }
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .reader-preferences-backdrop { backdrop-filter:none; -webkit-backdrop-filter:none; }
+  }
+
+  /* Lesson dock integration: a compact floating tool palette above the dock on every viewport. */
+  :global(html[data-lesson-dock="true"]) .reader-preferences-backdrop {
+    position:fixed; inset:0; z-index:208; display:block; border:0; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none;
+  }
+  :global(html[data-lesson-dock="true"]) .reader-preferences-panel {
+    position:fixed; z-index:225; top:auto; right:auto; left:50%;
+    bottom:calc(84px + env(safe-area-inset-bottom));
+    width:min(620px,calc(100vw - 20px)); max-height:min(48dvh,360px);
+    transform:translateX(-50%); overflow:auto; overscroll-behavior:contain;
+    grid-template-columns:repeat(2,minmax(0,1fr)); gap:.62rem; padding:.72rem;
+    border-radius:19px; box-shadow:0 22px 70px rgba(0,0,0,.26);
+  }
+  :global(html[data-lesson-dock="true"]) .reader-preferences-panel-head {
+    grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:42px;
+    align-items:center; justify-content:space-between; margin:-.72rem -.72rem 0; padding:.56rem .68rem .44rem;
+    background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); border-bottom:1px solid var(--border-color);
+  }
+  :global(html[data-lesson-dock="true"]) .reader-pref-reset { grid-column:1/-1; }
+  @media(max-width:520px){
+    :global(html[data-lesson-dock="true"]) .reader-preferences-panel { width:calc(100vw - 12px); max-height:min(54dvh,390px); bottom:calc(76px + env(safe-area-inset-bottom)); padding:.62rem; gap:.5rem; }
+    :global(html[data-lesson-dock="true"]) .reader-preferences-panel-head { top:-.62rem; margin:-.62rem -.62rem 0; }
+  }
+
 </style>

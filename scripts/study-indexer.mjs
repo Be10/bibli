@@ -7,9 +7,11 @@ import {
   normalizeText,
   parseStudyDocument,
   slugify,
+  stripStudyVersionSuffix,
   toPosixPath,
   walkFiles,
 } from "./study-markdown-utils.mjs";
+import { loadEditorialConfig, resolveEditorialModule } from "./study-editorial-config.mjs";
 
 function readJson(filePath, fallback = null) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -53,74 +55,14 @@ function parseReferenceRange(reference) {
   return { startChapter, startVerse, endChapter, endVerse };
 }
 
-function resolveModule(route, lessonNumber, lessonId) {
-  return (route.modules || []).find((module) => {
-    if (Array.isArray(module.lesson_ids) && module.lesson_ids.includes(lessonId)) return true;
-    const range = module.lesson_number_range;
-    return Array.isArray(range) && range.length === 2 && lessonNumber >= range[0] && lessonNumber <= range[1];
-  });
-}
-
-function configuredRangeEnd(route) {
-  return Math.max(
-    0,
-    ...(route?.modules || [])
-      .map((module) => module.lesson_number_range)
-      .filter((range) => Array.isArray(range) && range.length === 2 && Number.isInteger(range[1]))
-      .map((range) => range[1]),
-  );
-}
-
-function buildEffectiveRoute(route, documents) {
-  const modules = (route.modules || []).map((module) => ({ ...module }));
-  const routeView = { ...route, modules };
-  const unresolved = documents
-    .filter((document) => document.fm.route_id === route.id)
-    .filter((document) => !resolveModule(routeView, document.fm.route_lesson_number, document.fm.lesson_id))
-    .sort((a, b) => a.fm.route_lesson_number - b.fm.route_lesson_number);
-
-  if (unresolved.length === 0) return routeView;
-
-  const auto = route.auto_append_module;
-  if (auto?.enabled !== true) {
-    const first = unresolved[0];
-    throw new Error(`${first.relativePath}: la lección no pertenece a ningún módulo de ${route.id}`);
-  }
-
-  const start = configuredRangeEnd(routeView) + 1;
-  let expected = start;
-  for (const document of unresolved) {
-    if (document.fm.route_lesson_number !== expected) {
-      throw new Error(
-        `${document.relativePath}: la cola automática de ${route.id} debe ser continua; se esperaba route_lesson_number ${expected} y se encontró ${document.fm.route_lesson_number}`
-      );
-    }
-    expected += 1;
-  }
-
-  const end = unresolved[unresolved.length - 1].fm.route_lesson_number;
-  const position = Math.max(0, ...modules.map((module) => Number(module.position) || 0)) + 1;
-  modules.push({
-    id: auto.id || `${route.id}-continuacion-auto`,
-    title: auto.title || 'Continuación de la ruta',
-    slug: auto.slug || 'continuacion-de-la-ruta',
-    description: auto.description || 'Lecciones nuevas incorporadas automáticamente y pendientes de agrupación editorial definitiva.',
-    position,
-    status: auto.status || 'Publicado',
-    lesson_number_range: [start, end],
-    auto_generated: true,
-  });
-
-  return routeView;
-}
-
 function stablePassageId(bookId, reference) {
   const digest = crypto.createHash("sha256").update(`${bookId}:${normalizeBibleReference(reference)}`).digest("hex").slice(0, 14);
   return `pas-study-${digest}`;
 }
 
 function lessonSlugFromPath(filePath) {
-  return path.basename(filePath, path.extname(filePath));
+  const stem = path.basename(filePath, path.extname(filePath));
+  return stripStudyVersionSuffix(stem);
 }
 
 function insertManualLinks(db, lessonId, enrichment) {
@@ -146,14 +88,9 @@ function insertManualLinks(db, lessonId, enrichment) {
 export function indexStudies(db, options = {}) {
   const rootDir = options.rootDir ?? process.cwd();
   const studiesRoot = path.join(rootDir, "content", "studies");
-  const routesPath = path.join(rootDir, "content", "routes.json");
   const enrichmentsPath = path.join(rootDir, "content", "study-enrichments.json");
-  const routesConfig = readJson(routesPath, { routes: [] });
+  const editorialConfig = loadEditorialConfig(rootDir);
   const enrichments = readJson(enrichmentsPath, { lessons: {} });
-
-  if (!Array.isArray(routesConfig.routes) || routesConfig.routes.length === 0) {
-    throw new Error("content/routes.json no contiene rutas");
-  }
 
   const markdownFiles = walkFiles(studiesRoot, (filePath) => filePath.toLowerCase().endsWith(".md"));
   if (markdownFiles.length === 0) throw new Error("content/studies no contiene lecciones Markdown");
@@ -169,7 +106,7 @@ export function indexStudies(db, options = {}) {
     return { filePath, relativePath, parsed, fm, title: parsed.h1[0] };
   });
 
-  const effectiveRoutes = routesConfig.routes.map((route) => buildEffectiveRoute(route, documents));
+  const effectiveRoutes = editorialConfig.routes;
   const routeById = new Map(effectiveRoutes.map((route) => [route.id, route]));
   const knownBooks = new Set(db.prepare("SELECT id FROM books").all().map((row) => row.id));
 
@@ -256,10 +193,12 @@ export function indexStudies(db, options = {}) {
       const route = routeById.get(fm.route_id);
       if (!route) throw new Error(`${relativePath}: route_id desconocido ${fm.route_id}`);
       if (normalizeText(route.title) !== normalizeText(fm.route_name)) {
-        throw new Error(`${relativePath}: route_name no coincide con content/routes.json`);
+        throw new Error(`${relativePath}: route_name no coincide con content/editorial-structure.yaml`);
       }
-      const module = resolveModule(route, fm.route_lesson_number, fm.lesson_id);
-      if (!module) throw new Error(`${relativePath}: la lección no pertenece a ningún módulo de ${route.id}`);
+      const module = resolveEditorialModule(route, fm);
+      if (!module) {
+        throw new Error(`${relativePath}: la lección no tiene una sección editorial resoluble en ${route.id}`);
+      }
 
       const bookId = canonicalBookId(fm.book_id);
       if (!knownBooks.has(bookId)) throw new Error(`${relativePath}: book_id no resoluble ${bookId}`);

@@ -16,37 +16,24 @@ const englishUrl = sitePath("/en/");
   description="La página solicitada no existe o cambió de ubicación. Continúa explorando Bibli desde la búsqueda, la Biblia o las rutas de estudio."
   robots="noindex, follow"
 >
-  <main class="not-found-shell">
+  <main class="not-found-shell" data-utility-root data-utility-kind="not-found">
     <section class="not-found-card" aria-labelledby="not-found-title">
       <div class="error-code" aria-hidden="true">404</div>
       <p class="eyebrow">Página no encontrada</p>
       <h1 id="not-found-title">No encontramos esta página</h1>
       <p class="lead">
-        El enlace puede haber cambiado o la dirección puede estar incompleta. Puedes buscar el contenido por nombre,
-        referencia bíblica, lección, ruta o tema.
+        El enlace puede haber cambiado o la dirección puede estar incompleta. Usa la búsqueda global del encabezado o elige una de estas opciones para continuar.
       </p>
-
-      <form class="recovery-search" action={searchUrl} method="get" role="search">
-        <label for="not-found-search">Buscar en Bibli</label>
-        <div class="search-row">
-          <div class="search-field">
-            <Icon name="search" size={19} />
-            <input
-              id="not-found-search"
-              name="q"
-              type="search"
-              autocomplete="off"
-              placeholder="Ej. Éxodo 12, Moisés, Lección 110…"
-            />
-          </div>
-          <button type="submit">Buscar</button>
-        </div>
-      </form>
 
       <nav class="recovery-grid" aria-label="Opciones para continuar">
         <a href={homeUrl} class="recovery-card">
           <span class="recovery-icon"><Icon name="library" size={20} /></span>
           <span><strong>Inicio</strong><small>Volver a la portada de Bibli</small></span>
+          <Icon name="chevron-right" size={18} />
+        </a>
+        <a href={searchUrl} class="recovery-card">
+          <span class="recovery-icon"><Icon name="search" size={20} /></span>
+          <span><strong>Buscar</strong><small>Encontrar libros, pasajes, lecciones y recursos</small></span>
           <Icon name="chevron-right" size={18} />
         </a>
         <a href={exploreUrl} class="recovery-card">
@@ -108,7 +95,6 @@ const englishUrl = sitePath("/en/");
   .eyebrow,
   h1,
   .lead,
-  .recovery-search,
   .recovery-grid,
   .english-note {
     position: relative;
@@ -139,73 +125,6 @@ const englishUrl = sitePath("/en/");
     color: var(--text-muted);
     font-size: clamp(1rem, 2vw, 1.12rem);
     line-height: 1.7;
-  }
-
-  .recovery-search {
-    max-width: 720px;
-    margin-top: 30px;
-  }
-
-  .recovery-search > label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--text-color);
-    font-size: 0.9rem;
-    font-weight: 700;
-  }
-
-  .search-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .search-field {
-    display: flex;
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 48px;
-    align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    color: var(--text-muted);
-  }
-
-  .search-field:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-subtle);
-  }
-
-  .search-field input {
-    width: 100%;
-    min-width: 0;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: var(--text-color);
-    font: inherit;
-  }
-
-  .search-field input::placeholder {
-    color: var(--text-muted);
-  }
-
-  .search-row button {
-    min-height: 48px;
-    padding: 0 20px;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius-md);
-    background: var(--accent);
-    color: var(--accent-contrast);
-    font: inherit;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .search-row button:hover {
-    background: var(--accent-hover);
   }
 
   .recovery-grid {
@@ -318,14 +237,6 @@ const englishUrl = sitePath("/en/");
       top: -0.05em;
       right: 0.02em;
       font-size: clamp(6rem, 34vw, 9rem);
-    }
-
-    .search-row {
-      flex-direction: column;
-    }
-
-    .search-row button {
-      width: 100%;
     }
 
     .recovery-grid {

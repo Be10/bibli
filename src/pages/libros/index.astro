@@ -1,7 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CatalogFilter from "../../components/CatalogFilter.astro";
 import { getAllBooks, type Book } from "../../lib/queries";
 
 const books = getAllBooks().filter((book) => book.status !== "Borrador");
@@ -168,9 +167,6 @@ function getBookMeta(book: Book) {
           {books.length} {books.length === 1 ? "libro" : "libros"}
         </span>
       </div>
-
-      <CatalogFilter total={books.length} noun="libros" placeholder="Buscar libro, abreviatura, género o categoría…" label="Buscar libros bíblicos" />
-
       <div class="books-testament-groups">
         {testamentGroups.map((group) => (
           <section
@@ -252,7 +248,7 @@ function getBookMeta(book: Book) {
   .books-testament-heading,
   .book-directory-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .books-hero-card {
@@ -261,7 +257,7 @@ function getBookMeta(book: Book) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .books-hero-card span,
@@ -340,7 +336,7 @@ function getBookMeta(book: Book) {
   a.books-overview-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .books-overview-card strong {
@@ -416,7 +412,7 @@ function getBookMeta(book: Book) {
   .book-directory-card:hover {
     transform: translateY(-2px);
     border-color: var(--accent-border);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .book-directory-order {
@@ -494,7 +490,7 @@ function getBookMeta(book: Book) {
   :global(html[data-theme="dark"]) .books-directory-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .books-overview-card,

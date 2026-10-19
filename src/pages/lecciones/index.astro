@@ -10,11 +10,16 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
 ---
 
 <BaseLayout title="Lecciones" description="Lecciones bíblicas canónicas organizadas en rutas y módulos de aprendizaje.">
-  <main class="lesson-index-page">
+  <main class="page lesson-index-page" data-catalog-root data-catalog-variant="learning">
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><span>Lecciones</span></nav>
-    <header class="lesson-index-header">
+    <header class="lesson-index-header catalog-index-hero">
       <div class="lesson-index-copy"><span class="header-icon"><Icon name="graduation" size={20} /></span><p class="eyebrow">Aprendizaje</p><h1>Lecciones</h1><p>{totalUnique} estudios disponibles para avanzar por las Escrituras paso a paso.</p></div>
-      <a href={sitePath("/rutas/")} class="route-button"><span>Explorar rutas</span><Icon name="arrow-right" size={16} /></a>
+      <aside class="catalog-learning-summary" aria-label="Resumen de lecciones">
+        <span>Estudios disponibles</span>
+        <strong>{totalUnique}</strong>
+        <small>{routes.length} rutas de aprendizaje</small>
+        <a href={sitePath("/rutas/")} class="route-button"><span>Explorar rutas</span><Icon name="arrow-right" size={16} /></a>
+      </aside>
     </header>
 
     <section class="lesson-index-tools" aria-label="Buscar lecciones">
@@ -25,8 +30,12 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
           type="search"
           placeholder="Buscar por título, referencia o módulo…"
           autocomplete="off"
+          spellcheck="false"
+          autocapitalize="none"
+          enterkeyhint="search"
           data-lesson-filter
         />
+        <button type="button" class="lesson-filter-clear" data-lesson-filter-clear hidden aria-label="Limpiar búsqueda"><Icon name="close" size={15} /></button>
         <span data-lesson-filter-count aria-live="polite">{totalUnique} lecciones</span>
       </label>
     </section>
@@ -82,40 +91,83 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
   });
 
   const filterInput = document.querySelector<HTMLInputElement>("[data-lesson-filter]");
+  const filterClear = document.querySelector<HTMLButtonElement>("[data-lesson-filter-clear]");
   const filterCount = document.querySelector<HTMLElement>("[data-lesson-filter-count]");
   const filterEmpty = document.querySelector<HTMLElement>("[data-lesson-filter-empty]");
   const moduleBlocks = [...document.querySelectorAll<HTMLElement>("[data-lesson-module]")];
   const routeSections = [...document.querySelectorAll<HTMLElement>("[data-route-section]")];
   const normalize = (value: string) =>
     value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("es").trim();
+  const lessonSearchText = new WeakMap<HTMLElement, string>();
+  let filterFrame = 0;
 
-  function applyLessonFilter() {
+  lessonCards.forEach((card) => {
+    const module = card.closest<HTMLElement>("[data-lesson-module]");
+    const route = card.closest<HTMLElement>("[data-route-section]");
+    const moduleText = normalize(module?.querySelector(".lesson-module-header")?.textContent || "");
+    const routeText = normalize(route?.querySelector(":scope > header")?.textContent || "");
+    const cardText = normalize(card.textContent || "");
+    lessonSearchText.set(card, `${cardText} ${moduleText} ${routeText}`);
+  });
+
+  function syncLessonFilterQuery() {
+    if (!filterInput) return;
+    const url = new URL(window.location.href);
+    const rawQuery = filterInput.value.trim();
+    if (rawQuery) url.searchParams.set("q", rawQuery);
+    else url.searchParams.delete("q");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function applyLessonFilter({ syncUrl = true } = {}) {
     const query = normalize(filterInput?.value || "");
+    const tokens = query.split(/\s+/).filter(Boolean);
     let visibleCount = 0;
+
     lessonCards.forEach((card) => {
-      const module = card.closest<HTMLElement>("[data-lesson-module]");
-      const route = card.closest<HTMLElement>("[data-route-section]");
-      const moduleText = normalize(module?.querySelector(".lesson-module-header")?.textContent || "");
-      const routeText = normalize(route?.querySelector(":scope > header")?.textContent || "");
-      const cardText = normalize(card.textContent || "");
-      const matches = !query || cardText.includes(query) || moduleText.includes(query) || routeText.includes(query);
+      const haystack = lessonSearchText.get(card) || "";
+      const matches = tokens.length === 0 || tokens.every((token) => haystack.includes(token));
       card.hidden = !matches;
       if (matches) visibleCount += 1;
     });
+
     moduleBlocks.forEach((module) => {
       module.hidden = !module.querySelector("[data-lesson-id]:not([hidden])");
     });
     routeSections.forEach((section) => {
       section.hidden = !section.querySelector("[data-lesson-module]:not([hidden])");
     });
+
     if (filterCount) {
       filterCount.textContent = query ? `${visibleCount} de ${lessonCards.length} lecciones` : `${lessonCards.length} lecciones`;
     }
     if (filterEmpty) filterEmpty.hidden = !query || visibleCount > 0;
+    if (filterClear) filterClear.hidden = query.length === 0;
+    if (syncUrl) syncLessonFilterQuery();
   }
 
-  filterInput?.addEventListener("input", applyLessonFilter);
-  applyLessonFilter();
+  function scheduleLessonFilter() {
+    window.cancelAnimationFrame(filterFrame);
+    filterFrame = window.requestAnimationFrame(() => applyLessonFilter());
+  }
+
+  const initialLessonQuery = new URL(window.location.href).searchParams.get("q")?.trim() ?? "";
+  if (filterInput && initialLessonQuery) filterInput.value = initialLessonQuery;
+
+  filterInput?.addEventListener("input", scheduleLessonFilter);
+  filterInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && filterInput.value) {
+      filterInput.value = "";
+      applyLessonFilter();
+    }
+  });
+  filterClear?.addEventListener("click", () => {
+    if (!filterInput) return;
+    filterInput.value = "";
+    applyLessonFilter();
+    filterInput.focus();
+  });
+  applyLessonFilter({ syncUrl: false });
 </script>
 
 <style>
@@ -130,10 +182,13 @@ const totalUnique = new Set(sections.flatMap((section) => section.lessons.map((l
   .route-button { min-height:42px; display:inline-flex; align-items:center; gap:.45rem; padding:0 .85rem; border:1px solid var(--border-color); border-radius:11px; background:var(--surface); color:var(--heading-color); text-decoration:none; font-weight:720; }
   .route-button:hover { background:var(--surface-soft); border-color:var(--border-strong); }
   .lesson-index-tools { position:sticky; top:72px; z-index:22; margin:.1rem 0 .9rem; padding:.55rem; border:1px solid var(--border-color); border-radius:15px; background:color-mix(in srgb,var(--page-bg) 90%,transparent); box-shadow:0 8px 24px rgba(15,23,42,.04); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
-  .lesson-filter { min-height:44px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.6rem; align-items:center; padding:0 .8rem; border:1px solid var(--border-color); border-radius:12px; background:var(--surface); color:var(--text-muted); }
+  .lesson-filter { min-height:44px; display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; gap:.6rem; align-items:center; padding:0 .8rem; border:1px solid var(--border-color); border-radius:12px; background:var(--surface); color:var(--text-muted); }
   .lesson-filter:focus-within { border-color:var(--accent); box-shadow:0 0 0 4px var(--focus-ring); }
   .lesson-filter input { min-width:0; width:100%; border:0; outline:0; background:transparent; color:var(--text-color); font-size:.88rem; }
   .lesson-filter input::placeholder { color:var(--text-muted); }
+  .lesson-filter-clear { width:38px; height:38px; display:grid; place-items:center; border:0; border-radius:9px; background:transparent; color:var(--text-muted); cursor:pointer; }
+  .lesson-filter-clear:hover { background:var(--accent-soft); color:var(--accent); }
+  .lesson-filter-clear[hidden] { display:none !important; }
   .lesson-filter > span:last-child { white-space:nowrap; color:var(--text-muted); font-size:.74rem; }
   .route-section { margin-top:.9rem; border:1px solid var(--border-color); border-radius:18px; overflow:hidden; background:var(--surface); box-shadow:0 8px 26px rgba(15, 23, 42, .035); }
   .route-section>header { display:flex; justify-content:space-between; gap:1rem; padding:1rem 1.1rem; border-bottom:1px solid var(--border-color); background:color-mix(in srgb,var(--accent-soft) 18%,var(--surface)); }

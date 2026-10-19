@@ -131,7 +131,7 @@ function getExploreCount(item: ExploreItem) {
   title="Búsqueda avanzada"
   description="Busca Biblia, libros, pasajes, lecciones, rutas, recursos, eventos, temas, personajes, lugares y términos del glosario desde un solo índice."
 >
-  <main class="page advanced-search-page">
+  <main class="page advanced-search-page" data-utility-root data-utility-kind="search">
     <div class="breadcrumb">
       <a href={sitePath("/")}>Inicio</a> → Búsqueda avanzada
     </div>
@@ -188,13 +188,21 @@ function getExploreCount(item: ExploreItem) {
           Escribe una palabra, referencia, personaje, lugar o tema
         </label>
 
-        <input
-          id="search-input"
-          class="search-input"
-          type="search"
-          placeholder="Busca: Jesús, Génesis, redención, Jerusalén, en el principio..."
-          autocomplete="off"
-        />
+        <div class="search-control">
+          <input
+            id="search-input"
+            class="search-input"
+            type="search"
+            placeholder="Busca: Jesús, Génesis, redención, Jerusalén, en el principio..."
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+            enterkeyhint="search"
+            aria-controls="search-results"
+          />
+          <button type="button" class="search-clear" data-search-clear hidden>Limpiar</button>
+        </div>
+        <p class="search-help">Usa ↑ y ↓ para recorrer resultados. Presiona Esc para limpiar la consulta.</p>
       </div>
 
       <div id="search-empty" class="search-empty enhanced-search-empty" hidden></div>
@@ -206,7 +214,7 @@ function getExploreCount(item: ExploreItem) {
         hidden
       ></div>
 
-      <div id="search-results-summary" class="search-results-summary" hidden></div>
+      <div id="search-results-summary" class="search-results-summary" role="status" aria-live="polite" aria-atomic="true" hidden></div>
 
       <div id="search-results" class="search-results enhanced-search-results"></div>
 
@@ -267,6 +275,7 @@ function getExploreCount(item: ExploreItem) {
   const emptyElement = document.getElementById("search-empty");
   const resultsSummaryElement = document.getElementById("search-results-summary");
   const filtersElement = document.getElementById("search-filters");
+  const clearButton = document.querySelector("[data-search-clear]");
 
   const items = dataElement?.textContent
     ? JSON.parse(dataElement.textContent)
@@ -357,20 +366,19 @@ function getExploreCount(item: ExploreItem) {
     filtersElement.hidden = false;
 
     filtersElement.innerHTML = [
-      `<button type="button" data-search-filter="Todos">Todos <span>${results.length}</span></button>`,
+      `<button type="button" data-search-filter="Todos" aria-pressed="${activeSearchType === "Todos"}">Todos <span>${results.length}</span></button>`,
       ...filters.map(
         ({ type, count }) =>
-          `<button type="button" data-search-filter="${escapeHtml(type)}">${escapeHtml(type)} <span>${count}</span></button>`
+          `<button type="button" data-search-filter="${escapeHtml(type)}" aria-pressed="${activeSearchType === type}">${escapeHtml(type)} <span>${count}</span></button>`
       ),
     ].join("");
 
     filtersElement
       .querySelectorAll("[data-search-filter]")
       .forEach((button) => {
-        button.classList.toggle(
-          "is-active",
-          button.getAttribute("data-search-filter") === activeSearchType
-        );
+        const isActive = button.getAttribute("data-search-filter") === activeSearchType;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
 
         button.addEventListener("click", () => {
           activeSearchType =
@@ -452,11 +460,66 @@ function getExploreCount(item: ExploreItem) {
     renderFilteredResults();
   }
 
+
+  function syncClearButton(value) {
+    if (clearButton instanceof HTMLButtonElement) {
+      clearButton.hidden = !normalizeText(value);
+    }
+  }
+
+  function clearSearch() {
+    if (!(input instanceof HTMLInputElement)) return;
+    input.value = "";
+    activeSearchType = "Todos";
+    updateUrl("");
+    renderResults("");
+    syncClearButton("");
+    input.focus();
+  }
+
+  function getResultLinks() {
+    return resultsElement
+      ? [...resultsElement.querySelectorAll<HTMLAnchorElement>("a.search-result")]
+      : [];
+  }
+
+  input?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && input instanceof HTMLInputElement && input.value) {
+      event.preventDefault();
+      clearSearch();
+      return;
+    }
+
+    if (event.key !== "ArrowDown") return;
+    const links = getResultLinks();
+    if (links.length === 0) return;
+    event.preventDefault();
+    links[0]?.focus();
+  });
+
+  resultsElement?.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const links = getResultLinks();
+    const active = document.activeElement;
+    const currentIndex = links.indexOf(active as HTMLAnchorElement);
+    if (currentIndex === -1) return;
+
+    event.preventDefault();
+    if (event.key === "ArrowDown") {
+      links[Math.min(currentIndex + 1, links.length - 1)]?.focus();
+    } else if (currentIndex === 0) {
+      input?.focus();
+    } else {
+      links[currentIndex - 1]?.focus();
+    }
+  });
+
   input?.addEventListener("input", (event) => {
     const value = event.target.value;
 
     activeSearchType = "Todos";
     updateUrl(value);
+    syncClearButton(value);
 
     window.clearTimeout(searchDebounceTimer);
 
@@ -465,10 +528,14 @@ function getExploreCount(item: ExploreItem) {
     }, 120);
   });
 
-  if (input && initialQuery) {
+  clearButton?.addEventListener("click", clearSearch);
+
+  if (input instanceof HTMLInputElement && initialQuery) {
     input.value = initialQuery;
+    syncClearButton(initialQuery);
     renderResults(initialQuery);
-    input.focus();
+  } else {
+    syncClearButton("");
   }
 </script>
 
@@ -512,7 +579,7 @@ function getExploreCount(item: ExploreItem) {
   .search-result,
   .advanced-explore-card {
     border: 1px solid var(--border-color);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-card);
   }
 
   .advanced-search-hero-card {
@@ -521,7 +588,7 @@ function getExploreCount(item: ExploreItem) {
     padding: 24px;
     border-radius: 24px;
     background: var(--surface);
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    box-shadow: var(--shadow-panel);
   }
 
   .advanced-search-hero-card span,
@@ -625,7 +692,7 @@ function getExploreCount(item: ExploreItem) {
   :global(.search-filters button) {
     display: inline-flex;
     flex: 0 0 auto;
-    min-height: 32px;
+    min-height: 40px;
     align-items: center;
     gap: 6px;
     padding: 0 11px;
@@ -646,12 +713,6 @@ function getExploreCount(item: ExploreItem) {
     font: inherit;
     font-weight: 900;
     line-height: 1;
-  }
-
-  :global(.search-filters button.is-active) {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-contrast);
   }
 
   :global(.search-filters button:hover) {
@@ -726,7 +787,7 @@ function getExploreCount(item: ExploreItem) {
   .advanced-explore-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .advanced-explore-card strong {
@@ -777,7 +838,7 @@ function getExploreCount(item: ExploreItem) {
   .search-result:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .search-result h3 {
@@ -817,7 +878,7 @@ function getExploreCount(item: ExploreItem) {
   :global(html[data-theme="dark"]) .search-section {
     background: var(--surface);
     border-color: var(--border-color);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-panel);
   }
 
   :global(html[data-theme="dark"]) .enhanced-search-panel,
@@ -961,6 +1022,7 @@ function getExploreCount(item: ExploreItem) {
 
     :global(.search-filters button) {
       flex: 0 0 auto;
+      min-height: 44px;
     }
 
     .search-result {
@@ -979,9 +1041,9 @@ function getExploreCount(item: ExploreItem) {
       min-height: auto;
     }
   }
-</style>
-<style>
-  /* Search v4: accent-aware, no horizontal chip scroller. */
+
+
+  /* Accent-aware search controls without horizontal chip scrolling. */
   :global(.search-filters) { flex-wrap:wrap !important; overflow:visible !important; padding-bottom:0 !important; scrollbar-width:none !important; }
   :global(.search-filters::-webkit-scrollbar) { display:none !important; }
   :global(.search-filters button) { border-radius:10px !important; background:var(--surface) !important; color:var(--text-muted) !important; }
@@ -991,4 +1053,150 @@ function getExploreCount(item: ExploreItem) {
   .search-result-type { background:var(--accent-soft) !important; color:var(--accent) !important; border-color:var(--accent-border) !important; }
   .search-result mark { background:var(--accent-soft) !important; color:var(--heading-color) !important; }
   .search-results-summary,.search-label,.advanced-search-hero-card span,.search-stat-card span,.advanced-explore-card span,.advanced-explore-card small { color:var(--accent) !important; }
+</style>
+
+<style is:global>
+  .search-panel {
+    display: grid;
+    gap: 18px;
+    margin-top: 28px;
+  }
+
+  .search-input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 54px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--heading-color);
+    font: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+  }
+
+  .search-empty {
+    padding: 18px;
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    background: var(--surface-soft);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .search-empty[hidden] {
+    display: none !important;
+  }
+
+  .search-results {
+    min-width: 0;
+  }
+
+  .search-result {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    min-width: 0;
+    min-height: 138px;
+    padding: 15px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--surface);
+    color: inherit;
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .search-result:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .search-result h3 {
+    margin: 0;
+    color: var(--heading-color);
+    font-size: 1rem;
+    line-height: 1.28;
+  }
+
+  .search-result p {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.94rem;
+    line-height: 1.55;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .search-result mark {
+    padding: 0 2px;
+    border-radius: 5px;
+    background: var(--accent-soft);
+    color: var(--heading-color);
+    font-weight: 900;
+  }
+
+  .search-result-type {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 2px;
+    padding: 4px 9px;
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  html[data-theme="dark"] .search-input,
+  html[data-theme="dark"] .search-result {
+    background: var(--surface);
+    border-color: var(--border-color);
+  }
+
+  html[data-theme="dark"] .search-empty {
+    background: var(--surface-soft);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+  }
+
+  html[data-theme="dark"] .search-result-type {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  html[data-theme="dark"] .search-result mark {
+    background: var(--accent-hover);
+    color: var(--accent-contrast);
+  }
+
+  @media (max-width: 640px) {
+    .search-input {
+      min-height: 50px;
+      padding-inline: 14px;
+    }
+
+    .search-result {
+      min-height: auto;
+    }
+  }
 </style>
