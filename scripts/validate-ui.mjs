@@ -268,7 +268,7 @@ if (!fs.existsSync(routeIndexPath)) {
   problems.push("falta src/pages/rutas/index.astro");
 } else {
   const routeIndex = fs.readFileSync(routeIndexPath, "utf8");
-  for (const token of ["route-index-page", "route-card", "progress-track", "data-catalog-root", "catalog-index-hero", "catalog-learning-summary", 'role="progressbar"', "refreshRouteProgress", 'window.addEventListener("storage"', 'window.addEventListener("pageshow"', 'data-persisted-root', 'data-persisted-value', 'card.dataset.persistedReady = "true"', 'count >= ids.length ? "Revisar"']) {
+  for (const token of ["route-index-page", "route-card", "progress-track", "data-catalog-root", "catalog-index-hero", "catalog-learning-summary", 'role="progressbar"', "refreshRouteProgress", 'window.addEventListener("storage"', 'window.addEventListener("pageshow"', "MutationObserver", 'observer.observe(shell, { childList: true, subtree: true })', 'card.dataset.persistedReady = "true"', 'count >= ids.length ? "Revisar"']) {
     if (!routeIndex.includes(token)) problems.push(`rutas/index.astro: falta UI moderna (${token})`);
   }
 }
@@ -278,7 +278,7 @@ if (!fs.existsSync(routeDetailPath)) {
   problems.push("falta src/pages/rutas/[slug].astro");
 } else {
   const routeDetail = fs.readFileSync(routeDetailPath, "utf8");
-  for (const token of ["route-hero-modern", "progress-card", "module-card", "moduleText", "data-route-filter-empty", "[data-route-lesson-id][hidden]", "var(--header-height", "data-detail-root", 'data-detail-kind="route"', '[data-route-continue]', 'syncRouteProgress', 'window.addEventListener("pageshow"', 'data-persisted-root', 'data-persisted-value', 'shell.dataset.persistedReady = "true"', 'count === ids.length', 'textContent = "Revisar"', 'textContent = "Comenzar"', 'data-route-complete-toggle', 'data-complete-lesson-id', 'writeProgress(progress)', 'aria-pressed']) {
+  for (const token of ["route-hero-modern", "progress-card", "module-card", "moduleText", "data-route-filter-empty", "[data-route-lesson-id][hidden]", "var(--header-height", "data-detail-root", 'data-detail-kind="route"', '[data-route-continue]', 'syncRouteProgress', 'window.addEventListener("pageshow"', "MutationObserver", 'queueMicrotask(() => hydrate(shell))', 'shell.dataset.persistedReady = "true"', 'count === ids.length', 'textContent = "Revisar"', 'textContent = "Comenzar"', 'data-route-complete-toggle', 'data-complete-lesson-id', 'writeProgress(progress)', 'aria-pressed']) {
     if (!routeDetail.includes(token)) problems.push(`rutas/[slug].astro: falta guardrail de filtro (${token})`);
   }
 }
@@ -358,7 +358,7 @@ if (!fs.existsSync(globalTtsPath)) {
   problems.push("falta src/components/GlobalTTS.astro");
 } else {
   const globalTts = fs.readFileSync(globalTtsPath, "utf8");
-  for (const token of ["speechSynthesis", "SpeechSynthesisUtterance", "bibli-tts-voice-", "bibli-tts-rate-v1", "--header-height", "visualViewport", "syncFloatingUiOffset", "--tts-player-offset", "profile:auto", "Bibli · Natural en español", "Bibli · Natural English", "prepareSpeechText", "bibleReferencePattern", "Extended_Pictographic", "getBestVoice", "deviceSpanishVoices", ".tts-launcher[hidden]", 'root.classList.add("is-open")', 'rateMultiplier', 'legacyName', 'bibli:tts-open', 'bibli:tts-opening', 'data-lesson-dock="true"', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lessonIntro', 'bibli:reader-preferences-opening']) {
+  for (const token of ["speechSynthesis", "SpeechSynthesisUtterance", "bibli-tts-voice-", "bibli-tts-rate-v1", "--header-height", "visualViewport", "syncFloatingUiOffset", "--tts-player-offset", "profile:auto", "Bibli · Automática", "Bibli · Automatic", "prepareSpeechText", "bibleReferencePattern", "Extended_Pictographic", "getBestVoice", "getCuratedProfileVoices", ".tts-launcher[hidden]", 'root.classList.add("is-open")', 'rateMultiplier', 'legacyName', 'bibli:tts-open', 'bibli:tts-opening', 'data-lesson-dock="true"', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lessonIntro', 'bibli:reader-preferences-opening']) {
     if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: falta soporte requerido (${token})`);
   }
   const hasTtsPlayerOpenState =
@@ -862,9 +862,9 @@ for (const [token, message] of [
   ["padding: 32px max(0px,env(safe-area-inset-right)) 72px max(0px,env(safe-area-inset-left))", "El contenido principal debe respetar safe areas laterales"],
   ["left: max(16px, env(safe-area-inset-left))", "El skip-link debe evitar el notch lateral"],
   ["top: calc(var(--header-height,62px) + 10px)", "El estado de conexión debe posicionarse con la altura real del header"],
-  ['html.js [data-persisted-value]:not([data-persisted-ready="true"])', "BaseLayout debe ocultar valores persistidos falsos antes de resolver localStorage"],
-  ['[data-persisted-root]:not([data-persisted-ready="true"]) [data-persisted-value]', "BaseLayout debe proteger grupos de estado persistido sin layout shift"],
-  ['[data-persisted-root][data-persisted-ready="true"] [data-persisted-value]', "BaseLayout debe volver visibles los valores cuando su raíz persistida ya fue resuelta"],
+  ['html.js [data-persisted-value],', "BaseLayout debe conservar visibles los valores persistidos durante el arranque"],
+  ['html.js [data-persisted-root] [data-persisted-value]', "BaseLayout debe mantener pintables los grupos de estado persistido durante la hidratación temprana"],
+  ['visibility: visible !important;', "BaseLayout debe evitar ocultar valores persistidos cuando la página ya los hidrata antes del primer frame"],
   ["searchRenderGeneration", "La búsqueda global debe invalidar renderizados asíncronos obsoletos"],
   ["canOpenSearchPopover", "La búsqueda global no debe reabrirse mientras el menú está visible"],
   ["padding: 5px 7px 5px 5px", "Los resultados de búsqueda deben reservar espacio para el anillo de foco"],
@@ -941,7 +941,7 @@ if (!fs.existsSync(contextDockPath)) {
   problems.push("falta src/components/ContextDock.astro");
 } else {
   const contextDock = fs.readFileSync(contextDockPath, "utf8");
-  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextItem", "aria-current"]) {
+  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current"]) {
     if (!contextDock.includes(token)) problems.push(`ContextDock.astro: falta navegador contextual global (${token})`);
   }
 }
