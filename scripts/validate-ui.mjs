@@ -801,7 +801,7 @@ for (const [token, message] of [
   ["prefers-reduced-motion: no-preference", "Las animaciones del shell deben respetar reduced motion"],
   ["--header-height", "BaseLayout debe exponer la altura real del header para superficies sticky"],
   ["ResizeObserver", "BaseLayout debe sincronizar la altura del header de forma responsive"],
-  ["window.visualViewport?.addEventListener(\"resize\", syncHeaderMetrics", "BaseLayout debe reaccionar a cambios reales del viewport móvil"],
+  ["window.visualViewport?.addEventListener(\"resize\", syncViewportMetrics", "BaseLayout debe reaccionar a cambios reales del viewport móvil"],
   ["orientationchange", "BaseLayout debe recalcular métricas al cambiar orientación"],
   ["document.fonts?.ready.then(syncHeaderMetrics)", "BaseLayout debe recalcular el header después de cargar tipografías"],
   ["data-reader-spacing", "BaseLayout debe aplicar el interlineado de lectura"],
