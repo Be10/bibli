@@ -16,6 +16,59 @@ const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((less
 
 <BaseLayout title="Rutas de estudio" description="Recorridos guiados para estudiar la Biblia progresivamente.">
   <main class="page route-index-page" data-catalog-root data-catalog-variant="learning">
+    <script is:inline>
+      (() => {
+        const script = document.currentScript;
+        const shell = script?.parentElement;
+        if (!(shell instanceof HTMLElement)) return;
+        const PROGRESS_KEY = "bibli-learning-progress-v1";
+        let progress = {};
+        try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); } catch {}
+        const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
+
+        const hydrateCard = (card) => {
+          if (!(card instanceof HTMLElement) || !card.matches("[data-route-card]")) return;
+          let ids = [];
+          let lessonMap = [];
+          try { ids = JSON.parse(card.dataset.routeLessonIds || "[]"); } catch {}
+          try { lessonMap = JSON.parse(card.dataset.routeLessonMap || "[]"); } catch {}
+          const count = ids.filter((id) => completed.has(id)).length;
+          const percent = ids.length ? Math.round((count / ids.length) * 100) : 0;
+          const label = card.querySelector("[data-progress-label]");
+          if (label) label.textContent = `${percent}%`;
+          const bar = card.querySelector("[data-progress-bar]");
+          if (bar instanceof HTMLElement) { bar.style.transition = "none"; bar.style.width = `${percent}%`; }
+          const track = card.querySelector("[data-progress-track]");
+          if (track) track.setAttribute("aria-valuenow", String(percent));
+          card.dataset.progressState = percent >= 100 ? "complete" : percent > 0 ? "started" : "new";
+          const routeId = card.dataset.routeId || "";
+          const lastLesson = progress.lastLessonByRoute?.[routeId];
+          const continueLink = card.querySelector("[data-continue-link]");
+          if (continueLink instanceof HTMLAnchorElement) {
+            const lastTarget = lastLesson ? lessonMap.find((item) => item.id === lastLesson) : null;
+            const firstPending = lessonMap.find((item) => !completed.has(item.id));
+            const target = lastTarget ?? (count > 0 && count < ids.length ? firstPending : null);
+            if (target?.href) continueLink.href = target.href;
+            continueLink.textContent = ids.length > 0 && count >= ids.length ? "Revisar" : count > 0 ? "Continuar" : "Comenzar";
+          }
+        };
+
+        const hydrate = (node) => {
+          if (!(node instanceof Element)) return;
+          if (node.matches("[data-route-card]")) hydrateCard(node);
+          node.querySelectorAll?.("[data-route-card]").forEach(hydrateCard);
+        };
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) mutation.addedNodes.forEach((node) => hydrate(node));
+        });
+        observer.observe(shell, { childList: true, subtree: true });
+        window.addEventListener("DOMContentLoaded", () => {
+          shell.querySelectorAll("[data-route-card]").forEach(hydrateCard);
+          shell.querySelectorAll("[data-progress-bar]").forEach((bar) => bar.style.removeProperty("transition"));
+          observer.disconnect();
+        }, { once: true });
+      })();
+    </script>
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><span>Rutas</span></nav>
 
     <header class="route-index-header catalog-index-hero">

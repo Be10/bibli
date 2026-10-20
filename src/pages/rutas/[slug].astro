@@ -17,7 +17,98 @@ const lessonIds = lessons.map((lesson) => lesson.id);
 ---
 
 <BaseLayout title={route.title} description={route.description ?? route.subtitle ?? "Ruta guiada de estudio bíblico"}>
-  <main class="route-page" data-detail-root data-detail-kind="route" data-route-shell data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessonIds)}>
+  <main class="route-page" data-detail-root data-detail-kind="route" data-route-shell data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessonIds)} data-route-lesson-targets={JSON.stringify(lessons.map((item) => [item.id, sitePath(`/lecciones/${item.slug}/`)]))}>
+    <script is:inline>
+      (() => {
+        const script = document.currentScript;
+        const shell = script?.parentElement;
+        if (!(shell instanceof HTMLElement) || !shell.matches("[data-route-shell]")) return;
+        const PROGRESS_KEY = "bibli-learning-progress-v1";
+        let ids = [];
+        let targets = [];
+        try { ids = JSON.parse(shell.dataset.routeLessonIds || "[]"); } catch {}
+        try { targets = JSON.parse(shell.dataset.routeLessonTargets || "[]"); } catch {}
+        let progress = {};
+        try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); } catch {}
+        const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
+        const targetMap = new Map(Array.isArray(targets) ? targets : []);
+        const count = ids.filter((id) => completed.has(id)).length;
+        const percent = ids.length ? Math.round((count / ids.length) * 100) : 0;
+        const routeId = shell.dataset.routeId || "";
+        const last = progress.lastLessonByRoute?.[routeId];
+        let action = "Comenzar";
+        let targetId = ids[0] || "";
+        if (ids.length > 0 && count >= ids.length) {
+          action = "Revisar";
+        } else if (last && ids.includes(last)) {
+          action = "Continuar";
+          targetId = last;
+        } else if (count > 0) {
+          action = "Continuar";
+          targetId = ids.find((id) => !completed.has(id)) || ids[0] || "";
+        }
+
+        const hydrate = (node) => {
+          if (!(node instanceof Element)) return;
+          const root = node;
+          const all = (selector) => {
+            const result = [];
+            if (root.matches?.(selector)) result.push(root);
+            result.push(...root.querySelectorAll?.(selector) || []);
+            return result;
+          };
+
+          all("[data-progress-percent]").forEach((element) => { element.textContent = `${percent}%`; });
+          all("[data-progress-count]").forEach((element) => { element.textContent = `${count} de ${ids.length} completadas`; });
+          all("[data-progress-bar]").forEach((element) => {
+            element.style.transition = "none";
+            element.style.width = `${percent}%`;
+          });
+          all("[data-route-continue]").forEach((element) => {
+            const label = element.querySelector("span");
+            if (label) label.textContent = action;
+            const href = targetMap.get(targetId);
+            if (href) element.setAttribute("href", href);
+          });
+          all("[data-route-lesson-id]").forEach((row) => {
+            const id = row.getAttribute("data-route-lesson-id") || "";
+            const done = completed.has(id);
+            row.classList.toggle("is-complete", done);
+            const button = row.querySelector("[data-route-complete-toggle]");
+            if (button instanceof HTMLButtonElement) {
+              const lessonTitle = row.querySelector(".lesson-main strong")?.textContent?.trim() || "esta lección";
+              button.setAttribute("aria-pressed", String(done));
+              button.setAttribute("aria-label", done ? `Desmarcar “${lessonTitle}” como completada` : `Marcar “${lessonTitle}” como completada`);
+              button.title = done ? "Desmarcar como completada" : "Marcar como completada";
+            }
+          });
+          const modules = new Set(all("[data-module-card]"));
+          const owner = root.closest?.("[data-module-card]");
+          if (owner) modules.add(owner);
+          modules.forEach((module) => {
+            let moduleIds = [];
+            try { moduleIds = JSON.parse(module.getAttribute("data-module-lesson-ids") || "[]"); } catch {}
+            const moduleCount = moduleIds.filter((id) => completed.has(id)).length;
+            const modulePercent = moduleIds.length ? Math.round((moduleCount / moduleIds.length) * 100) : 0;
+            const label = module.querySelector("[data-module-progress]");
+            if (label) label.textContent = `${modulePercent}%`;
+          });
+        };
+
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            mutation.addedNodes.forEach((node) => hydrate(node));
+          }
+        });
+        observer.observe(shell, { childList: true, subtree: true });
+        queueMicrotask(() => hydrate(shell));
+        window.addEventListener("DOMContentLoaded", () => {
+          hydrate(shell);
+          shell.querySelectorAll("[data-progress-bar]").forEach((bar) => bar.style.removeProperty("transition"));
+          observer.disconnect();
+        }, { once: true });
+      })();
+    </script>
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><a href={sitePath("/rutas/")}>Rutas</a><span>›</span><span>{route.title}</span></nav>
 
     <header class="route-hero-modern">
@@ -331,6 +422,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
   .lesson-time .bibli-icon { color:var(--accent); }
   .lesson-state { width:30px; height:30px; display:grid; place-items:center; border-radius:10px; color:inherit; }
   [data-route-lesson-id][hidden], [data-module-card][hidden], [data-module-jump][hidden], .route-filter-empty[hidden] { display:none !important; }
+  [data-route-lesson-id] { content-visibility:visible !important; }
   .route-filter-empty { margin:1rem 0 0; padding:1rem; border:1px dashed var(--border-color); border-radius:14px; background:var(--surface-soft); color:var(--text-muted); text-align:center; font-size:.86rem; }
   .state-complete { display:none; }
   .is-complete .state-pending { display:none; }

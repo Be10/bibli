@@ -373,14 +373,14 @@ const copy = lang === "en"
   @media(max-width:920px){
     .reader-preferences-toggle span{display:none}
     .reader-preferences-toggle{width:44px;padding:0}
-    .reader-preferences-backdrop { position:fixed; inset:0; z-index:174; display:block; border:0; background:rgba(8,12,18,.42); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+    .reader-preferences-backdrop { position:fixed; inset:0; z-index:174; display:block; border:0; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; }
     .reader-preferences-panel {
       position:fixed; z-index:175; top:auto; right:auto;
       bottom:max(10px,env(safe-area-inset-bottom)); left:50%;
       width:min(560px,calc(100vw - 20px)); max-height:min(58dvh,470px);
       transform:translateX(-50%); overflow:auto; overscroll-behavior:contain;
       grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; padding:.72rem;
-      border-radius:20px; box-shadow:0 24px 80px rgba(0,0,0,.28);
+      border-radius:20px; box-shadow:0 -10px 30px rgba(15,23,42,.11);
     }
     .reader-preferences-panel-head {
       grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:44px;
@@ -420,7 +420,7 @@ const copy = lang === "en"
     width:min(620px,calc(100vw - 20px)); max-height:min(48dvh,360px);
     transform:translateX(-50%); overflow:auto; overscroll-behavior:contain;
     grid-template-columns:repeat(2,minmax(0,1fr)); gap:.62rem; padding:.72rem;
-    border-radius:19px; box-shadow:0 22px 70px rgba(0,0,0,.26);
+    border-radius:19px; box-shadow:0 -10px 30px rgba(15,23,42,.11);
   }
   :global(html[data-lesson-dock="true"]) .reader-preferences-panel-head {
     grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:42px;

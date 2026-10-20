@@ -98,6 +98,57 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 
 <BaseLayout title={title} description={intro || `Estudio de ${entry.data.primary_reference}`}>
   <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-has-aids={hasStudyAids ? "true" : "empty"}>
+    <script is:inline>
+      (() => {
+        const script = document.currentScript;
+        const shell = script?.parentElement;
+        if (!(shell instanceof HTMLElement) || !shell.matches("[data-learning-shell]")) return;
+        let routeLessonIds = [];
+        try { routeLessonIds = JSON.parse(shell.dataset.routeLessonIds || "[]"); } catch {}
+        let progress = {};
+        try { progress = JSON.parse(localStorage.getItem("bibli-learning-progress-v1") || "{}"); } catch {}
+        const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
+        const lessonId = shell.dataset.lessonId || "";
+        const routeId = shell.dataset.routeId || "";
+        const total = Number(shell.dataset.totalLessons || 0);
+        const count = routeId ? routeLessonIds.filter((id) => completed.has(id)).length : (completed.has(lessonId) ? 1 : 0);
+        const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+        const done = completed.has(lessonId);
+
+        const hydrate = (node) => {
+          if (!(node instanceof Element)) return;
+          const root = node;
+          const all = (selector) => {
+            const result = [];
+            if (root.matches?.(selector)) result.push(root);
+            result.push(...root.querySelectorAll?.(selector) || []);
+            return result;
+          };
+          all("[data-route-progress-value]").forEach((element) => { element.textContent = `${percent}%`; });
+          all("[data-route-progress-bar]").forEach((element) => {
+            element.style.transition = "none";
+            element.style.width = `${percent}%`;
+          });
+          all("[data-route-progress-track]").forEach((element) => element.setAttribute("aria-valuenow", String(percent)));
+          all("[data-complete-lesson]").forEach((button) => {
+            button.classList.toggle("is-complete", done);
+            button.setAttribute("aria-pressed", String(done));
+            const label = button.querySelector("[data-complete-label]");
+            if (label) label.textContent = done ? "Lección completada" : "Marcar como completada";
+          });
+        };
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) mutation.addedNodes.forEach((node) => hydrate(node));
+        });
+        observer.observe(shell, { childList: true, subtree: true });
+        queueMicrotask(() => hydrate(shell));
+        window.addEventListener("DOMContentLoaded", () => {
+          hydrate(shell);
+          shell.querySelectorAll("[data-route-progress-bar]").forEach((bar) => bar.style.removeProperty("transition"));
+          observer.disconnect();
+        }, { once: true });
+      })();
+    </script>
     <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 
     <nav class="lesson-mobile-dock" data-lesson-mobile-dock aria-label="Navegador de la lección">
@@ -118,6 +169,25 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         {nextLesson ? <a href={sitePath(`/lecciones/${nextLesson.slug}/`)} class="lesson-dock-action lesson-dock-step" aria-label={`Siguiente lección: ${nextLesson.title}`} title={`Siguiente: ${nextLesson.title}`}><Icon name="chevron-right" size={19} /></a> : <a href={routeHref} class="lesson-dock-action lesson-dock-step" aria-label="Finalizar y volver a la ruta" title="Finalizar"><Icon name="chevron-right" size={19} /></a>}
       </div>
     </nav>
+
+    <script is:inline>
+      (() => {
+        const script = document.currentScript;
+        const dock = script?.previousElementSibling;
+        if (!(dock instanceof HTMLElement) || !dock.matches("[data-lesson-mobile-dock]")) return;
+        const root = document.documentElement;
+        const mode = root.dataset.lessonMode === "reading" ? "reading" : "study";
+        const tocVisible = mode === "study" && root.dataset.lessonToc === "visible";
+        const aidsVisible = mode === "study" && root.dataset.studyAids === "visible";
+        dock.querySelectorAll("[data-dock-mode]").forEach((button) => {
+          if (button instanceof HTMLButtonElement) button.setAttribute("aria-pressed", String(button.dataset.dockMode === mode));
+        });
+        const tocButton = dock.querySelector('[data-dock-action="toc"]');
+        if (tocButton instanceof HTMLButtonElement) tocButton.setAttribute("aria-pressed", String(tocVisible));
+        const aidsButton = dock.querySelector('[data-dock-action="aids"]');
+        if (aidsButton instanceof HTMLButtonElement) aidsButton.setAttribute("aria-pressed", String(aidsVisible));
+      })();
+    </script>
 
     <nav class="breadcrumb" aria-label="Migas de pan">
       <a href={sitePath("/")}>Inicio</a>
@@ -1258,12 +1328,12 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       padding:7px;
       border:1px solid color-mix(in srgb,var(--border-color) 88%,transparent);
       border-radius:20px;
-      background:color-mix(in srgb,var(--surface-elevated) 94%,transparent);
-      box-shadow:0 18px 52px rgba(0,0,0,.2);
-      backdrop-filter:blur(20px) saturate(1.12);
-      -webkit-backdrop-filter:blur(20px) saturate(1.12);
+      background:var(--surface-elevated);
+      box-shadow:0 8px 24px rgba(15,23,42,.10);
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
       transform:translateX(-50%);
-      transition:opacity 180ms ease,transform 180ms ease,visibility 180ms ease;
+      transition:background-color 160ms ease;
     }
     .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
     .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
@@ -1310,14 +1380,14 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     padding:7px;
     border:1px solid color-mix(in srgb,var(--border-color) 88%,transparent);
     border-radius:20px;
-    background:color-mix(in srgb,var(--surface-elevated) 94%,transparent);
-    box-shadow:0 18px 52px rgba(0,0,0,.2);
-    backdrop-filter:blur(20px) saturate(1.12);
-    -webkit-backdrop-filter:blur(20px) saturate(1.12);
+    background:var(--surface-elevated);
+    box-shadow:0 8px 24px rgba(15,23,42,.10);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
     transform:translateX(-50%) !important;
     visibility:visible;
     pointer-events:auto;
-    transition:opacity 180ms ease,visibility 180ms ease !important;
+    transition:background-color 160ms ease !important;
   }
   .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
   .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
@@ -1348,7 +1418,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       border:1px solid var(--border-color) !important;
       border-radius:22px !important;
       background:var(--surface-elevated) !important;
-      box-shadow:0 24px 80px rgba(0,0,0,.28) !important;
+      box-shadow:0 -10px 32px rgba(15,23,42,.11) !important;
       transform:translate(-50%,calc(100% + 110px)) !important;
       visibility:hidden !important;
       pointer-events:none !important;
@@ -1367,7 +1437,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     .aids-column { padding:.68rem .72rem .8rem !important; }
     .aids-column :global(.study-aids-heading) { position:sticky; top:-.68rem; z-index:3; min-height:56px; margin:-.68rem -.72rem .45rem; padding:.58rem 3.5rem .5rem .9rem; background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); border-bottom:1px solid var(--border-color); backdrop-filter:blur(14px); }
     .aids-mobile-close { display:grid !important; position:absolute !important; top:8px !important; right:8px !important; bottom:auto !important; left:auto !important; z-index:6 !important; width:40px !important; height:40px !important; }
-    .toc-backdrop,.aids-backdrop { position:fixed !important; inset:0 !important; z-index:205 !important; border:0; background:rgba(8,12,18,.34); backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); }
+    .toc-backdrop,.aids-backdrop { position:fixed !important; inset:0 0 calc(72px + env(safe-area-inset-bottom)) 0 !important; z-index:205 !important; border:0; background:rgba(8,12,18,.24); backdrop-filter:none; -webkit-backdrop-filter:none; }
     :global(html[data-lesson-toc="visible"]) .toc-backdrop,
     :global(html[data-study-aids="visible"]) .aids-backdrop { display:block !important; }
   }
@@ -1406,10 +1476,10 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     padding:7px !important;
     border:1px solid color-mix(in srgb,var(--border-color) 88%,transparent) !important;
     border-radius:16px !important;
-    background:color-mix(in srgb,var(--surface-elevated) 97%,transparent) !important;
-    box-shadow:0 18px 52px rgba(0,0,0,.2) !important;
-    backdrop-filter:blur(18px) saturate(1.08);
-    -webkit-backdrop-filter:blur(18px) saturate(1.08);
+    background:var(--surface-elevated) !important;
+    box-shadow:0 -10px 28px rgba(15,23,42,.10) !important;
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
     opacity:0;
     transform:translateY(10px) scale(.985);
     transform-origin:bottom center;
@@ -1556,5 +1626,13 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   }
   @media(max-width:380px){
     .lesson-dock-action { min-width:34px !important; width:34px !important; flex-basis:34px !important; }
+  }
+  @media(max-width:920px){
+    :global(html[data-lesson-toc="hidden"]) [data-dock-action="toc"],
+    :global(html[data-study-aids="hidden"]) [data-dock-action="aids"] {
+      background:transparent !important;
+      color:var(--text-muted) !important;
+      border-color:transparent !important;
+    }
   }
 </style>

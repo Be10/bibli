@@ -664,14 +664,17 @@ const copy = lang === "en"
 
 <style>
   .global-tts { position:fixed; right:18px; bottom:calc(78px + env(safe-area-inset-bottom)); z-index:245; pointer-events:none; }
+  @media(min-width:1101px){
+    .global-tts { bottom:max(18px,env(safe-area-inset-bottom)); }
+  }
   .global-tts[hidden] { display:none !important; }
   .tts-launcher,.tts-player { pointer-events:auto; }
   .tts-launcher[hidden],.global-tts.is-open .tts-launcher { display:none !important; }
   .tts-launcher { min-height:44px; display:inline-flex; align-items:center; gap:.5rem; padding:0 .85rem; border:1px solid var(--accent-border); border-radius:14px; background:var(--surface-elevated); color:var(--accent); box-shadow:var(--shadow-md); font:inherit; font-size:.8rem; font-weight:800; cursor:pointer; }
   .tts-launcher:hover { background:var(--accent-soft); border-color:var(--accent); }
-  .tts-player { width:min(430px,calc(100vw - 28px)); display:grid; gap:.75rem; padding:.85rem; border:1px solid var(--border-color); border-radius:18px; background:color-mix(in srgb,var(--surface-elevated) 96%,transparent); box-shadow:0 20px 65px rgba(0,0,0,.18); backdrop-filter:blur(18px); }
+  .tts-player { width:min(430px,calc(100vw - 28px)); display:grid; gap:.75rem; padding:.85rem; border:1px solid var(--border-color); border-radius:18px; background:var(--surface-elevated); box-shadow:0 -10px 32px rgba(15,23,42,.11); backdrop-filter:none; -webkit-backdrop-filter:none; }
   .tts-player[hidden] { display:none !important; }
-  .tts-mini { pointer-events:auto; min-width:min(290px,calc(100vw - 24px)); max-width:360px; min-height:54px; display:flex; align-items:center; gap:.7rem; padding:.55rem .7rem; border:1px solid var(--accent-border); border-radius:16px; background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); color:var(--text-color); box-shadow:0 16px 46px rgba(0,0,0,.18); backdrop-filter:blur(18px); cursor:pointer; text-align:left; }
+  .tts-mini { pointer-events:auto; min-width:min(250px,calc(100vw - 24px)); max-width:310px; min-height:48px; display:flex; align-items:center; gap:.55rem; padding:.42rem .55rem; border:1px solid var(--accent-border); border-radius:14px; background:var(--surface-elevated); color:var(--text-color); box-shadow:0 -8px 24px rgba(15,23,42,.10); backdrop-filter:none; -webkit-backdrop-filter:none; cursor:pointer; text-align:left; }
   .tts-mini[hidden] { display:none !important; }
   .tts-mini-copy { min-width:0; flex:1; display:grid; gap:.04rem; }
   .tts-mini-copy strong { color:var(--heading-color); font-size:.72rem; }
@@ -703,12 +706,20 @@ const copy = lang === "en"
   :global(.tts-active-source) { outline:2px solid color-mix(in srgb,var(--accent) 48%,transparent); outline-offset:5px; border-radius:8px; background-color:color-mix(in srgb,var(--accent-soft) 28%,transparent); }
   @media(max-width:600px){
     .global-tts { left:10px; right:10px; bottom:calc(68px + env(safe-area-inset-bottom)); display:flex; justify-content:flex-end; }
-    .tts-player { width:100%; max-height:calc(100dvh - 20px); overflow:auto; overscroll-behavior:contain; }
+    .tts-player { width:100%; max-height:calc(100dvh - 20px); overflow:auto; overscroll-behavior:contain; box-shadow:0 -8px 24px rgba(15,23,42,.10); }
     .tts-launcher span { display:none; }
     .tts-launcher { width:48px; min-height:48px; padding:0; justify-content:center; }
     .tts-options { grid-template-columns:92px minmax(0,1fr); }
-    .tts-mini { width:100%; min-width:0; max-width:none; }
+    .tts-mini { width:auto; min-width:0; max-width:min(228px,calc(100vw - 24px)); min-height:42px; gap:.4rem; padding:.3rem .42rem; border-radius:13px; box-shadow:0 -6px 18px rgba(15,23,42,.09); }
+    .tts-mini-indicator { width:26px; height:26px; flex-basis:26px; border-radius:8px; }
+    .tts-mini-indicator i { width:2px; }
+    .tts-mini-copy { gap:0; }
+    .tts-mini-copy strong { display:none; }
+    .tts-mini-copy small { max-width:142px; font-size:.62rem; font-weight:720; }
+    .tts-mini > :global(.bibli-icon) { width:15px; height:15px; }
   }
+  :global(html[data-theme="dark"]) .tts-player,
+  :global(html[data-theme="dark"]) .tts-mini { box-shadow:0 -10px 30px rgba(0,0,0,.18); }
   @media(prefers-reduced-motion:reduce){ :global(.tts-active-source){ scroll-behavior:auto; } .tts-mini-indicator i{animation:none;} }
 
   :global(html[data-lesson-dock="true"]) .tts-launcher { display:none !important; }
