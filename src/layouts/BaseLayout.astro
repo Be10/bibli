@@ -220,7 +220,7 @@ const languageTarget = alternateLanguage ?? {
 <html lang={lang} data-lesson-dock={isLessonDetail ? "true" : undefined}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
     <title>{pageTitle}</title>
@@ -856,15 +856,36 @@ const languageTarget = alternateLanguage ?? {
       document.documentElement.style.setProperty("--header-height", `${height}px`);
     };
 
-    syncHeaderMetrics();
+    const syncVisualViewportMetrics = () => {
+      const viewport = window.visualViewport;
+      const viewportHeight = Math.max(1, Math.round(viewport?.height ?? window.innerHeight));
+      const viewportOffsetTop = Math.max(0, Math.round(viewport?.offsetTop ?? 0));
+      const layoutHeight = Math.max(window.innerHeight, document.documentElement.clientHeight);
+      const keyboardInset = Math.max(0, Math.round(layoutHeight - viewportHeight - viewportOffsetTop));
+      const compactViewport = window.matchMedia("(max-width: 760px)").matches;
+      const keyboardOpen = compactViewport && keyboardInset > 96;
+
+      document.documentElement.style.setProperty("--visual-viewport-height", `${viewportHeight}px`);
+      document.documentElement.style.setProperty("--visual-viewport-offset-top", `${viewportOffsetTop}px`);
+      document.documentElement.style.setProperty("--virtual-keyboard-inset", `${keyboardInset}px`);
+      document.documentElement.dataset.virtualKeyboard = keyboardOpen ? "open" : "closed";
+    };
+
+    const syncViewportMetrics = () => {
+      syncHeaderMetrics();
+      syncVisualViewportMetrics();
+    };
+
+    syncViewportMetrics();
     if (siteHeader instanceof HTMLElement && "ResizeObserver" in window) {
       new ResizeObserver(syncHeaderMetrics).observe(siteHeader);
     } else {
-      window.addEventListener("resize", syncHeaderMetrics, { passive: true });
+      window.addEventListener("resize", syncViewportMetrics, { passive: true });
     }
-    window.visualViewport?.addEventListener("resize", syncHeaderMetrics, { passive: true });
+    window.visualViewport?.addEventListener("resize", syncViewportMetrics, { passive: true });
+    window.visualViewport?.addEventListener("scroll", syncVisualViewportMetrics, { passive: true });
     window.addEventListener("orientationchange", () => {
-      requestAnimationFrame(syncHeaderMetrics);
+      requestAnimationFrame(syncViewportMetrics);
     }, { passive: true });
     document.fonts?.ready.then(syncHeaderMetrics).catch(() => undefined);
 
@@ -1156,7 +1177,10 @@ const languageTarget = alternateLanguage ?? {
       // Keep this focus inside the originating user gesture so mobile browsers open the keyboard immediately.
       if (searchInput instanceof HTMLInputElement) {
         searchInput.focus({ preventScroll: true });
-        window.requestAnimationFrame(() => searchInput.focus({ preventScroll: true }));
+        window.requestAnimationFrame(() => {
+          searchInput.focus({ preventScroll: true });
+          syncVisualViewportMetrics();
+        });
       }
       void renderSearchResults(searchInput?.value ?? "");
     }
@@ -1663,12 +1687,15 @@ const languageTarget = alternateLanguage ?? {
       }
     });
 
-    // Keep the display awake while the user is inside a lesson or a standalone Bible chapter.
+    // Keep the display awake on Bibli's learning/reading surfaces, not only during audio.
+    // This intentionally covers lessons, Bible reading, glossary and the other content catalogs/details
+    // where the user may spend several minutes reading without touching the screen.
     // Screen Wake Lock is best-effort: browsers may revoke it (for example on low battery),
-    // so we reacquire it when the page becomes visible again.
+    // so we reacquire it whenever the document becomes visible again.
+    const learningPath = /\/(?:lecciones|rutas|explorar|es\/biblia|en\/bible|glosario|libros|pasajes|personajes|temas|eventos|recursos|lugares|linea-de-tiempo|mapa(?:-3d)?)\//;
     const wakeLockContext = Boolean(
-      document.querySelector("[data-reader-content]") &&
-      (document.documentElement.dataset.lessonDock === "true" || /\/(?:es\/biblia|en\/bible)\//.test(window.location.pathname)),
+      document.querySelector("main") &&
+      (document.querySelector("[data-reader-content], [data-detail-root]") || learningPath.test(window.location.pathname)),
     );
     let screenWakeLock = null;
     let wakeLockRequestPending = false;
@@ -3905,6 +3932,27 @@ border-color: var(--border-color);
     .site-header.search-open .theme-quick-toggle { display:inline-flex !important; }
     .dock-search-shell { bottom:calc(70px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); }
     .dock-search-shell .global-search-popover { max-height:min(66dvh,500px); }
+
+    /* When the software keyboard reduces the visual viewport, pin Search inside the
+       visible area instead of letting the browser pan the fixed shell behind the keyboard. */
+    html[data-virtual-keyboard="open"] .dock-search-shell.is-open {
+      top:calc(var(--visual-viewport-offset-top,0px) + 8px);
+      bottom:auto !important;
+      max-height:calc(var(--visual-viewport-height,100dvh) - 16px);
+      flex-direction:column;
+      transform:translate(-50%,0) scale(1);
+    }
+    html[data-virtual-keyboard="open"] .dock-search-shell .global-search-form {
+      flex:0 0 auto;
+      box-shadow:0 8px 24px rgba(15,23,42,.09);
+    }
+    html[data-virtual-keyboard="open"] .dock-search-shell .global-search-popover {
+      flex:1 1 auto;
+      min-height:0;
+      max-height:calc(var(--visual-viewport-height,100dvh) - 76px) !important;
+      box-shadow:0 10px 28px rgba(15,23,42,.10) !important;
+      overscroll-behavior:contain;
+    }
   }
 
   html[data-theme="dark"] .dock-search-shell .global-search-form,

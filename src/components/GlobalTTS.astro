@@ -163,6 +163,8 @@ const copy = lang === "en"
     let playing = false;
     let paused = false;
     let voices = [];
+    let resumeAfterVisibility = false;
+    let foregroundRecoveryTimer = 0;
 
     const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
     const syncCollapsedSurface = () => {
@@ -452,6 +454,8 @@ const copy = lang === "en"
 
     const stopSpeech = ({ reset = false } = {}) => {
       session += 1;
+      window.clearTimeout(foregroundRecoveryTimer);
+      resumeAfterVisibility = false;
       synth.cancel();
       playing = false;
       paused = false;
@@ -462,6 +466,8 @@ const copy = lang === "en"
     };
 
     const speakCurrent = () => {
+      window.clearTimeout(foregroundRecoveryTimer);
+      resumeAfterVisibility = false;
       if (!chunks.length) chunks = buildChunks();
       if (!chunks.length) {
         if (status instanceof HTMLElement) status.textContent = copy.noContent;
@@ -489,21 +495,34 @@ const copy = lang === "en"
       };
       utterance.onend = () => {
         if (token !== session) return;
+        // Mobile browsers can suspend Web Speech while the page is backgrounded.
+        // Keep the logical session alive and replay the current fragment on return
+        // instead of advancing silently while the app is not visible.
+        if (document.visibilityState !== "visible") {
+          resumeAfterVisibility = true;
+          return;
+        }
         if (currentIndex < chunks.length - 1) {
           currentIndex += 1;
           speakCurrent();
         } else {
           playing = false;
           paused = false;
+          resumeAfterVisibility = false;
           clearHighlight();
           setStatus();
           setPlayingUi();
         }
       };
       utterance.onerror = (event) => {
-        if (token !== session || event.error === "canceled" || event.error === "interrupted") return;
+        if (token !== session || event.error === "canceled") return;
+        if (event.error === "interrupted" && (document.visibilityState !== "visible" || resumeAfterVisibility)) {
+          resumeAfterVisibility = true;
+          return;
+        }
         playing = false;
         paused = false;
+        resumeAfterVisibility = false;
         clearHighlight();
         setPlayingUi();
       };
@@ -584,15 +603,38 @@ const copy = lang === "en"
     close?.addEventListener("click", () => minimizePlayer());
     stop?.addEventListener("click", () => stopSpeech({ reset: false }));
     play?.addEventListener("click", () => {
-      if (playing && !paused) {
-        synth.pause();
-        paused = true;
-        setPlayingUi();
-      } else if (playing && paused) {
+      // If Android/iOS suspended the speech engine in the background, our logical
+      // `playing` flag can outlive the native utterance. Recover by restarting the
+      // current fragment instead of sending an ineffective pause/resume command.
+      if (resumeAfterVisibility) {
+        speakCurrent();
+        return;
+      }
+      if (playing && !paused && synth.paused) {
+        resumeAfterVisibility = false;
         synth.resume();
         paused = false;
         setPlayingUi();
+        return;
+      }
+      if (playing && !paused && !synth.speaking && !synth.pending) {
+        resumeAfterVisibility = false;
+        speakCurrent();
+        return;
+      }
+      if (playing && !paused) {
+        synth.pause();
+        paused = true;
+        resumeAfterVisibility = false;
+        setPlayingUi();
+      } else if (playing && paused) {
+        if (!synth.speaking && !synth.pending) speakCurrent();
+        else synth.resume();
+        paused = false;
+        resumeAfterVisibility = false;
+        setPlayingUi();
       } else {
+        resumeAfterVisibility = false;
         speakCurrent();
       }
     });
@@ -636,12 +678,36 @@ const copy = lang === "en"
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !player.hidden) minimizePlayer();
     });
+
+    const recoverSpeechAfterForeground = () => {
+      if (!resumeAfterVisibility || paused || document.visibilityState !== "visible") return;
+      window.clearTimeout(foregroundRecoveryTimer);
+      foregroundRecoveryTimer = window.setTimeout(() => {
+        if (!resumeAfterVisibility || paused || document.visibilityState !== "visible") return;
+        // A fresh utterance is more reliable than resume() after an OS-level suspension.
+        // Replay the current fragment from its beginning so no words are silently skipped.
+        playing = true;
+        setPlayingUi();
+        speakCurrent();
+      }, 180);
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "visible") {
+        if (playing && !paused) resumeAfterVisibility = true;
+        return;
+      }
+      recoverSpeechAfterForeground();
+    });
+    window.addEventListener("pageshow", recoverSpeechAfterForeground);
+
     if ("ResizeObserver" in window) {
       new ResizeObserver(() => {
         if (!player.hidden) syncFloatingUiOffset();
       }).observe(player);
     }
     window.addEventListener("beforeunload", () => {
+      window.clearTimeout(foregroundRecoveryTimer);
       synth.cancel();
       document.documentElement.style.setProperty("--tts-player-offset", "0px");
       delete document.documentElement.dataset.ttsPlayerOpen;
