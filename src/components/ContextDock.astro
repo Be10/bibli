@@ -12,21 +12,21 @@ interface Props {
 const { lang = "es", currentPath = Astro.url.pathname } = Astro.props;
 const home = lang === "en" ? sitePath("/en/") : sitePath("/");
 const bible = getBibleRootPath(lang);
-const contextItem = lang === "en"
-  ? { href: sitePath("/en/search/"), label: "Search", icon: "search" as const }
-  : currentPath.includes("/mapa")
+
+const contextualItem = lang === "es"
+  ? currentPath.includes("/mapa")
     ? { href: sitePath("/linea-de-tiempo/"), label: "Cronología", icon: "timeline" as const }
     : currentPath.includes("/linea-de-tiempo")
       ? { href: sitePath("/mapa/"), label: "Mapa", icon: "map" as const }
       : currentPath.includes("/rutas/")
         ? { href: sitePath("/lecciones/"), label: "Lecciones", icon: "list" as const }
-        : { href: sitePath("/buscar/"), label: "Buscar", icon: "search" as const };
+        : null
+  : null;
 
 const items = lang === "en"
   ? [
       { href: home, label: "Home", icon: "home" as const },
       { href: bible, label: "Bible", icon: "book" as const },
-      contextItem,
       { href: sitePath("/en/download/"), label: "Offline", icon: "download" as const },
     ]
   : [
@@ -34,7 +34,7 @@ const items = lang === "en"
       { href: bible, label: "Biblia", icon: "book" as const },
       { href: sitePath("/rutas/"), label: "Rutas", icon: "route" as const },
       { href: sitePath("/explorar/"), label: "Explorar", icon: "compass" as const },
-      contextItem,
+      ...(contextualItem ? [contextualItem] : []),
     ];
 
 const normalize = (value: string) => value === "/" ? "/" : `${value.replace(/\/+$/, "")}/`;
@@ -45,6 +45,7 @@ const isCurrent = (href: string) => {
   if (target === homePath) return activePath === homePath;
   return activePath === target || activePath.startsWith(target);
 };
+const searchLabel = lang === "en" ? "Search" : "Buscar";
 ---
 
 <nav class="context-dock" data-context-dock aria-label={lang === "en" ? "Bibli quick navigation" : "Navegación rápida de Bibli"}>
@@ -56,7 +57,28 @@ const isCurrent = (href: string) => {
       </a>
     );
   })}
+  <button
+    type="button"
+    class="context-dock-action context-dock-search"
+    data-context-search
+    aria-label={searchLabel}
+    title={searchLabel}
+    aria-expanded="false"
+    aria-controls="bibli-global-search"
+  >
+    <Icon name="search" size={19} />
+  </button>
 </nav>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-context-search]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      document.dispatchEvent(new CustomEvent("bibli:global-search-toggle", { detail: { trigger: button } }));
+    });
+  });
+</script>
 
 <style>
   .context-dock {
@@ -86,21 +108,27 @@ const isCurrent = (href: string) => {
     flex: 0 0 44px;
     display: grid;
     place-items: center;
+    border: 0;
     border-radius: 12px;
+    background: transparent;
     color: var(--text-muted);
     text-decoration: none;
-    transition: background-color 160ms ease, color 160ms ease;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, transform 150ms ease;
   }
   .context-dock-action:hover,
-  .context-dock-action:focus-visible,
-  .context-dock-action.is-current {
+  .context-dock-action.is-current,
+  .context-dock-action[aria-expanded="true"] {
     background: var(--accent-soft);
     color: var(--accent);
   }
-  :global(html[data-tts-player-open="true"]) .context-dock,
-  :global(html[data-reader-preferences-open="true"]) .context-dock,
-  :global(body:has([data-global-menu]:not([hidden]))) .context-dock,
-  :global(body:has([data-global-search-popover]:not([hidden]))) .context-dock {
+  .context-dock-action:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .context-dock-action:active { transform: scale(.96); }
+  :global(body:has([data-global-menu]:not([hidden]))) .context-dock {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;

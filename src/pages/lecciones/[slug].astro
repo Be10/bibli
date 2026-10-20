@@ -100,6 +100,25 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-has-aids={hasStudyAids ? "true" : "empty"}>
     <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 
+    <nav class="lesson-mobile-dock" data-lesson-mobile-dock aria-label="Navegador de la lección">
+      <div class="lesson-dock-more" id="lesson-dock-more" data-lesson-dock-more hidden>
+        <button type="button" data-dock-mode="study" aria-pressed="true"><Icon name="graduation" size={17} /><span>Estudio</span></button>
+        <button type="button" data-dock-mode="reading" aria-pressed="false"><Icon name="book" size={17} /><span>Lectura</span></button>
+        <a href={routeHref}><Icon name="route" size={17} /><span>Ruta</span></a>
+      </div>
+      <div class="lesson-dock-primary">
+        {previousLesson ? <a href={sitePath(`/lecciones/${previousLesson.slug}/`)} class="lesson-dock-action lesson-dock-step" aria-label={`Lección anterior: ${previousLesson.title}`} title={`Anterior: ${previousLesson.title}`}><Icon name="chevron-left" size={19} /></a> : <span class="lesson-dock-action lesson-dock-step is-disabled" aria-hidden="true"><Icon name="chevron-left" size={19} /></span>}
+        <a href={sitePath("/")} class="lesson-dock-action" aria-label="Ir al inicio" title="Inicio"><Icon name="home" size={19} /></a>
+        <button type="button" class="lesson-dock-action" data-dock-action="search" aria-label="Buscar" title="Buscar" aria-expanded="false" aria-pressed="false"><Icon name="search" size={19} /></button>
+        {toc.length > 0 && <button type="button" class="lesson-dock-action" data-dock-action="toc" aria-label="Contenido" title="Contenido" aria-pressed="true"><Icon name="panel-left" size={19} /></button>}
+        <button type="button" class="lesson-dock-action" data-dock-action="reader" aria-label="Estilos de texto" title="Estilos de texto" aria-pressed="false"><Icon name="type" size={19} /></button>
+        <button type="button" class="lesson-dock-action" data-dock-action="tts" aria-label="Escuchar" title="Escuchar" aria-pressed="false"><Icon name="volume" size={19} /></button>
+        <button type="button" class="lesson-dock-action" data-dock-action="aids" aria-label={`Ayudas de estudio: ${studyAidCount}`} title="Ayudas de estudio" aria-pressed="true"><Icon name="sparkles" size={19} /></button>
+        <button type="button" class="lesson-dock-action" data-dock-more-toggle aria-expanded="false" aria-controls="lesson-dock-more" aria-label="Más opciones" title="Más opciones"><Icon name="grid" size={19} /></button>
+        {nextLesson ? <a href={sitePath(`/lecciones/${nextLesson.slug}/`)} class="lesson-dock-action lesson-dock-step" aria-label={`Siguiente lección: ${nextLesson.title}`} title={`Siguiente: ${nextLesson.title}`}><Icon name="chevron-right" size={19} /></a> : <a href={routeHref} class="lesson-dock-action lesson-dock-step" aria-label="Finalizar y volver a la ruta" title="Finalizar"><Icon name="chevron-right" size={19} /></a>}
+      </div>
+    </nav>
+
     <nav class="breadcrumb" aria-label="Migas de pan">
       <a href={sitePath("/")}>Inicio</a>
       <span>›</span>
@@ -371,25 +390,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       </>
     </div>
 
-    <nav class="lesson-mobile-dock" data-lesson-mobile-dock aria-label="Navegador de la lección">
-      <div class="lesson-dock-more" id="lesson-dock-more" data-lesson-dock-more hidden>
-        <button type="button" data-dock-mode="study" aria-pressed="true"><Icon name="graduation" size={17} /><span>Estudio</span></button>
-        <button type="button" data-dock-mode="reading" aria-pressed="false"><Icon name="book" size={17} /><span>Lectura</span></button>
-        <button type="button" data-verse-numbers-toggle aria-pressed="true"><Icon name="list" size={17} /><span>Números</span></button>
-        <a href={routeHref}><Icon name="route" size={17} /><span>Ruta</span></a>
-      </div>
-      <div class="lesson-dock-primary">
-        {previousLesson ? <a href={sitePath(`/lecciones/${previousLesson.slug}/`)} class="lesson-dock-action lesson-dock-step" aria-label={`Lección anterior: ${previousLesson.title}`} title={`Anterior: ${previousLesson.title}`}><Icon name="chevron-left" size={19} /></a> : <span class="lesson-dock-action lesson-dock-step is-disabled" aria-hidden="true"><Icon name="chevron-left" size={19} /></span>}
-        <a href={sitePath("/")} class="lesson-dock-action" aria-label="Ir al inicio" title="Inicio"><Icon name="home" size={19} /></a>
-        {toc.length > 0 && <button type="button" class="lesson-dock-action" data-dock-action="toc" aria-label="Contenido" title="Contenido"><Icon name="panel-left" size={19} /></button>}
-        <button type="button" class="lesson-dock-action" data-dock-action="reader" aria-label="Estilos de texto" title="Estilos de texto"><Icon name="type" size={19} /></button>
-        <button type="button" class="lesson-dock-action" data-dock-action="tts" aria-label="Escuchar" title="Escuchar"><Icon name="volume" size={19} /></button>
-        <button type="button" class="lesson-dock-action" data-dock-action="aids" aria-label={`Ayudas de estudio: ${studyAidCount}`} title="Ayudas de estudio"><Icon name="sparkles" size={19} /></button>
-        <button type="button" class="lesson-dock-action" data-dock-more-toggle aria-expanded="false" aria-controls="lesson-dock-more" aria-label="Más opciones" title="Más opciones"><Icon name="grid" size={19} /></button>
-        {nextLesson ? <a href={sitePath(`/lecciones/${nextLesson.slug}/`)} class="lesson-dock-action lesson-dock-step" aria-label={`Siguiente lección: ${nextLesson.title}`} title={`Siguiente: ${nextLesson.title}`}><Icon name="chevron-right" size={19} /></a> : <a href={routeHref} class="lesson-dock-action lesson-dock-step" aria-label="Finalizar y volver a la ruta" title="Finalizar"><Icon name="chevron-right" size={19} /></a>}
-      </div>
-    </nav>
-
     <button type="button" class="back-to-top" data-back-to-top aria-label="Volver al inicio de la lección" title="Volver arriba">
       <Icon name="arrow-up" size={18} />
     </button>
@@ -400,7 +400,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   document.documentElement.dataset.lessonDock = "true";
   const PROGRESS_KEY = "bibli-learning-progress-v1";
   const MODE_KEY = "bibli-lesson-mode-v1";
-  const VERSE_NUMBERS_KEY = "bibli-verse-numbers-v1";
 
   function readProgress() {
     try {
@@ -486,7 +485,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     const dockMore = shell.querySelector<HTMLElement>("[data-lesson-dock-more]");
     const dockMoreToggle = shell.querySelector<HTMLButtonElement>("[data-dock-more-toggle]");
     const dockModeButtons = [...shell.querySelectorAll<HTMLButtonElement>("[data-dock-mode]")];
-    const verseNumbersToggle = shell.querySelector<HTMLButtonElement>("[data-verse-numbers-toggle]");
     const openReading = shell.querySelector<HTMLButtonElement>("[data-open-reading]");
 
     let dockMoreCloseTimer = 0;
@@ -508,16 +506,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       }
       dockMoreToggle.setAttribute("aria-expanded", String(open));
       mobileDock?.classList.toggle("is-expanded", open);
-    };
-
-    const syncVerseNumbers = () => {
-      const visible = localStorage.getItem(VERSE_NUMBERS_KEY) !== "hidden";
-      document.documentElement.dataset.verseNumbers = visible ? "visible" : "hidden";
-      verseNumbersToggle?.setAttribute("aria-pressed", String(visible));
-      if (verseNumbersToggle) {
-        verseNumbersToggle.title = visible ? "Ocultar números de versículo" : "Mostrar números de versículo";
-        verseNumbersToggle.setAttribute("aria-label", verseNumbersToggle.title);
-      }
     };
 
     const syncLessonSheetState = () => {
@@ -566,6 +554,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         setToc(tocMedia.matches ? false : true, false);
       }
       localStorage.setItem(MODE_KEY, normalized);
+      document.dispatchEvent(new CustomEvent("bibli:lesson-mode-change", { detail: { mode: normalized } }));
     }
 
     function setToc(visible: boolean, _persist = false) {
@@ -595,12 +584,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       setMode("reading");
       requestAnimationFrame(() => shell.querySelector<HTMLElement>("[data-reading-card]")?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
     });
-    verseNumbersToggle?.addEventListener("click", () => {
-      const visible = document.documentElement.dataset.verseNumbers !== "hidden";
-      localStorage.setItem(VERSE_NUMBERS_KEY, visible ? "hidden" : "visible");
-      syncVerseNumbers();
-      setDockMore(false);
-    });
     dockMoreToggle?.addEventListener("click", (event) => {
       event.stopPropagation();
       setDockMore(dockMoreToggle.getAttribute("aria-expanded") !== "true");
@@ -612,12 +595,23 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         if (action === "toc") setToc(document.documentElement.dataset.lessonToc !== "visible", false);
         if (action === "aids") setAids(document.documentElement.dataset.studyAids !== "visible", false);
         if (action === "reader") {
-          setToc(false, false); setAids(false, false); setDockMore(false);
-          document.dispatchEvent(new CustomEvent("bibli:reader-preferences-open"));
+          if (tocMedia.matches) setToc(false, false);
+          if (aidsMedia.matches) setAids(false, false);
+          setDockMore(false);
+          const open = button.getAttribute("aria-pressed") === "true";
+          document.dispatchEvent(new CustomEvent(open ? "bibli:reader-preferences-close" : "bibli:reader-preferences-open"));
         }
         if (action === "tts") {
-          setToc(false, false); setAids(false, false); setDockMore(false);
-          document.dispatchEvent(new CustomEvent("bibli:tts-open"));
+          if (tocMedia.matches) setToc(false, false);
+          if (aidsMedia.matches) setAids(false, false);
+          setDockMore(false);
+          document.dispatchEvent(new CustomEvent("bibli:tts-toggle"));
+        }
+        if (action === "search") {
+          if (tocMedia.matches) setToc(false, false);
+          if (aidsMedia.matches) setAids(false, false);
+          setDockMore(false);
+          document.dispatchEvent(new CustomEvent("bibli:global-search-toggle", { detail: { trigger: button } }));
         }
       });
     });
@@ -671,16 +665,32 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       if (aidsMedia.matches) setAids(false, false);
       setDockMore(false);
     });
+    document.addEventListener("bibli:global-search-opening", () => {
+      if (tocMedia.matches) setToc(false, false);
+      if (aidsMedia.matches) setAids(false, false);
+      setDockMore(false);
+    });
+    document.addEventListener("bibli:reader-preferences-state", (event) => {
+      const open = event instanceof CustomEvent && event.detail?.open === true;
+      shell.querySelector<HTMLButtonElement>('[data-dock-action="reader"]')?.setAttribute("aria-pressed", String(open));
+    });
+    document.addEventListener("bibli:tts-state", (event) => {
+      const open = event instanceof CustomEvent && event.detail?.open === true;
+      const active = event instanceof CustomEvent && event.detail?.active === true;
+      shell.querySelector<HTMLButtonElement>('[data-dock-action="tts"]')?.setAttribute("aria-pressed", String(open || active));
+    });
+    document.addEventListener("bibli:global-search-state", (event) => {
+      const open = event instanceof CustomEvent && event.detail?.open === true;
+      const searchDockButton = shell.querySelector<HTMLButtonElement>('[data-dock-action="search"]');
+      searchDockButton?.setAttribute("aria-pressed", String(open));
+      searchDockButton?.setAttribute("aria-expanded", String(open));
+    });
     document.addEventListener("click", (event) => {
       if (!mobileDock || !mobileDock.classList.contains("is-expanded")) return;
       if (!mobileDock.contains(event.target as Node)) setDockMore(false);
     });
 
-    syncVerseNumbers();
     setMode(document.documentElement.dataset.lessonMode === "reading" ? "reading" : "study");
-    window.addEventListener("storage", (event) => {
-      if (event.key === VERSE_NUMBERS_KEY) syncVerseNumbers();
-    });
     tocMedia.addEventListener("change", (event) => {
       if (document.documentElement.dataset.lessonMode === "study") setToc(event.matches ? false : true, false);
     });
@@ -1257,7 +1267,8 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     }
     .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
     .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
-    .lesson-dock-action:hover,.lesson-dock-action:focus-visible,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
+    .lesson-dock-action:hover,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
+    .lesson-dock-action:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
     .lesson-dock-action:active { transform:scale(.96); }
     .lesson-dock-badge { position:absolute; top:3px; right:3px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--accent-contrast); font-size:.58rem; font-weight:850; }
     .lesson-dock-more { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; padding-top:7px; border-top:1px solid var(--border-color); }
@@ -1267,7 +1278,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     .lesson-dock-disabled { opacity:.42; cursor:default; }
     :global(html[data-lesson-mode="reading"]) [data-dock-action="toc"],
     :global(html[data-lesson-mode="reading"]) [data-dock-action="aids"] { display:none; }
-    :global(html[data-tts-player-open="true"]) .lesson-mobile-dock { opacity:0; visibility:hidden; pointer-events:none; transform:translate(-50%,10px); }
   }
 
   @media(max-width:620px){
@@ -1311,7 +1321,8 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   }
   .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
   .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
-  .lesson-dock-action:hover,.lesson-dock-action:focus-visible,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
+  .lesson-dock-action:hover,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
+    .lesson-dock-action:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
   .lesson-dock-action:active { transform:scale(.96); }
   .lesson-dock-badge { position:absolute; top:3px; right:3px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--accent-contrast); font-size:.58rem; font-weight:850; }
   .lesson-dock-more { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; padding-top:7px; border-top:1px solid var(--border-color); }
@@ -1321,7 +1332,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   .lesson-dock-disabled { opacity:.42; cursor:default; }
   :global(html[data-lesson-mode="reading"]) [data-dock-action="toc"],
   :global(html[data-lesson-mode="reading"]) [data-dock-action="aids"] { display:none; }
-  :global(html[data-tts-player-open="true"]) .lesson-mobile-dock { opacity:0; visibility:hidden; pointer-events:none; }
 
   @media(max-width:920px){
     .lesson-toc-column,.aids-column {
@@ -1522,5 +1532,29 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     .lesson-mobile-dock { max-width:calc(100vw - 12px) !important; padding:5px; }
     .lesson-dock-primary { gap:1px !important; }
     .lesson-dock-action { min-width:36px !important; width:36px !important; height:40px !important; flex-basis:36px !important; }
+  }
+
+  /* QA: deterministic first paint, persistent desktop side panels and compact reading typography. */
+  :global(html[data-lesson-mode="reading"]) .toc-toggle,
+  :global(html[data-lesson-mode="reading"]) .aids-toggle { display:none !important; }
+  :global(html[data-lesson-mode="study"][data-lesson-toc="visible"]) .toc-toggle,
+  :global(html[data-lesson-mode="study"][data-study-aids="visible"]) .aids-toggle,
+  :global(html[data-lesson-toc="visible"]) [data-dock-action="toc"],
+  :global(html[data-study-aids="visible"]) [data-dock-action="aids"] {
+    background:var(--accent-soft) !important;
+    color:var(--accent) !important;
+    border-color:var(--accent-border) !important;
+  }
+  .study-header h1 { margin-bottom:1.05rem !important; }
+  .verse-reader .verse { display:inline !important; padding:0 !important; border:0 !important; gap:0 !important; grid-template-columns:none !important; }
+  .lesson-dock-more { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+  :global(html[data-tts-player-open="true"]) .lesson-mobile-dock { opacity:1 !important; visibility:visible !important; pointer-events:auto !important; transform:translateX(-50%) !important; }
+  :global(html[data-tts-active="true"]) [data-dock-action="tts"] { background:var(--accent-soft) !important; color:var(--accent) !important; }
+  @media(max-width:520px){
+    .lesson-dock-primary { gap:1px !important; }
+    .lesson-dock-action { min-width:36px !important; width:36px !important; height:40px !important; flex-basis:36px !important; }
+  }
+  @media(max-width:380px){
+    .lesson-dock-action { min-width:34px !important; width:34px !important; flex-basis:34px !important; }
   }
 </style>

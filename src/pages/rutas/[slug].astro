@@ -17,7 +17,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
 ---
 
 <BaseLayout title={route.title} description={route.description ?? route.subtitle ?? "Ruta guiada de estudio bíblico"}>
-  <main class="route-page" data-detail-root data-detail-kind="route" data-route-shell data-persisted-root data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessonIds)}>
+  <main class="route-page" data-detail-root data-detail-kind="route" data-route-shell data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessonIds)}>
     <nav class="breadcrumb" aria-label="Migas de pan"><a href={sitePath("/")}>Inicio</a><span>›</span><a href={sitePath("/rutas/")}>Rutas</a><span>›</span><span>{route.title}</span></nav>
 
     <header class="route-hero-modern">
@@ -32,7 +32,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
           <span><Icon name="compass" size={14} />{route.level ?? "Progresivo"}</span>
         </div>
       </div>
-      <aside class="progress-card" aria-label="Progreso de la ruta" data-persisted-value>
+      <aside class="progress-card" aria-label="Progreso de la ruta">
         <div class="progress-card-top"><span>Mi progreso</span><strong data-progress-percent>0%</strong></div>
         <div class="progress-track"><span data-progress-bar></span></div>
         <small data-progress-count>0 de {lessons.length} completadas</small>
@@ -80,7 +80,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
             <header class="module-header">
               <div class="module-number">{String(moduleIndex + 1).padStart(2, "0")}</div>
               <div class="module-copy"><p class="eyebrow">Módulo {moduleIndex + 1}</p><h2>{module.title}</h2><p>{module.description}</p></div>
-              <div class="module-progress"><strong data-module-progress data-persisted-value>0%</strong><small>{moduleLessons.length} lecciones</small></div>
+              <div class="module-progress"><strong data-module-progress>0%</strong><small>{moduleLessons.length} lecciones</small></div>
             </header>
             <ol class="lesson-list">
               {moduleLessons.map((lesson) => (
@@ -94,7 +94,7 @@ const lessonIds = lessons.map((lesson) => lesson.id);
                     class="lesson-complete-toggle"
                     data-route-complete-toggle
                     data-complete-lesson-id={lesson.id}
-                    data-persisted-value
+
                     aria-pressed="false"
                     aria-label={`Marcar “${lesson.title}” como completada`}
                     title="Marcar como completada"

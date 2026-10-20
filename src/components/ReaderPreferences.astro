@@ -27,6 +27,9 @@ const copy = lang === "en"
       compactSpacing: "Compact",
       comfortableSpacing: "Comfortable",
       relaxedSpacing: "Relaxed",
+      verseNumbers: "Verse numbers",
+      showNumbers: "Show",
+      hideNumbers: "Hide",
       reset: "Reset",
       close: "Close reading preferences",
     }
@@ -46,6 +49,9 @@ const copy = lang === "en"
       compactSpacing: "Compacto",
       comfortableSpacing: "Cómodo",
       relaxedSpacing: "Amplio",
+      verseNumbers: "Números de versículo",
+      showNumbers: "Mostrar",
+      hideNumbers: "Ocultar",
       reset: "Restablecer",
       close: "Cerrar preferencias de lectura",
     };
@@ -111,6 +117,14 @@ const copy = lang === "en"
       </div>
     </div>
 
+    <div class="reader-pref-group reader-verse-number-group" data-reader-verse-numbers hidden>
+      <span>{copy.verseNumbers}</span>
+      <div class="reader-pref-options reader-verse-number-options" role="group" aria-label={copy.verseNumbers}>
+        <button type="button" data-reader-verse-numbers-choice="visible">{copy.showNumbers}</button>
+        <button type="button" data-reader-verse-numbers-choice="hidden">{copy.hideNumbers}</button>
+      </div>
+    </div>
+
     <button type="button" class="reader-pref-reset" data-reader-preferences-reset>{copy.reset}</button>
   </div>
 </div>
@@ -120,6 +134,7 @@ const copy = lang === "en"
   const READER_FONT_KEY = "bibli-reader-font-v1";
   const READER_ALIGN_KEY = "bibli-reader-align-v1";
   const READER_SPACING_KEY = "bibli-reader-spacing-v1";
+  const VERSE_NUMBERS_KEY = "bibli-verse-numbers-v1";
 
   const validSizes = ["default", "small", "large"];
   const validFonts = ["default", "sans", "serif"];
@@ -154,6 +169,8 @@ const copy = lang === "en"
     const backdrop = root.querySelector<HTMLButtonElement>("[data-reader-preferences-backdrop]");
     const closeButton = root.querySelector<HTMLButtonElement>("[data-reader-preferences-close]");
     const reset = root.querySelector<HTMLButtonElement>("[data-reader-preferences-reset]");
+    const verseNumbersGroup = root.querySelector<HTMLElement>("[data-reader-verse-numbers]");
+    const verseNumberButtons = [...root.querySelectorAll<HTMLButtonElement>("[data-reader-verse-numbers-choice]")];
     const mobileViewport = window.matchMedia("(max-width: 920px)");
     const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
     const backdropAnchor = document.createComment("reader-preferences-backdrop");
@@ -180,6 +197,17 @@ const copy = lang === "en"
       panel.setAttribute("aria-modal", "false");
     };
 
+    const syncVerseNumberControls = () => {
+      const inReadingLesson = lessonDockActive() && document.documentElement.dataset.lessonMode === "reading";
+      if (verseNumbersGroup) verseNumbersGroup.hidden = !inReadingLesson;
+      const visible = document.documentElement.dataset.verseNumbers !== "hidden";
+      verseNumberButtons.forEach((button) => {
+        const active = button.dataset.readerVerseNumbersChoice === (visible ? "visible" : "hidden");
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    };
+
     const syncButtons = () => {
       const prefs = applyReaderPreferences();
       panel?.querySelectorAll<HTMLButtonElement>("[data-reader-size-choice]").forEach((button) => {
@@ -202,6 +230,7 @@ const copy = lang === "en"
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
+      syncVerseNumberControls();
     };
 
     const setOpen = (open: boolean, returnFocus = false) => {
@@ -216,13 +245,19 @@ const copy = lang === "en"
       root.classList.toggle("is-open", open);
       if (open) {
         document.documentElement.dataset.readerPreferencesOpen = "true";
+        document.dispatchEvent(new CustomEvent("bibli:reader-preferences-state", { detail: { open: true } }));
         if (mobileViewport.matches || lessonDockActive()) {
           requestAnimationFrame(() => closeButton?.focus());
         }
       } else {
         delete document.documentElement.dataset.readerPreferencesOpen;
+        document.dispatchEvent(new CustomEvent("bibli:reader-preferences-state", { detail: { open: false } }));
         if (!mobileViewport.matches) mountForViewport();
-        if (returnFocus) toggle.focus();
+        if (returnFocus) {
+          const dockTrigger = document.querySelector<HTMLButtonElement>('[data-dock-action="reader"]');
+          if (lessonDockActive() && dockTrigger) dockTrigger.focus();
+          else toggle.focus();
+        }
       }
     };
 
@@ -259,12 +294,25 @@ const copy = lang === "en"
       });
     });
 
+    verseNumberButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const choice = button.dataset.readerVerseNumbersChoice === "hidden" ? "hidden" : "visible";
+        localStorage.setItem(VERSE_NUMBERS_KEY, choice);
+        document.documentElement.dataset.verseNumbers = choice;
+        syncVerseNumberControls();
+        document.dispatchEvent(new CustomEvent("bibli:verse-numbers-change", { detail: { visible: choice === "visible" } }));
+      });
+    });
+
     reset?.addEventListener("click", () => {
       localStorage.removeItem(READER_SIZE_KEY);
       localStorage.removeItem(READER_FONT_KEY);
       localStorage.removeItem(READER_ALIGN_KEY);
       localStorage.removeItem(READER_SPACING_KEY);
+      localStorage.removeItem(VERSE_NUMBERS_KEY);
+      document.documentElement.dataset.verseNumbers = "visible";
       syncButtons();
+      document.dispatchEvent(new CustomEvent("bibli:verse-numbers-change", { detail: { visible: true } }));
     });
 
     panel?.addEventListener("click", (event) => event.stopPropagation());
@@ -275,7 +323,8 @@ const copy = lang === "en"
       if (event.key === "Escape" && panel && !panel.hidden) setOpen(false, true);
     });
     window.addEventListener("storage", (event) => {
-      if ([READER_SIZE_KEY, READER_FONT_KEY, READER_ALIGN_KEY, READER_SPACING_KEY].includes(event.key ?? "")) {
+      if ([READER_SIZE_KEY, READER_FONT_KEY, READER_ALIGN_KEY, READER_SPACING_KEY, VERSE_NUMBERS_KEY].includes(event.key ?? "")) {
+        if (event.key === VERSE_NUMBERS_KEY) document.documentElement.dataset.verseNumbers = localStorage.getItem(VERSE_NUMBERS_KEY) === "hidden" ? "hidden" : "visible";
         syncButtons();
       }
     });
@@ -286,6 +335,8 @@ const copy = lang === "en"
     document.addEventListener("bibli:reader-preferences-open", () => setOpen(true));
     document.addEventListener("bibli:reader-preferences-close", () => setOpen(false));
     document.addEventListener("bibli:tts-opening", () => setOpen(false));
+    document.addEventListener("bibli:global-search-opening", () => setOpen(false));
+    document.addEventListener("bibli:lesson-mode-change", syncVerseNumberControls);
 
     syncButtons();
   });
@@ -302,13 +353,19 @@ const copy = lang === "en"
   .reader-preferences-panel { position:absolute; z-index:80; top:calc(100% + 8px); right:0; width:min(310px,calc(100vw - 28px)); display:grid; gap:.85rem; padding:.9rem; border:1px solid var(--border-color); border-radius:16px; background:var(--surface-elevated); box-shadow:var(--shadow-md); }
   .reader-preferences-panel[hidden],.reader-preferences-backdrop[hidden] { display:none !important; }
   .reader-preferences-panel-head { display:none; }
+  .reader-preferences-close { width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--text-color); cursor:pointer; transition:background-color 150ms ease,border-color 150ms ease,color 150ms ease,transform 150ms ease; }
+  .reader-preferences-close:hover { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
+  .reader-preferences-close:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
+  .reader-preferences-close:active { transform:scale(.96); }
   .reader-pref-group { display:grid; gap:.4rem; }
+  .reader-verse-number-group[hidden] { display:none !important; }
   .reader-pref-group > span { color:var(--text-muted); font-size:.68rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
   .reader-pref-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem; padding:.25rem; border-radius:11px; background:var(--surface-soft); }
   .reader-pref-options button { min-width:0; min-height:40px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
   .reader-pref-options button:hover { background:color-mix(in srgb,var(--surface) 72%,transparent); color:var(--heading-color); }
   .reader-pref-options button.is-active { background:var(--surface); color:var(--accent); box-shadow:0 1px 5px rgba(0,0,0,.08); }
   .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.7rem; }
+  .reader-verse-number-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .reader-font-options button[data-reader-font-choice="serif"] { font-family:Georgia,"Times New Roman",serif; }
   .reader-pref-reset { min-height:40px; border:1px solid var(--border-color); border-radius:9px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
   .reader-pref-reset:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-soft); }
@@ -332,8 +389,6 @@ const copy = lang === "en"
       border-bottom:1px solid var(--border-color);
     }
     .reader-preferences-panel-head strong { color:var(--heading-color); font-size:.88rem; }
-    .reader-preferences-close { width:40px; height:40px; flex:0 0 40px; display:grid; place-items:center; border:1px solid var(--border-color); border-radius:11px; background:var(--surface-soft); color:var(--text-color); cursor:pointer; }
-    .reader-preferences-close:hover { border-color:var(--accent-border); background:var(--accent-soft); color:var(--accent); }
     .reader-pref-group { min-width:0; gap:.32rem; }
     .reader-pref-group > span { font-size:.64rem; }
     .reader-pref-options { gap:.22rem; padding:.2rem; }
@@ -372,6 +427,7 @@ const copy = lang === "en"
     align-items:center; justify-content:space-between; margin:-.72rem -.72rem 0; padding:.56rem .68rem .44rem;
     background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); border-bottom:1px solid var(--border-color);
   }
+  :global(html[data-lesson-dock="true"]) .reader-preferences-panel-head strong { color:var(--heading-color); font-size:.88rem; }
   :global(html[data-lesson-dock="true"]) .reader-pref-reset { grid-column:1/-1; }
   @media(max-width:520px){
     :global(html[data-lesson-dock="true"]) .reader-preferences-panel { width:calc(100vw - 12px); max-height:min(54dvh,390px); bottom:calc(76px + env(safe-area-inset-bottom)); padding:.62rem; gap:.5rem; }

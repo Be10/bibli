@@ -2,8 +2,8 @@
   "schema_version": "1.1.0",
   "source": "SharePoint/OneDrive snapshot",
   "revision_policy": "highest_semver_per_lesson_id",
-  "source_file_count": 271,
-  "file_count": 270,
+  "source_file_count": 311,
+  "file_count": 310,
   "superseded_revision_count": 1,
   "files": [
     {
@@ -5136,6 +5136,766 @@
         "1.0.0"
       ],
       "section_id": "pentateuco-levitico-presencia-nombre-justicia"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-271-levitico-25-1-a-7-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-271-levitico-25-1-a-7-v1.0.0.md",
+      "sha256": "cd785e6369d83a1fc711bfca63c836e26d2493ac7e9720a8be96c2e3b151b346",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--25-01-07--l271",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 271,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 25:1-7",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-sabado-jubileo-redencion"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-272-levitico-25-8-a-22-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-272-levitico-25-8-a-22-v1.0.0.md",
+      "sha256": "f43b9df3eb1818762c78e76722344cde607bff8538430fc82706fa979451c254",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--25-08-22--l272",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 272,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 25:8-22",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-sabado-jubileo-redencion"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-273-levitico-25-23-a-34-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-273-levitico-25-23-a-34-v1.0.0.md",
+      "sha256": "371266301df6e9206d0e3bf25cadb5fb6a6af6a9177cfdffc6b93fbea9505803",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--25-23-34--l273",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 273,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 25:23-34",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-sabado-jubileo-redencion"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-274-levitico-25-35-a-46-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-274-levitico-25-35-a-46-v1.0.0.md",
+      "sha256": "2b7a55edc29f11cf1b12348c4698ecdb6e1fa51388e17fdd0998eb2b11848368",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--25-35-46--l274",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 274,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 25:35-46",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-sabado-jubileo-redencion"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-275-levitico-25-47-a-55-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-275-levitico-25-47-a-55-v1.0.0.md",
+      "sha256": "1569ccdb238e76e4787dbd8f5d8c87f43a73778dcb171acd7f38735bd94e9008",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--25-47-55--l275",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 275,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 25:47-55",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-sabado-jubileo-redencion"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-276-levitico-26-1-a-13-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-276-levitico-26-1-a-13-v1.0.0.md",
+      "sha256": "f666dd1c17117b6815b93d96a5e68eb91ecf4851cee1dcbe1b78aa65fbcaa6e9",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--26-01-13--l276",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 276,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 26:1-13",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-bendiciones-maldiciones-pacto"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-277-levitico-26-14-a-39-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-277-levitico-26-14-a-39-v1.0.0.md",
+      "sha256": "95453398bb5969f3d7d9f8be512c407b66e4f9f4b0d1f75d0e9eb215d3fb4772",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--26-14-39--l277",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 277,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 26:14-39",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-bendiciones-maldiciones-pacto"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-278-levitico-26-40-a-46-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-278-levitico-26-40-a-46-v1.0.0.md",
+      "sha256": "db9ea56fdf7f2738beed515ccdb458ae8177203bb35ca043dec89c40f00a4b73",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--26-40-46--l278",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 278,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 26:40-46",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-bendiciones-maldiciones-pacto"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-279-levitico-27-1-a-13-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-279-levitico-27-1-a-13-v1.0.0.md",
+      "sha256": "964be89d47f5dca4d2a16ab20f5a1f809be096ebabe5a0160f0569911b49742a",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--27-01-13--l279",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 279,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 27:1-13",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-votos-consagraciones-diezmos"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-280-levitico-27-14-a-25-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-280-levitico-27-14-a-25-v1.0.0.md",
+      "sha256": "93b43efe3c94f3ea6d2829748a11f2fd3bcfbdecf486bd2a9c4063ccb275ff4c",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--27-14-25--l280",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 280,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 27:14-25",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-votos-consagraciones-diezmos"
+    },
+    {
+      "path": "Pentateuco/Levitico/pentateuco-leccion-281-levitico-27-26-a-34-v1.0.0.md",
+      "source_path": "Pentateuco/Levitico/pentateuco-leccion-281-levitico-27-26-a-34-v1.0.0.md",
+      "sha256": "d96d54768dc5f407c68f460401f5e400b29709ae9ec9e81188a3a9ce4c2983b3",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--levitico--27-26-34--l281",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 281,
+      "book_id": "levitico",
+      "primary_reference": "Levitico 27:26-34",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-levitico-votos-consagraciones-diezmos"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-282-numeros-1-1-a-19-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-282-numeros-1-1-a-19-v1.0.0.md",
+      "sha256": "1e79ca8db7757181021246f5076a2edd614d4adef475da3d0a6567b6b95a49e2",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--01-01-19--l282",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 282,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 1:1-19",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-censo-organizacion-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-283-numeros-1-20-a-46-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-283-numeros-1-20-a-46-v1.0.0.md",
+      "sha256": "84f49f2fcdf1bcc13872df1a49e10a73cdbbc88fbd2eaca883706a15169c5d69",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--01-20-46--l283",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 283,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 1:20-46",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-censo-organizacion-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-284-numeros-1-47-a-54-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-284-numeros-1-47-a-54-v1.0.0.md",
+      "sha256": "0e6a93cc8b07780280db07df3b78cee09e1cab5e6a9704856378ed9b9851dcf2",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--01-47-54--l284",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 284,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 1:47-54",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-censo-organizacion-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-285-numeros-2-1-a-34-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-285-numeros-2-1-a-34-v1.0.0.md",
+      "sha256": "3328b47f3ae49d830a70bd9ca6a172ec47d1401fffcb6bae62c5255fd83c2430",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--02-01-34--l285",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 285,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 2:1-34",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-censo-organizacion-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-286-numeros-3-1-a-13-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-286-numeros-3-1-a-13-v1.0.0.md",
+      "sha256": "939c114ae55539e24764772ae09bf49ab4f6c70c6e336309c2b59cb76802ae01",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--03-01-13--l286",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 286,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 3:1-13",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-sacerdocio-levitas-primogenitos"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-287-numeros-3-14-a-39-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-287-numeros-3-14-a-39-v1.0.0.md",
+      "sha256": "18a23451af97a3656337b4e85ac386275c9cea6a3c3d891d4fcf4262da3a5a81",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--03-14-39--l287",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 287,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 3:14-39",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-sacerdocio-levitas-primogenitos"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-288-numeros-3-40-a-51-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-288-numeros-3-40-a-51-v1.0.0.md",
+      "sha256": "0e62e01f019ccdddc7b07322320492cfa0e02e4b2eaadde5697b2aa67a26e157",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--03-40-51--l288",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 288,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 3:40-51",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-sacerdocio-levitas-primogenitos"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-289-numeros-4-1-a-20-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-289-numeros-4-1-a-20-v1.0.0.md",
+      "sha256": "041ee20b3e44b84aebd2030f4520d3f4f7bff62e573fde6a5863011739f1e091",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--04-01-20--l289",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 289,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 4:1-20",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-servicio-levitico-transporte-santuario"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-290-numeros-4-21-a-28-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-290-numeros-4-21-a-28-v1.0.0.md",
+      "sha256": "7498c8b8d8d406971684b48a6d33debfbb530965ef3dd9f170845f1617f7e987",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--04-21-28--l290",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 290,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 4:21-28",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-servicio-levitico-transporte-santuario"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-291-numeros-4-29-a-33-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-291-numeros-4-29-a-33-v1.0.0.md",
+      "sha256": "f8041a688089e88d9cab4ac8aa6df5c9b424ca524670c3b1fa26a229c0ff1f8d",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--04-29-33--l291",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 291,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 4:29-33",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-servicio-levitico-transporte-santuario"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-292-numeros-4-34-a-49-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-292-numeros-4-34-a-49-v1.0.0.md",
+      "sha256": "18cbcc6bcccbed6ab008bc706b6d6ff93be4139a22237fb977edd6bfb9108b29",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--04-34-49--l292",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 292,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 4:34-49",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-servicio-levitico-transporte-santuario"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-293-numeros-5-1-a-4-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-293-numeros-5-1-a-4-v1.0.0.md",
+      "sha256": "195e933b946e67c3c8b29658c9bd206ccddfed8cf482e6869a537f3f85e40415",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--05-01-04--l293",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 293,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 5:1-4",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-santidad-campamento-consagracion"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-294-numeros-5-5-a-10-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-294-numeros-5-5-a-10-v1.0.0.md",
+      "sha256": "f772a21fcd7976951a6cf2bd9c5841748d352e271a9dfb407f133fb644beda16",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--05-05-10--l294",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 294,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 5:5-10",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-santidad-campamento-consagracion"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-295-numeros-5-11-a-31-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-295-numeros-5-11-a-31-v1.0.0.md",
+      "sha256": "c8997cc155d26d54cd357aafa7dfa9739170f4d29f309311ec4ec146f625df8b",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--05-11-31--l295",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 295,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 5:11-31",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-santidad-campamento-consagracion"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-296-numeros-6-1-a-21-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-296-numeros-6-1-a-21-v1.0.0.md",
+      "sha256": "b8d3c9624bdb47e3aabe269be4012b8f5fb2a5de4408d9cab1e3809b4c98e52a",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--06-01-21--l296",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 296,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 6:1-21",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-santidad-campamento-consagracion"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-297-numeros-6-22-a-27-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-297-numeros-6-22-a-27-v1.0.0.md",
+      "sha256": "31fa30d86466947e4a41517ccb9ceee63187a5b3ae8fb54fb868f5346f493f53",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--06-22-27--l297",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 297,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 6:22-27",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-santidad-campamento-consagracion"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-298-numeros-7-1-a-9-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-298-numeros-7-1-a-9-v1.0.0.md",
+      "sha256": "90f11088cad1e8615ab20068990d1f1cbe3500374ca2383713a1d27fa8969895",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--07-01-09--l298",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 298,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 7:1-9",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-dedicacion-tabernaculo-ofrendas-principes"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-299-numeros-7-10-a-83-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-299-numeros-7-10-a-83-v1.0.0.md",
+      "sha256": "93a8dccd45036798092000c14079e511fcd015caccaffdd16d598c85977db2c5",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--07-10-83--l299",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 299,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 7:10-83",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-dedicacion-tabernaculo-ofrendas-principes"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-300-numeros-7-84-a-89-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-300-numeros-7-84-a-89-v1.0.0.md",
+      "sha256": "29b4ede0ef35a10827cdee028d1ae9ef0c9efd8483776e03198e5dc04725e0cd",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--07-84-89--l300",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 300,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 7:84-89",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-dedicacion-tabernaculo-ofrendas-principes"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-301-numeros-8-1-a-4-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-301-numeros-8-1-a-4-v1.0.0.md",
+      "sha256": "54544937580584db07f5c0f07311565fba413629eccb5594207e16fc56c1151f",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--08-01-04--l301",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 301,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 8:1-4",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-luz-consagracion-levitas"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-302-numeros-8-5-a-22-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-302-numeros-8-5-a-22-v1.0.0.md",
+      "sha256": "c3595f1537839ebe26f1389776b3ba2caccac3ee7c406b1e7b32baab53632d4e",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--08-05-22--l302",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 302,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 8:5-22",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-luz-consagracion-levitas"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-303-numeros-8-23-a-26-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-303-numeros-8-23-a-26-v1.0.0.md",
+      "sha256": "09ccee13b9173994bea9fb370b243314461470f4aaf7222ab461c6ddf7b57a70",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--08-23-26--l303",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 303,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 8:23-26",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-luz-consagracion-levitas"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-304-numeros-9-1-a-14-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-304-numeros-9-1-a-14-v1.0.0.md",
+      "sha256": "fe9583e7193e8ec741b8dd99e176b7265a5193a646ca14cd23c1e1152f6a075d",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--09-01-14--l304",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 304,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 9:1-14",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-pascua-presencia-marcha"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-305-numeros-9-15-a-23-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-305-numeros-9-15-a-23-v1.0.0.md",
+      "sha256": "0b3d54379d8822794fef18d0010c0524a0e3edab19e527deb184a78dd342feb6",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--09-15-23--l305",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 305,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 9:15-23",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-pascua-presencia-marcha"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-306-numeros-10-1-a-10-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-306-numeros-10-1-a-10-v1.0.0.md",
+      "sha256": "35d26e2b8900002a5870018362eb34cc7c4fa8795ea25309f119c6215ce6fd21",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--10-01-10--l306",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 306,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 10:1-10",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-pascua-presencia-marcha"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-307-numeros-10-11-a-28-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-307-numeros-10-11-a-28-v1.0.0.md",
+      "sha256": "277f001cbb25207635421959e1975306ebf5b2cc747414aa0ba10668a6afcd56",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--10-11-28--l307",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 307,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 10:11-28",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-partida-sinai-marcha-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-308-numeros-10-29-a-36-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-308-numeros-10-29-a-36-v1.0.0.md",
+      "sha256": "d0f56682e50566edd45f52801f9a4bae70cf3efbe4e99588a31940e5aa06d533",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--10-29-36--l308",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 308,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 10:29-36",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-partida-sinai-marcha-campamento"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-309-numeros-11-1-a-3-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-309-numeros-11-1-a-3-v1.0.0.md",
+      "sha256": "36028f02d4bf3d05c63cce66d878df75d151ac081d1ebdd3229d67da24db50cb",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--11-01-03--l309",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 309,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 11:1-3",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-310-numeros-11-4-a-15-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-310-numeros-11-4-a-15-v1.0.0.md",
+      "sha256": "54e404a3c08d5207c7d3d5279a5cca333e2bef9dced3adf8aaa4a1adb0118a38",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--11-04-15--l310",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 310,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 11:4-15",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
     }
   ]
 }

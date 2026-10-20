@@ -16,18 +16,22 @@ const copy = lang === "en"
       pause: "Pause",
       next: "Next part",
       stop: "Stop",
-      close: "Close reader",
+      close: "Minimize reader",
       voice: "Voice",
       automaticVoice: "Bibli · Automatic",
-      bibliVoices: "Bibli voices",
-      bibliSpanishVoice: "Bibli · Natural Spanish",
-      bibliEnglishVoice: "Bibli · Natural English",
-      deviceSpanishVoices: "Spanish voices on this device",
-      deviceEnglishVoices: "English voices on this device",
+      bibliVoices: "English voices",
+      femaleVoices: "Female voices",
+      maleVoices: "Male voices",
+      femaleOne: "Bibli · Grace",
+      femaleTwo: "Bibli · Emma",
+      maleOne: "Bibli · James",
+      maleTwo: "Bibli · Daniel",
       verse: "Verse",
       speed: "Speed",
       unavailable: "Text to speech is not available in this browser.",
       noContent: "There is no readable content on this page.",
+      estimatedTime: "Estimated",
+      minuteApprox: "min approx.",
     }
   : {
       launcher: "Escuchar",
@@ -40,18 +44,22 @@ const copy = lang === "en"
       pause: "Pausar",
       next: "Fragmento siguiente",
       stop: "Detener",
-      close: "Cerrar lector",
+      close: "Minimizar lector",
       voice: "Voz",
       automaticVoice: "Bibli · Automática",
-      bibliVoices: "Voces de Bibli",
-      bibliSpanishVoice: "Bibli · Natural en español",
-      bibliEnglishVoice: "Bibli · Natural en inglés",
-      deviceSpanishVoices: "Voces en español del dispositivo",
-      deviceEnglishVoices: "Voces en inglés del dispositivo",
+      bibliVoices: "Voces en español",
+      femaleVoices: "Voces femeninas",
+      maleVoices: "Voces masculinas",
+      femaleOne: "Bibli · Clara",
+      femaleTwo: "Bibli · Serena",
+      maleOne: "Bibli · Mateo",
+      maleTwo: "Bibli · Samuel",
       verse: "Versículo",
       speed: "Velocidad",
       unavailable: "La lectura en voz alta no está disponible en este navegador.",
       noContent: "No hay contenido de lectura en esta página.",
+      estimatedTime: "Duración",
+      minuteApprox: "min aprox.",
     };
 ---
 
@@ -66,6 +74,7 @@ const copy = lang === "en"
       <div class="tts-player-copy">
         <span class="tts-eyebrow">{copy.title}</span>
         <strong data-tts-status aria-live="polite">{copy.ready}</strong>
+        <small class="tts-estimate" aria-live="polite"><Icon name="clock" size={13} /><span data-tts-estimate></span></small>
       </div>
       <button type="button" class="tts-close" data-tts-close aria-label={copy.close} title={copy.close}>
         <Icon name="close" size={17} />
@@ -106,6 +115,12 @@ const copy = lang === "en"
       </label>
     </div>
   </section>
+
+  <button type="button" class="tts-mini" data-tts-mini hidden aria-label={copy.launcher} title={copy.launcher}>
+    <span class="tts-mini-indicator" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="tts-mini-copy"><strong>{copy.title}</strong><small data-tts-mini-status>{copy.ready}</small></span>
+    <Icon name="arrow-up" size={17} />
+  </button>
 </div>
 
 <script define:vars={{ copy }}>
@@ -128,6 +143,9 @@ const copy = lang === "en"
     const next = root.querySelector("[data-tts-next]");
     const stop = root.querySelector("[data-tts-stop]");
     const status = root.querySelector("[data-tts-status]");
+    const estimate = root.querySelector("[data-tts-estimate]");
+    const mini = root.querySelector("[data-tts-mini]");
+    const miniStatus = root.querySelector("[data-tts-mini-status]");
     const rateSelect = root.querySelector("[data-tts-rate]");
     const voiceSelect = root.querySelector("[data-tts-voice]");
     const playIcon = root.querySelector("[data-tts-play-icon]");
@@ -145,6 +163,14 @@ const copy = lang === "en"
     let playing = false;
     let paused = false;
     let voices = [];
+
+    const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
+    const syncCollapsedSurface = () => {
+      const expanded = !player.hidden;
+      if (mini instanceof HTMLButtonElement) mini.hidden = expanded || !playing;
+      if (launcher instanceof HTMLButtonElement) launcher.hidden = expanded || playing || lessonDockActive();
+      document.documentElement.dataset.ttsActive = playing ? "true" : "false";
+    };
 
     const syncFloatingUiOffset = () => {
       const rootElement = document.documentElement;
@@ -284,12 +310,16 @@ const copy = lang === "en"
     };
 
     const setStatus = () => {
+      syncEstimatedTime();
       if (!(status instanceof HTMLElement)) return;
       if (!chunks.length) {
         status.textContent = copy.ready;
+        if (miniStatus instanceof HTMLElement) miniStatus.textContent = copy.ready;
         return;
       }
-      status.textContent = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
+      const label = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
+      status.textContent = label;
+      if (miniStatus instanceof HTMLElement) miniStatus.textContent = label;
     };
 
     const setPlayingUi = () => {
@@ -302,6 +332,7 @@ const copy = lang === "en"
       if (pauseIcon instanceof HTMLElement) pauseIcon.hidden = !(playing && !paused);
       root.classList.toggle("is-playing", playing);
       root.classList.toggle("is-paused", paused);
+      syncCollapsedSurface();
     };
 
     const clearHighlight = () => {
@@ -333,44 +364,90 @@ const copy = lang === "en"
       return Number.isFinite(value) ? value : 1;
     };
 
+    const syncEstimatedTime = () => {
+      if (!(estimate instanceof HTMLElement)) return;
+      if (!chunks.length) {
+        estimate.textContent = "";
+        return;
+      }
+      const words = chunks.reduce((total, chunk) => total + normalize(chunk?.text).split(/\s+/).filter(Boolean).length, 0);
+      const baseWordsPerMinute = lang === "en" ? 175 : 165;
+      const minutes = Math.max(1, Math.ceil(words / Math.max(1, baseWordsPerMinute * getRate())));
+      estimate.textContent = `${minutes} ${copy.minuteApprox}`;
+    };
+
     const getVoiceValue = (voice) => `${voice.name}|||${voice.lang}`;
 
-    const getBestVoice = (targetLanguage) => {
+    const femaleVoiceName = /(female|woman|zira|susan|samantha|victoria|karen|moira|tessa|monica|paulina|sabina|lucia|lucía|elvira|dalia|aria|jenny|helena|sofia|sofía|maria|maría|carmen|isabella|ava|emma|grace)/i;
+    const maleVoiceName = /(male|man|david|mark|daniel|guy|jorge|raul|raúl|pablo|diego|antonio|carlos|miguel|juan|andres|andrés|thomas|george|james|mateo|samuel)/i;
+
+    const getVoiceScore = (voice, targetLanguage) => {
       const targetBase = targetLanguage === "en" ? "en" : "es";
       const preferredLocales = targetBase === "en"
         ? ["en-US", "en-GB", "en-AU", "en-CA"]
         : ["es-PE", "es-MX", "es-US", "es-ES", "es-CO", "es-AR"];
       const naturalName = /(natural|neural|premium|enhanced|online|google|siri|aria|jenny|guy|elvira|dalia|paulina|raul|raúl|jorge|lucia|lucía)/i;
       const legacyName = /(desktop|compact|basic|eloquence|espeak|festival)/i;
-      return [...voices]
-        .filter((voice) => voice.lang?.toLowerCase().startsWith(targetBase))
-        .sort((a, b) => {
-          const score = (voice) => {
-            const localeIndex = preferredLocales.findIndex((locale) => locale.toLowerCase() === voice.lang?.toLowerCase());
-            return (localeIndex >= 0 ? 100 - localeIndex * 8 : 50)
-              + (naturalName.test(voice.name) ? 90 : 0)
-              + (!voice.localService ? 18 : 0)
-              + (voice.default ? 6 : 0)
-              - (legacyName.test(voice.name) ? 45 : 0);
-          };
-          return score(b) - score(a) || a.name.localeCompare(b.name);
-        })[0] ?? null;
+      const localeIndex = preferredLocales.findIndex((locale) => locale.toLowerCase() === voice.lang?.toLowerCase());
+      return (localeIndex >= 0 ? 100 - localeIndex * 8 : 50)
+        + (naturalName.test(voice.name) ? 90 : 0)
+        + (!voice.localService ? 18 : 0)
+        + (voice.default ? 6 : 0)
+        - (legacyName.test(voice.name) ? 45 : 0);
+    };
+
+    const getRankedVoices = (targetLanguage) => [...voices]
+      .filter((voice) => voice.lang?.toLowerCase().startsWith(targetLanguage))
+      .sort((a, b) => getVoiceScore(b, targetLanguage) - getVoiceScore(a, targetLanguage) || a.name.localeCompare(b.name));
+
+    const getBestVoice = (targetLanguage) => getRankedVoices(targetLanguage)[0] ?? null;
+
+    const getCuratedProfileVoices = (targetLanguage) => {
+      const ranked = getRankedVoices(targetLanguage);
+      const female = ranked.filter((voice) => femaleVoiceName.test(voice.name));
+      const male = ranked.filter((voice) => maleVoiceName.test(voice.name));
+      const used = new Set();
+      const pick = (preferred) => {
+        const candidate = preferred.find((voice) => !used.has(voice))
+          ?? ranked.find((voice) => !used.has(voice))
+          ?? preferred[0]
+          ?? ranked[0]
+          ?? null;
+        if (candidate) used.add(candidate);
+        return candidate;
+      };
+      return {
+        f1: pick(female),
+        f2: pick(female),
+        m1: pick(male),
+        m2: pick(male),
+      };
     };
 
     const getSelectedVoiceConfiguration = () => {
       const value = voiceSelect instanceof HTMLSelectElement ? voiceSelect.value : "profile:auto";
-      if (value === "profile:es" || value === "profile:en" || value === "profile:auto" || !value) {
-        const targetLanguage = value === "profile:es" ? "es" : value === "profile:en" ? "en" : lang;
+      const targetLanguage = lang;
+      if (value === "profile:auto" || !value) {
         const voice = getBestVoice(targetLanguage);
+        return { voice, language: voice?.lang || pageSpeechLang, rateMultiplier: .96, pitch: 1 };
+      }
+
+      const profiles = getCuratedProfileVoices(targetLanguage);
+      const profileConfig = {
+        "profile:f1": { voice: profiles.f1, rateMultiplier: .98, pitch: 1.04 },
+        "profile:f2": { voice: profiles.f2, rateMultiplier: .95, pitch: 1.09 },
+        "profile:m1": { voice: profiles.m1, rateMultiplier: .97, pitch: .90 },
+        "profile:m2": { voice: profiles.m2, rateMultiplier: .94, pitch: .95 },
+      };
+      const profile = profileConfig[value];
+      if (profile) {
         return {
-          voice,
-          language: voice?.lang || (targetLanguage === "en" ? "en-US" : "es-PE"),
-          rateMultiplier: .96,
-          pitch: targetLanguage === "en" ? 1 : 1.01,
+          ...profile,
+          language: profile.voice?.lang || pageSpeechLang,
         };
       }
-      const voice = voices.find((candidate) => getVoiceValue(candidate) === value) ?? null;
-      return { voice, language: voice?.lang || pageSpeechLang, rateMultiplier: 1, pitch: 1 };
+
+      return { voice: getBestVoice(targetLanguage), language: pageSpeechLang, rateMultiplier: .96, pitch: 1 };
     };
 
     const stopSpeech = ({ reset = false } = {}) => {
@@ -435,33 +512,40 @@ const copy = lang === "en"
 
     const openPlayer = ({ autoplay = false } = {}) => {
       document.dispatchEvent(new CustomEvent("bibli:tts-opening"));
-      chunks = buildChunks();
+      const wasPlaying = playing;
+      if (!chunks.length || !wasPlaying) chunks = buildChunks();
       if (!chunks.length) {
         if (status instanceof HTMLElement) status.textContent = copy.noContent;
         return;
       }
       player.hidden = false;
-      launcher.hidden = true;
       root.classList.add("is-open");
+      syncCollapsedSurface();
+      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: true, active: playing } }));
       setStatus();
       requestAnimationFrame(() => {
         syncFloatingUiOffset();
         if (close instanceof HTMLButtonElement) close.focus();
       });
-      if (autoplay) speakCurrent();
+      if (autoplay && !wasPlaying) speakCurrent();
     };
 
-    const closePlayer = () => {
-      stopSpeech({ reset: false });
+    const minimizePlayer = ({ returnFocus = true } = {}) => {
+      if (player.hidden) return;
       player.hidden = true;
-      launcher.hidden = false;
       root.classList.remove("is-open");
       syncFloatingUiOffset();
-      launcher.focus();
+      syncCollapsedSurface();
+      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: false, active: playing } }));
+      if (!returnFocus) return;
+      const dockTrigger = document.querySelector('[data-dock-action="tts"]');
+      if (dockTrigger instanceof HTMLButtonElement) dockTrigger.focus();
+      else if (mini instanceof HTMLButtonElement && !mini.hidden) mini.focus();
+      else if (getComputedStyle(launcher).display !== "none") launcher.focus();
     };
 
     const refreshVoices = () => {
-      voices = synth.getVoices().filter((voice) => /^(es|en)(-|$)/i.test(voice.lang || ""));
+      voices = synth.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(lang));
       if (!(voiceSelect instanceof HTMLSelectElement)) return;
       const storedVoice = localStorage.getItem(voiceKey) ?? "profile:auto";
       voiceSelect.replaceChildren();
@@ -473,29 +557,21 @@ const copy = lang === "en"
         parent.append(option);
       };
 
-      const bibliGroup = document.createElement("optgroup");
-      bibliGroup.label = copy.bibliVoices;
-      addOption(bibliGroup, "profile:auto", copy.automaticVoice);
-      addOption(bibliGroup, "profile:es", copy.bibliSpanishVoice);
-      addOption(bibliGroup, "profile:en", copy.bibliEnglishVoice);
-      voiceSelect.append(bibliGroup);
-
-      const appendDeviceGroup = (targetLanguage, label) => {
-        const groupVoices = voices
-          .filter((voice) => voice.lang?.toLowerCase().startsWith(targetLanguage))
-          .sort((a, b) => a.name.localeCompare(b.name));
-        if (!groupVoices.length) return;
-        const group = document.createElement("optgroup");
-        group.label = label;
-        groupVoices.forEach((voice) => addOption(group, getVoiceValue(voice), `${voice.name} · ${voice.lang}`));
-        voiceSelect.append(group);
-      };
-
-      appendDeviceGroup("es", copy.deviceSpanishVoices);
-      appendDeviceGroup("en", copy.deviceEnglishVoices);
+      addOption(voiceSelect, "profile:auto", copy.automaticVoice);
+      const femaleGroup = document.createElement("optgroup");
+      femaleGroup.label = copy.femaleVoices;
+      addOption(femaleGroup, "profile:f1", copy.femaleOne);
+      addOption(femaleGroup, "profile:f2", copy.femaleTwo);
+      voiceSelect.append(femaleGroup);
+      const maleGroup = document.createElement("optgroup");
+      maleGroup.label = copy.maleVoices;
+      addOption(maleGroup, "profile:m1", copy.maleOne);
+      addOption(maleGroup, "profile:m2", copy.maleTwo);
+      voiceSelect.append(maleGroup);
 
       const match = Array.from(voiceSelect.options).some((option) => option.value === storedVoice);
       voiceSelect.value = match ? storedVoice : "profile:auto";
+      if (!match && storedVoice !== "profile:auto") localStorage.setItem(voiceKey, "profile:auto");
     };
 
     const storedRate = localStorage.getItem(rateKey);
@@ -504,7 +580,8 @@ const copy = lang === "en"
     }
 
     launcher.addEventListener("click", () => openPlayer({ autoplay: true }));
-    close?.addEventListener("click", closePlayer);
+    mini?.addEventListener("click", () => openPlayer({ autoplay: false }));
+    close?.addEventListener("click", () => minimizePlayer());
     stop?.addEventListener("click", () => stopSpeech({ reset: false }));
     play?.addEventListener("click", () => {
       if (playing && !paused) {
@@ -531,6 +608,7 @@ const copy = lang === "en"
     });
     rateSelect?.addEventListener("change", () => {
       if (rateSelect instanceof HTMLSelectElement) localStorage.setItem(rateKey, rateSelect.value);
+      syncEstimatedTime();
       if (playing) speakCurrent();
     });
     voiceSelect?.addEventListener("change", () => {
@@ -538,24 +616,25 @@ const copy = lang === "en"
       if (playing) speakCurrent();
     });
 
-    document.querySelectorAll("[data-mode-button]").forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!player.hidden) {
-          stopSpeech({ reset: true });
-          chunks = [];
-          setTimeout(() => {
-            chunks = buildChunks();
-            setStatus();
-          }, 0);
-        }
+    document.addEventListener("bibli:lesson-mode-change", () => {
+      if (playing) stopSpeech({ reset: true });
+      chunks = [];
+      requestAnimationFrame(() => {
+        chunks = buildChunks();
+        setStatus();
       });
     });
 
-    document.addEventListener("bibli:tts-open", () => openPlayer({ autoplay: true }));
-    document.addEventListener("bibli:tts-close", () => { if (!player.hidden) closePlayer(); });
-    document.addEventListener("bibli:reader-preferences-opening", () => { if (!player.hidden) closePlayer(); });
+    document.addEventListener("bibli:tts-open", () => openPlayer({ autoplay: !playing }));
+    document.addEventListener("bibli:tts-toggle", () => {
+      if (player.hidden) openPlayer({ autoplay: !playing });
+      else minimizePlayer();
+    });
+    document.addEventListener("bibli:tts-close", () => { if (!player.hidden) minimizePlayer({ returnFocus: false }); });
+    document.addEventListener("bibli:reader-preferences-opening", () => { if (!player.hidden) minimizePlayer({ returnFocus: false }); });
+    document.addEventListener("bibli:global-search-opening", () => { if (!player.hidden) minimizePlayer({ returnFocus: false }); });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !player.hidden) closePlayer();
+      if (event.key === "Escape" && !player.hidden) minimizePlayer();
     });
     if ("ResizeObserver" in window) {
       new ResizeObserver(() => {
@@ -566,6 +645,7 @@ const copy = lang === "en"
       synth.cancel();
       document.documentElement.style.setProperty("--tts-player-offset", "0px");
       delete document.documentElement.dataset.ttsPlayerOpen;
+      delete document.documentElement.dataset.ttsActive;
     });
 
     refreshVoices();
@@ -577,12 +657,13 @@ const copy = lang === "en"
       root.hidden = false;
       launcher.hidden = false;
       setPlayingUi();
+      syncCollapsedSurface();
     }
   })();
 </script>
 
 <style>
-  .global-tts { position:fixed; right:18px; bottom:max(18px,env(safe-area-inset-bottom)); z-index:145; pointer-events:none; }
+  .global-tts { position:fixed; right:18px; bottom:calc(78px + env(safe-area-inset-bottom)); z-index:245; pointer-events:none; }
   .global-tts[hidden] { display:none !important; }
   .tts-launcher,.tts-player { pointer-events:auto; }
   .tts-launcher[hidden],.global-tts.is-open .tts-launcher { display:none !important; }
@@ -590,10 +671,24 @@ const copy = lang === "en"
   .tts-launcher:hover { background:var(--accent-soft); border-color:var(--accent); }
   .tts-player { width:min(430px,calc(100vw - 28px)); display:grid; gap:.75rem; padding:.85rem; border:1px solid var(--border-color); border-radius:18px; background:color-mix(in srgb,var(--surface-elevated) 96%,transparent); box-shadow:0 20px 65px rgba(0,0,0,.18); backdrop-filter:blur(18px); }
   .tts-player[hidden] { display:none !important; }
+  .tts-mini { pointer-events:auto; min-width:min(290px,calc(100vw - 24px)); max-width:360px; min-height:54px; display:flex; align-items:center; gap:.7rem; padding:.55rem .7rem; border:1px solid var(--accent-border); border-radius:16px; background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); color:var(--text-color); box-shadow:0 16px 46px rgba(0,0,0,.18); backdrop-filter:blur(18px); cursor:pointer; text-align:left; }
+  .tts-mini[hidden] { display:none !important; }
+  .tts-mini-copy { min-width:0; flex:1; display:grid; gap:.04rem; }
+  .tts-mini-copy strong { color:var(--heading-color); font-size:.72rem; }
+  .tts-mini-copy small { color:var(--text-muted); font-size:.66rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tts-mini > :global(.bibli-icon) { color:var(--accent); flex:0 0 auto; }
+  .tts-mini-indicator { width:30px; height:30px; flex:0 0 30px; display:flex; align-items:center; justify-content:center; gap:2px; border-radius:10px; background:var(--accent-soft); color:var(--accent); }
+  .tts-mini-indicator i { width:3px; height:8px; border-radius:999px; background:currentColor; animation:tts-bars .9s ease-in-out infinite alternate; }
+  .tts-mini-indicator i:nth-child(2) { height:15px; animation-delay:-.35s; }
+  .tts-mini-indicator i:nth-child(3) { height:11px; animation-delay:-.6s; }
+  .global-tts.is-paused .tts-mini-indicator i { animation-play-state:paused; opacity:.55; }
+  @keyframes tts-bars { from { transform:scaleY(.45); } to { transform:scaleY(1); } }
   .tts-player-head { display:flex; align-items:flex-start; justify-content:space-between; gap:.75rem; }
   .tts-player-copy { display:grid; min-width:0; gap:.12rem; }
   .tts-eyebrow { color:var(--text-muted); font-size:.64rem; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
   .tts-player-copy strong { min-width:0; color:var(--heading-color); font-size:.84rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tts-estimate { min-height:1em; display:inline-flex; align-items:center; gap:.32rem; color:var(--text-muted); font-size:.68rem; font-weight:700; }
+  .tts-estimate :global(.bibli-icon) { color:var(--accent); flex:0 0 auto; }
   .tts-close,.tts-control { display:grid; place-items:center; border:1px solid var(--border-color); background:var(--surface-soft); color:var(--text-color); cursor:pointer; }
   .tts-close { width:44px; height:44px; flex:0 0 auto; border-radius:10px; }
   .tts-controls { display:flex; align-items:center; justify-content:center; gap:.4rem; }
@@ -607,13 +702,14 @@ const copy = lang === "en"
   .tts-options select { min-width:0; width:100%; height:40px; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--heading-color); padding:0 .55rem; font:inherit; font-size:.72rem; font-weight:700; }
   :global(.tts-active-source) { outline:2px solid color-mix(in srgb,var(--accent) 48%,transparent); outline-offset:5px; border-radius:8px; background-color:color-mix(in srgb,var(--accent-soft) 28%,transparent); }
   @media(max-width:600px){
-    .global-tts { left:10px; right:10px; bottom:max(10px,env(safe-area-inset-bottom)); display:flex; justify-content:flex-end; }
+    .global-tts { left:10px; right:10px; bottom:calc(68px + env(safe-area-inset-bottom)); display:flex; justify-content:flex-end; }
     .tts-player { width:100%; max-height:calc(100dvh - 20px); overflow:auto; overscroll-behavior:contain; }
     .tts-launcher span { display:none; }
     .tts-launcher { width:48px; min-height:48px; padding:0; justify-content:center; }
     .tts-options { grid-template-columns:92px minmax(0,1fr); }
+    .tts-mini { width:100%; min-width:0; max-width:none; }
   }
-  @media(prefers-reduced-motion:reduce){ :global(.tts-active-source){ scroll-behavior:auto; } }
+  @media(prefers-reduced-motion:reduce){ :global(.tts-active-source){ scroll-behavior:auto; } .tts-mini-indicator i{animation:none;} }
 
   :global(html[data-lesson-dock="true"]) .tts-launcher { display:none !important; }
 </style>

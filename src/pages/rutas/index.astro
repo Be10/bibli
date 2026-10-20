@@ -35,7 +35,7 @@ const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((less
 
     <section class="route-grid" aria-label="Rutas disponibles">
       {routeCards.map(({ route, lessons, modules }) => (
-        <article class="route-card" data-catalog-item data-route-card data-persisted-root data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
+        <article class="route-card" data-catalog-item data-route-card data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
           <div class="route-card-top">
             <div class="route-card-icon"><Icon name="layers" size={20} /></div>
             <span class="route-count">{modules.length} módulos · {lessons.length} lecciones</span>
@@ -47,12 +47,12 @@ const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((less
           </div>
           <div class="route-progress-row">
             <span>{route.estimated_duration ?? "Duración progresiva"}</span>
-            <strong data-progress-label data-persisted-value>0%</strong>
+            <strong data-progress-label>0%</strong>
           </div>
           <div class="progress-track" role="progressbar" aria-label="Progreso personal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-track><span data-progress-bar></span></div>
           <div class="route-actions">
             <a class="primary" href={sitePath(`/rutas/${route.slug}/`)}><span>Abrir ruta</span><Icon name="arrow-right" size={16} /></a>
-            {lessons[0] && <a class="secondary" href={sitePath(`/lecciones/${lessons[0].slug}/`)} data-continue-link data-persisted-value>Comenzar</a>}
+            {lessons[0] && <a class="secondary" href={sitePath(`/lecciones/${lessons[0].slug}/`)} data-continue-link>Comenzar</a>}
           </div>
         </article>
       ))}

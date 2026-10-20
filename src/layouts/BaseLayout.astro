@@ -169,12 +169,10 @@ const isCurrentNavigationItem = (href: string) => {
 const menuItems =
   lang === "en"
     ? [
-        { href: searchPageUrl, label: activeUi.searchAdvanced, icon: "search" as const },
         { href: bibleRootUrl, label: activeUi.readBible, icon: "book" as const },
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary, icon: "download" as const },
       ]
     : [
-        { href: searchPageUrl, label: activeUi.searchAdvanced, icon: "search" as const },
         {
           href: sitePath("/rutas/"),
           label: activeUi.mainRoute,
@@ -190,12 +188,10 @@ const menuItems =
 const footerItems =
   lang === "en"
     ? [
-        { href: searchPageUrl, label: activeUi.searchAdvanced },
         { href: bibleRootUrl, label: activeUi.readBible },
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary },
       ]
     : [
-        { href: searchPageUrl, label: activeUi.searchAdvanced },
         { href: bibleRootUrl, label: activeUi.readBible },
         { href: sitePath("/descargar/"), label: activeUi.offlineLibrary },
         { href: sitePath("/rutas/"), label: activeUi.mainRoute },
@@ -622,95 +618,6 @@ const languageTarget = alternateLanguage ?? {
       </a>
 
       <div class="header-actions">
-        <div
-          class="global-search-shell"
-          data-global-search-shell
-          data-search-url={searchDataUrl}
-          data-empty-label={activeUi.searchEmpty}
-          data-none-label={activeUi.searchNone}
-          data-error-label={activeUi.searchError}
-          data-all-label={activeUi.searchAll}
-          data-advanced-label={activeUi.searchAdvanced}
-          data-filter-all-label={activeUi.all}
-          data-search-open-label={activeUi.searchOpen}
-          data-search-close-label={activeUi.searchClose}
-          data-search-icon-label={activeUi.searchIcon}
-        >
-          <button
-            type="button"
-            class="global-search-toggle"
-            data-global-search-toggle
-            aria-label={activeUi.searchOpen}
-            aria-expanded="false"
-            aria-controls="bibli-global-search"
-            aria-keyshortcuts="/ Control+k Meta+k"
-          ><Icon name="search" size={18} /></button>
-
-          <form
-            id="bibli-global-search"
-            class="global-search-form"
-            action={searchPageUrl}
-            method="get"
-            role="search"
-            aria-label={activeUi.searchLabel}
-            data-global-search-form
-          >
-            <label class="sr-only" for="global-search">
-              {activeUi.searchInputLabel}
-            </label>
-
-            <input
-              id="global-search"
-              name="q"
-              type="search"
-              placeholder={activeUi.searchPlaceholder}
-              autocomplete="off"
-              autocapitalize="none"
-              autocorrect="off"
-              spellcheck="false"
-              enterkeyhint="search"
-              aria-keyshortcuts="/ Control+K Meta+K"
-              data-global-search-input
-            />
-
-            <button
-              type="button"
-              class="global-search-submit"
-              data-global-search-submit
-              aria-label={activeUi.searchOpen}
-            ><span class="search-open-icon"><Icon name="search" size={18} /></span><span class="search-close-icon"><Icon name="close" size={18} /></span></button>
-          </form>
-
-          <div
-            class="global-search-popover"
-            data-global-search-popover
-            hidden
-          >
-            <div
-              class="global-search-filters"
-              data-global-search-filters
-              role="group"
-              aria-label={activeUi.searchFilters}
-            ></div>
-
-            <div
-              class="global-search-results"
-              data-global-search-results
-              aria-label={activeUi.searchResults}
-              aria-live="polite"
-              aria-atomic="false"
-            ></div>
-
-            <a
-              href={searchPageUrl}
-              class="global-search-all"
-              data-global-search-all
-            >
-              {activeUi.searchAll}
-            </a>
-          </div>
-        </div>
-
         <a
           class="language-switch"
           href={languageTarget.href}
@@ -799,6 +706,56 @@ const languageTarget = alternateLanguage ?? {
       </div>
     </header>
 
+    {!isLessonDetail && <ContextDock lang={lang} currentPath={currentPathname} />}
+
+    <div
+      class="global-search-shell dock-search-shell"
+      data-global-search-shell
+      data-search-url={searchDataUrl}
+      data-empty-label={activeUi.searchEmpty}
+      data-none-label={activeUi.searchNone}
+      data-error-label={activeUi.searchError}
+      data-all-label={activeUi.searchAll}
+      data-advanced-label={activeUi.searchAdvanced}
+      data-filter-all-label={activeUi.all}
+      data-search-open-label={activeUi.searchOpen}
+      data-search-close-label={activeUi.searchClose}
+      data-search-icon-label={activeUi.searchIcon}
+      aria-hidden="true"
+    >
+      <form
+        id="bibli-global-search"
+        class="global-search-form"
+        action={searchPageUrl}
+        method="get"
+        role="search"
+        aria-label={activeUi.searchLabel}
+        data-global-search-form
+      >
+        <label class="sr-only" for="global-search">{activeUi.searchInputLabel}</label>
+        <span class="global-search-input-icon" data-global-search-input-icon aria-hidden="true"><Icon name="search" size={18} /></span>
+        <input
+          id="global-search"
+          name="q"
+          type="search"
+          placeholder={activeUi.searchPlaceholder}
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          enterkeyhint="search"
+          aria-keyshortcuts="/ Control+K Meta+K"
+          data-global-search-input
+        />
+      </form>
+
+      <div class="global-search-popover" data-global-search-popover hidden>
+        <div class="global-search-filters" data-global-search-filters role="group" aria-label={activeUi.searchFilters}></div>
+        <div class="global-search-results" data-global-search-results aria-label={activeUi.searchResults} aria-live="polite" aria-atomic="false"></div>
+        <a href={searchPageUrl} class="global-search-all" data-global-search-all>{activeUi.searchAdvanced} →</a>
+      </div>
+    </div>
+
     <div id="bibli-content" class="content-anchor" tabindex="-1"></div>
     <slot />
 
@@ -844,7 +801,6 @@ const languageTarget = alternateLanguage ?? {
         <button type="button" class="app-update-now" data-app-update-now>{activeUi.updateNow}</button>
       </div>
     </section>
-    {!isLessonDetail && <ContextDock lang={lang} currentPath={currentPathname} />}
     <GlobalTTS lang={lang} />
     <CatalogDesignSystem />
     <DetailDesignSystem />
@@ -877,9 +833,11 @@ const languageTarget = alternateLanguage ?? {
     const SERVICE_WORKER_UPDATE_INTERVAL = 60 * 60 * 1000;
 
     const searchShell = document.querySelector("[data-global-search-shell]");
-    const searchToggle = document.querySelector("[data-global-search-toggle]");
+    const getSearchTriggers = () => [...document.querySelectorAll("[data-context-search], [data-dock-action=\"search\"]")];
+    let lastSearchTrigger = null;
     const searchForm = document.querySelector("[data-global-search-form]");
     const searchInput = document.querySelector("[data-global-search-input]");
+    const searchInputIcon = document.querySelector("[data-global-search-input-icon]");
     const searchSubmit = document.querySelector("[data-global-search-submit]");
     const searchPopover = document.querySelector("[data-global-search-popover]");
     const searchFilters = document.querySelector("[data-global-search-filters]");
@@ -1174,34 +1132,47 @@ const languageTarget = alternateLanguage ?? {
       }
     }
 
-    function openSearchShell() {
-      if (!searchShell || !searchToggle) return;
-
-      closeMenu();
-      searchShell.classList.add("is-open");
-      siteHeader?.classList.add("search-open");
-      searchToggle.setAttribute("aria-expanded", "true");
-      searchToggle.setAttribute("aria-label", searchCloseLabel);
-      syncSearchSubmitIcon();
-
-      window.requestAnimationFrame(() => {
-        searchInput?.focus();
+    function syncSearchTriggerState(open) {
+      getSearchTriggers().forEach((trigger) => {
+        if (!(trigger instanceof HTMLElement)) return;
+        trigger.setAttribute("aria-expanded", String(open));
+        if (trigger instanceof HTMLButtonElement) trigger.setAttribute("aria-pressed", String(open));
       });
+      document.dispatchEvent(new CustomEvent("bibli:global-search-state", { detail: { open } }));
+    }
+
+    function openSearchShell({ trigger = null } = {}) {
+      if (!searchShell) return;
+      if (trigger instanceof HTMLElement) lastSearchTrigger = trigger;
+      closeMenu();
+      document.dispatchEvent(new CustomEvent("bibli:global-search-opening"));
+      document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
+      document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+      searchShell.classList.add("is-open");
+      searchShell.setAttribute("aria-hidden", "false");
+      syncSearchTriggerState(true);
+      syncSearchSubmitIcon();
+      syncSearchInputDecoration();
+      // Keep this focus inside the originating user gesture so mobile browsers open the keyboard immediately.
+      if (searchInput instanceof HTMLInputElement) {
+        searchInput.focus({ preventScroll: true });
+        window.requestAnimationFrame(() => searchInput.focus({ preventScroll: true }));
+      }
+      void renderSearchResults(searchInput?.value ?? "");
     }
 
     function closeSearchShell({ returnFocus = false } = {}) {
-      if (!searchShell || !searchToggle) return;
-
+      if (!searchShell) return;
       searchRenderGeneration += 1;
       const hadFocusInside = searchShell.contains(document.activeElement);
       searchShell.classList.remove("is-open");
-      siteHeader?.classList.remove("search-open");
-      searchToggle.setAttribute("aria-expanded", "false");
-      searchToggle.setAttribute("aria-label", searchOpenLabel);
+      searchShell.setAttribute("aria-hidden", "true");
       closeSearchPopover();
+      syncSearchTriggerState(false);
       syncSearchSubmitIcon();
-
-      if (returnFocus && hadFocusInside) searchToggle.focus();
+      syncSearchInputDecoration();
+      if (hadFocusInside && document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      if (returnFocus && hadFocusInside && lastSearchTrigger instanceof HTMLElement) lastSearchTrigger.focus();
     }
 
     function canOpenSearchPopover() {
@@ -1236,35 +1207,27 @@ const languageTarget = alternateLanguage ?? {
 
     function syncSearchSubmitIcon() {
       if (!searchSubmit) return;
-
-      const isOpen = Boolean(searchShell?.classList.contains("is-open"));
-
-      if (isMobileSearch() && isOpen) {
-        searchSubmit.setAttribute("aria-label", searchCloseLabel);
-        searchSubmit.classList.add("is-close");
-        return;
-      }
-
       searchSubmit.setAttribute("aria-label", searchIconLabel);
       searchSubmit.classList.remove("is-close");
     }
 
-    function updateAllResultsLink(query, hasResults = false) {
+    function syncSearchInputDecoration() {
+      if (!(searchInputIcon instanceof HTMLElement)) return;
+      const hasQuery = Boolean(searchInput instanceof HTMLInputElement && searchInput.value.trim());
+      searchInputIcon.hidden = hasQuery;
+    }
+
+    function updateAllResultsLink(query, _hasResults = false) {
       if (!searchAllLink) return;
 
       const normalizedQuery = normalizeText(query);
       const url = new URL(searchAllLink.href);
 
-      if (normalizedQuery) {
-        url.searchParams.set("q", query);
-        searchAllLink.textContent = hasResults
-          ? searchAllLabel
-          : `${searchAdvancedLabel} →`;
-      } else {
-        url.searchParams.delete("q");
-        searchAllLink.textContent = `${searchAdvancedLabel} →`;
-      }
+      if (normalizedQuery) url.searchParams.set("q", query);
+      else url.searchParams.delete("q");
 
+      // The advanced page is intentionally reachable only through this explicit action.
+      searchAllLink.textContent = `${searchAdvancedLabel} →`;
       searchAllLink.href = `${url.pathname}${url.search}`;
     }
 
@@ -1519,8 +1482,10 @@ const languageTarget = alternateLanguage ?? {
       void loadSearchItems();
     };
 
-    searchToggle?.addEventListener("pointerenter", warmSearchIndex, { once: true });
-    searchToggle?.addEventListener("pointerdown", warmSearchIndex, { once: true });
+    getSearchTriggers().forEach((trigger) => {
+      trigger.addEventListener("pointerenter", warmSearchIndex, { once: true });
+      trigger.addEventListener("pointerdown", warmSearchIndex, { once: true });
+    });
     searchForm?.addEventListener("pointerenter", warmSearchIndex, { once: true });
     searchShell?.addEventListener("focusin", warmSearchIndex, { once: true });
 
@@ -1565,30 +1530,17 @@ const languageTarget = alternateLanguage ?? {
       }
     });
 
-    searchToggle?.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
+    document.addEventListener("bibli:global-search-toggle", (event) => {
+      const trigger = event instanceof CustomEvent ? event.detail?.trigger : null;
       if (searchShell?.classList.contains("is-open")) {
-        closeSearchShell();
+        closeSearchShell({ returnFocus: false });
         return;
       }
-
-      openSearchShell();
-      closeMenu();
+      openSearchShell({ trigger });
     });
 
     searchSubmit?.addEventListener("click", (event) => {
-      event.preventDefault();
       event.stopPropagation();
-
-      if (isMobileSearch() && searchShell?.classList.contains("is-open")) {
-        closeSearchShell({ returnFocus: true });
-        return;
-      }
-
-      openSearchShell();
-      searchInput?.focus();
     });
 
     function getSearchNavigationLinks() {
@@ -1633,6 +1585,7 @@ const languageTarget = alternateLanguage ?? {
 
     searchInput?.addEventListener("input", () => {
       activeSearchType = ALL_SEARCH_TYPE;
+      syncSearchInputDecoration();
 
       window.clearTimeout(globalSearchDebounceTimer);
 
@@ -1681,11 +1634,7 @@ const languageTarget = alternateLanguage ?? {
       const clickedMenuToggle = Boolean(menuToggle?.contains(target));
 
       if (!clickedInsideSearch) {
-        closeSearchPopover();
-
-        if (window.matchMedia("(max-width: 760px)").matches) {
-          closeSearchShell();
-        }
+        closeSearchShell();
       }
 
       if (!clickedInsideMenu && !clickedMenuToggle) {
@@ -1702,7 +1651,6 @@ const languageTarget = alternateLanguage ?? {
       if (searchShortcut) {
         event.preventDefault();
         openSearchShell();
-        closeMenu();
         return;
       }
 
@@ -1714,6 +1662,54 @@ const languageTarget = alternateLanguage ?? {
         closeSearchShell({ returnFocus: searchWasOpen });
       }
     });
+
+    // Keep the display awake while the user is inside a lesson or a standalone Bible chapter.
+    // Screen Wake Lock is best-effort: browsers may revoke it (for example on low battery),
+    // so we reacquire it when the page becomes visible again.
+    const wakeLockContext = Boolean(
+      document.querySelector("[data-reader-content]") &&
+      (document.documentElement.dataset.lessonDock === "true" || /\/(?:es\/biblia|en\/bible)\//.test(window.location.pathname)),
+    );
+    let screenWakeLock = null;
+    let wakeLockRequestPending = false;
+
+    async function requestReadingWakeLock() {
+      if (!wakeLockContext || wakeLockRequestPending || document.visibilityState !== "visible") return;
+      const wakeLockApi = (navigator as Navigator & { wakeLock?: { request(type: "screen"): Promise<any> } }).wakeLock;
+      if (!wakeLockApi || screenWakeLock) return;
+      wakeLockRequestPending = true;
+      try {
+        const sentinel = await wakeLockApi.request("screen");
+        screenWakeLock = sentinel;
+        sentinel.addEventListener("release", () => {
+          if (screenWakeLock === sentinel) screenWakeLock = null;
+        }, { once: true });
+      } catch {
+        // Unsupported/denied/low-power cases degrade normally without blocking reading.
+      } finally {
+        wakeLockRequestPending = false;
+      }
+    }
+
+    async function releaseReadingWakeLock() {
+      const sentinel = screenWakeLock;
+      screenWakeLock = null;
+      if (!sentinel || sentinel.released) return;
+      try { await sentinel.release(); } catch {}
+    }
+
+    if (wakeLockContext) {
+      void requestReadingWakeLock();
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") void requestReadingWakeLock();
+        else void releaseReadingWakeLock();
+      });
+      // Retry after a real user gesture in browsers that defer the first request.
+      const retryWakeLock = () => { if (!screenWakeLock) void requestReadingWakeLock(); };
+      document.addEventListener("pointerdown", retryWakeLock, { passive: true, once: true });
+      document.addEventListener("keydown", retryWakeLock, { once: true });
+      window.addEventListener("pagehide", () => { void releaseReadingWakeLock(); });
+    }
 
     window.addEventListener("pageshow", (event) => {
       syncThemeFromStorage();
@@ -3353,6 +3349,7 @@ border-color: var(--border-color);
 
   /* Bibli interaction & accessibility layer — shared by every page. */
   html {
+    overflow-y: scroll;
     scrollbar-gutter: stable;
     scroll-padding-top: calc(var(--header-height,62px) + 16px);
   }
@@ -3850,4 +3847,67 @@ border-color: var(--border-color);
     background: var(--accent-soft);
   }
   .global-menu .menu-links a .bibli-icon { color: currentColor !important; }
+
+  /* Dock search: search lives outside the header and expands upward from the persistent dock. */
+  .site-header .global-search-shell { display:none !important; }
+  .dock-search-shell {
+    position:fixed !important;
+    z-index:132;
+    left:50%;
+    right:auto !important;
+    bottom:calc(78px + env(safe-area-inset-bottom));
+    width:min(620px,calc(100vw - 24px));
+    display:flex !important;
+    flex-direction:column-reverse;
+    gap:8px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translate(-50%,12px) scale(.985);
+    transform-origin:bottom center;
+    transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out),visibility 180ms ease;
+  }
+  .dock-search-shell.is-open {
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translate(-50%,0) scale(1);
+  }
+  .dock-search-shell .global-search-form {
+    position:relative;
+    width:100% !important;
+    min-width:0 !important;
+    min-height:50px;
+    display:flex !important;
+    border-radius:16px !important;
+    box-shadow:0 16px 46px rgba(15,23,42,.16);
+  }
+  .dock-search-shell .global-search-input-icon {
+    position:absolute; left:16px; top:50%; transform:translateY(-50%);
+    display:grid; place-items:center; color:var(--accent); pointer-events:none; z-index:1;
+  }
+  .dock-search-shell .global-search-input-icon[hidden] { display:none !important; }
+  .dock-search-shell .global-search-form input { height:48px; width:100%; padding-left:46px !important; padding-right:16px !important; font-size:.95rem; transition:padding-left 140ms ease; }
+  .dock-search-shell .global-search-form:has(.global-search-input-icon[hidden]) input { padding-left:16px !important; }
+  .dock-search-shell .global-search-popover {
+    position:relative !important;
+    inset:auto !important;
+    width:100% !important;
+    max-width:none !important;
+    max-height:min(62dvh,520px);
+    overflow:auto !important;
+    padding:14px !important;
+    border-radius:18px !important;
+    transform-origin:bottom center !important;
+  }
+  .dock-search-shell .global-search-results { max-height:min(42dvh,340px); }
+  .dock-search-shell .global-search-all { min-height:46px; border-radius:12px; }
+  @media(max-width:760px){
+    .site-header.search-open .logo { display:inline-flex !important; }
+    .site-header.search-open .language-switch,
+    .site-header.search-open .theme-quick-toggle { display:inline-flex !important; }
+    .dock-search-shell { bottom:calc(70px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); }
+    .dock-search-shell .global-search-popover { max-height:min(66dvh,500px); }
+  }
+  @media(prefers-reduced-motion:reduce){ .dock-search-shell { transition:none; } }
 </style>

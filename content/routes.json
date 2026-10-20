@@ -394,6 +394,102 @@
           "description": "Levítico 24: servicio continuo del santuario mediante las lámparas y los panes, santidad del nombre de Jehová y principios de justicia proporcional, reparación e igualdad jurídica dentro del pacto.",
           "position": 38,
           "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-sabado-jubileo-redencion",
+          "title": "Levítico: descanso de la tierra, jubileo y redención",
+          "slug": "levitico-descanso-tierra-jubileo-redencion",
+          "description": "Levítico 25: año sabático, jubileo, tierra como posesión de Jehová, redención de propiedades y protección del hermano empobrecido dentro del pacto.",
+          "position": 39,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-bendiciones-maldiciones-pacto",
+          "title": "Levítico: bendiciones y maldiciones del pacto",
+          "slug": "levitico-bendiciones-maldiciones-pacto",
+          "description": "Levítico 26: lealtad exclusiva a Jehová, bendiciones de obediencia, disciplina y maldiciones por rebelión persistente, exilio, confesión y fidelidad de Dios a su pacto.",
+          "position": 40,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-levitico-votos-consagraciones-diezmos",
+          "title": "Levítico: votos, consagraciones y diezmos",
+          "slug": "levitico-votos-consagraciones-diezmos",
+          "description": "Levítico 27: votos y valoraciones, consagración y rescate de personas, animales, casas y campos, bienes irrevocablemente dedicados, primogénitos y diezmos apartados para Jehová.",
+          "position": 41,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-censo-organizacion-campamento",
+          "title": "Números: censo, organización y campamento",
+          "slug": "numeros-censo-organizacion-campamento",
+          "description": "Números 1–2: censo militar, separación de los levitas, disposición de las tribus alrededor del tabernáculo y orden de marcha con la presencia de Jehová en el centro.",
+          "position": 42,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-sacerdocio-levitas-primogenitos",
+          "title": "Números: sacerdocio, levitas y primogénitos",
+          "slug": "numeros-sacerdocio-levitas-primogenitos",
+          "description": "Números 3: sacerdocio aarónico, organización de Gersón, Coat y Merari, elección de los levitas en lugar de los primogénitos y rescate de los excedentes.",
+          "position": 43,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-servicio-levitico-transporte-santuario",
+          "title": "Números: servicio levítico y transporte del santuario",
+          "slug": "numeros-servicio-levitico-transporte-santuario",
+          "description": "Números 4: censo de los levitas aptos para el servicio y responsabilidades de Coat, Gersón y Merari en la preparación, custodia y transporte del tabernáculo.",
+          "position": 44,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-santidad-campamento-consagracion",
+          "title": "Números: santidad y consagración del campamento",
+          "slug": "numeros-santidad-campamento-consagracion",
+          "description": "Números 5–6: pureza del campamento, confesión y restitución, fidelidad matrimonial, voto nazareo y bendición sacerdotal como expresión de santidad, consagración y paz bajo la presencia de Jehová.",
+          "position": 45,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-dedicacion-tabernaculo-ofrendas-principes",
+          "title": "Números: dedicación del tabernáculo y ofrendas de los príncipes",
+          "slug": "numeros-dedicacion-tabernaculo-ofrendas-principes",
+          "description": "Números 7: ofrendas de los príncipes para el transporte del tabernáculo y la dedicación del altar, participación de las doce tribus y culminación en la voz de Jehová desde el propiciatorio.",
+          "position": 46,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-luz-consagracion-levitas",
+          "title": "Números: luz del santuario y consagración de los levitas",
+          "slug": "numeros-luz-santuario-consagracion-levitas",
+          "description": "Números 8: alumbrado del candelabro, purificación y consagración de los levitas, sustitución de los primogénitos y etapas del servicio levítico.",
+          "position": 47,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-pascua-presencia-marcha",
+          "title": "Números: Pascua, presencia y preparación para la marcha",
+          "slug": "numeros-pascua-presencia-preparacion-marcha",
+          "description": "Números 9:1–10:10: Pascua en el desierto, provisión para el impedido, guía de la nube y trompetas de plata para convocar, marchar, guerrear y adorar.",
+          "position": 48,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-partida-sinai-marcha-campamento",
+          "title": "Números: partida del Sinaí y marcha del campamento",
+          "slug": "numeros-partida-sinai-marcha-campamento",
+          "description": "Números 10:11-36: salida del Sinaí, orden efectivo de la marcha, servicio levítico en movimiento, invitación a Hobab y el arca de Jehová delante del pueblo.",
+          "position": 49,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-murmuracion-crisis-desierto",
+          "title": "Números: murmuración y crisis en el desierto",
+          "slug": "numeros-murmuracion-crisis-desierto",
+          "description": "Números 11: murmuración después del Sinaí, juicio en Tabera, deseo de carne, desprecio del maná, agotamiento de Moisés y respuesta de Jehová a la crisis del pueblo.",
+          "position": 50,
+          "status": "Publicado"
         }
       ]
     }
