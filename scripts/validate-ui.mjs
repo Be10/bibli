@@ -299,7 +299,7 @@ if (!fs.existsSync(lessonDetailPath)) {
   problems.push("falta src/pages/lecciones/[slug].astro");
 } else {
   const lessonDetail = fs.readFileSync(lessonDetailPath, "utf8");
-  for (const token of ["learning-page", "learning-grid", "lesson-toc-card", "lesson-toc", "current-section-status", "var(--header-height", "data-detail-root", 'data-detail-kind="lesson"', "data-persisted-root", "data-persisted-value", 'shell.dataset.persistedReady = "true"', 'completeButton.dataset.persistedReady = "true"', 'progressValue.dataset.persistedReady = "true"', ".lesson-section.is-prayer h2", "font-style: normal", 'window.addEventListener("pageshow"', 'lesson-mobile-dock', 'data-dock-action="reader"', 'data-dock-action="tts"', 'data-lesson-sheet-open', 'lesson-heading-icon', 'lesson-heading-icon svg', 'svgPaths: Record<string, string>', 'bibli:reader-preferences-open', 'bibli:tts-open', 'cleanHeadingLabel', 'Context navigator v3', 'position:fixed !important', 'data-has-aids={hasStudyAids ? "true" : "empty"}', 'location:', 'explanation:', 'connection:', 'reflection:', 'prayer:', 'text-align:left', ':global(html[data-lesson-toc="visible"])', ':global(html[data-study-aids="visible"])', 'focusAidsTrigger', 'focusTocTrigger', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lesson-dock-step', 'bottom:calc(100% + 8px)', 'document.dispatchEvent(new CustomEvent("bibli:tts-close"))']) {
+  for (const token of ["learning-page", "learning-grid", "lesson-toc-card", "lesson-toc", "current-section-status", "var(--header-height", "data-detail-root", 'data-detail-kind="lesson"', "data-persisted-root", "data-persisted-value", 'shell.dataset.persistedReady = "true"', 'completeButton.dataset.persistedReady = "true"', 'progressValue.dataset.persistedReady = "true"', ".lesson-section.is-prayer h2", "font-style: normal", 'window.addEventListener("pageshow"', 'lesson-mobile-dock', 'data-dock-action="reader"', 'data-dock-action="tts"', 'data-lesson-sheet-open', 'lesson-heading-icon', 'lesson-heading-icon svg', 'svgPaths: Record<string, string>', 'bibli:reader-preferences-open', 'bibli:tts-open', 'bibli:global-search-toggle', 'cleanHeadingLabel', 'Context navigator v3', 'position:fixed !important', 'data-has-aids={hasStudyAids ? "true" : "empty"}', 'location:', 'explanation:', 'connection:', 'reflection:', 'prayer:', 'text-align:left', ':global(html[data-lesson-toc="visible"])', ':global(html[data-study-aids="visible"])', 'focusAidsTrigger', 'focusTocTrigger', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lesson-dock-step', 'bottom:calc(100% + 8px)', 'document.dispatchEvent(new CustomEvent("bibli:tts-close"))']) {
     if (!lessonDetail.includes(token)) problems.push(`lecciones/[slug].astro: falta UI moderna de lección (${token})`);
   }
   if (lessonDetail.includes('class="lesson-pagination"')) problems.push("lecciones/[slug].astro: la navegación anterior/siguiente inferior debe vivir solo en el dock/toolbar");
@@ -358,7 +358,7 @@ if (!fs.existsSync(globalTtsPath)) {
   problems.push("falta src/components/GlobalTTS.astro");
 } else {
   const globalTts = fs.readFileSync(globalTtsPath, "utf8");
-  for (const token of ["speechSynthesis", "SpeechSynthesisUtterance", "bibli-tts-voice-", "bibli-tts-rate-v1", "--header-height", "visualViewport", "syncFloatingUiOffset", "--tts-player-offset", "profile:auto", "Bibli · Automática", "Bibli · Automatic", "prepareSpeechText", "bibleReferencePattern", "Extended_Pictographic", "getBestVoice", "getCuratedProfileVoices", ".tts-launcher[hidden]", 'root.classList.add("is-open")', 'rateMultiplier', 'legacyName', 'bibli:tts-open', 'bibli:tts-opening', 'data-lesson-dock="true"', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lessonIntro', 'bibli:reader-preferences-opening']) {
+  for (const token of ["speechSynthesis", "SpeechSynthesisUtterance", "bibli-tts-voice-", "bibli-tts-rate-v1", "--header-height", "visualViewport", "syncFloatingUiOffset", "--tts-player-offset", "profile:auto", "Bibli · Automática", "Bibli · Automatic", "prepareSpeechText", "bibleReferencePattern", "Extended_Pictographic", "getBestVoice", "getCuratedProfileVoices", ".tts-launcher[hidden]", 'root.classList.add("is-open")', 'root.hidden = false', 'player.hidden = false', 'hasReadableContent || lessonDockActive()', 'rateMultiplier', 'legacyName', 'bibli:tts-open', 'bibli:tts-opening', 'data-lesson-dock="true"', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lessonIntro', 'bibli:reader-preferences-opening']) {
     if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: falta soporte requerido (${token})`);
   }
   const hasTtsPlayerOpenState =
@@ -366,6 +366,12 @@ if (!fs.existsSync(globalTtsPath)) {
     /dataset\.ttsPlayerOpen\s*=/.test(globalTts);
   if (!hasTtsPlayerOpenState) {
     problems.push("GlobalTTS.astro: falta soporte requerido (estado data-tts-player-open)");
+  }
+  if (/\blet\s+mediaSession\s*:|\blet\s+audioSession\s*:|\bnavigator\s+as\s+Navigator/.test(globalTts)) {
+    problems.push("GlobalTTS.astro: el script define:vars debe ser JavaScript válido en navegador, sin sintaxis TypeScript");
+  }
+  if (!globalTts.includes('document.addEventListener("bibli:tts-toggle"')) {
+    problems.push("GlobalTTS.astro: falta el listener del botón Escuchar");
   }
 }
 
@@ -819,6 +825,14 @@ for (const [token, message] of [
   ['event.key !== "ArrowDown"', "El menú global debe permitir apertura y foco por teclado con Flecha abajo"],
   ['role="group"', "Los filtros de búsqueda global deben exponer semántica de grupo"],
   ['enterkeyhint="search"', "La búsqueda global debe optimizar el teclado móvil"],
+  ['data-global-search-clear', "La búsqueda global debe incluir un control explícito para borrar el texto"],
+  ['focusSearchInput()', "La búsqueda global debe enfocar el campo al abrirse"],
+  ['searchShell.removeAttribute("inert")', "La búsqueda global debe hacerse enfocable antes de mover el foco"],
+  ['searchShell.setAttribute("inert", "")', "La búsqueda global cerrada debe quedar fuera de la navegación por foco"],
+  ['void searchShell.offsetWidth', "La búsqueda global debe materializar su estado abierto antes de enfocar el campo"],
+  ['bibli:global-search-close', "La búsqueda global debe poder cerrarse al abrir otra herramienta"],
+  ['grid-template-rows:auto minmax(0,1fr) auto', "La búsqueda global debe mantener filtros/resultados/acción avanzada dentro del viewport"],
+  ['flex-wrap:nowrap !important', "Los filtros de búsqueda móvil deben permanecer en una sola fila desplazable"],
   ['autocapitalize="none"', "La búsqueda global no debe alterar consultas mediante autocapitalización"],
   ['searchResults.setAttribute("aria-busy", "true")', "La búsqueda global debe anunciar cuando está cargando su índice"],
   ['role="status"', "El aviso de actualización debe exponerse como estado accesible"],
@@ -936,12 +950,16 @@ if (!fs.existsSync(homeStudyVisualPath)) {
   }
 }
 
+for (const token of ["foldSearchTextWithMap", "highlightMatches", "bibli:global-search-toggle"]) {
+  if (!baseLayout.includes(token)) problems.push(`BaseLayout.astro: falta soporte robusto de búsqueda (${token})`);
+}
+
 const contextDockPath = path.join(root, "src", "components", "ContextDock.astro");
 if (!fs.existsSync(contextDockPath)) {
   problems.push("falta src/components/ContextDock.astro");
 } else {
   const contextDock = fs.readFileSync(contextDockPath, "utf8");
-  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current"]) {
+  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current", "bibli:global-search-toggle"]) {
     if (!contextDock.includes(token)) problems.push(`ContextDock.astro: falta navegador contextual global (${token})`);
   }
 }

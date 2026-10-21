@@ -722,6 +722,7 @@ const languageTarget = alternateLanguage ?? {
       data-search-close-label={activeUi.searchClose}
       data-search-icon-label={activeUi.searchIcon}
       aria-hidden="true"
+      inert
     >
       <form
         id="bibli-global-search"
@@ -738,6 +739,7 @@ const languageTarget = alternateLanguage ?? {
           id="global-search"
           name="q"
           type="search"
+          inputmode="search"
           placeholder={activeUi.searchPlaceholder}
           autocomplete="off"
           autocapitalize="none"
@@ -747,6 +749,16 @@ const languageTarget = alternateLanguage ?? {
           aria-keyshortcuts="/ Control+K Meta+K"
           data-global-search-input
         />
+        <button
+          type="button"
+          class="global-search-clear"
+          data-global-search-clear
+          aria-label={lang === "en" ? "Clear search" : "Borrar búsqueda"}
+          title={lang === "en" ? "Clear search" : "Borrar búsqueda"}
+          hidden
+        >
+          <Icon name="close" size={16} />
+        </button>
       </form>
 
       <div class="global-search-popover" data-global-search-popover hidden>
@@ -838,6 +850,7 @@ const languageTarget = alternateLanguage ?? {
     const searchForm = document.querySelector("[data-global-search-form]");
     const searchInput = document.querySelector("[data-global-search-input]");
     const searchInputIcon = document.querySelector("[data-global-search-input-icon]");
+    const searchClear = document.querySelector("[data-global-search-clear]");
     const searchSubmit = document.querySelector("[data-global-search-submit]");
     const searchPopover = document.querySelector("[data-global-search-popover]");
     const searchFilters = document.querySelector("[data-global-search-filters]");
@@ -1067,31 +1080,72 @@ const languageTarget = alternateLanguage ?? {
         .replaceAll("'", "&#039;");
     }
 
-    function escapeRegExp(value) {
-      return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
-
     function getHighlightWords(query) {
       return Array.from(
         new Set(
           normalizeText(query)
             .split(/\s+/)
-            .filter((word) => word.length >= 3)
+            .filter((word) => word.length >= 2)
         )
       );
     }
 
-    function highlightMatches(value, query) {
-      const safeValue = escapeHtml(value);
-      const words = getHighlightWords(query);
+    function foldSearchTextWithMap(value) {
+      const chars = Array.from(String(value ?? ""));
+      let folded = "";
+      const map = [];
 
-      if (words.length === 0) {
-        return safeValue;
+      chars.forEach((char, sourceIndex) => {
+        const normalized = normalizeText(char);
+        for (const unit of Array.from(normalized)) {
+          folded += unit;
+          map.push(sourceIndex);
+        }
+      });
+
+      return { chars, folded, map };
+    }
+
+    function highlightMatches(value, query) {
+      const source = String(value ?? "");
+      const words = getHighlightWords(query);
+      if (words.length === 0 || !source) return escapeHtml(source);
+
+      const { chars, folded, map } = foldSearchTextWithMap(source);
+      const ranges = [];
+
+      for (const word of words) {
+        let from = 0;
+        while (from < folded.length) {
+          const matchIndex = folded.indexOf(word, from);
+          if (matchIndex < 0) break;
+          const start = map[matchIndex];
+          const endMapIndex = matchIndex + word.length - 1;
+          const end = (map[endMapIndex] ?? start) + 1;
+          if (Number.isInteger(start) && end > start) ranges.push([start, end]);
+          from = matchIndex + Math.max(1, word.length);
+        }
       }
 
-      const pattern = new RegExp(`(${words.map(escapeRegExp).join("|")})`, "gi");
+      if (ranges.length === 0) return escapeHtml(source);
 
-      return safeValue.replace(pattern, "<mark>$1</mark>");
+      ranges.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const merged = [];
+      for (const range of ranges) {
+        const previous = merged[merged.length - 1];
+        if (previous && range[0] <= previous[1]) previous[1] = Math.max(previous[1], range[1]);
+        else merged.push([...range]);
+      }
+
+      let output = "";
+      let cursor = 0;
+      for (const [start, end] of merged) {
+        output += escapeHtml(chars.slice(cursor, start).join(""));
+        output += `<mark>${escapeHtml(chars.slice(start, end).join(""))}</mark>`;
+        cursor = end;
+      }
+      output += escapeHtml(chars.slice(cursor).join(""));
+      return output;
     }
 
     async function loadSearchItems() {
@@ -1162,6 +1216,20 @@ const languageTarget = alternateLanguage ?? {
       document.dispatchEvent(new CustomEvent("bibli:global-search-state", { detail: { open } }));
     }
 
+    function focusSearchInput() {
+      if (!(searchInput instanceof HTMLInputElement)) return false;
+      try {
+        searchInput.focus({ preventScroll: true });
+      } catch {
+        searchInput.focus();
+      }
+      try {
+        const end = searchInput.value.length;
+        searchInput.setSelectionRange(end, end);
+      } catch {}
+      return document.activeElement === searchInput;
+    }
+
     function openSearchShell({ trigger = null } = {}) {
       if (!searchShell) return;
       if (trigger instanceof HTMLElement) lastSearchTrigger = trigger;
@@ -1169,19 +1237,33 @@ const languageTarget = alternateLanguage ?? {
       document.dispatchEvent(new CustomEvent("bibli:global-search-opening"));
       document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
       document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+
+      // Make the search field focusable before moving focus. Keeping the closed shell
+      // inert (rather than visibility:hidden) lets the same trusted click/tap open the
+      // mobile keyboard reliably.
+      searchShell.removeAttribute("inert");
       searchShell.classList.add("is-open");
       searchShell.setAttribute("aria-hidden", "false");
       syncSearchTriggerState(true);
       syncSearchSubmitIcon();
       syncSearchInputDecoration();
-      // Keep this focus inside the originating user gesture so mobile browsers open the keyboard immediately.
-      if (searchInput instanceof HTMLInputElement) {
-        searchInput.focus({ preventScroll: true });
-        window.requestAnimationFrame(() => {
-          searchInput.focus({ preventScroll: true });
-          syncVisualViewportMetrics();
-        });
-      }
+
+      // Force the open state to participate in layout before focus. This keeps focus
+      // synchronous with the original user gesture on mobile and also makes PC focus
+      // deterministic.
+      void searchShell.offsetWidth;
+      focusSearchInput();
+      queueMicrotask(() => {
+        if (searchShell.classList.contains("is-open") && document.activeElement !== searchInput) {
+          focusSearchInput();
+        }
+      });
+      window.requestAnimationFrame(() => {
+        if (searchShell.classList.contains("is-open") && document.activeElement !== searchInput) {
+          focusSearchInput();
+        }
+        syncVisualViewportMetrics();
+      });
       void renderSearchResults(searchInput?.value ?? "");
     }
 
@@ -1191,6 +1273,7 @@ const languageTarget = alternateLanguage ?? {
       const hadFocusInside = searchShell.contains(document.activeElement);
       searchShell.classList.remove("is-open");
       searchShell.setAttribute("aria-hidden", "true");
+      searchShell.setAttribute("inert", "");
       closeSearchPopover();
       syncSearchTriggerState(false);
       syncSearchSubmitIcon();
@@ -1236,9 +1319,9 @@ const languageTarget = alternateLanguage ?? {
     }
 
     function syncSearchInputDecoration() {
-      if (!(searchInputIcon instanceof HTMLElement)) return;
       const hasQuery = Boolean(searchInput instanceof HTMLInputElement && searchInput.value.trim());
-      searchInputIcon.hidden = hasQuery;
+      if (searchInputIcon instanceof HTMLElement) searchInputIcon.hidden = hasQuery;
+      if (searchClear instanceof HTMLButtonElement) searchClear.hidden = !hasQuery;
     }
 
     function updateAllResultsLink(query, _hasResults = false) {
@@ -1562,6 +1645,13 @@ const languageTarget = alternateLanguage ?? {
       }
       openSearchShell({ trigger });
     });
+    document.addEventListener("bibli:global-search-open", (event) => {
+      const trigger = event instanceof CustomEvent ? event.detail?.trigger : null;
+      openSearchShell({ trigger });
+    });
+    document.addEventListener("bibli:global-search-close", () => closeSearchShell());
+    document.addEventListener("bibli:reader-preferences-opening", () => closeSearchShell());
+    document.addEventListener("bibli:tts-opening", () => closeSearchShell());
 
     searchSubmit?.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -1618,9 +1708,21 @@ const languageTarget = alternateLanguage ?? {
       }, 120);
     });
 
+    searchClear?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!(searchInput instanceof HTMLInputElement)) return;
+      window.clearTimeout(globalSearchDebounceTimer);
+      searchInput.value = "";
+      activeSearchType = ALL_SEARCH_TYPE;
+      syncSearchInputDecoration();
+      focusSearchInput();
+      void renderSearchResults("");
+    });
+
     searchInput?.addEventListener("focus", () => {
-      openSearchShell();
-      renderSearchResults(searchInput.value);
+      if (!searchShell?.classList.contains("is-open")) openSearchShell();
+      else renderSearchResults(searchInput.value);
     });
 
     searchPopover?.addEventListener("click", (event) => {
@@ -3884,15 +3986,13 @@ border-color: var(--border-color);
     flex-direction:column-reverse;
     gap:8px;
     opacity:0;
-    visibility:hidden;
     pointer-events:none;
     transform:translate(-50%,12px) scale(.985);
     transform-origin:bottom center;
-    transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out),visibility 180ms ease;
+    transition:opacity 180ms var(--ease-out),transform 180ms var(--ease-out);
   }
   .dock-search-shell.is-open {
     opacity:1;
-    visibility:visible;
     pointer-events:auto;
     transform:translate(-50%,0) scale(1);
   }
@@ -3910,28 +4010,80 @@ border-color: var(--border-color);
     display:grid; place-items:center; color:var(--accent); pointer-events:none; z-index:1;
   }
   .dock-search-shell .global-search-input-icon[hidden] { display:none !important; }
-  .dock-search-shell .global-search-form input { height:48px; width:100%; padding-left:46px !important; padding-right:16px !important; font-size:.95rem; transition:padding-left 140ms ease; }
+  .dock-search-shell .global-search-form input { height:48px; width:100%; padding-left:46px !important; padding-right:48px !important; font-size:.95rem; transition:padding-left 140ms ease; }
   .dock-search-shell .global-search-form:has(.global-search-input-icon[hidden]) input { padding-left:16px !important; }
+  .dock-search-shell .global-search-clear {
+    position:absolute;
+    right:7px;
+    top:50%;
+    transform:translateY(-50%);
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:var(--text-muted);
+    cursor:pointer;
+    z-index:2;
+  }
+  .dock-search-shell .global-search-clear[hidden] { display:none !important; }
+  .dock-search-shell .global-search-clear:hover,
+  .dock-search-shell .global-search-clear:focus-visible { background:var(--accent-soft); color:var(--accent); }
   .dock-search-shell .global-search-popover {
     position:relative !important;
     inset:auto !important;
     width:100% !important;
     max-width:none !important;
     max-height:min(62dvh,520px);
-    overflow:auto !important;
-    padding:14px !important;
+    display:grid !important;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    gap:9px !important;
+    overflow:hidden !important;
+    padding:12px !important;
     border-radius:18px !important;
     transform-origin:bottom center !important;
     box-shadow:0 -12px 32px rgba(15,23,42,.10) !important;
   }
-  .dock-search-shell .global-search-results { max-height:min(42dvh,340px); }
-  .dock-search-shell .global-search-all { min-height:46px; border-radius:12px; }
+  .dock-search-shell .global-search-filters {
+    flex-wrap:nowrap !important;
+    gap:6px;
+    overflow-x:auto !important;
+    overflow-y:hidden;
+    padding:1px 1px 3px;
+    scrollbar-width:none;
+    overscroll-behavior-inline:contain;
+    scroll-snap-type:x proximity;
+  }
+  .dock-search-shell .global-search-filters::-webkit-scrollbar { display:none; }
+  .dock-search-shell .global-search-filters button {
+    min-height:30px;
+    padding:0 9px;
+    border-radius:999px;
+    font-size:.74rem;
+    white-space:nowrap;
+    scroll-snap-align:start;
+  }
+  .dock-search-shell .global-search-filters button span { font-size:.7rem; }
+  .dock-search-shell .global-search-results { min-height:0; max-height:min(42dvh,340px); overflow-y:auto; }
+  .dock-search-shell .global-search-all {
+    position:relative;
+    z-index:2;
+    min-height:40px;
+    border-radius:11px;
+    font-size:.82rem;
+    box-shadow:0 -1px 0 color-mix(in srgb,var(--border-color) 72%,transparent);
+  }
   @media(max-width:760px){
     .site-header.search-open .logo { display:inline-flex !important; }
     .site-header.search-open .language-switch,
     .site-header.search-open .theme-quick-toggle { display:inline-flex !important; }
-    .dock-search-shell { bottom:calc(70px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); }
-    .dock-search-shell .global-search-popover { max-height:min(66dvh,500px); }
+    .dock-search-shell { bottom:calc(82px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); }
+    .dock-search-shell .global-search-popover { max-height:min(58dvh,430px); }
+    .dock-search-shell .global-search-results { max-height:min(35dvh,280px); }
+    .dock-search-shell .global-search-all { min-height:38px; font-size:.78rem; }
 
     /* When the software keyboard reduces the visual viewport, pin Search inside the
        visible area instead of letting the browser pan the fixed shell behind the keyboard. */
@@ -3952,6 +4104,10 @@ border-color: var(--border-color);
       max-height:calc(var(--visual-viewport-height,100dvh) - 76px) !important;
       box-shadow:0 10px 28px rgba(15,23,42,.10) !important;
       overscroll-behavior:contain;
+    }
+    html[data-virtual-keyboard="open"] .dock-search-shell .global-search-results {
+      max-height:none !important;
+      min-height:0;
     }
   }
 

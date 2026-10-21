@@ -656,12 +656,14 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     });
     dockMoreToggle?.addEventListener("click", (event) => {
       event.stopPropagation();
+      document.dispatchEvent(new CustomEvent("bibli:global-search-close"));
       setDockMore(dockMoreToggle.getAttribute("aria-expanded") !== "true");
     });
     shell.querySelectorAll<HTMLButtonElement>("[data-dock-action]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.stopPropagation();
         const action = button.dataset.dockAction;
+        if (action !== "search") document.dispatchEvent(new CustomEvent("bibli:global-search-close"));
         if (action === "toc") setToc(document.documentElement.dataset.lessonToc !== "visible", false);
         if (action === "aids") setAids(document.documentElement.dataset.studyAids !== "visible", false);
         if (action === "reader") {

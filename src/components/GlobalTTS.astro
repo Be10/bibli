@@ -166,6 +166,25 @@ const copy = lang === "en"
     let resumeAfterVisibility = false;
     let foregroundRecoveryTimer = 0;
 
+    let mediaSession = null;
+    let audioSession = null;
+    try {
+      mediaSession = "mediaSession" in navigator ? navigator.mediaSession : null;
+    } catch {
+      mediaSession = null;
+    }
+    try {
+      audioSession = navigator.audioSession ?? null;
+    } catch {
+      audioSession = null;
+    }
+    const prepareAudioSession = () => {
+      try {
+        if (audioSession) audioSession.type = "playback";
+      } catch {}
+    };
+    prepareAudioSession();
+
     const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
     const syncCollapsedSurface = () => {
       const expanded = !player.hidden;
@@ -311,17 +330,37 @@ const copy = lang === "en"
       return [...lessonIntro, ...bodyChunks];
     };
 
+    const syncMediaSession = () => {
+      if (!mediaSession) return;
+      try {
+        mediaSession.playbackState = playing ? (paused ? "paused" : "playing") : "none";
+      } catch {}
+      try {
+        if (typeof MediaMetadata !== "undefined") {
+          const pageTitle = normalize(document.querySelector("h1")?.textContent) || document.title || "Bibli";
+          const partLabel = chunks.length ? `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}` : copy.ready;
+          mediaSession.metadata = new MediaMetadata({
+            title: pageTitle,
+            artist: partLabel,
+            album: lang === "en" ? "Bibli · Biblical Library" : "Bibli · Biblioteca Bíblica",
+          });
+        }
+      } catch {}
+    };
+
     const setStatus = () => {
       syncEstimatedTime();
       if (!(status instanceof HTMLElement)) return;
       if (!chunks.length) {
         status.textContent = copy.ready;
         if (miniStatus instanceof HTMLElement) miniStatus.textContent = copy.ready;
+        syncMediaSession();
         return;
       }
       const label = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
       status.textContent = label;
       if (miniStatus instanceof HTMLElement) miniStatus.textContent = label;
+      syncMediaSession();
     };
 
     const setPlayingUi = () => {
@@ -335,6 +374,7 @@ const copy = lang === "en"
       root.classList.toggle("is-playing", playing);
       root.classList.toggle("is-paused", paused);
       syncCollapsedSurface();
+      syncMediaSession();
     };
 
     const clearHighlight = () => {
@@ -478,6 +518,7 @@ const copy = lang === "en"
       const token = session;
       synth.cancel();
       const chunk = chunks[currentIndex];
+      prepareAudioSession();
       const utterance = new Utterance(chunk.text);
       const selectedVoice = getSelectedVoiceConfiguration();
       utterance.lang = selectedVoice.language;
@@ -532,15 +573,27 @@ const copy = lang === "en"
     const openPlayer = ({ autoplay = false } = {}) => {
       document.dispatchEvent(new CustomEvent("bibli:tts-opening"));
       const wasPlaying = playing;
-      if (!chunks.length || !wasPlaying) chunks = buildChunks();
-      if (!chunks.length) {
-        if (status instanceof HTMLElement) status.textContent = copy.noContent;
-        return;
-      }
+
+      // The dock can request TTS even when the floating launcher was hidden during
+      // initial hydration. Always reveal the component root before opening the player.
+      root.hidden = false;
       player.hidden = false;
       root.classList.add("is-open");
       syncCollapsedSurface();
       document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: true, active: playing } }));
+
+      if (!chunks.length || !wasPlaying) chunks = buildChunks();
+      if (!chunks.length) {
+        if (status instanceof HTMLElement) status.textContent = copy.noContent;
+        if (miniStatus instanceof HTMLElement) miniStatus.textContent = copy.noContent;
+        syncEstimatedTime();
+        requestAnimationFrame(() => {
+          syncFloatingUiOffset();
+          if (close instanceof HTMLButtonElement) close.focus();
+        });
+        return;
+      }
+
       setStatus();
       requestAnimationFrame(() => {
         syncFloatingUiOffset();
@@ -598,11 +651,7 @@ const copy = lang === "en"
       rateSelect.value = storedRate;
     }
 
-    launcher.addEventListener("click", () => openPlayer({ autoplay: true }));
-    mini?.addEventListener("click", () => openPlayer({ autoplay: false }));
-    close?.addEventListener("click", () => minimizePlayer());
-    stop?.addEventListener("click", () => stopSpeech({ reset: false }));
-    play?.addEventListener("click", () => {
+    const togglePlayback = () => {
       // If Android/iOS suspended the speech engine in the background, our logical
       // `playing` flag can outlive the native utterance. Recover by restarting the
       // current fragment instead of sending an ineffective pause/resume command.
@@ -637,17 +686,63 @@ const copy = lang === "en"
         resumeAfterVisibility = false;
         speakCurrent();
       }
-    });
-    previous?.addEventListener("click", () => {
+    };
+
+    const playFromMediaControl = () => {
+      if (playing && !paused && (synth.speaking || synth.pending) && !resumeAfterVisibility) {
+        setPlayingUi();
+        return;
+      }
+      if (playing && paused && (synth.speaking || synth.pending)) {
+        synth.resume();
+        paused = false;
+        resumeAfterVisibility = false;
+        setPlayingUi();
+        return;
+      }
+      resumeAfterVisibility = false;
+      speakCurrent();
+    };
+
+    const pauseFromMediaControl = () => {
+      if (!playing || paused) return;
+      synth.pause();
+      paused = true;
+      resumeAfterVisibility = false;
+      setPlayingUi();
+    };
+
+    const previousPart = () => {
       if (!chunks.length) chunks = buildChunks();
       currentIndex = Math.max(0, currentIndex - 1);
       speakCurrent();
-    });
-    next?.addEventListener("click", () => {
+    };
+
+    const nextPart = () => {
       if (!chunks.length) chunks = buildChunks();
       currentIndex = Math.min(Math.max(0, chunks.length - 1), currentIndex + 1);
       speakCurrent();
-    });
+    };
+
+    launcher.addEventListener("click", () => openPlayer({ autoplay: true }));
+    mini?.addEventListener("click", () => openPlayer({ autoplay: false }));
+    close?.addEventListener("click", () => minimizePlayer());
+    stop?.addEventListener("click", () => stopSpeech({ reset: false }));
+    play?.addEventListener("click", togglePlayback);
+    previous?.addEventListener("click", previousPart);
+    next?.addEventListener("click", nextPart);
+
+    if (mediaSession) {
+      const setMediaHandler = (action, handler) => {
+        try { mediaSession.setActionHandler(action, handler); } catch {}
+      };
+      setMediaHandler("play", playFromMediaControl);
+      setMediaHandler("pause", pauseFromMediaControl);
+      setMediaHandler("previoustrack", previousPart);
+      setMediaHandler("nexttrack", nextPart);
+      setMediaHandler("stop", () => stopSpeech({ reset: false }));
+      syncMediaSession();
+    }
     rateSelect?.addEventListener("change", () => {
       if (rateSelect instanceof HTMLSelectElement) localStorage.setItem(rateKey, rateSelect.value);
       syncEstimatedTime();
@@ -695,8 +790,11 @@ const copy = lang === "en"
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState !== "visible") {
         if (playing && !paused) resumeAfterVisibility = true;
+        syncMediaSession();
         return;
       }
+      prepareAudioSession();
+      syncMediaSession();
       recoverSpeechAfterForeground();
     });
     window.addEventListener("pageshow", recoverSpeechAfterForeground);
@@ -719,7 +817,7 @@ const copy = lang === "en"
     if ("onvoiceschanged" in synth) synth.onvoiceschanged = refreshVoices;
 
     const hasReadableContent = document.querySelector("[data-reader-content]");
-    if (hasReadableContent) {
+    if (hasReadableContent || lessonDockActive()) {
       root.hidden = false;
       launcher.hidden = false;
       setPlayingUi();
