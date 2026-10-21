@@ -302,6 +302,12 @@ if (!fs.existsSync(lessonDetailPath)) {
   for (const token of ["learning-page", "learning-grid", "lesson-toc-card", "lesson-toc", "current-section-status", "var(--header-height", "data-detail-root", 'data-detail-kind="lesson"', "data-persisted-root", "data-persisted-value", 'shell.dataset.persistedReady = "true"', 'completeButton.dataset.persistedReady = "true"', 'progressValue.dataset.persistedReady = "true"', ".lesson-section.is-prayer h2", "font-style: normal", 'window.addEventListener("pageshow"', 'lesson-mobile-dock', 'data-dock-action="reader"', 'data-dock-action="tts"', 'data-lesson-sheet-open', 'lesson-heading-icon', 'lesson-heading-icon svg', 'svgPaths: Record<string, string>', 'bibli:reader-preferences-open', 'bibli:tts-open', 'bibli:global-search-toggle', 'cleanHeadingLabel', 'Context navigator v3', 'position:fixed !important', 'data-has-aids={hasStudyAids ? "true" : "empty"}', 'location:', 'explanation:', 'connection:', 'reflection:', 'prayer:', 'text-align:left', ':global(html[data-lesson-toc="visible"])', ':global(html[data-study-aids="visible"])', 'focusAidsTrigger', 'focusTocTrigger', 'data-tts-lesson-title', 'data-tts-lesson-reference', 'lesson-dock-step', 'bottom:calc(100% + 8px)', 'document.dispatchEvent(new CustomEvent("bibli:tts-close"))']) {
     if (!lessonDetail.includes(token)) problems.push(`lecciones/[slug].astro: falta UI moderna de lección (${token})`);
   }
+  if (!(lessonDetail.includes('function setAids(visible: boolean, _persist = false, closeTransient = true)')
+    && lessonDetail.includes('function setToc(visible: boolean, _persist = false, closeTransient = true)')
+    && lessonDetail.includes('setAids(aidsMedia.matches ? false : true, false, false)')
+    && lessonDetail.includes('setToc(tocMedia.matches ? false : true, false, false)'))) {
+    problems.push("lecciones/[slug].astro: cambiar Estudio/Lectura no debe cerrar el reproductor TTS al restaurar Contenido/Ayudas");
+  }
   if (lessonDetail.includes('class="lesson-pagination"')) problems.push("lecciones/[slug].astro: la navegación anterior/siguiente inferior debe vivir solo en el dock/toolbar");
   if (lessonDetail.includes('data-route-progress-value data-persisted-value')) problems.push("lecciones/[slug].astro: el progreso 0% no debe ocultarse durante la hidratación");
   for (const forbidden of ["bibli-study-aids-v1", "bibli-lesson-toc-v1", 'style="visibility:hidden"']) {
@@ -372,6 +378,11 @@ if (!fs.existsSync(globalTtsPath)) {
   }
   if (!globalTts.includes('document.addEventListener("bibli:tts-toggle"')) {
     problems.push("GlobalTTS.astro: falta el listener del botón Escuchar");
+  }
+  if (!(globalTts.includes('const playerWasOpen = !player.hidden')
+    && globalTts.includes('stopSpeech({ reset: true })')
+    && globalTts.includes('detail: { open: !player.hidden, active: false }'))) {
+    problems.push("GlobalTTS.astro: al cambiar Estudio/Lectura debe detener el audio sin cerrar la superficie del reproductor");
   }
 }
 

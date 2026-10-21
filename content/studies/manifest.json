@@ -2,8 +2,8 @@
   "schema_version": "1.1.0",
   "source": "SharePoint/OneDrive snapshot",
   "revision_policy": "highest_semver_per_lesson_id",
-  "source_file_count": 311,
-  "file_count": 310,
+  "source_file_count": 331,
+  "file_count": 330,
   "superseded_revision_count": 1,
   "files": [
     {
@@ -5896,6 +5896,386 @@
         "1.0.0"
       ],
       "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-311-numeros-11-16-a-30-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-311-numeros-11-16-a-30-v1.0.0.md",
+      "sha256": "f40561d4b715dc5bef7ccdd0be37db6a466ee046b4b7fb8585172a7d96c75ac0",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--11-16-30--l311",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 311,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 11:16-30",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-312-numeros-11-31-a-35-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-312-numeros-11-31-a-35-v1.0.0.md",
+      "sha256": "6d31af1adcf550ef57b130d971c245cf4a1492cacc6da21cd3e7c9eca93ba854",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--11-31-35--l312",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 312,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 11:31-35",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-313-numeros-12-1-a-16-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-313-numeros-12-1-a-16-v1.0.0.md",
+      "sha256": "575ad9976babc3123b8b7c7636b0c7f56bc15d64f6a443f0dd7b7960674cc4b1",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--12-01-16--l313",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 313,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 12:1-16",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-murmuracion-crisis-desierto"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-314-numeros-13-1-a-24-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-314-numeros-13-1-a-24-v1.0.0.md",
+      "sha256": "6fc23f60174e9cc9de774a66f98f012fcb1df45e8936d78be9d6e7df59c0c04c",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--13-01-24--l314",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 314,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 13:1-24",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-315-numeros-13-25-a-33-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-315-numeros-13-25-a-33-v1.0.0.md",
+      "sha256": "8907f663b644574d0a7c4ba8543db984c3d4575159ca8093ec8eb0030617bb94",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--13-25-33--l315",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 315,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 13:25-33",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-316-numeros-14-1-a-10-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-316-numeros-14-1-a-10-v1.0.0.md",
+      "sha256": "dde59cc226177303d8c03b6fa3d997f667642fff7535f559954bb2986e390086",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--14-01-10--l316",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 316,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 14:1-10",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-317-numeros-14-11-a-25-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-317-numeros-14-11-a-25-v1.0.0.md",
+      "sha256": "6ec07fc5ca2261dd8d8661e83c4f5719f4372394e8caa456549217a17dff7582",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--14-11-25--l317",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 317,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 14:11-25",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-318-numeros-14-26-a-38-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-318-numeros-14-26-a-38-v1.0.0.md",
+      "sha256": "5ac1bb652fbcff5d8cc4e2e4a74f668b3f661f37c9895d5c564b64eb89b46521",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--14-26-38--l318",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 318,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 14:26-38",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-319-numeros-14-39-a-45-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-319-numeros-14-39-a-45-v1.0.0.md",
+      "sha256": "597a7743234cd094983a4b82bd4a9681220e1a15379a4bd2473f9e1f23cb3ace",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--14-39-45--l319",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 319,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 14:39-45",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-exploracion-canaan-crisis-fe"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-320-numeros-15-1-a-16-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-320-numeros-15-1-a-16-v1.0.0.md",
+      "sha256": "93ec2b51a66042a574a97b1bf86711fd823c43ffabf9daba31a7f775d092c42a",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--15-01-16--l320",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 320,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 15:1-16",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-ofrendas-santidad-memoria"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-321-numeros-15-17-a-21-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-321-numeros-15-17-a-21-v1.0.0.md",
+      "sha256": "493d3d7e263933041f5871084c264a973714b1a52e15f0c08c1cab6fe8b5a831",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--15-17-21--l321",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 321,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 15:17-21",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-ofrendas-santidad-memoria"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-322-numeros-15-22-a-31-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-322-numeros-15-22-a-31-v1.0.0.md",
+      "sha256": "78b86e8606d5034498ad06c1118a8f948188fbef9c3e9978a5478fe58c590c34",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--15-22-31--l322",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 322,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 15:22-31",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-ofrendas-santidad-memoria"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-323-numeros-15-32-a-36-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-323-numeros-15-32-a-36-v1.0.0.md",
+      "sha256": "d98ef8bb7f8d03edc4cfbd5b27a9cc14f4dcef356ff1dd350d1d26458173b9c8",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--15-32-36--l323",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 323,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 15:32-36",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-ofrendas-santidad-memoria"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-324-numeros-15-37-a-41-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-324-numeros-15-37-a-41-v1.0.0.md",
+      "sha256": "f737a5c9f65470668381d9f9bbfa73f43f4a1472f836985d2869f04e248f7a7f",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--15-37-41--l324",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 324,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 15:37-41",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-ofrendas-santidad-memoria"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-325-numeros-16-1-a-11-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-325-numeros-16-1-a-11-v1.0.0.md",
+      "sha256": "cc90e2583d322ade5c409ab2cefc319ae67c1fa1e99074ce6d41089f924fd6ed",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--16-01-11--l325",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 325,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 16:1-11",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-326-numeros-16-12-a-19-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-326-numeros-16-12-a-19-v1.0.0.md",
+      "sha256": "e72f7e552c7b6044817da0742b50d0b55e8514a3d16ed5c535d70ca71ccc55ce",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--16-12-19--l326",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 326,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 16:12-19",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-327-numeros-16-20-a-35-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-327-numeros-16-20-a-35-v1.0.0.md",
+      "sha256": "088c2c5a1bc758381af15063d8b81ad0f4114bf3f3d64f73042482f10eaa5165",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--16-20-35--l327",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 327,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 16:20-35",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-328-numeros-16-36-a-40-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-328-numeros-16-36-a-40-v1.0.0.md",
+      "sha256": "53c14b61a995fca2f6ea5ebdc2df1fba906008bf73fca1f409fea21ec67d8590",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--16-36-40--l328",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 328,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 16:36-40",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-329-numeros-16-41-a-50-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-329-numeros-16-41-a-50-v1.0.0.md",
+      "sha256": "e96c7461199a299e4d3b16e8a5377f28c17f0799942e9a5916ef7c41ad26b4b0",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--16-41-50--l329",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 329,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 16:41-50",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
+    },
+    {
+      "path": "Pentateuco/Numeros/pentateuco-leccion-330-numeros-17-1-a-13-v1.0.0.md",
+      "source_path": "Pentateuco/Numeros/pentateuco-leccion-330-numeros-17-1-a-13-v1.0.0.md",
+      "sha256": "00580f64d31b40a9054ff5a7096f95e06f28a8e2c96f0248c42674098f2666d8",
+      "artifact_type": "bible_study_lesson",
+      "content_type": "lesson",
+      "mode": "official",
+      "lesson_id": "pentateuco-principal--numeros--17-01-13--l330",
+      "route_id": "pentateuco-principal",
+      "route_lesson_number": 330,
+      "book_id": "numeros",
+      "primary_reference": "Numeros 17:1-13",
+      "translation": "RVR1960",
+      "content_version": "1.0.0",
+      "available_versions": [
+        "1.0.0"
+      ],
+      "section_id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio"
     }
   ]
 }

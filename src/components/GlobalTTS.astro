@@ -754,11 +754,36 @@ const copy = lang === "en"
     });
 
     document.addEventListener("bibli:lesson-mode-change", () => {
-      if (playing) stopSpeech({ reset: true });
+      const playerWasOpen = !player.hidden;
+      const miniWasVisible = mini instanceof HTMLButtonElement && !mini.hidden;
+
+      // Study and Reading expose different source text. Never continue speaking the
+      // previous mode after the visible content changes. Reset the queue, but keep
+      // the same player surface open so the mode switch does not feel like closing
+      // the listening tool. The user explicitly starts the new mode when ready.
+      stopSpeech({ reset: true });
       chunks = [];
+
+      if (playerWasOpen) {
+        root.hidden = false;
+        player.hidden = false;
+        root.classList.add("is-open");
+      } else if (miniWasVisible) {
+        root.hidden = false;
+        player.hidden = true;
+        root.classList.remove("is-open");
+      }
+
       requestAnimationFrame(() => {
         chunks = buildChunks();
+        currentIndex = 0;
         setStatus();
+        syncEstimatedTime();
+        syncCollapsedSurface();
+        syncFloatingUiOffset();
+        document.dispatchEvent(new CustomEvent("bibli:tts-state", {
+          detail: { open: !player.hidden, active: false },
+        }));
       });
     });
 

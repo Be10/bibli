@@ -585,7 +585,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       else delete document.documentElement.dataset.lessonSheetOpen;
     };
 
-    function setAids(visible: boolean, _persist = false) {
+    function setAids(visible: boolean, _persist = false, closeTransient = true) {
       if (visible && aidsMedia.matches && document.documentElement.dataset.lessonToc === "visible") {
         document.documentElement.dataset.lessonToc = "hidden";
         tocToggle?.setAttribute("aria-expanded", "false");
@@ -599,8 +599,10 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       }
       shell.querySelector<HTMLButtonElement>('[data-dock-action="aids"]')?.setAttribute("aria-pressed", String(visible));
       if (visible) {
-        document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
-        document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+        if (closeTransient) {
+          document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
+          document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+        }
         setDockMore(false);
       }
       syncLessonSheetState();
@@ -617,17 +619,19 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       if (aidsToggle) aidsToggle.hidden = normalized !== "study";
       if (tocToggle) tocToggle.hidden = normalized !== "study";
       if (normalized === "reading") {
-        setAids(false, false);
-        setToc(false, false);
+        setAids(false, false, false);
+        setToc(false, false, false);
       } else {
-        setAids(aidsMedia.matches ? false : true, false);
-        setToc(tocMedia.matches ? false : true, false);
+        // Restoring the desktop study sidebars is part of the mode transition, not
+        // a request to dismiss transient tools such as the TTS player.
+        setAids(aidsMedia.matches ? false : true, false, false);
+        setToc(tocMedia.matches ? false : true, false, false);
       }
       localStorage.setItem(MODE_KEY, normalized);
       document.dispatchEvent(new CustomEvent("bibli:lesson-mode-change", { detail: { mode: normalized } }));
     }
 
-    function setToc(visible: boolean, _persist = false) {
+    function setToc(visible: boolean, _persist = false, closeTransient = true) {
       if (visible && tocMedia.matches && document.documentElement.dataset.studyAids === "visible") {
         document.documentElement.dataset.studyAids = "hidden";
         if (aidsToggle) {
@@ -641,8 +645,10 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       tocToggle?.setAttribute("aria-expanded", String(visible));
       shell.querySelector<HTMLButtonElement>('[data-dock-action="toc"]')?.setAttribute("aria-pressed", String(visible));
       if (visible) {
-        document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
-        document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+        if (closeTransient) {
+          document.dispatchEvent(new CustomEvent("bibli:reader-preferences-close"));
+          document.dispatchEvent(new CustomEvent("bibli:tts-close"));
+        }
         setDockMore(false);
       }
       syncLessonSheetState();

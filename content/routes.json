@@ -490,6 +490,30 @@
           "description": "Números 11: murmuración después del Sinaí, juicio en Tabera, deseo de carne, desprecio del maná, agotamiento de Moisés y respuesta de Jehová a la crisis del pueblo.",
           "position": 50,
           "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-exploracion-canaan-crisis-fe",
+          "title": "Números: exploración de Canaán y crisis de fe",
+          "slug": "numeros-exploracion-canaan-crisis-fe",
+          "description": "Números 13–14: reconocimiento de Canaán, contraste entre fe y temor, rebelión de la congregación, intercesión de Moisés, sentencia sobre la generación incrédula y derrota de la expedición presuntuosa.",
+          "position": 51,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-ofrendas-santidad-memoria",
+          "title": "Números: ofrendas, santidad y memoria de la obediencia",
+          "slug": "numeros-ofrendas-santidad-memoria-obediencia",
+          "description": "Números 15: legislación para la futura vida en la tierra, ofrendas y participación del extranjero residente, expiación por pecados involuntarios, santidad del sábado y memoria visible de los mandamientos de Jehová.",
+          "position": 52,
+          "status": "Publicado"
+        },
+        {
+          "id": "pentateuco-numeros-rebelion-core-vindicacion-sacerdocio",
+          "title": "Números: rebelión de Coré y vindicación del sacerdocio",
+          "slug": "numeros-rebelion-core-vindicacion-sacerdocio",
+          "description": "Números 16–17: rebelión de Coré, Datán y Abiram contra Moisés y Aarón, juicio de Jehová, incensarios como memorial, intercesión de Aarón durante la mortandad y vara florecida que confirma la elección sacerdotal.",
+          "position": 53,
+          "status": "Publicado"
         }
       ]
     }
