@@ -1200,3 +1200,28 @@ function getExploreCount(item: ExploreItem) {
     }
   }
 </style>
+
+<style is:global>
+  /* BIBLI_UI_AUDIT_2026_10: advanced search follows the shared utility rhythm. */
+  [data-utility-kind="search"] .advanced-search-hero { gap: clamp(1.1rem, 2.6vw, 1.75rem); }
+  [data-utility-kind="search"] :is(.advanced-search-hero-card,.search-summary-card) {
+    padding: var(--ui-card-pad, 1rem) !important;
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm)) !important;
+  }
+  [data-utility-kind="search"] :is(.enhanced-search-panel,.advanced-explore-block) {
+    padding: var(--ui-panel-pad, 1rem) !important;
+    border-radius: var(--ui-panel-radius, 18px) !important;
+  }
+  [data-utility-kind="search"] :is(.search-stat-card,.search-result,.advanced-explore-card) {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm)) !important;
+  }
+  [data-utility-kind="search"] .advanced-explore-grid,
+  [data-utility-kind="search"] .enhanced-search-results { gap: var(--ui-card-gap, .8rem) !important; }
+  @media (max-width: 680px) {
+    [data-utility-kind="search"] .advanced-search-hero { gap: .8rem; }
+    [data-utility-kind="search"] :is(.enhanced-search-panel,.advanced-explore-block) { padding: .9rem !important; border-radius: 16px !important; }
+    [data-utility-kind="search"] :is(.advanced-search-hero-card,.search-summary-card,.search-stat-card,.search-result,.advanced-explore-card) { border-radius: 14px !important; }
+  }
+</style>

@@ -351,4 +351,128 @@
       background: Canvas;
     }
   }
+
+  /* BIBLI_UI_AUDIT_2026_10 */
+  /* Utility pages: compact, stable surfaces with the same control geometry as the rest of Bibli. */
+  main[data-utility-root] {
+    --utility-gap: var(--ui-section-gap, clamp(.78rem, 1.55vw, 1.05rem));
+    --utility-radius: var(--ui-hero-radius, 22px);
+    --utility-control-height: var(--ui-control-height, 44px);
+  }
+  main[data-utility-root] > :is(.hero,.offline-hero) {
+    border-radius: var(--ui-hero-radius, 22px);
+    box-shadow: var(--ui-shadow-panel, var(--shadow-sm));
+  }
+  main[data-utility-root] :where(.advanced-search-hero-card,.search-summary-card,.about-summary,.legal-hero-card,.map-summary-card) {
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  [data-utility-kind="search"] :is(.enhanced-search-panel,.advanced-explore-block) {
+    border-radius: var(--ui-panel-radius, 18px) !important;
+    padding: var(--ui-panel-pad, 1rem) !important;
+  }
+  [data-utility-kind="search"] :is(.search-stat-card,.search-result,.advanced-explore-card) {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  [data-utility-kind="search"] .search-control .search-input {
+    min-height: 50px;
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  [data-utility-kind="search"] .search-clear {
+    min-height: 38px;
+    border-radius: 10px;
+  }
+  .timeline-period-nav,
+  .utility-subnav {
+    border-radius: var(--ui-card-radius, 16px);
+    background: var(--surface-elevated);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .timeline-period-nav a,
+  .utility-subnav a {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  .map-jump-toolbar {
+    border-radius: var(--ui-panel-radius, 18px);
+    padding: var(--ui-panel-pad, 1rem);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  .map-jump-field select,
+  .map-jump-toolbar button {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  [data-utility-kind="about"] :where(.principle-card,.included-card),
+  [data-utility-kind="legal"] :where(.legal-checklist-card,.legal-resource-card,.version-legal-card),
+  [data-utility-kind="not-found"] .recovery-card {
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  /* Timeline: reduce oversized cards and match catalog/detail density. */
+  [data-utility-kind="timeline"] :is(.timeline-hero-card,.timeline-stat-card,.timeline-card) {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+  [data-utility-kind="timeline"] .timeline-stat-card { padding: var(--ui-card-pad, 1rem) !important; }
+  [data-utility-kind="timeline"] .timeline-period {
+    gap: var(--ui-card-gap, .8rem) !important;
+    padding: var(--ui-panel-pad, 1rem) !important;
+    border-radius: var(--ui-panel-radius, 18px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+  [data-utility-kind="timeline"] .timeline-periods { gap: var(--ui-section-gap, .9rem) !important; }
+  [data-utility-kind="timeline"] .timeline-list { gap: var(--ui-card-gap, .8rem) !important; }
+
+  /* Maps: controls use the same 44px/12px geometry and stable opaque surfaces. */
+  [data-utility-kind="map"] .map-shell {
+    margin-top: var(--ui-section-gap, 1rem) !important;
+    border-radius: var(--ui-hero-radius, 22px) !important;
+    box-shadow: var(--ui-shadow-panel, var(--shadow-panel)) !important;
+  }
+  [data-utility-kind="map"] .map-layer-switcher {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    background: var(--surface-elevated) !important;
+    box-shadow: var(--ui-shadow-panel, var(--shadow-panel)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  [data-utility-kind="map"] :is(.map-layer-current,.map-layer-button) {
+    min-height: var(--ui-control-height, 44px) !important;
+    border-radius: var(--ui-control-radius, 12px) !important;
+  }
+  [data-utility-kind="map-3d"] .map3d-page { gap: var(--ui-section-gap, 1rem) !important; }
+  [data-utility-kind="map-3d"] .map3d-shell {
+    border-radius: var(--ui-hero-radius, 22px) !important;
+    box-shadow: var(--ui-shadow-panel, var(--shadow-panel)) !important;
+  }
+  [data-utility-kind="map-3d"] .map3d-toolbar { gap: .5rem !important; }
+  [data-utility-kind="map-3d"] .map3d-toolbar button {
+    min-height: var(--ui-control-height, 44px) !important;
+    padding: 0 .8rem !important;
+    border-radius: var(--ui-control-radius, 12px) !important;
+    background: var(--surface-elevated) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  [data-utility-kind="map-3d"] .map3d-notes {
+    padding: var(--ui-panel-pad, 1rem) !important;
+    border-radius: var(--ui-panel-radius, 18px) !important;
+  }
+  [data-utility-kind="map-3d"] :is(.maplibregl-ctrl-group,.maplibregl-popup-content) {
+    border-radius: var(--ui-control-radius, 12px) !important;
+  }
+
+  @media (max-width: 760px) {
+    main[data-utility-root] { --utility-gap: .72rem; --utility-radius: 18px; }
+    main[data-utility-root] > :is(.hero,.offline-hero) { border-radius: 18px; }
+  }
+  @media (max-width: 520px) {
+    [data-utility-kind="search"] .search-clear { min-height: var(--ui-control-height, 44px); }
+  }
+  /* /BIBLI_UI_AUDIT_2026_10 */
 </style>

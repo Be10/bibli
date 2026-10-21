@@ -1635,6 +1635,16 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   @media(max-width:380px){
     .lesson-dock-action { min-width:34px !important; width:34px !important; flex-basis:34px !important; }
   }
+
+  /* Touch browsers can keep :hover latched after a tap. Visual state must follow ARIA, not sticky hover. */
+  @media (hover:none), (pointer:coarse){
+    [data-dock-action="search"]:active { transform:none !important; }
+    [data-dock-action="search"] :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }
+    .lesson-dock-action:hover:not([aria-expanded="true"]):not([aria-pressed="true"]) {
+      background:transparent !important;
+      color:var(--text-muted) !important;
+    }
+  }
   @media(max-width:920px){
     :global(html[data-lesson-toc="hidden"]) [data-dock-action="toc"],
     :global(html[data-study-aids="hidden"]) [data-dock-action="aids"] {

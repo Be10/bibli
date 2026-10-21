@@ -17,7 +17,7 @@ export function GET() {
     display: "standalone",
     display_override: ["standalone", "minimal-ui"],
     background_color: "#f7f7f8",
-    theme_color: "#765982",
+    theme_color: "#7b5439",
     categories: ["education", "books", "reference"],
     icons: [
       {

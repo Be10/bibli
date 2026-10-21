@@ -7,6 +7,7 @@ import GlobalTTS from "../components/GlobalTTS.astro";
 import CatalogDesignSystem from "../components/CatalogDesignSystem.astro";
 import DetailDesignSystem from "../components/DetailDesignSystem.astro";
 import UtilityDesignSystem from "../components/UtilityDesignSystem.astro";
+import BibleDesignSystem from "../components/BibleDesignSystem.astro";
 import ContextDock from "../components/ContextDock.astro";
 
 type LanguageCode = "es" | "en";
@@ -817,6 +818,7 @@ const languageTarget = alternateLanguage ?? {
     <CatalogDesignSystem />
     <DetailDesignSystem />
     <UtilityDesignSystem />
+    <BibleDesignSystem />
     <script>
   import {
     SEARCH_FILTER_ORDER,
@@ -4116,4 +4118,120 @@ border-color: var(--border-color);
     box-shadow:0 -12px 32px rgba(0,0,0,.18) !important;
   }
   @media(prefers-reduced-motion:reduce){ .dock-search-shell { transition:none; } }
+
+  /* BIBLI_UI_AUDIT_2026_10 */
+  /* Cross-app visual contract: shared dimensions, surfaces and spacing. */
+  :root {
+    --ui-control-height: 44px;
+    --ui-control-radius: 12px;
+    --ui-card-radius: 16px;
+    --ui-panel-radius: 18px;
+    --ui-hero-radius: 22px;
+    --ui-page-gutter: 16px;
+    --ui-section-gap: clamp(.78rem, 1.55vw, 1.05rem);
+    --ui-card-gap: clamp(.62rem, 1.15vw, .82rem);
+    --ui-panel-pad: clamp(1rem, 2vw, 1.35rem);
+    --ui-card-pad: clamp(.9rem, 1.55vw, 1.1rem);
+    --ui-shadow-card: 0 8px 24px rgba(15, 23, 42, .04);
+    --ui-shadow-panel: 0 14px 36px rgba(15, 23, 42, .07);
+  }
+
+  html[data-theme="dark"] {
+    --ui-shadow-card: 0 9px 24px rgba(0, 0, 0, .14);
+    --ui-shadow-panel: 0 16px 38px rgba(0, 0, 0, .18);
+  }
+
+  .button {
+    min-height: var(--ui-control-height);
+    border-radius: var(--ui-control-radius);
+    gap: .48rem;
+    padding-inline: 1rem;
+  }
+
+  .hero {
+    border-radius: var(--ui-hero-radius);
+    padding: clamp(1.3rem, 3vw, 2rem);
+    box-shadow: var(--ui-shadow-panel);
+  }
+
+  .card {
+    border-radius: var(--ui-card-radius);
+    padding: var(--ui-card-pad);
+    box-shadow: var(--ui-shadow-card);
+  }
+
+  .section {
+    margin-top: var(--ui-section-gap);
+    padding: var(--ui-panel-pad);
+    border-radius: var(--ui-panel-radius);
+    box-shadow: var(--ui-shadow-card);
+  }
+
+  .actions {
+    gap: .6rem;
+    margin-top: clamp(1rem, 2vw, 1.25rem);
+  }
+
+  .global-search-form,
+  .global-menu,
+  .dock-search-shell .global-search-form,
+  .dock-search-shell .global-search-popover {
+    border-color: var(--border-color);
+  }
+
+  .global-search-form { border-radius: var(--ui-control-radius); }
+  .global-menu { border-radius: var(--ui-panel-radius); box-shadow: var(--ui-shadow-panel); }
+  .global-menu .menu-links a,
+  .install-app-button { border-radius: var(--ui-control-radius); }
+
+  /* Home: same visual rhythm as catalogs, details and utilities. */
+  main[data-home-root] {
+    padding-bottom: clamp(4.5rem, 8vw, 6rem);
+  }
+  main[data-home-root] :is(.home-hero, .en-home-hero) {
+    min-height: 360px;
+    border-radius: var(--ui-hero-radius) !important;
+    box-shadow: var(--ui-shadow-panel) !important;
+  }
+  main[data-home-root] :is(.home-button, .en-home-button) {
+    min-height: var(--ui-control-height) !important;
+    border-radius: var(--ui-control-radius) !important;
+  }
+  main[data-home-root] :is(.home-stat, .en-home-stats article, .home-card, .en-home-card) {
+    border-radius: var(--ui-card-radius) !important;
+    box-shadow: var(--ui-shadow-card) !important;
+  }
+  main[data-home-root] :is(.home-stats, .en-home-stats, .home-grid, .en-home-grid) {
+    gap: var(--ui-card-gap) !important;
+  }
+  main[data-home-root] :is(.home-card, .en-home-card) {
+    padding: var(--ui-card-pad) !important;
+  }
+
+  /* Interactive targets should not visibly jump when pressed. */
+  @media (pointer: coarse) {
+    :where(.button, .menu-toggle, .language-switch, .theme-quick-toggle, .context-dock a, .context-dock button):active {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 680px) {
+    :root {
+      --ui-page-gutter: 10px;
+      --ui-section-gap: .72rem;
+      --ui-panel-pad: .92rem;
+      --ui-card-pad: .86rem;
+    }
+    .page {
+      width: min(var(--content-max), calc(100% - 20px));
+      padding-top: 12px;
+    }
+    .hero { border-radius: 18px; }
+    .section { border-radius: 16px; }
+    main[data-home-root] :is(.home-hero, .en-home-hero) {
+      min-height: 0;
+      border-radius: 18px !important;
+    }
+  }
+  /* /BIBLI_UI_AUDIT_2026_10 */
 </style>

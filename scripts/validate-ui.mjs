@@ -96,7 +96,7 @@ if (!fs.existsSync(faviconPath)) {
   problems.push("falta public/favicon.svg");
 } else {
   const favicon = fs.readFileSync(faviconPath, "utf8");
-  for (const token of ['viewBox="0 0 128 128"', 'rx="45"', '#765982']) {
+  for (const token of ['viewBox="0 0 128 128"', 'rx="45"', '#7b5439']) {
     if (!favicon.includes(token)) problems.push(`favicon.svg: falta fallback de marca requerido (${token})`);
   }
   const faviconPathCount = (favicon.match(/<path\b/g) ?? []).length;
@@ -112,8 +112,8 @@ if (!fs.existsSync(manifestPath)) {
   problems.push("falta src/pages/manifest.webmanifest.ts");
 } else {
   const manifest = fs.readFileSync(manifestPath, "utf8");
-  if (!manifest.includes('theme_color: "#765982"')) {
-    problems.push("manifest.webmanifest.ts: el color de instalación debe coincidir con el plum canónico #765982");
+  if (!manifest.includes('theme_color: "#7b5439"')) {
+    problems.push("manifest.webmanifest.ts: el color de instalación debe coincidir con Tierra #7b5439");
   }
   if (!manifest.includes('display_override: ["standalone", "minimal-ui"]')) {
     problems.push("manifest.webmanifest.ts: Bibli debe evitar window-controls-overlay hasta tener una titlebar específica");
@@ -159,6 +159,9 @@ if (!fs.existsSync(catalogFilterPath)) {
   for (const token of ["data-catalog-lang", "new WeakMap", "requestAnimationFrame", "var(--header-height", ".catalog-filter-search input { font-size:16px; }"]) {
     if (!catalogFilter.includes(token)) problems.push(`CatalogFilter.astro: falta optimización responsive (${token})`);
   }
+  for (const token of ["var(--ui-panel-radius", "var(--ui-control-radius", "backdrop-filter:none", "justify-content:space-between"]) {
+    if (!catalogFilter.includes(token)) problems.push(`CatalogFilter.astro: falta uniformización global (${token})`);
+  }
 }
 
 
@@ -198,8 +201,30 @@ if (!fs.existsSync(catalogDesignSystemPath)) {
     "@media (max-width: 680px)",
     "prefers-reduced-motion: reduce",
     "forced-colors: active",
+    "var(--ui-section-gap",
+    "var(--ui-hero-radius",
+    "var(--ui-control-height",
+    "var(--ui-card-radius",
   ]) {
     if (!catalogDesignSystem.includes(token)) problems.push(`CatalogDesignSystem.astro: falta guardrail del sistema de catálogos (${token})`);
+  }
+}
+
+const bibleDesignSystemPath = path.join(root, "src", "components", "BibleDesignSystem.astro");
+if (!fs.existsSync(bibleDesignSystemPath)) {
+  problems.push("falta src/components/BibleDesignSystem.astro");
+} else {
+  const bibleDesignSystem = fs.readFileSync(bibleDesignSystemPath, "utf8");
+  for (const token of [
+    ".bible-hero-card",
+    ".bible-book-hero-card",
+    ".bible-chapter-hero-card",
+    ".bible-chapter-jump",
+    "var(--ui-control-height",
+    "var(--ui-card-radius",
+    "backdrop-filter: none",
+  ]) {
+    if (!bibleDesignSystem.includes(token)) problems.push(`BibleDesignSystem.astro: falta guardrail bíblico compartido (${token})`);
   }
 }
 
@@ -217,6 +242,9 @@ if (!fs.existsSync(detailDesignSystemPath)) {
     "@media (max-width: 680px)",
     "prefers-reduced-motion: reduce",
     "forced-colors: active",
+    "var(--ui-section-gap",
+    "var(--ui-hero-radius",
+    "var(--ui-card-radius",
   ]) {
     if (!detailDesignSystem.includes(token)) problems.push(`DetailDesignSystem.astro: falta guardrail del sistema de detalle (${token})`);
   }
@@ -323,7 +351,7 @@ if (!fs.existsSync(readerPreferencesPath)) {
   for (const key of ["bibli-reader-size-v1", "bibli-reader-font-v1", "bibli-reader-align-v1", "bibli-reader-spacing-v1"]) {
     if (!readerPreferences.includes(key)) problems.push(`ReaderPreferences.astro: falta ${key}`);
   }
-  for (const token of ["data-reader-spacing-choice", "Interlineado", "Line spacing", "data-reader-preferences-backdrop", "data-reader-preferences-close", "document.body.append(backdrop, panel)", "reader-preferences-panel-head", "position:fixed", 'aria-modal="false"', 'html[data-reader-preferences-open="true"]', 'max-width:920px', 'grid-template-columns:repeat(2', 'bibli:reader-preferences-open', 'bibli:reader-preferences-opening', 'lessonDockActive', 'data-lesson-dock="true"', 'Lesson dock integration', 'bottom:calc(84px + env(safe-area-inset-bottom))', 'bibli:tts-opening']) {
+  for (const token of ["data-reader-spacing-choice", "Interlineado", "Line spacing", "data-reader-preferences-backdrop", "data-reader-preferences-close", "document.body.append(backdrop, panel)", "reader-preferences-panel-head", "position:fixed", 'aria-modal="false"', 'html[data-reader-preferences-open="true"]', 'max-width:920px', 'grid-template-columns:repeat(2', 'bibli:reader-preferences-open', 'bibli:reader-preferences-opening', 'lessonDockActive', 'data-lesson-dock="true"', 'Lesson dock integration', 'bottom:calc(84px + env(safe-area-inset-bottom))', 'bibli:tts-opening', 'var(--ui-control-radius', 'var(--ui-panel-radius', 'var(--ui-control-height', 'var(--ui-shadow-panel']) {
     if (!readerPreferences.includes(token)) problems.push(`ReaderPreferences.astro: falta control de interlineado (${token})`);
   }
 }
@@ -384,6 +412,12 @@ if (!fs.existsSync(globalTtsPath)) {
     && globalTts.includes('detail: { open: !player.hidden, active: false }'))) {
     problems.push("GlobalTTS.astro: al cambiar Estudio/Lectura debe detener el audio sin cerrar la superficie del reproductor");
   }
+  for (const token of ['root.classList.toggle("is-mini", miniVisible)', '.global-tts.is-mini { z-index:110; }']) {
+    if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: el minireproductor debe ceder prioridad visual a menús temporales (${token})`);
+  }
+  for (const token of ['bottom:calc(78px + env(safe-area-inset-bottom))', 'bottom:calc(82px + env(safe-area-inset-bottom))']) {
+    if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: reproductor y minireproductor deben conservar la misma separación del dock que los demás menús (${token})`);
+  }
 }
 
 const notFoundPath = path.join(root, "src", "pages", "404.astro");
@@ -420,6 +454,9 @@ if (fs.existsSync(offlineFallbackPath)) {
   }
   if (offlineFallback.includes("fase posterior")) {
     problems.push("offline.astro: conserva texto obsoleto sobre paquetes offline futuros");
+  }
+  for (const token of ['data-accent="earth"', ': "earth";', '--accent:#7b5439;', 'min-height:44px']) {
+    if (!offlineFallback.includes(token)) problems.push(`offline.astro: falta coherencia con el énfasis Tierra y controles globales (${token})`);
   }
 }
 
@@ -555,6 +592,9 @@ if (!fs.existsSync(utilityDesignSystemPath)) {
     ".timeline-period-nav",
     ".map-jump-toolbar",
     'data-utility-kind="offline-library"',
+    "var(--ui-section-gap",
+    "var(--ui-control-height",
+    "backdrop-filter: none",
     "prefers-reduced-motion: reduce",
     "forced-colors: active",
   ]) {
@@ -634,7 +674,7 @@ if (fs.existsSync(map3dPagePath)) {
 const offlinePackagesPath = path.join(root, "src", "components", "OfflinePackages.astro");
 if (fs.existsSync(offlinePackagesPath)) {
   const offlinePackages = fs.readFileSync(offlinePackagesPath, "utf8");
-  for (const token of ["data-offline-summary", "updateAvailable", 'role="progressbar"', 'aria-valuenow="0"', "info?.meta?.revision !== pkg.revision", "!navigator.onLine"]) {
+  for (const token of ["data-offline-summary", "updateAvailable", 'role="progressbar"', 'aria-valuenow="0"', "info?.meta?.revision !== pkg.revision", "!navigator.onLine", 'var(--ui-card-radius', 'var(--ui-control-height', 'var(--ui-control-radius', 'var(--ui-shadow-card']) {
     if (!offlinePackages.includes(token)) problems.push(`OfflinePackages.astro: falta estado/versionado offline (${token})`);
   }
 }
@@ -657,6 +697,9 @@ if (!fs.existsSync(baseLayoutPath)) {
   }
   for (const token of ["--shadow-card:", "--shadow-card-hover:", "--shadow-panel:"]) {
     if (!baseLayout.includes(token)) problems.push(`BaseLayout.astro: falta token global de superficie (${token})`);
+  }
+  for (const token of ["--ui-control-height", "--ui-control-radius", "--ui-card-radius", "--ui-panel-radius", "--ui-hero-radius", "--ui-section-gap", "--ui-shadow-panel"]) {
+    if (!baseLayout.includes(token)) problems.push(`BaseLayout.astro: falta token de uniformización UI (${token})`);
   }
   if (baseLayout.includes("\n  .map-shell {") || baseLayout.includes("\n  .map-layer-switcher {")) {
     problems.push("BaseLayout.astro: la CSS específica del mapa 2D debe permanecer aislada en mapa/index.astro");
@@ -750,6 +793,9 @@ if (!fs.existsSync(baseLayoutPath)) {
   }
   if (!baseLayout.includes("GlobalTTS")) {
     problems.push("BaseLayout.astro: falta el reproductor TTS global");
+  }
+  if (!baseLayout.includes("BibleDesignSystem")) {
+    problems.push("BaseLayout.astro: falta el sistema visual compartido de Biblia ES/EN");
   }
   if (!baseLayout.includes("bibli-reader-size-v1") || !baseLayout.includes("bibli-reader-spacing-v1")) {
     problems.push("BaseLayout.astro: falta inicialización temprana de preferencias de lectura");
@@ -965,13 +1011,17 @@ for (const token of ["foldSearchTextWithMap", "highlightMatches", "bibli:global-
   if (!baseLayout.includes(token)) problems.push(`BaseLayout.astro: falta soporte robusto de búsqueda (${token})`);
 }
 
+
 const contextDockPath = path.join(root, "src", "components", "ContextDock.astro");
 if (!fs.existsSync(contextDockPath)) {
   problems.push("falta src/components/ContextDock.astro");
 } else {
   const contextDock = fs.readFileSync(contextDockPath, "utf8");
-  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current", "bibli:global-search-toggle"]) {
+  for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current", "bibli:global-search-toggle", "(hover: none)", ':not([aria-expanded="true"])']) {
     if (!contextDock.includes(token)) problems.push(`ContextDock.astro: falta navegador contextual global (${token})`);
+  }
+  for (const token of ['.context-dock-search:active { transform:none; }', '.context-dock-search :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }']) {
+    if (!contextDock.includes(token)) problems.push(`ContextDock.astro: la lupa de Buscar debe permanecer estable durante el toque (${token})`);
   }
 }
 if (!baseLayout.includes("ContextDock") || !baseLayout.includes("!isLessonDetail")) {
@@ -1008,6 +1058,17 @@ for (const [surfaceName, surfacePath, contract] of discoveryContracts) {
   }
   const content = fs.readFileSync(surfacePath, "utf8");
   if (!content.includes(contract)) problems.push(`${surfaceName}: falta contrato visual (${contract})`);
+}
+
+const lessonDockHoverPath = path.join(root, "src", "pages", "lecciones", "[slug].astro");
+if (fs.existsSync(lessonDockHoverPath)) {
+  const lessonDockHover = fs.readFileSync(lessonDockHoverPath, "utf8");
+  for (const token of ["(hover:none)", ':not([aria-expanded="true"]):not([aria-pressed="true"])']) {
+    if (!lessonDockHover.includes(token)) problems.push(`Lección: los botones del dock táctil no deben conservar hover al cerrarse (${token})`);
+  }
+  for (const token of ['[data-dock-action="search"]:active { transform:none !important; }', '[data-dock-action="search"] :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }']) {
+    if (!lessonDockHover.includes(token)) problems.push(`Lección: la lupa de Buscar debe permanecer estable durante el toque (${token})`);
+  }
 }
 
 if (problems.length > 0) {

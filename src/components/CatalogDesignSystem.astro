@@ -927,4 +927,99 @@
       box-shadow: none;
     }
   }
+
+  /* BIBLI_UI_AUDIT_2026_10 */
+  /* Final catalog normalization: one radius/spacing/control language across all directories. */
+  main.page[data-catalog-root] {
+    --catalog-gap: var(--ui-section-gap, clamp(.78rem, 1.55vw, 1.05rem));
+    --catalog-pad: var(--ui-panel-pad, clamp(1rem, 2vw, 1.35rem));
+    --catalog-card-radius: var(--ui-card-radius, 16px);
+  }
+  main.page[data-catalog-root] > .hero,
+  main.page[data-catalog-root] .catalog-index-hero {
+    border-radius: var(--ui-hero-radius, 22px);
+    box-shadow: var(--ui-shadow-panel, var(--shadow-sm));
+  }
+  main.page[data-catalog-root] > .hero :is(
+    .books-hero-card,.people-hero-card,.topics-hero-card,.events-hero-card,
+    .places-index-hero-card,.passages-hero-card,.resources-hero-card,.explore-hero-card
+  ) {
+    min-height: 144px;
+    border-radius: var(--ui-card-radius, 16px);
+  }
+  main.page[data-catalog-root] > :is(
+    .books-stats,.people-stats,.topics-stats,.events-stats,.passages-stats,.resources-stats,.places-summary-grid
+  ) > :is(
+    .books-stat-card,.people-stat-card,.topics-stat-card,.events-stat-card,.passages-stat-card,.resources-stat-card,.places-summary-card
+  ) {
+    min-height: 96px;
+    padding: var(--ui-card-pad, 1rem);
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  main.page[data-catalog-root] > .section {
+    border-radius: var(--ui-panel-radius, 18px);
+    box-shadow: var(--ui-shadow-card, none);
+  }
+  main.page[data-catalog-root] :is(
+    .people-initial-nav,.topics-initial-nav,.passages-book-nav,.period-nav
+  ) a {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  main.page[data-catalog-root] :is(
+    .book-directory-card,.person-directory-card,.topic-directory-card,.passage-directory-card,
+    .place-directory-card,.event-card,.visual-resource-card,.resources-card,.books-overview-card,
+    .explore-feature-card,.explore-card
+  ) {
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  main.page[data-catalog-root].explore-page .explore-search {
+    border-radius: var(--ui-panel-radius, 18px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  main.page[data-catalog-root].explore-page .explore-search-field {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  main.page[data-catalog-root] .catalog-learning-summary,
+  main.page[data-catalog-root].route-index-page .route-card,
+  main.page[data-catalog-root].lesson-index-page .route-section {
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  main.page[data-catalog-root] .catalog-learning-summary .route-button,
+  main.page[data-catalog-root].lesson-index-page .lesson-filter {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  @media (max-width: 680px) {
+    main.page[data-catalog-root] > .hero,
+    main.page[data-catalog-root] .catalog-index-hero {
+      border-radius: 18px;
+      padding: 1rem;
+    }
+    main.page[data-catalog-root] > .hero :is(
+      .books-hero-card,.people-hero-card,.topics-hero-card,.events-hero-card,
+      .places-index-hero-card,.passages-hero-card,.resources-hero-card,.explore-hero-card
+    ) {
+      min-height: 0;
+      border-radius: var(--ui-card-radius, 16px);
+    }
+    main.page[data-catalog-root] > .section { border-radius: 16px; }
+    main.page[data-catalog-root] .catalog-learning-summary { border-radius: 16px; }
+  }
+  @media (max-width: 480px) {
+    main.page[data-catalog-root] > :is(
+      .books-stats,.people-stats,.topics-stats,.events-stats,.passages-stats,.resources-stats,.places-summary-grid
+    ) > :is(
+      .books-stat-card,.people-stat-card,.topics-stat-card,.events-stat-card,.passages-stat-card,.resources-stat-card,.places-summary-card
+    ) {
+      min-height: 86px;
+      padding: .78rem;
+      border-radius: 14px;
+    }
+  }
+  /* /BIBLI_UI_AUDIT_2026_10 */
 </style>

@@ -558,4 +558,80 @@
       border-color: CanvasText;
     }
   }
+
+  /* BIBLI_UI_AUDIT_2026_10 */
+  /* Final entity/detail normalization. */
+  main[data-detail-root] {
+    --detail-gap: var(--ui-section-gap, clamp(.78rem, 1.55vw, 1.05rem));
+    --detail-pad: var(--ui-panel-pad, clamp(1rem, 2vw, 1.35rem));
+    --detail-radius: var(--ui-panel-radius, 18px);
+    --detail-card-radius: var(--ui-card-radius, 16px);
+  }
+  main.page[data-detail-root] > .hero {
+    border-radius: var(--ui-hero-radius, 22px);
+    box-shadow: var(--ui-shadow-panel, var(--shadow-sm));
+  }
+  main.page[data-detail-root] > .hero :is(
+    .book-hero-card,.person-hero-card,.topic-hero-card,.event-hero-card,
+    .place-hero-card,.passage-hero-card,.visual-resource-status-card
+  ) {
+    min-height: 144px;
+    border-radius: var(--ui-card-radius, 16px);
+  }
+  main.page[data-detail-root] > :is(
+    .book-meta-grid,.person-meta-grid,.topic-meta-grid,.event-meta-grid,.place-meta-grid,.passage-meta-grid
+  ) > :is(
+    .book-meta-card,.person-meta-card,.topic-meta-card,.event-meta-card,.place-meta-card,.passage-meta-card
+  ) {
+    min-height: 96px;
+    padding: var(--ui-card-pad, 1rem);
+    border-radius: var(--ui-card-radius, 16px);
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm));
+  }
+  main.page[data-detail-root] > :is(.section,.visual-resource-preview-section,.route-overview) {
+    border-radius: var(--ui-panel-radius, 18px);
+    box-shadow: var(--ui-shadow-card, none);
+  }
+  main.page[data-detail-root] :is(
+    .book-summary-card,.person-bio-card,.topic-definition-card,.event-story-card,
+    .place-importance-card,.passage-summary-card,.passage-reader-card,
+    .glossary-detail-card,.glossary-definition-card,
+    .book-event-card,.book-lesson-card,.book-passage-card,.person-event-card,
+    .person-place-card,.person-lesson-card,.topic-event-card,.topic-lesson-card,
+    .event-visibility-card,.event-place-card,.event-lesson-card,.place-event-card,
+    .place-lesson-card,.passage-event-card,.passage-lesson-card,.lesson-track-card
+  ) {
+    border-radius: var(--ui-card-radius, 16px);
+  }
+  main.page[data-detail-kind="glossary"] .glossary-detail-card {
+    padding: var(--ui-card-pad, 1rem) !important;
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+  main.page[data-detail-kind="glossary"] .glossary-definition-card {
+    padding: var(--ui-panel-pad, 1rem) !important;
+    border-radius: var(--ui-card-radius, 16px) !important;
+  }
+
+  main.page[data-detail-root] :is(
+    .book-footer-nav,.person-footer-nav,.topic-footer-nav,.event-footer-nav,
+    .place-footer-nav,.passage-footer-nav,.visual-resource-footer-nav
+  ) a {
+    min-height: var(--ui-control-height, 44px);
+    border-radius: var(--ui-control-radius, 12px);
+  }
+  @media (max-width: 680px) {
+    main.page[data-detail-root] {
+      --detail-gap: .72rem;
+      --detail-pad: .92rem;
+      --detail-radius: 16px;
+      --detail-card-radius: 14px;
+    }
+    main.page[data-detail-root] > .hero { border-radius: 18px; padding: 1rem; }
+    main.page[data-detail-root] > .hero :is(
+      .book-hero-card,.person-hero-card,.topic-hero-card,.event-hero-card,
+      .place-hero-card,.passage-hero-card,.visual-resource-status-card
+    ) { border-radius: 14px; }
+  }
+  /* /BIBLI_UI_AUDIT_2026_10 */
 </style>

@@ -1,0 +1,114 @@
+---
+// Shared visual contract for Spanish and English Bible catalog, book and chapter pages.
+// Markup remains in each route; this component only normalizes spacing, surfaces and controls.
+---
+
+<style is:global>
+  :is(.bible-root-page, .bible-version-page, .bible-book-page) {
+    padding-bottom: clamp(3rem, 7vw, 5rem);
+  }
+
+  :is(.bible-root-page, .bible-version-page, .bible-book-page) > .breadcrumb,
+  main.page:has(.bible-chapter-hero) > .breadcrumb {
+    margin-bottom: 14px;
+  }
+
+  :is(.bible-hero, .bible-book-hero, .bible-chapter-hero) {
+    border-radius: var(--ui-hero-radius, 22px) !important;
+    box-shadow: var(--ui-shadow-panel, var(--shadow-panel)) !important;
+  }
+
+  :is(.bible-hero-card, .bible-book-hero-card, .bible-chapter-hero-card) {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+
+  :is(.bible-stat-card, .bible-book-meta-card, .bible-chapter-meta-card) {
+    min-height: 96px !important;
+    padding: var(--ui-card-pad, 1rem) !important;
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+
+  :is(
+    .bible-book-card,
+    .bible-book-summary-card,
+    .bible-book-chapter-link,
+    .bible-book-passage-card,
+    .bible-book-empty-card,
+    .bible-chapter-reader-card,
+    .bible-chapter-empty-card,
+    .bible-chapter-nav-card
+  ) {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-card)) !important;
+  }
+
+  .bible-version-toolbar {
+    margin-bottom: var(--ui-section-gap, .9rem);
+  }
+
+  .bible-chapter-jump {
+    border-radius: var(--ui-card-radius, 16px) !important;
+    background: var(--surface-elevated) !important;
+    box-shadow: var(--ui-shadow-card, var(--shadow-sm)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .bible-chapter-jump select,
+  .bible-chapter-jump-button {
+    min-height: var(--ui-control-height, 44px) !important;
+    border-radius: var(--ui-control-radius, 12px) !important;
+  }
+
+  .bible-chapter-jump-button {
+    width: var(--ui-control-height, 44px) !important;
+    height: var(--ui-control-height, 44px) !important;
+  }
+
+  :is(.bible-book-chapter-link, .bible-chapter-nav-card) {
+    transition:
+      transform var(--motion-fast, 160ms) var(--ease-out, ease),
+      border-color var(--motion-fast, 160ms) ease,
+      box-shadow var(--motion-fast, 160ms) var(--ease-out, ease);
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    a:is(.bible-book-card, .bible-book-chapter-link, .bible-book-passage-card, .bible-chapter-nav-card):hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--border-color));
+      box-shadow: var(--shadow-card-hover) !important;
+    }
+  }
+
+  @media (max-width: 680px) {
+    :is(.bible-hero, .bible-book-hero, .bible-chapter-hero) {
+      border-radius: 18px !important;
+    }
+    :is(
+      .bible-hero-card,
+      .bible-book-hero-card,
+      .bible-chapter-hero-card,
+      .bible-stat-card,
+      .bible-book-meta-card,
+      .bible-chapter-meta-card,
+      .bible-book-card,
+      .bible-book-summary-card,
+      .bible-book-chapter-link,
+      .bible-book-passage-card,
+      .bible-chapter-reader-card,
+      .bible-chapter-nav-card
+    ) {
+      border-radius: 14px !important;
+    }
+    :is(.bible-stat-card, .bible-book-meta-card, .bible-chapter-meta-card) {
+      min-height: 84px !important;
+      padding: .8rem !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :is(.bible-book-chapter-link, .bible-chapter-nav-card) { transition: none !important; }
+  }
+</style>

@@ -9,11 +9,11 @@ const downloadEs = sitePath("/descargar/");
 const downloadEn = sitePath("/en/download/");
 ---
 <!doctype html>
-<html lang="es" data-theme="light" data-accent="plum">
+<html lang="es" data-theme="light" data-accent="earth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#765982" data-theme-color />
+    <meta name="theme-color" content="#7b5439" data-theme-color />
     <meta name="robots" content="noindex" />
     <title>Sin conexión | Biblioteca Bíblica</title>
     <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
@@ -26,7 +26,7 @@ const downloadEn = sitePath("/en/download/");
         const storedAccent = localStorage.getItem("bibli-accent");
         const accent = ["earth", "ocean", "forest", "plum", "clay"].includes(storedAccent || "")
           ? storedAccent
-          : "plum";
+          : "earth";
         document.documentElement.dataset.theme = theme;
         document.documentElement.dataset.accent = accent;
         const accentColors = {
@@ -49,9 +49,9 @@ const downloadEn = sitePath("/en/download/");
         --text:#25232a;
         --muted:#69636f;
         --border:#ddd8e0;
-        --accent:#765982;
-        --accent-hover:#5f4769;
-        --accent-soft:#eadff0;
+        --accent:#7b5439;
+        --accent-hover:#61412d;
+        --accent-soft:#eee1d6;
         --accent-contrast:#fff;
         background:var(--page);
         color:var(--text);
@@ -68,10 +68,10 @@ const downloadEn = sitePath("/en/download/");
         --text:#f7f9fb;
         --muted:#a6aebb;
         --border:#33353b;
-        --accent:#b7a0bf;
-        --accent-hover:#cbb6d1;
-        --accent-soft:#312936;
-        --accent-contrast:#19131b;
+        --accent:#d0a888;
+        --accent-hover:#e1ba9a;
+        --accent-soft:#362a23;
+        --accent-contrast:#111827;
       }
       :root[data-theme="dark"][data-accent="earth"] { --accent:#d0a888; --accent-hover:#e1ba9a; --accent-soft:#362a23; --accent-contrast:#111827; }
       :root[data-theme="dark"][data-accent="ocean"] { --accent:#82add6; --accent-hover:#9bc0e2; --accent-soft:#202f3f; --accent-contrast:#101820; }
@@ -87,7 +87,7 @@ const downloadEn = sitePath("/en/download/");
         padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
         background:radial-gradient(circle at top right,var(--accent-soft) 0,transparent 38%),var(--page);
       }
-      main { width:min(100%,580px); padding:32px; border:1px solid var(--border); border-radius:24px; background:var(--surface); box-shadow:0 20px 60px rgb(0 0 0 / .1); }
+      main { width:min(100%,580px); padding:32px; border:1px solid var(--border); border-radius:22px; background:var(--surface); box-shadow:0 20px 60px rgb(0 0 0 / .1); }
       .brand { display:inline-flex; align-items:center; gap:0; color:var(--accent); text-decoration:none; }
       .brand-word { margin-left:.05rem; font-family:Baskerville,"Baskerville Old Face","Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif; font-size:1.55rem; font-weight:400; font-synthesis:none; line-height:.9; letter-spacing:.01em;transform:translateY(.06em); }
       .network-state { display:flex; align-items:center; gap:8px; margin-top:18px; padding:9px 11px; border:1px solid var(--border); border-radius:12px; background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface)); color:var(--muted); font-size:.78rem; }
@@ -97,7 +97,7 @@ const downloadEn = sitePath("/en/download/");
       h1 { margin:18px 0 10px; color:var(--text); font-size:clamp(2rem,7vw,3.2rem); line-height:1; letter-spacing:-.05em; }
       p { margin:0; color:var(--muted); line-height:1.7; }
       .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
-      a,button { min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 16px; border-radius:12px; font:inherit; font-weight:760; text-decoration:none; cursor:pointer; }
+      a,button { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 16px; border-radius:12px; font:inherit; font-weight:760; text-decoration:none; cursor:pointer; }
       .primary { background:var(--accent); color:var(--accent-contrast); border:1px solid var(--accent); }
       .primary:hover { background:var(--accent-hover); border-color:var(--accent-hover); }
       .secondary,button { background:var(--surface); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 42%,var(--border)); }
