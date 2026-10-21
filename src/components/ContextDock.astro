@@ -115,7 +115,7 @@ const searchLabel = lang === "en" ? "Search" : "Buscar";
     text-decoration: none;
     font: inherit;
     cursor: pointer;
-    transition: background-color 160ms ease, color 160ms ease, transform 150ms ease;
+    transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
   }
   .context-dock-action:hover,
   .context-dock-action.is-current,
@@ -127,9 +127,14 @@ const searchLabel = lang === "en" ? "Search" : "Buscar";
     outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
   }
-  .context-dock-action:active { transform: scale(.96); }
-  /* Keep the search glyph optically stable while the touch press toggles state. */
-  .context-dock-search:active { transform:none; }
+  .context-dock-action:active {
+    transform:none;
+    background:var(--accent-soft);
+    color:var(--accent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent);
+  }
+  /* All dock glyphs keep identical geometry while state changes. */
+  .context-dock-action :global(.bibli-icon) { transform:none !important; }
   .context-dock-search :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }
   :global(body:has([data-global-menu]:not([hidden]))) .context-dock {
     opacity: 0;

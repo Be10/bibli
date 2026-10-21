@@ -51,7 +51,11 @@ const labels = lang === "en"
 <style>
   .study-visual {
     position: relative;
+    width: 100%;
+    max-width: 520px;
+    height: 320px;
     min-height: 320px;
+    margin-inline: auto;
     isolation: isolate;
     perspective: 1100px;
   }
@@ -72,7 +76,7 @@ const labels = lang === "en"
     position: absolute;
     left: 50%;
     top: 51%;
-    width: min(90%, 390px);
+    width: min(82%, 390px);
     translate: -50% -50%;
     transform: rotate(-2deg) rotateX(3deg);
     transform-style: preserve-3d;

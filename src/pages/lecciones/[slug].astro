@@ -755,7 +755,8 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     document.addEventListener("bibli:tts-state", (event) => {
       const open = event instanceof CustomEvent && event.detail?.open === true;
       const active = event instanceof CustomEvent && event.detail?.active === true;
-      shell.querySelector<HTMLButtonElement>('[data-dock-action="tts"]')?.setAttribute("aria-pressed", String(open || active));
+      const collapsed = event instanceof CustomEvent && event.detail?.collapsed === true;
+      shell.querySelector<HTMLButtonElement>('[data-dock-action="tts"]')?.setAttribute("aria-pressed", String(open || active || collapsed));
     });
     document.addEventListener("bibli:global-search-state", (event) => {
       const open = event instanceof CustomEvent && event.detail?.open === true;
@@ -1100,7 +1101,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   .mode-toolbar { position:sticky; top:calc(var(--header-height,62px) + 8px); z-index:42; min-height:56px; padding:.4rem .5rem; border-radius:14px; overflow:visible; }
   .toolbar-right { display:flex; align-items:center; gap:.42rem; margin-left:auto; }
   .lesson-step-nav { display:inline-flex; align-items:center; gap:.25rem; padding:.16rem; border-radius:11px; background:var(--surface-soft); }
-  .step-button { min-height:36px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 .65rem; border:0; border-radius:9px; background:transparent; color:var(--text-muted); text-decoration:none; font:inherit; font-size:.78rem; font-weight:740; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
+  .step-button { min-height:36px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 .65rem; border:0; border-radius:9px; background:transparent; color:var(--text-muted); text-decoration:none; font:inherit; font-size:.78rem; font-weight:740; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,box-shadow 150ms ease; }
   .step-button:hover { background:var(--surface); color:var(--heading-color); }
   .step-button.icon-only { width:36px; padding:0; }
   .step-button.is-disabled { opacity:.3; pointer-events:none; }
@@ -1344,10 +1345,10 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       transition:background-color 160ms ease;
     }
     .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
-    .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
+    .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,box-shadow 150ms ease; }
     .lesson-dock-action:hover,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
     .lesson-dock-action:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
-    .lesson-dock-action:active { transform:scale(.96); }
+    .lesson-dock-action:active { transform:none; }
     .lesson-dock-badge { position:absolute; top:3px; right:3px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--accent-contrast); font-size:.58rem; font-weight:850; }
     .lesson-dock-more { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; padding-top:7px; border-top:1px solid var(--border-color); }
     .lesson-dock-more[hidden] { display:none !important; }
@@ -1398,10 +1399,10 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     transition:background-color 160ms ease !important;
   }
   .lesson-dock-primary { display:flex; align-items:center; justify-content:center; gap:5px; }
-  .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,transform 150ms ease; }
+  .lesson-dock-action { position:relative; min-width:44px; width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; border:0; border-radius:13px; background:transparent; color:var(--text-muted); text-decoration:none; cursor:pointer; transition:background-color 150ms ease,color 150ms ease,box-shadow 150ms ease; }
   .lesson-dock-action:hover,.lesson-dock-action[aria-expanded="true"],.lesson-dock-action[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); }
     .lesson-dock-action:focus-visible { outline:2px solid var(--focus-ring); outline-offset:2px; }
-  .lesson-dock-action:active { transform:scale(.96); }
+  .lesson-dock-action:active { transform:none; }
   .lesson-dock-badge { position:absolute; top:3px; right:3px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--accent-contrast); font-size:.58rem; font-weight:850; }
   .lesson-dock-more { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; padding-top:7px; border-top:1px solid var(--border-color); }
   .lesson-dock-more[hidden] { display:none !important; }
@@ -1652,5 +1653,27 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       color:var(--text-muted) !important;
       border-color:transparent !important;
     }
+  }
+
+  /* Stable dock interactions: state changes use color/surface, never geometry. */
+  .lesson-dock-action,
+  .lesson-dock-more a,
+  .lesson-dock-more button {
+    transform:none !important;
+    transition:background-color 150ms ease,color 150ms ease,border-color 150ms ease,box-shadow 150ms ease !important;
+  }
+  .lesson-dock-action:active,
+  .lesson-dock-more a:active,
+  .lesson-dock-more button:active {
+    transform:none !important;
+  }
+  .lesson-dock-action:active:not(.is-disabled) {
+    background:var(--accent-soft);
+    color:var(--accent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent);
+  }
+  .lesson-dock-action :global(.bibli-icon),
+  .lesson-dock-more :global(.bibli-icon) {
+    transform:none !important;
   }
 </style>

@@ -162,6 +162,10 @@ const copy = lang === "en"
     let session = 0;
     let playing = false;
     let paused = false;
+    // The mini player is a surface state, not only a playback state. Keeping this
+    // separate lets a minimized player survive Study/Reading source changes while
+    // the old audio is deliberately stopped.
+    let keepMiniVisible = false;
     let voices = [];
     let resumeAfterVisibility = false;
     let foregroundRecoveryTimer = 0;
@@ -188,11 +192,12 @@ const copy = lang === "en"
     const lessonDockActive = () => document.documentElement.dataset.lessonDock === "true";
     const syncCollapsedSurface = () => {
       const expanded = !player.hidden;
-      const miniVisible = !expanded && playing;
+      const miniVisible = !expanded && (playing || keepMiniVisible);
       if (mini instanceof HTMLButtonElement) mini.hidden = !miniVisible;
       root.classList.toggle("is-mini", miniVisible);
-      if (launcher instanceof HTMLButtonElement) launcher.hidden = expanded || playing || lessonDockActive();
+      if (launcher instanceof HTMLButtonElement) launcher.hidden = expanded || miniVisible || playing || lessonDockActive();
       document.documentElement.dataset.ttsActive = playing ? "true" : "false";
+      document.documentElement.dataset.ttsMiniVisible = miniVisible ? "true" : "false";
     };
 
     const syncFloatingUiOffset = () => {
@@ -494,13 +499,14 @@ const copy = lang === "en"
       return { voice: getBestVoice(targetLanguage), language: pageSpeechLang, rateMultiplier: .96, pitch: 1 };
     };
 
-    const stopSpeech = ({ reset = false } = {}) => {
+    const stopSpeech = ({ reset = false, keepMini = false } = {}) => {
       session += 1;
       window.clearTimeout(foregroundRecoveryTimer);
       resumeAfterVisibility = false;
       synth.cancel();
       playing = false;
       paused = false;
+      keepMiniVisible = keepMini;
       if (reset) currentIndex = 0;
       clearHighlight();
       setStatus();
@@ -551,6 +557,7 @@ const copy = lang === "en"
         } else {
           playing = false;
           paused = false;
+          keepMiniVisible = false;
           resumeAfterVisibility = false;
           clearHighlight();
           setStatus();
@@ -565,6 +572,7 @@ const copy = lang === "en"
         }
         playing = false;
         paused = false;
+        keepMiniVisible = false;
         resumeAfterVisibility = false;
         clearHighlight();
         setPlayingUi();
@@ -580,9 +588,10 @@ const copy = lang === "en"
       // initial hydration. Always reveal the component root before opening the player.
       root.hidden = false;
       player.hidden = false;
+      keepMiniVisible = false;
       root.classList.add("is-open");
       syncCollapsedSurface();
-      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: true, active: playing } }));
+      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: true, active: playing, collapsed: false } }));
 
       if (!chunks.length || !wasPlaying) chunks = buildChunks();
       if (!chunks.length) {
@@ -607,10 +616,11 @@ const copy = lang === "en"
     const minimizePlayer = ({ returnFocus = true } = {}) => {
       if (player.hidden) return;
       player.hidden = true;
+      keepMiniVisible = playing;
       root.classList.remove("is-open");
       syncFloatingUiOffset();
       syncCollapsedSurface();
-      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: false, active: playing } }));
+      document.dispatchEvent(new CustomEvent("bibli:tts-state", { detail: { open: false, active: playing, collapsed: keepMiniVisible } }));
       if (!returnFocus) return;
       const dockTrigger = document.querySelector('[data-dock-action="tts"]');
       if (dockTrigger instanceof HTMLButtonElement) dockTrigger.focus();
@@ -763,7 +773,7 @@ const copy = lang === "en"
       // previous mode after the visible content changes. Reset the queue, but keep
       // the same player surface open so the mode switch does not feel like closing
       // the listening tool. The user explicitly starts the new mode when ready.
-      stopSpeech({ reset: true });
+      stopSpeech({ reset: true, keepMini: miniWasVisible });
       chunks = [];
 
       if (playerWasOpen) {
@@ -773,6 +783,7 @@ const copy = lang === "en"
       } else if (miniWasVisible) {
         root.hidden = false;
         player.hidden = true;
+        keepMiniVisible = true;
         root.classList.remove("is-open");
       }
 
@@ -784,14 +795,14 @@ const copy = lang === "en"
         syncCollapsedSurface();
         syncFloatingUiOffset();
         document.dispatchEvent(new CustomEvent("bibli:tts-state", {
-          detail: { open: !player.hidden, active: false },
+          detail: { open: !player.hidden, active: false, collapsed: miniWasVisible },
         }));
       });
     });
 
     document.addEventListener("bibli:tts-open", () => openPlayer({ autoplay: !playing }));
     document.addEventListener("bibli:tts-toggle", () => {
-      if (player.hidden) openPlayer({ autoplay: !playing });
+      if (player.hidden) openPlayer({ autoplay: !playing && !keepMiniVisible });
       else minimizePlayer();
     });
     document.addEventListener("bibli:tts-close", () => { if (!player.hidden) minimizePlayer({ returnFocus: false }); });
@@ -858,7 +869,7 @@ const copy = lang === "en"
   /* The compact player stays predictable and yields visual priority to transient menus. */
   .global-tts.is-mini { z-index:110; }
   @media(min-width:1101px){
-    .global-tts { bottom:calc(78px + env(safe-area-inset-bottom)); }
+    .global-tts { bottom:max(12px, env(safe-area-inset-bottom)); }
   }
   .global-tts[hidden] { display:none !important; }
   .tts-launcher,.tts-player { pointer-events:auto; }

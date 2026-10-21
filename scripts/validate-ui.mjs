@@ -408,15 +408,19 @@ if (!fs.existsSync(globalTtsPath)) {
     problems.push("GlobalTTS.astro: falta el listener del botón Escuchar");
   }
   if (!(globalTts.includes('const playerWasOpen = !player.hidden')
-    && globalTts.includes('stopSpeech({ reset: true })')
-    && globalTts.includes('detail: { open: !player.hidden, active: false }'))) {
-    problems.push("GlobalTTS.astro: al cambiar Estudio/Lectura debe detener el audio sin cerrar la superficie del reproductor");
+    && globalTts.includes('const miniWasVisible = mini instanceof HTMLButtonElement && !mini.hidden')
+    && globalTts.includes('stopSpeech({ reset: true, keepMini: miniWasVisible })')
+    && globalTts.includes('detail: { open: !player.hidden, active: false, collapsed: miniWasVisible }'))) {
+    problems.push("GlobalTTS.astro: al cambiar Estudio/Lectura debe detener el audio conservando reproductor o minireproductor");
   }
   for (const token of ['root.classList.toggle("is-mini", miniVisible)', '.global-tts.is-mini { z-index:110; }']) {
     if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: el minireproductor debe ceder prioridad visual a menús temporales (${token})`);
   }
-  for (const token of ['bottom:calc(78px + env(safe-area-inset-bottom))', 'bottom:calc(82px + env(safe-area-inset-bottom))']) {
-    if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: reproductor y minireproductor deben conservar la misma separación del dock que los demás menús (${token})`);
+  for (const token of ['bottom:max(12px, env(safe-area-inset-bottom))', 'bottom:calc(82px + env(safe-area-inset-bottom))']) {
+    if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: reproductor/minireproductor deben alinearse con el dock en PC y mantenerse separados en móvil (${token})`);
+  }
+  for (const token of ['let keepMiniVisible = false', 'autoplay: !playing && !keepMiniVisible']) {
+    if (!globalTts.includes(token)) problems.push(`GlobalTTS.astro: falta persistencia segura del minireproductor (${token})`);
   }
 }
 
@@ -925,7 +929,8 @@ for (const [token, message] of [
   ["data-app-update-now", "El aviso de actualización debe permitir recargar Bibli"],
   ["flex: 0 0 auto", "El logo debe limitar su caja interactiva al ancho real de la marca"],
   ["UtilityDesignSystem", "BaseLayout debe cargar el sistema visual compartido de superficies utilitarias"],
-  ['html[data-tts-player-open="true"] .app-update-status', "El aviso de actualización debe evitar superponerse al reproductor TTS en móvil"],
+  ["top: calc(var(--header-height, 64px) + 12px)", "El aviso de actualización debe aparecer bajo el header y fuera del dock/TTS"],
+  ["z-index: 340", "El aviso de actualización debe permanecer por encima de superficies de navegación"],
   ["--tts-player-offset", "BaseLayout debe reservar espacio dinámico para el reproductor TTS"],
   ["top:calc(var(--header-height,62px) + 8px)", "Los overlays móviles deben posicionarse con la altura real del header"],
   ["max-height:calc(100dvh - var(--header-height,62px) - 18px)", "Los overlays móviles deben respetar viewports bajos y orientación horizontal"],
@@ -1020,8 +1025,8 @@ if (!fs.existsSync(contextDockPath)) {
   for (const token of ["data-context-dock", "position: fixed", "Navegación rápida de Bibli", "contextualItem", "aria-current", "bibli:global-search-toggle", "(hover: none)", ':not([aria-expanded="true"])']) {
     if (!contextDock.includes(token)) problems.push(`ContextDock.astro: falta navegador contextual global (${token})`);
   }
-  for (const token of ['.context-dock-search:active { transform:none; }', '.context-dock-search :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }']) {
-    if (!contextDock.includes(token)) problems.push(`ContextDock.astro: la lupa de Buscar debe permanecer estable durante el toque (${token})`);
+  for (const token of ['.context-dock-action:active {', 'transform:none;', '.context-dock-action :global(.bibli-icon) { transform:none !important; }', '.context-dock-search :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }']) {
+    if (!contextDock.includes(token)) problems.push(`ContextDock.astro: todos los botones deben conservar geometría estable durante la interacción (${token})`);
   }
 }
 if (!baseLayout.includes("ContextDock") || !baseLayout.includes("!isLessonDetail")) {
@@ -1066,8 +1071,35 @@ if (fs.existsSync(lessonDockHoverPath)) {
   for (const token of ["(hover:none)", ':not([aria-expanded="true"]):not([aria-pressed="true"])']) {
     if (!lessonDockHover.includes(token)) problems.push(`Lección: los botones del dock táctil no deben conservar hover al cerrarse (${token})`);
   }
-  for (const token of ['[data-dock-action="search"]:active { transform:none !important; }', '[data-dock-action="search"] :global(.bibli-icon) { width:19px; height:19px; flex:0 0 19px; }']) {
-    if (!lessonDockHover.includes(token)) problems.push(`Lección: la lupa de Buscar debe permanecer estable durante el toque (${token})`);
+  for (const token of ['Stable dock interactions', '.lesson-dock-action:active,', 'transform:none !important;', 'event.detail?.collapsed === true']) {
+    if (!lessonDockHover.includes(token)) problems.push(`Lección: los botones del dock deben usar interacción estable y reflejar el minireproductor (${token})`);
+  }
+}
+
+
+// BIBLI_UI_ROUND12_2026_10 — regression guards for persistent TTS, glossary, offline UI and stable floating surfaces.
+{
+  const glossaryPath = path.join(root, "src", "pages", "glosario", "index.astro");
+  if (fs.existsSync(glossaryPath)) {
+    const glossary = fs.readFileSync(glossaryPath, "utf8");
+    if (!glossary.includes("glossary-alpha")) problems.push("Glosario debe incluir índice alfabético");
+    if (glossary.includes('class="meta">Término')) problems.push("Glosario no debe usar la clase meta global para su etiqueta de término");
+  }
+
+  if (fs.existsSync(offlinePackagesPath)) {
+    const offlinePackages = fs.readFileSync(offlinePackagesPath, "utf8");
+    if (!offlinePackages.includes("<style is:global>")) problems.push("OfflinePackages requiere estilos globales para tarjetas generadas dinámicamente");
+    if (!offlinePackages.includes("[data-offline-manager] .offline-package-card")) problems.push("OfflinePackages debe usar tarjetas UI normalizadas");
+  }
+
+  if (!baseLayout.includes('html[data-theme="dark"] .meta {\n    background: transparent;')) {
+    problems.push("BaseLayout: meta genérico no debe crear franjas oscuras en modo oscuro");
+  }
+
+  const homeStudyVisualPathRound12 = path.join(root, "src", "components", "HomeStudyVisual.astro");
+  if (fs.existsSync(homeStudyVisualPathRound12)) {
+    const homeStudyVisual = fs.readFileSync(homeStudyVisualPathRound12, "utf8");
+    if (!homeStudyVisual.includes("height: 320px")) problems.push("HomeStudyVisual debe mantener geometría estable entre builds");
   }
 }
 
