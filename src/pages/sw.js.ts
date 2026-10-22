@@ -12,6 +12,7 @@ const CACHE_VERSION = ${JSON.stringify(cacheVersion)};
 const SHELL_CACHE = "bibli-shell-" + CACHE_VERSION;
 const RUNTIME_CACHE = "bibli-runtime-" + CACHE_VERSION;
 const MAX_RUNTIME_ENTRIES = 140;
+const MAX_RUNTIME_RESPONSE_BYTES = 2000000;
 const PACKAGE_CACHE_PREFIX = "bibli-package-";
 const CORE_URLS = [
   BASE + "/",
@@ -33,8 +34,18 @@ async function trimCache(cacheName, maxEntries) {
   await Promise.all(keys.slice(0, keys.length - maxEntries).map((request) => cache.delete(request)));
 }
 
+function runtimeResponseFitsBudget(response) {
+  const cacheControl = response.headers.get("Cache-Control") || "";
+  if (/\\bno-store\\b/i.test(cacheControl)) return false;
+  const rawLength = response.headers.get("Content-Length");
+  if (!rawLength) return true;
+  const length = Number(rawLength);
+  return !Number.isFinite(length) || length <= MAX_RUNTIME_RESPONSE_BYTES;
+}
+
 async function cacheResponse(cacheName, request, response) {
   if (!response || !response.ok || response.type === "opaque") return response;
+  if (cacheName === RUNTIME_CACHE && !runtimeResponseFitsBudget(response)) return response;
   const cache = await caches.open(cacheName);
   await cache.put(request, response.clone());
   if (cacheName === RUNTIME_CACHE) await trimCache(RUNTIME_CACHE, MAX_RUNTIME_ENTRIES);
@@ -108,11 +119,9 @@ self.addEventListener("fetch", (event) => {
   if (isSearchData) {
     event.respondWith((async () => {
       try {
-        const response = await fetch(request);
-        await cacheResponse(RUNTIME_CACHE, request, response);
-        return response;
+        return await fetch(request);
       } catch {
-        return (await caches.match(request)) || new Response("[]", {
+        return (await caches.match(request)) || new Response('{"version":1,"items":[]}', {
           status: 503,
           statusText: "Search index unavailable offline",
           headers: {

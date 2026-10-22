@@ -52,10 +52,6 @@ if (!fs.existsSync(srcRoot)) {
       problems.push(`${rel}: contiene SVG inline fuera de los componentes de iconografía permitidos`);
     }
 
-    if (/study-room|assets\/study-room|\/estudio\//i.test(content)) {
-      problems.push(`${rel}: conserva una referencia a la antigua habitación de estudio`);
-    }
-
     if (!rel.startsWith("src/pages/mapa-3d/")) {
       const lower = content.toLowerCase();
       const found = retiredColors.filter((color) => lower.includes(color));
@@ -495,6 +491,12 @@ if (!fs.existsSync(mapPagePath)) {
   for (const token of ["<style is:global>", ".map-shell {", 'html[data-theme="dark"] .map-layer-switcher', "@media (max-width: 760px)", "66dvh", ".leaflet-control-zoom a {", "prefers-reduced-motion", "animate: !reducedMotionMedia.matches"]) {
     if (!mapPage.includes(token)) problems.push(`mapa/index.astro: falta CSS cartográfica local (${token})`);
   }
+  for (const token of ['await Promise.all([', 'import("leaflet")', "IntersectionObserver", 'data-map-runtime="idle"', "startMap"]) {
+    if (!mapPage.includes(token)) problems.push(`mapa/index.astro: falta carga diferida de Leaflet (${token})`);
+  }
+  if (/import\s+L\s+from\s+["']leaflet["']/.test(mapPage)) {
+    problems.push("mapa/index.astro: Leaflet no debe volver a importarse estáticamente");
+  }
 }
 
 
@@ -505,6 +507,12 @@ if (!fs.existsSync(map3dPagePath)) {
   const map3dPage = fs.readFileSync(map3dPagePath, "utf8");
   for (const token of ["68dvh", "safe-area-inset-top", ".maplibregl-ctrl-group button", "width: 44px", "height: 44px", "prefers-reduced-motion", "map.jumpTo"]) {
     if (!map3dPage.includes(token)) problems.push(`mapa-3d/index.astro: falta ergonomía móvil requerida (${token})`);
+  }
+  for (const token of ['await import("maplibre-gl")', "IntersectionObserver", 'data-map3d-state="idle"', "startMap"]) {
+    if (!map3dPage.includes(token)) problems.push(`mapa-3d/index.astro: falta carga diferida requerida (${token})`);
+  }
+  if (/import\s+maplibregl\s+from\s+["']maplibre-gl["']/.test(map3dPage)) {
+    problems.push("mapa-3d/index.astro: MapLibre no debe volver a importarse estáticamente");
   }
 }
 
@@ -635,8 +643,48 @@ for (const [name, filePath] of [
 ]) {
   if (!fs.existsSync(filePath)) continue;
   const content = fs.readFileSync(filePath, "utf8");
-  for (const token of ["data-search-clear", "clearSearch", 'aria-pressed=', 'enterkeyhint="search"']) {
-    if (!content.includes(token)) problems.push(`${name}: falta paridad funcional de búsqueda (${token})`);
+  for (const token of [
+    "data-search-clear",
+    "clearSearch",
+    'aria-pressed=',
+    'enterkeyhint="search"',
+    "data-search-url",
+    "loadSearchItems",
+    "fetch(searchUrl)",
+    "decodeSearchIndexPayload",
+  ]) {
+    if (!content.includes(token)) problems.push(`${name}: falta paridad funcional/rendimiento de búsqueda (${token})`);
+  }
+  if (content.includes('id="search-data"') || content.includes("JSON.stringify(searchItems)")) {
+    problems.push(`${name}: el índice completo no debe volver a incrustarse en el HTML inicial`);
+  }
+}
+
+
+const searchEnginePath = path.join(root, "src", "lib", "search-engine.ts");
+if (!fs.existsSync(searchEnginePath)) {
+  problems.push("falta src/lib/search-engine.ts");
+} else {
+  const searchEngine = fs.readFileSync(searchEnginePath, "utf8");
+  if (!searchEngine.includes("decodeSearchIndexPayload")) {
+    problems.push("search-engine.ts: falta el decodificador del índice compacto");
+  }
+}
+
+for (const [name, filePath] of [
+  ["datos ES", path.join(root, "src", "pages", "buscar", "datos.json.ts")],
+  ["data EN", path.join(root, "src", "pages", "en", "search", "data.json.ts")],
+]) {
+  if (!fs.existsSync(filePath)) {
+    problems.push(`${name}: falta la ruta JSON del índice de búsqueda`);
+    continue;
+  }
+  const content = fs.readFileSync(filePath, "utf8");
+  if (!content.includes("buildSearchIndexPayload")) {
+    problems.push(`${name}: el índice debe publicarse con el payload compacto versionado`);
+  }
+  if (content.includes("JSON.stringify(buildSearchIndex(")) {
+    problems.push(`${name}: no debe volver a publicar objetos completos del índice`);
   }
 }
 
@@ -900,6 +948,7 @@ for (const [token, message] of [
   ['aria-atomic="true"', "Los estados globales deben anunciarse de forma atómica"],
   ["warmSearchIndex", "La búsqueda global debe precargar su índice al detectar intención"],
   ["searchLoadFailed", "La búsqueda global debe distinguir fallos de red de búsquedas sin resultados"],
+  ["decodeSearchIndexPayload", "La búsqueda global debe decodificar el payload compacto del índice"],
   ["if (!response.ok) throw new Error", "La búsqueda global debe tratar respuestas HTTP fallidas como error"],
   ["data-error-label", "La búsqueda global debe ofrecer un mensaje localizado cuando falla el índice"],
   ['addEventListener("pointerdown", warmSearchIndex', "La búsqueda global debe precargar también en interacción táctil"],

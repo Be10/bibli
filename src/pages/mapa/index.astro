@@ -68,7 +68,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
       </span>
     </section>
 
-    <section class="map-shell">
+    <section class="map-shell" data-map-runtime="idle" aria-busy="false" aria-label="Mapa bíblico interactivo">
       <div id="biblical-map"></div>
     </section>
 
@@ -77,10 +77,8 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
 </BaseLayout>
 
 <script>
-  import L from "leaflet";
-  import markerIcon2xUrl from "leaflet/dist/images/marker-icon-2x.png";
-  import markerIconUrl from "leaflet/dist/images/marker-icon.png";
-  import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
+  type LeafletMarker = import("leaflet").Marker;
+  type LeafletLatLngExpression = import("leaflet").LatLngExpression;
 
   type MapPlace = {
     id: string;
@@ -98,12 +96,28 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     }[];
   };
 
+  async function initializeMap() {
+    const [
+      { default: L },
+      { default: markerIcon2xUrl },
+      { default: markerIconUrl },
+      { default: markerShadowUrl },
+    ] = await Promise.all([
+      import("leaflet"),
+      import("leaflet/dist/images/marker-icon-2x.png"),
+      import("leaflet/dist/images/marker-icon.png"),
+      import("leaflet/dist/images/marker-shadow.png"),
+    ]);
+
   delete (L.Icon.Default.prototype as any)._getIconUrl;
 
+  const assetUrl = (asset: unknown) =>
+    typeof asset === "string" ? asset : (asset as { src: string }).src;
+
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2xUrl.src ?? markerIcon2xUrl,
-    iconUrl: markerIconUrl.src ?? markerIconUrl,
-    shadowUrl: markerShadowUrl.src ?? markerShadowUrl,
+    iconRetinaUrl: assetUrl(markerIcon2xUrl),
+    iconUrl: assetUrl(markerIconUrl),
+    shadowUrl: assetUrl(markerShadowUrl),
   });
 
   const baseUrl = import.meta.env.BASE_URL;
@@ -184,7 +198,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     });
   }
 
-  function keepPopupInsideMap(marker: L.Marker) {
+  function keepPopupInsideMap(marker: LeafletMarker) {
     const popup = marker.getPopup();
     const popupElement = popup?.getElement();
 
@@ -231,7 +245,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     }
   }
 
-  function centerMarkerWithPopupSpace(latLng: L.LatLngExpression, zoom: number) {
+  function centerMarkerWithPopupSpace(latLng: LeafletLatLngExpression, zoom: number) {
     map.invalidateSize(false);
 
     const resolvedLatLng = L.latLng(latLng);
@@ -259,7 +273,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     });
   }
 
-  function stabilizeSelectedPopup(marker: L.Marker, latLng: L.LatLngExpression, zoom: number) {
+  function stabilizeSelectedPopup(marker: LeafletMarker, latLng: LeafletLatLngExpression, zoom: number) {
     const run = () => {
       map.invalidateSize(false);
       centerMarkerWithPopupSpace(latLng, zoom);
@@ -423,7 +437,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
   layerControl.addTo(map);
 
   const bounds = L.latLngBounds([]);
-  const markersBySlug = new Map<string, L.Marker>();
+  const markersBySlug = new Map<string, LeafletMarker>();
 
   let lockedPopupSlug: string | null = selectedPlace?.slug ?? null;
   let temporaryPopupSlug: string | null = null;
@@ -461,7 +475,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     clearPopupCloseTimer();
   }
 
-  function openLockedPopup(placeSlug: string, marker: L.Marker) {
+  function openLockedPopup(placeSlug: string, marker: LeafletMarker) {
     lockPopup(placeSlug);
     syncSelectedPlaceUi(placeSlug);
     marker.openPopup();
@@ -471,13 +485,13 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     });
   }
 
-  function closeLockedPopup(placeSlug: string, marker: L.Marker) {
+  function closeLockedPopup(placeSlug: string, marker: LeafletMarker) {
     releasePopup(placeSlug);
     syncSelectedPlaceUi(null);
     marker.closePopup();
   }
 
-  function toggleLockedPopup(placeSlug: string, marker: L.Marker) {
+  function toggleLockedPopup(placeSlug: string, marker: LeafletMarker) {
     if (lockedPopupSlug === placeSlug && marker.isPopupOpen()) {
       closeLockedPopup(placeSlug, marker);
       return;
@@ -510,7 +524,7 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     }, delay);
   }
 
-  function openTemporaryPopup(placeSlug: string, marker: L.Marker) {
+  function openTemporaryPopup(placeSlug: string, marker: LeafletMarker) {
     if (lockedPopupSlug && lockedPopupSlug !== placeSlug) {
       return;
     }
@@ -798,6 +812,76 @@ const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name, "es
     if (selectedPlaceSlug) syncSelectedPlaceUi(null);
     map.whenReady(() => fitAllPlaces(false));
   }
+  }
+
+  const mapShell = document.querySelector<HTMLElement>(".map-shell");
+  const mapToolbar = document.querySelector<HTMLElement>(".map-jump-toolbar");
+  const deferredPlaceSelect = document.querySelector<HTMLSelectElement>("[data-map-place-select]");
+  const deferredResetMapButton = document.querySelector<HTMLButtonElement>("[data-map-reset]");
+  const deferredStatus = document.querySelector<HTMLElement>("[data-map-selection-status]");
+  let mapReady = false;
+  let mapLoadPromise: Promise<void> | null = null;
+
+  function startMap(): Promise<void> {
+    if (!mapShell) return Promise.resolve();
+    if (mapLoadPromise) return mapLoadPromise;
+
+    mapShell.dataset.mapRuntime = "loading";
+    mapShell.setAttribute("aria-busy", "true");
+
+    mapLoadPromise = initializeMap()
+      .then(() => {
+        mapReady = true;
+        mapShell.dataset.mapRuntime = "ready";
+        mapShell.setAttribute("aria-busy", "false");
+      })
+      .catch((error) => {
+        mapShell.dataset.mapRuntime = "error";
+        mapShell.setAttribute("aria-busy", "false");
+        if (deferredStatus) deferredStatus.textContent = "No se pudo cargar el mapa";
+        console.error("No se pudo inicializar el mapa bíblico", error);
+      });
+
+    return mapLoadPromise;
+  }
+
+  if (mapShell) {
+    const startOnIntent = () => { void startMap(); };
+
+    if (new URLSearchParams(window.location.search).has("lugar")) {
+      startOnIntent();
+    } else if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        startOnIntent();
+      }, { rootMargin: "160px 0px", threshold: 0.01 });
+      observer.observe(mapShell);
+    } else {
+      startOnIntent();
+    }
+
+    for (const target of [mapShell, mapToolbar]) {
+      target?.addEventListener("pointerenter", startOnIntent, { once: true });
+      target?.addEventListener("focusin", startOnIntent, { once: true });
+    }
+  }
+
+  deferredPlaceSelect?.addEventListener("change", () => {
+    if (mapReady) return;
+    const intendedValue = deferredPlaceSelect.value;
+    void startMap().then(() => {
+      if (!mapReady || deferredPlaceSelect.value !== intendedValue) return;
+      deferredPlaceSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  }, { once: true });
+
+  deferredResetMapButton?.addEventListener("click", () => {
+    if (mapReady) return;
+    void startMap().then(() => {
+      if (mapReady) deferredResetMapButton.click();
+    });
+  }, { once: true });
 </script>
 
 <style is:global>

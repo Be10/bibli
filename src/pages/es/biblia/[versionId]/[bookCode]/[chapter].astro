@@ -257,15 +257,15 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(chapterReferen
     </section>
 
     <nav class="bible-chapter-jump" aria-label="Ir a otro capítulo">
-      <a
-        href={previousChapter
-          ? getBibleChapterPath("es", version.id, book.usfm_code, previousChapter.chapter_number)
-          : getBibleBookPath("es", version.id, book.usfm_code)}
-        class:list={["bible-chapter-jump-button", !previousChapter && "is-disabled"]}
-        aria-disabled={!previousChapter ? "true" : undefined}
-      >
-        ←
-      </a>
+      {previousChapter ? (
+        <a
+          href={getBibleChapterPath("es", version.id, book.usfm_code, previousChapter.chapter_number)}
+          class="bible-chapter-jump-button"
+          aria-label={`Capítulo anterior: ${previousChapter.chapter_number}`}
+        >←</a>
+      ) : (
+        <span class="bible-chapter-jump-button is-disabled" aria-hidden="true">←</span>
+      )}
 
       <label for="chapter-jump-select">Capítulo</label>
       <select id="chapter-jump-select" data-chapter-jump>
@@ -279,15 +279,15 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(chapterReferen
         ))}
       </select>
 
-      <a
-        href={nextChapter
-          ? getBibleChapterPath("es", version.id, book.usfm_code, nextChapter.chapter_number)
-          : getBibleBookPath("es", version.id, book.usfm_code)}
-        class:list={["bible-chapter-jump-button", !nextChapter && "is-disabled"]}
-        aria-disabled={!nextChapter ? "true" : undefined}
-      >
-        →
-      </a>
+      {nextChapter ? (
+        <a
+          href={getBibleChapterPath("es", version.id, book.usfm_code, nextChapter.chapter_number)}
+          class="bible-chapter-jump-button"
+          aria-label={`Capítulo siguiente: ${nextChapter.chapter_number}`}
+        >→</a>
+      ) : (
+        <span class="bible-chapter-jump-button is-disabled" aria-hidden="true">→</span>
+      )}
       <ReaderPreferences lang="es" compact />
     </nav>
 

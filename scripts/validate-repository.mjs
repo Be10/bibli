@@ -48,6 +48,36 @@ const forbiddenRules = [
 
 const problems = [];
 
+// Bloquea la reintroducción de una experiencia retirada sin conservar su nombre
+// literal en el repositorio. Esto cubre nombres de archivo, rutas y contenido.
+const buildWord = (codes) => String.fromCharCode(...codes);
+const retiredUiPattern = new RegExp(
+  `${buildWord([115,116,117,100,121])}[\\s_-]*${buildWord([114,111,111,109])}`,
+  "i",
+);
+const retiredUiPatternEs = new RegExp(
+  `${buildWord([104,97,98,105,116,97,99,105,111,110])}[\\s_-]+${buildWord([100,101])}[\\s_-]+${buildWord([101,115,116,117,100,105,111])}`,
+  "i",
+);
+const textExtensions = new Set([
+  ".astro", ".ts", ".js", ".mjs", ".cjs", ".json", ".md", ".yml", ".yaml", ".css", ".html", ".txt", ".sql",
+]);
+
+for (const file of tracked) {
+  if (retiredUiPattern.test(file) || retiredUiPatternEs.test(file)) {
+    problems.push(`funcionalidad retirada todavía presente en una ruta versionada: ${file}`);
+    continue;
+  }
+  const ext = file.includes(".") ? `.${file.split(".").pop().toLowerCase()}` : "";
+  if (!textExtensions.has(ext) || !fs.existsSync(file)) continue;
+  const stat = fs.statSync(file);
+  if (stat.size > 6_000_000) continue;
+  const content = fs.readFileSync(file, "utf8");
+  if (retiredUiPattern.test(content) || retiredUiPatternEs.test(content)) {
+    problems.push(`funcionalidad retirada todavía presente en contenido versionado: ${file}`);
+  }
+}
+
 // OneDrive puede crear copias de conflicto de SQLite con el nombre del equipo
 // (por ejemplo, data/bibli-EQUIPO.sqlite). Bibli solo debe tener un snapshot
 // SQLite canónico en data/: data/bibli.sqlite.

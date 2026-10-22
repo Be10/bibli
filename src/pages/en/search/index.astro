@@ -4,6 +4,7 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { buildSearchIndex } from "../../../lib/search-index";
 
 const searchItems = buildSearchIndex("en");
+const searchDataUrl = sitePath("/en/search/data.json");
 ---
 
 <BaseLayout
@@ -42,7 +43,7 @@ const searchItems = buildSearchIndex("en");
       </aside>
     </section>
 
-    <section class="section" id="advanced-search">
+    <section class="section" id="advanced-search" data-search-page data-search-url={searchDataUrl}>
       <label class="search-label" for="search-input">
         Enter a word, phrase, book, or Bible reference
       </label>
@@ -68,7 +69,6 @@ const searchItems = buildSearchIndex("en");
       <div id="search-results-summary" class="search-results-summary" role="status" aria-live="polite" aria-atomic="true" hidden></div>
       <div id="search-results" class="search-results"></div>
 
-      <script type="application/json" id="search-data" set:html={JSON.stringify(searchItems)} />
     </section>
   </main>
 </BaseLayout>
@@ -76,6 +76,7 @@ const searchItems = buildSearchIndex("en");
 <script>
   import {
     SEARCH_FILTER_ORDER,
+    decodeSearchIndexPayload,
     getAvailableSearchFilters,
     getDisplaySearchResults,
     getSearchCounts,
@@ -84,7 +85,7 @@ const searchItems = buildSearchIndex("en");
   } from "../../../lib/search-engine";
 
   const ALL_TYPE = "Todos";
-  const dataElement = document.getElementById("search-data");
+  const searchRoot = document.querySelector("[data-search-page]");
   const input = document.getElementById("search-input");
   const resultsElement = document.getElementById("search-results");
   const emptyElement = document.getElementById("search-empty");
@@ -92,9 +93,40 @@ const searchItems = buildSearchIndex("en");
   const filtersElement = document.getElementById("search-filters");
   const clearButton = document.querySelector("[data-search-clear]");
 
-  const items = dataElement?.textContent
-    ? JSON.parse(dataElement.textContent)
-    : [];
+  let items = null;
+  let searchLoadPromise = null;
+  let searchLoadFailed = false;
+  let searchRenderGeneration = 0;
+
+  async function loadSearchItems() {
+    if (items) return items;
+    if (searchLoadPromise) return searchLoadPromise;
+
+    const searchUrl = searchRoot?.getAttribute("data-search-url");
+    if (!searchUrl) {
+      searchLoadFailed = true;
+      return [];
+    }
+
+    searchLoadPromise = (async () => {
+      try {
+        const response = await fetch(searchUrl);
+        if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
+        const payload = await response.json();
+        items = decodeSearchIndexPayload(payload);
+        searchLoadFailed = false;
+        return items;
+      } catch {
+        searchLoadFailed = true;
+        items = null;
+        return [];
+      } finally {
+        searchLoadPromise = null;
+      }
+    })();
+
+    return searchLoadPromise;
+  }
 
   const initialParams = new URLSearchParams(window.location.search);
   const initialQuery = initialParams.get("q") ?? "";
@@ -146,7 +178,7 @@ const searchItems = buildSearchIndex("en");
   }
 
   function getTypeLabel(type) {
-    return items.find((item) => item.type === type)?.typeLabel ?? type;
+    return items?.find((item) => item.type === type)?.typeLabel ?? type;
   }
 
   function renderFilters(results) {
@@ -219,7 +251,8 @@ const searchItems = buildSearchIndex("en");
     resultsElement.innerHTML = filteredResults.map(renderResultCard).join("");
   }
 
-  function renderResults(query) {
+  async function renderResults(query) {
+    const renderGeneration = ++searchRenderGeneration;
     if (!resultsElement || !emptyElement || !resultsSummaryElement || !filtersElement) {
       return;
     }
@@ -235,7 +268,24 @@ const searchItems = buildSearchIndex("en");
       return;
     }
 
-    currentResults = getSearchResults(items, query);
+    resultsSummaryElement.hidden = false;
+    resultsSummaryElement.textContent = "Loading search index…";
+    const loadedItems = await loadSearchItems();
+
+    if (renderGeneration !== searchRenderGeneration) return;
+
+    if (searchLoadFailed) {
+      currentResults = [];
+      resultsElement.innerHTML = "";
+      filtersElement.innerHTML = "";
+      filtersElement.hidden = true;
+      resultsSummaryElement.hidden = true;
+      emptyElement.hidden = false;
+      emptyElement.textContent = "The search index could not be loaded. Please try again.";
+      return;
+    }
+
+    currentResults = getSearchResults(loadedItems, query);
 
     if (currentResults.length === 0) {
       resultsElement.innerHTML = "";
@@ -263,7 +313,7 @@ const searchItems = buildSearchIndex("en");
     input.value = "";
     activeSearchType = ALL_TYPE;
     updateUrl("");
-    renderResults("");
+    void renderResults("");
     syncClearButton("");
     input.focus();
   }
@@ -310,7 +360,7 @@ const searchItems = buildSearchIndex("en");
     updateUrl(value);
     syncClearButton(value);
     window.clearTimeout(searchDebounceTimer);
-    searchDebounceTimer = window.setTimeout(() => renderResults(value), 120);
+    searchDebounceTimer = window.setTimeout(() => void renderResults(value), 120);
   });
 
   clearButton?.addEventListener("click", clearSearch);
@@ -318,7 +368,7 @@ const searchItems = buildSearchIndex("en");
   if (input instanceof HTMLInputElement && initialQuery) {
     input.value = initialQuery;
     syncClearButton(initialQuery);
-    renderResults(initialQuery);
+    void renderResults(initialQuery);
   } else {
     syncClearButton("");
   }

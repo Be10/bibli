@@ -112,8 +112,12 @@ const downloadEn = sitePath("/en/download/");
       <span class="brand" aria-label="Bibli"><BibliLogo size={30} class="offline-logo" /><span class="brand-word" aria-hidden="true">ibli</span></span>
       <div class="network-state" data-offline-network role="status" aria-live="polite"><span aria-hidden="true"></span><strong></strong></div>
 
+      <h1>
+        <span data-offline-copy="es">Estás sin conexión</span>
+        <span data-offline-copy="en" lang="en" hidden>You’re offline</span>
+      </h1>
+
       <section data-offline-copy="es">
-        <h1>Estás sin conexión</h1>
         <p>Bibli intentará mostrar las páginas y paquetes guardados en este dispositivo. El contenido que todavía no se haya descargado necesitará conexión.</p>
         <div class="actions">
           <a class="primary" href={homeEs}><Icon name="library" size={17} /> Ir al inicio</a>
@@ -124,7 +128,6 @@ const downloadEn = sitePath("/en/download/");
       </section>
 
       <section data-offline-copy="en" lang="en" hidden>
-        <h1>You’re offline</h1>
         <p>Bibli will try to show pages and packages saved on this device. Content that has not been downloaded yet will require a connection.</p>
         <div class="actions">
           <a class="primary" href={homeEn}><Icon name="library" size={17} /> Go home</a>

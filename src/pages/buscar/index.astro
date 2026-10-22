@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildSearchIndex } from "../../lib/search-index";
 
 const searchItems = buildSearchIndex("es");
+const searchDataUrl = sitePath("/buscar/datos.json");
 
 const searchStats = [
   { label: "Lecciones", type: "Lección" },
@@ -171,7 +172,7 @@ function getExploreCount(item: ExploreItem) {
       </aside>
     </section>
 
-    <section class="section search-section advanced-search-section" id="busqueda-avanzada">
+    <section class="section search-section advanced-search-section" id="busqueda-avanzada" data-search-page data-search-url={searchDataUrl}>
       <div class="section-header">
         <div>
           <p class="eyebrow">Consulta rápida</p>
@@ -255,13 +256,13 @@ function getExploreCount(item: ExploreItem) {
       ))}
     </section>
 
-    <script type="application/json" id="search-data" set:html={JSON.stringify(searchItems)} />
   </main>
 </BaseLayout>
 
 <script>
   import {
     SEARCH_FILTER_ORDER,
+    decodeSearchIndexPayload,
     getAvailableSearchFilters,
     getDisplaySearchResults,
     getSearchCounts,
@@ -269,7 +270,7 @@ function getExploreCount(item: ExploreItem) {
     normalizeSearchText,
   } from "../../lib/search-engine";
 
-  const dataElement = document.getElementById("search-data");
+  const searchRoot = document.querySelector("[data-search-page]");
   const input = document.getElementById("search-input");
   const resultsElement = document.getElementById("search-results");
   const emptyElement = document.getElementById("search-empty");
@@ -277,9 +278,40 @@ function getExploreCount(item: ExploreItem) {
   const filtersElement = document.getElementById("search-filters");
   const clearButton = document.querySelector("[data-search-clear]");
 
-  const items = dataElement?.textContent
-    ? JSON.parse(dataElement.textContent)
-    : [];
+  let items = null;
+  let searchLoadPromise = null;
+  let searchLoadFailed = false;
+  let searchRenderGeneration = 0;
+
+  async function loadSearchItems() {
+    if (items) return items;
+    if (searchLoadPromise) return searchLoadPromise;
+
+    const searchUrl = searchRoot?.getAttribute("data-search-url");
+    if (!searchUrl) {
+      searchLoadFailed = true;
+      return [];
+    }
+
+    searchLoadPromise = (async () => {
+      try {
+        const response = await fetch(searchUrl);
+        if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
+        const payload = await response.json();
+        items = decodeSearchIndexPayload(payload);
+        searchLoadFailed = false;
+        return items;
+      } catch {
+        searchLoadFailed = true;
+        items = null;
+        return [];
+      } finally {
+        searchLoadPromise = null;
+      }
+    })();
+
+    return searchLoadPromise;
+  }
 
   const initialParams = new URLSearchParams(window.location.search);
   const initialQuery = initialParams.get("q") ?? "";
@@ -418,7 +450,8 @@ function getExploreCount(item: ExploreItem) {
     resultsElement.innerHTML = filteredResults.map(renderResultCard).join("");
   }
 
-  function renderResults(query) {
+  async function renderResults(query) {
+    const renderGeneration = ++searchRenderGeneration;
     const normalizedQuery = normalizeText(query);
 
     if (!resultsElement || !emptyElement || !resultsSummaryElement || !filtersElement) {
@@ -439,7 +472,26 @@ function getExploreCount(item: ExploreItem) {
       return;
     }
 
-    const results = getSearchResults(items, query);
+    resultsSummaryElement.hidden = false;
+    resultsSummaryElement.textContent = "Cargando índice de búsqueda…";
+    const loadedItems = await loadSearchItems();
+
+    if (renderGeneration !== searchRenderGeneration) return;
+
+    if (searchLoadFailed) {
+      currentResults = [];
+      resultsElement.innerHTML = "";
+      filtersElement.innerHTML = "";
+      filtersElement.hidden = true;
+      resultsSummaryElement.hidden = true;
+      resultsSummaryElement.textContent = "";
+      emptyElement.hidden = false;
+      emptyElement.textContent = "No se pudo cargar el índice de búsqueda. Inténtalo de nuevo.";
+      emptyElement.style.display = "block";
+      return;
+    }
+
+    const results = getSearchResults(loadedItems, query);
 
     currentResults = results;
 
@@ -472,7 +524,7 @@ function getExploreCount(item: ExploreItem) {
     input.value = "";
     activeSearchType = "Todos";
     updateUrl("");
-    renderResults("");
+    void renderResults("");
     syncClearButton("");
     input.focus();
   }
@@ -524,7 +576,7 @@ function getExploreCount(item: ExploreItem) {
     window.clearTimeout(searchDebounceTimer);
 
     searchDebounceTimer = window.setTimeout(() => {
-      renderResults(value);
+      void renderResults(value);
     }, 120);
   });
 
@@ -533,7 +585,7 @@ function getExploreCount(item: ExploreItem) {
   if (input instanceof HTMLInputElement && initialQuery) {
     input.value = initialQuery;
     syncClearButton(initialQuery);
-    renderResults(initialQuery);
+    void renderResults(initialQuery);
   } else {
     syncClearButton("");
   }

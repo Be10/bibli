@@ -4,6 +4,76 @@ export type SearchResultItem = SearchIndexItem & {
   score: number;
 };
 
+type CompactSearchIndexPayload = {
+  version: 1;
+  items: unknown[];
+};
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+export function decodeSearchIndexPayload(payload: unknown): SearchIndexItem[] {
+  // Backward-compatible object arrays keep local mocks and older cached payloads safe
+  // during a rolling deployment.
+  if (Array.isArray(payload)) {
+    return payload.filter(
+      (item): item is SearchIndexItem =>
+        Boolean(item) && typeof item === "object" && !Array.isArray(item)
+    );
+  }
+
+  if (!payload || typeof payload !== "object") return [];
+
+  const compact = payload as Partial<CompactSearchIndexPayload>;
+  if (compact.version !== 1 || !Array.isArray(compact.items)) return [];
+
+  return compact.items.flatMap((row) => {
+    if (!Array.isArray(row) || row.length < 10) return [];
+
+    const [
+      title,
+      type,
+      typeLabel,
+      url,
+      summary,
+      searchText,
+      typePriority,
+      bookOrder,
+      chapterNumber,
+      verseNumber,
+    ] = row;
+
+    if (
+      typeof title !== "string" ||
+      typeof type !== "string" ||
+      typeof typeLabel !== "string" ||
+      typeof url !== "string" ||
+      typeof summary !== "string" ||
+      typeof searchText !== "string" ||
+      !isFiniteNumber(typePriority) ||
+      !isFiniteNumber(bookOrder) ||
+      !isFiniteNumber(chapterNumber) ||
+      !isFiniteNumber(verseNumber)
+    ) {
+      return [];
+    }
+
+    return [{
+      title,
+      type,
+      typeLabel,
+      url,
+      summary,
+      searchText,
+      typePriority,
+      bookOrder,
+      chapterNumber,
+      verseNumber,
+    }];
+  });
+}
+
 type BibleReferenceQuery = {
   bookName: string;
   chapterNumber: number;

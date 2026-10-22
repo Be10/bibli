@@ -10,6 +10,7 @@ interface Props {
 
 const { lang = "es", compact = false } = Astro.props;
 const panelId = `reader-preferences-panel-${lang}`;
+const panelTitleId = `reader-preferences-title-${lang}`;
 const copy = lang === "en"
   ? {
       label: "Reading preferences",
@@ -71,11 +72,11 @@ const copy = lang === "en"
     <span>{copy.label}</span>
   </button>
 
-  <button type="button" class="reader-preferences-backdrop" data-reader-preferences-backdrop aria-label={copy.close} hidden></button>
+  <div class="reader-preferences-backdrop" data-reader-preferences-backdrop aria-hidden="true" hidden></div>
 
-  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel role="dialog" aria-modal="false" aria-label={copy.label} hidden>
+  <div class="reader-preferences-panel" id={panelId} data-reader-preferences-panel role="dialog" aria-modal="false" aria-labelledby={panelTitleId} hidden>
     <header class="reader-preferences-panel-head">
-      <strong>{copy.label}</strong>
+      <strong id={panelTitleId}>{copy.label}</strong>
       <button type="button" class="reader-preferences-close" data-reader-preferences-close aria-label={copy.close} title={copy.close}>
         <Icon name="close" size={17} />
       </button>
@@ -166,7 +167,7 @@ const copy = lang === "en"
   document.querySelectorAll<HTMLElement>("[data-reader-preferences]").forEach((root) => {
     const toggle = root.querySelector<HTMLButtonElement>("[data-reader-preferences-toggle]");
     const panel = root.querySelector<HTMLElement>("[data-reader-preferences-panel]");
-    const backdrop = root.querySelector<HTMLButtonElement>("[data-reader-preferences-backdrop]");
+    const backdrop = root.querySelector<HTMLElement>("[data-reader-preferences-backdrop]");
     const closeButton = root.querySelector<HTMLButtonElement>("[data-reader-preferences-close]");
     const reset = root.querySelector<HTMLButtonElement>("[data-reader-preferences-reset]");
     const verseNumbersGroup = root.querySelector<HTMLElement>("[data-reader-verse-numbers]");
@@ -315,6 +316,37 @@ const copy = lang === "en"
       document.dispatchEvent(new CustomEvent("bibli:verse-numbers-change", { detail: { visible: true } }));
     });
 
+    const getPanelFocusables = () => panel
+      ? [...panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])')].filter((element) => {
+          const style = getComputedStyle(element);
+          return !element.hidden && style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0;
+        })
+      : [];
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || !mobileViewport.matches || !panel || panel.hidden) return;
+      const focusables = getPanelFocusables();
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const activeIndex = active ? focusables.indexOf(active) : -1;
+
+      if (!active || !panel.contains(active)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+        return;
+      }
+
+      if (event.shiftKey && activeIndex <= 0) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && activeIndex === focusables.length - 1) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }, true);
+
     panel?.addEventListener("click", (event) => event.stopPropagation());
     backdrop?.addEventListener("click", () => setOpen(false, true));
     closeButton?.addEventListener("click", () => setOpen(false, true));
@@ -361,7 +393,7 @@ const copy = lang === "en"
   .reader-verse-number-group[hidden] { display:none !important; }
   .reader-pref-group > span { color:var(--text-muted); font-size:.68rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
   .reader-pref-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.3rem; padding:.25rem; border-radius:var(--ui-control-radius,12px); background:var(--surface-soft); }
-  .reader-pref-options button { min-width:0; min-height:40px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
+  .reader-pref-options button { min-width:0; min-height:44px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:740; cursor:pointer; }
   .reader-pref-options button:hover { background:color-mix(in srgb,var(--surface) 72%,transparent); color:var(--heading-color); }
   .reader-pref-options button.is-active { background:var(--surface); color:var(--accent); box-shadow:0 1px 5px rgba(0,0,0,.08); }
   .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.7rem; }
@@ -392,16 +424,16 @@ const copy = lang === "en"
     .reader-pref-group { min-width:0; gap:.32rem; }
     .reader-pref-group > span { font-size:.64rem; }
     .reader-pref-options { gap:.22rem; padding:.2rem; }
-    .reader-pref-options button { min-height:42px; padding-inline:.25rem; font-size:.68rem; }
+    .reader-pref-options button { min-height:44px; padding-inline:.25rem; font-size:.68rem; }
     .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.64rem; }
-    .reader-pref-reset { grid-column:1/-1; min-height:42px; }
+    .reader-pref-reset { grid-column:1/-1; min-height:44px; }
     :global(html[data-lesson-dock="true"]) .reader-preferences-panel { bottom:calc(82px + env(safe-area-inset-bottom)); }
   }
 
   @media(max-width:430px){
     .reader-preferences-panel { bottom:max(7px,env(safe-area-inset-bottom)); width:calc(100vw - 14px); max-height:min(62dvh,450px); gap:.5rem; padding:.62rem; }
     .reader-preferences-panel-head { top:-.62rem; margin:-.62rem -.62rem 0; padding:.52rem .62rem .4rem; }
-    .reader-pref-options button { min-height:40px; font-size:.64rem; }
+    .reader-pref-options button { min-height:44px; font-size:.64rem; }
     .reader-font-options button,.reader-align-options button,.reader-spacing-options button { font-size:.6rem; }
     :global(html[data-lesson-dock="true"]) .reader-preferences-panel { bottom:calc(78px + env(safe-area-inset-bottom)); }
   }
@@ -423,7 +455,7 @@ const copy = lang === "en"
     border-radius:var(--ui-panel-radius,18px); box-shadow:0 -10px 30px rgba(15,23,42,.11);
   }
   :global(html[data-lesson-dock="true"]) .reader-preferences-panel-head {
-    grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:42px;
+    grid-column:1/-1; position:sticky; top:-.72rem; z-index:1; display:flex; min-height:44px;
     align-items:center; justify-content:space-between; margin:-.72rem -.72rem 0; padding:.56rem .68rem .44rem;
     background:color-mix(in srgb,var(--surface-elevated) 97%,transparent); border-bottom:1px solid var(--border-color);
   }

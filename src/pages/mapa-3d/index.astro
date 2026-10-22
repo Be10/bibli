@@ -35,6 +35,8 @@ import { sitePath } from "../../lib/site-paths";
       class="map3d-shell"
       aria-label="Mapa bíblico 3D interactivo"
       data-boat-base={sitePath("/images/mapa-3d/barcos/")}
+      data-map3d-state="idle"
+      aria-busy="false"
     >
       <div class="map3d-toolbar" aria-label="Controles del mapa">
         <button type="button" data-map-action="overview" aria-pressed="true">Vista general</button>
@@ -71,7 +73,10 @@ import { sitePath } from "../../lib/site-paths";
 </BaseLayout>
 
 <script>
-  import maplibregl from "maplibre-gl";
+  import type { GeoJSONSource } from "maplibre-gl";
+
+  async function initializeMap3d() {
+    const { default: maplibregl } = await import("maplibre-gl");
 
   type BiblePlace = {
     name: string;
@@ -1015,10 +1020,10 @@ import { sitePath } from "../../lib/site-paths";
 
     function frame(now: number) {
       const waterSource = map.getSource("water-motion") as
-        | maplibregl.GeoJSONSource
+        | GeoJSONSource
         | undefined;
       const riverSource = map.getSource("river-motion") as
-        | maplibregl.GeoJSONSource
+        | GeoJSONSource
         | undefined;
 
       if (waterSource && map.getLayer("water-motion-lines")) {
@@ -1331,9 +1336,46 @@ import { sitePath } from "../../lib/site-paths";
     addMaritimeRoute();
     addDirectionalBoat();
     bindMapEvents();
+
+    const shell = document.querySelector<HTMLElement>(".map3d-shell");
+    if (shell) {
+      shell.dataset.map3dState = "ready";
+      shell.setAttribute("aria-busy", "false");
+    }
   });
 
   bindToolbar();
+  }
+
+  const mapShell = document.querySelector<HTMLElement>(".map3d-shell");
+  let mapLoadStarted = false;
+
+  const startMap = () => {
+    if (!mapShell || mapLoadStarted) return;
+    mapLoadStarted = true;
+    mapShell.dataset.map3dState = "loading";
+    mapShell.setAttribute("aria-busy", "true");
+
+    void initializeMap3d().catch((error) => {
+      mapShell.dataset.map3dState = "error";
+      mapShell.setAttribute("aria-busy", "false");
+      const statusText = mapShell.querySelector<HTMLElement>("[data-map3d-status-text]");
+      if (statusText) statusText.textContent = "No se pudo cargar el mapa 3D";
+      console.error("No se pudo inicializar el mapa 3D", error);
+    });
+  };
+
+  if (mapShell) {
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      startMap();
+    }, { rootMargin: "160px 0px", threshold: 0.01 });
+
+    observer.observe(mapShell);
+    mapShell.addEventListener("pointerenter", startMap, { once: true });
+    mapShell.addEventListener("focusin", startMap, { once: true });
+  }
 </script>
 
 <style>

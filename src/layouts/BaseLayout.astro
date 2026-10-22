@@ -51,6 +51,9 @@ const ui = {
     searchNone: "No se encontraron resultados.",
     searchError: "No pudimos cargar la búsqueda. Revisa tu conexión e inténtalo de nuevo.",
     searchAdvanced: "Búsqueda avanzada",
+    searchResultsOne: "1 resultado disponible.",
+    searchResultsMany: "{count} resultados disponibles.",
+    searchResultsFiltered: "{count} resultados en {filter}.",
     menuOpen: "Abrir menú",
     menuLabel: "Menú principal",
     mainRoute: "Ruta principal",
@@ -101,6 +104,9 @@ const ui = {
     searchNone: "No results found.",
     searchError: "We couldn't load search. Check your connection and try again.",
     searchAdvanced: "Advanced search",
+    searchResultsOne: "1 result available.",
+    searchResultsMany: "{count} results available.",
+    searchResultsFiltered: "{count} results in {filter}.",
     menuOpen: "Open menu",
     menuLabel: "Main menu",
     mainRoute: "Main route",
@@ -722,6 +728,9 @@ const languageTarget = alternateLanguage ?? {
       data-search-open-label={activeUi.searchOpen}
       data-search-close-label={activeUi.searchClose}
       data-search-icon-label={activeUi.searchIcon}
+      data-results-one-label={activeUi.searchResultsOne}
+      data-results-many-label={activeUi.searchResultsMany}
+      data-results-filtered-label={activeUi.searchResultsFiltered}
       aria-hidden="true"
       inert
     >
@@ -764,7 +773,8 @@ const languageTarget = alternateLanguage ?? {
 
       <div class="global-search-popover" data-global-search-popover hidden>
         <div class="global-search-filters" data-global-search-filters role="group" aria-label={activeUi.searchFilters}></div>
-        <div class="global-search-results" data-global-search-results aria-label={activeUi.searchResults} aria-live="polite" aria-atomic="false"></div>
+        <div class="global-search-results" data-global-search-results aria-label={activeUi.searchResults}></div>
+        <div class="sr-only" data-global-search-status role="status" aria-live="polite" aria-atomic="true"></div>
         <a href={searchPageUrl} class="global-search-all" data-global-search-all>{activeUi.searchAdvanced} →</a>
       </div>
     </div>
@@ -799,13 +809,19 @@ const languageTarget = alternateLanguage ?? {
       <span class="connection-status-dot" aria-hidden="true"></span>
       <span data-connection-status-text></span>
     </div>
+    <div
+      class="sr-only"
+      data-app-update-announcer
+      data-message={activeUi.updateReady}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
     <section
       class="app-update-status"
       data-app-update
       aria-label={activeUi.updateLabel}
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
+      role="region"
       hidden
     >
       <strong>{activeUi.updateReady}</strong>
@@ -822,6 +838,7 @@ const languageTarget = alternateLanguage ?? {
     <script>
   import {
     SEARCH_FILTER_ORDER,
+    decodeSearchIndexPayload,
     getAvailableSearchFilters,
     getDisplaySearchResults,
     getSearchCounts,
@@ -857,11 +874,13 @@ const languageTarget = alternateLanguage ?? {
     const searchPopover = document.querySelector("[data-global-search-popover]");
     const searchFilters = document.querySelector("[data-global-search-filters]");
     const searchResults = document.querySelector("[data-global-search-results]");
+    const searchStatus = document.querySelector("[data-global-search-status]");
     const searchAllLink = document.querySelector("[data-global-search-all]");
     const connectionStatus = document.querySelector("[data-connection-status]");
     const connectionStatusText = document.querySelector("[data-connection-status-text]");
     let connectionStatusTimer;
     const appUpdateStatus = document.querySelector("[data-app-update]");
+    const appUpdateAnnouncer = document.querySelector("[data-app-update-announcer]");
     const appUpdateNow = document.querySelector("[data-app-update-now]");
     const appUpdateLater = document.querySelector("[data-app-update-later]");
 
@@ -962,8 +981,18 @@ const languageTarget = alternateLanguage ?? {
     const searchIconLabel =
       searchShell?.getAttribute("data-search-icon-label") ??
       "Icono de búsqueda";
+    const searchResultsOneLabel =
+      searchShell?.getAttribute("data-results-one-label") ??
+      "1 resultado disponible.";
+    const searchResultsManyLabel =
+      searchShell?.getAttribute("data-results-many-label") ??
+      "{count} resultados disponibles.";
+    const searchResultsFilteredLabel =
+      searchShell?.getAttribute("data-results-filtered-label") ??
+      "{count} resultados en {filter}.";
 
     let searchItems = null;
+    let searchLoadPromise = null;
     let searchLoadFailed = false;
     let activeSearchType = ALL_SEARCH_TYPE;
     let globalSearchDebounceTimer;
@@ -1152,6 +1181,7 @@ const languageTarget = alternateLanguage ?? {
 
     async function loadSearchItems() {
       if (searchItems) return searchItems;
+      if (searchLoadPromise) return searchLoadPromise;
 
       const searchUrl = searchShell?.getAttribute("data-search-url");
 
@@ -1160,18 +1190,24 @@ const languageTarget = alternateLanguage ?? {
         return [];
       }
 
-      try {
-        const response = await fetch(searchUrl);
-        if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
-        const payload = await response.json();
-        searchItems = Array.isArray(payload) ? payload : [];
-        searchLoadFailed = false;
-        return searchItems;
-      } catch {
-        searchLoadFailed = true;
-        searchItems = null;
-        return [];
-      }
+      searchLoadPromise = (async () => {
+        try {
+          const response = await fetch(searchUrl);
+          if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
+          const payload = await response.json();
+          searchItems = decodeSearchIndexPayload(payload);
+          searchLoadFailed = false;
+          return searchItems;
+        } catch {
+          searchLoadFailed = true;
+          searchItems = null;
+          return [];
+        } finally {
+          searchLoadPromise = null;
+        }
+      })();
+
+      return searchLoadPromise;
     }
 
     function openMenu({ focusFirst = false } = {}) {
@@ -1387,6 +1423,20 @@ const languageTarget = alternateLanguage ?? {
         });
     }
 
+    function setSearchStatus(message = "") {
+      if (searchStatus instanceof HTMLElement) searchStatus.textContent = message;
+    }
+
+    function formatSearchStatus(count, filterLabel = "") {
+      if (filterLabel) {
+        return searchResultsFilteredLabel
+          .replace("{count}", String(count))
+          .replace("{filter}", filterLabel);
+      }
+      if (count === 1) return searchResultsOneLabel;
+      return searchResultsManyLabel.replace("{count}", String(count));
+    }
+
     function renderResultCard(item) {
       const query = searchInput?.value ?? "";
 
@@ -1415,6 +1465,7 @@ const languageTarget = alternateLanguage ?? {
           </div>
         `;
         searchFilters.innerHTML = "";
+        setSearchStatus("");
         openSearchPopover();
         return;
       }
@@ -1432,6 +1483,7 @@ const languageTarget = alternateLanguage ?? {
           </div>
         `;
         searchFilters.innerHTML = "";
+        setSearchStatus(searchErrorLabel);
         openSearchPopover();
         return;
       }
@@ -1445,6 +1497,7 @@ const languageTarget = alternateLanguage ?? {
           </div>
         `;
         searchFilters.innerHTML = "";
+        setSearchStatus(searchNoneLabel);
         openSearchPopover();
         return;
       }
@@ -1468,6 +1521,13 @@ const languageTarget = alternateLanguage ?? {
       );
 
       searchResults.innerHTML = filteredResults.map(renderResultCard).join("");
+      const activeFilterLabel = activeSearchType === ALL_SEARCH_TYPE
+        ? ""
+        : (results.find((item) => item.type === activeSearchType)?.typeLabel ?? activeSearchType);
+      const activeResultCount = activeSearchType === ALL_SEARCH_TYPE
+        ? results.length
+        : (getSearchCounts(results)[activeSearchType] ?? filteredResults.length);
+      setSearchStatus(formatSearchStatus(activeResultCount, activeFilterLabel));
 
       if (renderGeneration === searchRenderGeneration) openSearchPopover();
     }
@@ -1562,6 +1622,9 @@ const languageTarget = alternateLanguage ?? {
         if (!hadServiceWorkerController || updateNoticeShown || !appUpdateStatus) return;
         updateNoticeShown = true;
         appUpdateStatus.hidden = false;
+        if (appUpdateAnnouncer instanceof HTMLElement) {
+          appUpdateAnnouncer.textContent = appUpdateAnnouncer.getAttribute("data-message") ?? "";
+        }
       });
 
       window.addEventListener("load", async () => {
@@ -1585,6 +1648,7 @@ const languageTarget = alternateLanguage ?? {
 
     appUpdateLater?.addEventListener("click", () => {
       if (appUpdateStatus instanceof HTMLElement) appUpdateStatus.hidden = true;
+      if (appUpdateAnnouncer instanceof HTMLElement) appUpdateAnnouncer.textContent = "";
     });
 
     const warmSearchIndex = () => {
@@ -2832,7 +2896,7 @@ border-color: var(--border-color);
   .global-search-filters button {
     display: inline-flex;
     flex: 0 0 auto;
-    min-height: 32px;
+    min-height: 44px;
     align-items: center;
     gap: 6px;
     padding: 0 11px;
@@ -2920,7 +2984,7 @@ border-color: var(--border-color);
   .global-search-all {
     display: inline-flex;
     justify-content: center;
-    min-height: 38px;
+    min-height: 44px;
     align-items: center;
     border-radius: 999px;
     background: var(--accent);
@@ -3153,7 +3217,7 @@ border-color: var(--border-color);
     box-shadow: 0 0 0 4px var(--focus-ring);
   }
   .global-search-submit { border-left-color: var(--border-color); }
-  .global-menu a { min-height: 42px; border-radius: 11px; color: var(--text-color); font-weight: 720; }
+  .global-menu a { min-height: 44px; border-radius: 11px; color: var(--text-color); font-weight: 720; }
   .global-menu a:hover { background: var(--surface-soft); color: var(--heading-color); }
   .global-search-filters button,
   .global-search-result,
@@ -3241,7 +3305,7 @@ border-color: var(--border-color);
     box-shadow: none;
     overflow: hidden;
   }
-  .global-search-form input { height: 42px; padding-left: 15px; font-size: .9rem; font-weight: 620; }
+  .global-search-form input { height: 44px; padding-left: 15px; font-size: .9rem; font-weight: 620; }
   .global-search-submit,
   .global-search-toggle,
   .menu-toggle,
@@ -3297,12 +3361,12 @@ border-color: var(--border-color);
   .appearance-group > span { padding:0 .45rem; color:var(--text-muted); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
   .theme-options { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:4px; border-radius:12px; background:var(--surface-soft); }
   .theme-options button {
-    min-width:0; min-height:36px; border:0; border-radius:9px; background:transparent; color:var(--text-muted); display:flex; align-items:center; justify-content:center; gap:.35rem; font:inherit; font-size:.72rem; font-weight:680; cursor:pointer;
+    min-width:0; min-height:44px; border:0; border-radius:9px; background:transparent; color:var(--text-muted); display:flex; align-items:center; justify-content:center; gap:.35rem; font:inherit; font-size:.72rem; font-weight:680; cursor:pointer;
   }
   .theme-options button:hover { color:var(--heading-color); background:color-mix(in srgb,var(--surface) 70%,transparent); }
   .theme-options button.is-active { color:var(--heading-color); background:var(--surface); box-shadow:0 1px 4px rgba(0,0,0,.08); }
   .accent-options { display:flex; gap:8px; padding:2px .45rem 5px; }
-  .accent-options button { width:30px; height:30px; padding:0; border:1px solid transparent; border-radius:10px; background:transparent; display:grid; place-items:center; cursor:pointer; }
+  .accent-options button { width:44px; height:44px; padding:0; border:1px solid transparent; border-radius:12px; background:transparent; display:grid; place-items:center; cursor:pointer; }
   .accent-options button:hover { background:var(--surface-soft); }
   .accent-swatch { width:18px; height:18px; border-radius:6px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.09); }
 
@@ -3318,7 +3382,7 @@ border-color: var(--border-color);
   html[data-theme="dark"] .entity-card {
     box-shadow: 0 12px 34px rgba(0,0,0,.18);
   }
-  .button { border-radius: 12px; min-height: 42px; padding-inline: 1rem; }
+  .button { border-radius: 12px; min-height: 44px; padding-inline: 1rem; }
   .button.secondary { box-shadow:none; }
 
   @media (max-width:760px) {
@@ -3434,9 +3498,9 @@ border-color: var(--border-color);
     .global-search-shell.is-open .global-search-form { display:inline-flex; }
     .site-header.search-open .language-switch,
     .site-header.search-open .theme-quick-toggle { display:none; }
-    .language-switch { min-width:42px; width:42px; padding:0; }
+    .language-switch { min-width:44px; width:44px; padding:0; }
     .language-switch span { display:none; }
-    .theme-quick-toggle,.menu-toggle { min-width:42px; width:42px; height:42px; }
+    .theme-quick-toggle,.menu-toggle { min-width:44px; width:44px; height:44px; }
     .global-menu { top:calc(100% + 8px); right:0; }
     .global-search-popover { top:68px; left:10px; right:10px; width:auto; }
   }
@@ -3820,7 +3884,7 @@ border-color: var(--border-color);
   }
 
   .appearance-panel .theme-options button {
-    min-height: 42px;
+    min-height: 44px;
   }
 
   .appearance-panel .accent-options {
@@ -3832,7 +3896,7 @@ border-color: var(--border-color);
 
   .appearance-panel .accent-options button {
     width: 100%;
-    height: 42px;
+    height: 44px;
     border-radius: 11px;
   }
 
@@ -4019,15 +4083,15 @@ border-color: var(--border-color);
     display:grid; place-items:center; color:var(--accent); pointer-events:none; z-index:1;
   }
   .dock-search-shell .global-search-input-icon[hidden] { display:none !important; }
-  .dock-search-shell .global-search-form input { height:48px; width:100%; padding-left:46px !important; padding-right:48px !important; font-size:.95rem; transition:padding-left 140ms ease; }
+  .dock-search-shell .global-search-form input { height:48px; width:100%; padding-left:46px !important; padding-right:58px !important; font-size:.95rem; transition:padding-left 140ms ease; }
   .dock-search-shell .global-search-form:has(.global-search-input-icon[hidden]) input { padding-left:16px !important; }
   .dock-search-shell .global-search-clear {
     position:absolute;
     right:7px;
     top:50%;
     transform:translateY(-50%);
-    width:34px;
-    height:34px;
+    width:44px;
+    height:44px;
     display:grid;
     place-items:center;
     padding:0;
@@ -4068,7 +4132,7 @@ border-color: var(--border-color);
   }
   .dock-search-shell .global-search-filters::-webkit-scrollbar { display:none; }
   .dock-search-shell .global-search-filters button {
-    min-height:30px;
+    min-height:44px;
     padding:0 9px;
     border-radius:999px;
     font-size:.74rem;
@@ -4080,7 +4144,7 @@ border-color: var(--border-color);
   .dock-search-shell .global-search-all {
     position:relative;
     z-index:2;
-    min-height:40px;
+    min-height:44px;
     border-radius:11px;
     font-size:.82rem;
     box-shadow:0 -1px 0 color-mix(in srgb,var(--border-color) 72%,transparent);
@@ -4092,7 +4156,7 @@ border-color: var(--border-color);
     .dock-search-shell { bottom:calc(82px + env(safe-area-inset-bottom)); width:calc(100vw - 16px); }
     .dock-search-shell .global-search-popover { max-height:min(58dvh,430px); }
     .dock-search-shell .global-search-results { max-height:min(35dvh,280px); }
-    .dock-search-shell .global-search-all { min-height:38px; font-size:.78rem; }
+    .dock-search-shell .global-search-all { min-height:44px; font-size:.78rem; }
 
     /* When the software keyboard reduces the visual viewport, pin Search inside the
        visible area instead of letting the browser pan the fixed shell behind the keyboard. */

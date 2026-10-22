@@ -188,7 +188,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(passage.displa
 
               <div class="bible-reader">
                 {versesByChapter[chapterNumber].map((verse) => (
-                  <article class="verse passage-verse" id={`v${verse.verse_number}`}>
+                  <article class="verse passage-verse" id={`v${verse.chapter_number}-${verse.verse_number}`}>
                     <span class="verse-number">
                       <a
                         href={getBibleVersePath(

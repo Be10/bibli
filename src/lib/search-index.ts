@@ -525,3 +525,41 @@ export function buildSearchIndex(
     ...bibleVerses,
   ];
 }
+
+export const SEARCH_INDEX_PAYLOAD_VERSION = 1 as const;
+
+export type SearchIndexPayload = {
+  version: typeof SEARCH_INDEX_PAYLOAD_VERSION;
+  items: Array<[
+    title: string,
+    type: string,
+    typeLabel: string,
+    url: string,
+    summary: string,
+    searchText: string,
+    typePriority: number,
+    bookOrder: number,
+    chapterNumber: number,
+    verseNumber: number,
+  ]>;
+};
+
+export function buildSearchIndexPayload(
+  language: SupportedLanguageCode = "es"
+): SearchIndexPayload {
+  return {
+    version: SEARCH_INDEX_PAYLOAD_VERSION,
+    items: buildSearchIndex(language).map((item) => [
+      item.title,
+      item.type,
+      item.typeLabel ?? item.type,
+      item.url,
+      item.summary,
+      item.searchText,
+      item.typePriority,
+      item.bookOrder,
+      item.chapterNumber,
+      item.verseNumber,
+    ]),
+  };
+}
