@@ -68,6 +68,55 @@ test('Home loads with the approved global navigation and no horizontal overflow'
   await expect(page.locator('[data-context-dock] a[aria-label="Inicio"]')).not.toHaveAttribute('aria-current', 'page');
 });
 
+test('Language switch distinguishes equivalents from fallback and keeps persisted language coherent', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('bibli-language'));
+
+  await page.goto(`${base}/es/biblia/rvr1960/gen/1/?q=creation#v3`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+  expect(await page.evaluate(() => localStorage.getItem('bibli-language'))).toBe('es');
+
+  const equivalentSwitch = page.locator('[data-language-switch]');
+  await expect(equivalentSwitch).toHaveAttribute('data-language-mode', 'equivalent');
+  await expect(equivalentSwitch).toHaveAttribute('hreflang', 'en');
+  const equivalentTarget = await equivalentSwitch.evaluate((element) => {
+    const url = new URL((element as HTMLAnchorElement).href);
+    return { pathname: url.pathname, search: url.search, hash: url.hash };
+  });
+  expect(equivalentTarget).toEqual({
+    pathname: `${base}/en/bible/kjv/gen/1/`,
+    search: '?q=creation',
+    hash: '#v3',
+  });
+
+  await equivalentSwitch.click();
+  await page.waitForURL((url) =>
+    url.pathname === `${base}/en/bible/kjv/gen/1/`
+      && url.search === '?q=creation'
+      && url.hash === '#v3',
+  );
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  expect(await page.evaluate(() => localStorage.getItem('bibli-language'))).toBe('en');
+
+  await page.goto(`${base}/temas/creacion/?q=ignored#ignored`);
+  const fallbackSwitch = page.locator('[data-language-switch]');
+  await expect(fallbackSwitch).toHaveAttribute('data-language-mode', 'fallback');
+  await expect(fallbackSwitch).toHaveAttribute('hreflang', 'en');
+  await expect(fallbackSwitch).toHaveAttribute('aria-label', /inicio en inglés/i);
+  const fallbackTarget = await fallbackSwitch.evaluate((element) => {
+    const url = new URL((element as HTMLAnchorElement).href);
+    return { pathname: url.pathname, search: url.search, hash: url.hash };
+  });
+  expect(fallbackTarget).toEqual({ pathname: `${base}/en/`, search: '', hash: '' });
+  expect(await page.evaluate(() => localStorage.getItem('bibli-language'))).toBe('es');
+
+  await page.goto(`${base}/en/`);
+  expect(await page.evaluate(() => localStorage.getItem('bibli-language'))).toBe('en');
+  await page.goto(`${base}/offline/`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('section[data-offline-copy="en"]')).toBeVisible();
+  await expect(page.locator('section[data-offline-copy="es"]')).toBeHidden();
+});
+
 test('Global search opens, focuses, renders filters, clears and closes from the same trigger', async ({ page }) => {
   test.setTimeout(45_000);
   await page.goto(`${base}/`);

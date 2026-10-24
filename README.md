@@ -134,15 +134,43 @@ Compilar producción:
 npm run build
 ```
 
-`npm run build` ejecuta automáticamente la compuerta completa mediante `prebuild`:
+`npm run build` ejecuta automáticamente la compuerta completa mediante `prebuild` y `postbuild`:
 
 ```text
+prebuild
 repo:validate
 → ui:validate
+→ i18n:audit
+→ personal:validate
 → studies:validate
 → studies:import
+→ content:validate
+→ connections:validate
 → db:validate
-→ astro build
+
+astro build
+
+postbuild
+site:audit
+→ derived:validate
+```
+
+Validar únicamente las conexiones editoriales y sus guardrails de reciprocidad/procedencia:
+
+```bash
+npm run connections:validate
+```
+
+Ejecutar la matriz E2E de Playwright (desktop, tablet y móvil):
+
+```bash
+npm run qa:e2e
+```
+
+Ejecutar build completo seguido de la matriz E2E:
+
+```bash
+npm run qa:all
 ```
 
 ## Reconstrucción de SQLite
@@ -253,10 +281,12 @@ npm run clean:generated
 
 Esto elimina `dist/`, `.astro/` y `exports/`; nunca toca el código fuente ni `node_modules/`.
 
-Antes de guardar cambios:
+Antes de guardar cambios o preparar un despliegue:
 
 ```bash
-npm run build
-git status
+npm run qa:all
 git diff --check
+git status
 ```
+
+`git diff --check` puede mostrar avisos de conversión LF→CRLF en Windows; esos avisos no son fallos mientras el comando no reporte errores de whitespace. Los artefactos de ejecución de Playwright (`test-results/`, `playwright-report/` y `blob-report/`) no forman parte del código fuente y deben permanecer fuera del control de versiones.

@@ -12,7 +12,7 @@ import {
   getEventsByPassageId,
   getLessonsByPassageId,
   type BibleVerse,
-  type Event,
+  type PassageRelatedEvent,
   type Lesson,
   type Passage,
 } from "../../lib/queries";
@@ -25,7 +25,7 @@ import {
 type Props = {
   passage: Passage;
   lessons: Lesson[];
-  events: Event[];
+  events: PassageRelatedEvent[];
   verses: BibleVerse[];
 };
 
@@ -250,7 +250,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(passage.displa
 
         <div class="passage-lessons-grid">
           {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="passage-lesson-card">
+            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="passage-lesson-card" data-explicit-connection="lesson-passages">
               <span>Lección {lesson.lesson_number}</span>
               <strong>{lesson.title}</strong>
 
@@ -284,7 +284,12 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(passage.displa
 
         <div class="passage-events-grid">
           {events.map((event) => (
-            <a href={sitePath(`/eventos/${event.slug}/`)} class="passage-event-card">
+            <a
+              href={sitePath(`/eventos/${event.slug}/`)}
+              class="passage-event-card"
+              data-explicit-connection="event-passages"
+              data-connection-relation-type={event.relation_type}
+            >
               <span>{event.biblical_period ?? event.event_type ?? "Evento bíblico"}</span>
               <strong>{event.title}</strong>
 
@@ -293,6 +298,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(passage.displa
               )}
 
               <div class="passage-card-badges">
+                <em data-connection-relation-type-label>Relación: {event.relation_type}</em>
                 {event.approximate_date && <em>{event.approximate_date}</em>}
                 {event.appears_on_timeline ? <em>Línea de tiempo</em> : null}
                 {event.appears_on_map ? <em>Mapa</em> : null}

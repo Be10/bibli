@@ -9,6 +9,7 @@ import DetailDesignSystem from "../components/DetailDesignSystem.astro";
 import UtilityDesignSystem from "../components/UtilityDesignSystem.astro";
 import BibleDesignSystem from "../components/BibleDesignSystem.astro";
 import ContextDock from "../components/ContextDock.astro";
+import PersonalActions from "../components/PersonalActions.astro";
 
 type LanguageCode = "es" | "en";
 
@@ -63,6 +64,7 @@ const ui = {
     about: "Acerca de Bibli",
     installApp: "Instalar Bibli",
     offlineLibrary: "Sin conexión",
+    myBibli: "Mi Bibli",
     connectionOffline: "Sin conexión · usando contenido disponible en este dispositivo",
     connectionOnline: "Conexión restablecida",
     updateLabel: "Actualización de Bibli",
@@ -116,6 +118,7 @@ const ui = {
     about: "About Bibli",
     installApp: "Install Bibli",
     offlineLibrary: "Offline",
+    myBibli: "My Bibli",
     connectionOffline: "Offline · using content available on this device",
     connectionOnline: "Connection restored",
     updateLabel: "Bibli update",
@@ -176,10 +179,12 @@ const isCurrentNavigationItem = (href: string) => {
 const menuItems =
   lang === "en"
     ? [
+        { href: sitePath("/en/my-bibli/"), label: activeUi.myBibli, icon: "bookmark" as const },
         { href: bibleRootUrl, label: activeUi.readBible, icon: "book" as const },
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary, icon: "download" as const },
       ]
     : [
+        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli, icon: "bookmark" as const },
         {
           href: sitePath("/rutas/"),
           label: activeUi.mainRoute,
@@ -195,10 +200,12 @@ const menuItems =
 const footerItems =
   lang === "en"
     ? [
+        { href: sitePath("/en/my-bibli/"), label: activeUi.myBibli },
         { href: bibleRootUrl, label: activeUi.readBible },
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary },
       ]
     : [
+        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli },
         { href: bibleRootUrl, label: activeUi.readBible },
         { href: sitePath("/descargar/"), label: activeUi.offlineLibrary },
         { href: sitePath("/rutas/"), label: activeUi.mainRoute },
@@ -207,6 +214,7 @@ const footerItems =
         { href: sitePath("/legal/"), label: activeUi.legal },
       ];
 
+const isNoIndex = /\bnoindex\b/i.test(robots ?? "");
 const canonicalHref = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.href;
@@ -215,23 +223,50 @@ const alternateHref = alternateLanguage
     ? new URL(alternateLanguage.href, Astro.site).toString()
     : alternateLanguage.href
   : null;
+const defaultLanguageHref = alternateLanguage && alternateHref
+  ? lang === "es"
+    ? canonicalHref
+    : alternateLanguage.code === "es"
+      ? alternateHref
+      : canonicalHref
+  : null;
 const socialLocale = lang === "en" ? "en_US" : "es_PE";
+const alternateSocialLocale = alternateLanguage
+  ? alternateLanguage.code === "en" ? "en_US" : "es_PE"
+  : null;
 
-const languageTarget = alternateLanguage ?? {
-  code: (lang === "es" ? "en" : "es") as LanguageCode,
-  label: lang === "es" ? "English" : "Español",
-  href: lang === "es" ? sitePath("/en/") : sitePath("/"),
-};
+const languageTarget = alternateLanguage
+  ? { ...alternateLanguage, mode: "equivalent" as const }
+  : {
+      code: (lang === "es" ? "en" : "es") as LanguageCode,
+      label: lang === "es" ? "English" : "Español",
+      href: lang === "es" ? sitePath("/en/") : sitePath("/"),
+      mode: "fallback" as const,
+    };
+const languageSwitchLabel =
+  languageTarget.mode === "equivalent"
+    ? lang === "es"
+      ? `Cambiar a ${languageTarget.label}`
+      : `Switch to ${languageTarget.label}`
+    : lang === "es"
+      ? "English · abrir el inicio en inglés"
+      : "Español · open Spanish home";
 ---
 
-<html lang={lang} data-lesson-dock={isLessonDetail ? "true" : undefined}>
+<html
+  lang={lang}
+  data-language-preference={!isNoIndex ? lang : undefined}
+  data-lesson-dock={isLessonDetail ? "true" : undefined}
+  data-personal-page-title={!isNoIndex ? title : undefined}
+  data-personal-page-lang={!isNoIndex ? lang : undefined}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
     <title>{pageTitle}</title>
-    <link rel="canonical" href={canonicalHref} />
+    {!isNoIndex && <link rel="canonical" href={canonicalHref} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content={socialLocale} />
@@ -241,12 +276,19 @@ const languageTarget = alternateLanguage ?? {
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    {alternateLanguage && alternateHref && (
-      <link
-        rel="alternate"
-        hreflang={alternateLanguage.code}
-        href={alternateHref}
-      />
+    {!isNoIndex && alternateLanguage && alternateHref && defaultLanguageHref && (
+      <>
+        <link rel="alternate" hreflang={lang} href={canonicalHref} />
+        <link
+          rel="alternate"
+          hreflang={alternateLanguage.code}
+          href={alternateHref}
+        />
+        <link rel="alternate" hreflang="x-default" href={defaultLanguageHref} />
+        {alternateSocialLocale && (
+          <meta property="og:locale:alternate" content={alternateSocialLocale} />
+        )}
+      </>
     )}
     <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} data-dynamic-favicon />
     <link rel="manifest" href={manifestUrl} />
@@ -532,6 +574,10 @@ const languageTarget = alternateLanguage ?? {
         document.documentElement.classList.add("js");
         const currentKey = "bibli-theme";
         const accentKey = "bibli-accent";
+        const currentLanguage = document.documentElement.dataset.languagePreference;
+        if (currentLanguage === "es" || currentLanguage === "en") {
+          localStorage.setItem("bibli-language", currentLanguage);
+        }
         const storedPreference = localStorage.getItem(currentKey);
         const storedAccent = localStorage.getItem(accentKey);
 
@@ -630,9 +676,11 @@ const languageTarget = alternateLanguage ?? {
           href={languageTarget.href}
           hreflang={languageTarget.code}
           lang={languageTarget.code}
-          title={languageTarget.label}
+          aria-label={languageSwitchLabel}
+          title={languageSwitchLabel}
           data-language-switch
           data-language-code={languageTarget.code}
+          data-language-mode={languageTarget.mode}
         >
           <Icon name="globe" size={16} />
           <span>{languageTarget.code.toUpperCase()}</span>
@@ -780,6 +828,7 @@ const languageTarget = alternateLanguage ?? {
     </div>
 
     <div id="bibli-content" class="content-anchor" tabindex="-1"></div>
+    <PersonalActions lang={lang} />
     <slot />
 
     <footer class="site-footer">
@@ -845,6 +894,7 @@ const languageTarget = alternateLanguage ?? {
     getSearchResults,
     normalizeSearchText,
   } from "../lib/search-engine";
+  import { createPersonalContentRef, recordHistoryVisit } from "../lib/personal-state";
 
   (() => {
     const siteHeader = document.querySelector("[data-site-header]");
@@ -929,11 +979,29 @@ const languageTarget = alternateLanguage ?? {
     const LANGUAGE_KEY = "bibli-language";
     const languageBaseHref = languageSwitch?.getAttribute("href") ?? "";
 
+    const recordCurrentPersonalContent = () => {
+      const pageTitle = document.documentElement.dataset.personalPageTitle || "";
+      const pageLang = document.documentElement.dataset.personalPageLang;
+      if (pageLang !== "es" && pageLang !== "en") return;
+      const ref = createPersonalContentRef({
+        pathname: window.location.pathname,
+        href: `${window.location.pathname}${window.location.hash}`,
+        title: pageTitle,
+        lang: pageLang,
+      });
+      if (ref) recordHistoryVisit(ref);
+    };
+
+    recordCurrentPersonalContent();
+
     const syncLanguageSwitchContext = () => {
       if (!(languageSwitch instanceof HTMLAnchorElement) || !languageBaseHref) return;
       const target = new URL(languageBaseHref, window.location.href);
-      if (!target.search && window.location.search) target.search = window.location.search;
-      if (!target.hash && window.location.hash) target.hash = window.location.hash;
+      const mode = languageSwitch.getAttribute("data-language-mode");
+      if (mode === "equivalent") {
+        if (!target.search && window.location.search) target.search = window.location.search;
+        if (!target.hash && window.location.hash) target.hash = window.location.hash;
+      }
       languageSwitch.href = target.href;
     };
 
@@ -1914,6 +1982,7 @@ const languageTarget = alternateLanguage ?? {
       if (event.persisted) {
         closeMenu();
         closeSearchShell();
+        recordCurrentPersonalContent();
       }
     });
     window.addEventListener("pagehide", () => {
@@ -1924,6 +1993,7 @@ const languageTarget = alternateLanguage ?? {
     });
     window.addEventListener("hashchange", () => {
       syncLanguageSwitchContext();
+      recordCurrentPersonalContent();
       requestAnimationFrame(focusHashTarget);
     });
     window.addEventListener("popstate", () => {

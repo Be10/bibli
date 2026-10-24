@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PersonalDashboard from "../../../components/PersonalDashboard.astro";
+import Icon from "../../../components/Icon.astro";
+import { sitePath } from "../../../lib/site-paths";
+import { getBibleProgressCatalog, getStudyProgressCatalog } from "../../../lib/personal-progress-catalog";
+const studyCatalog = getStudyProgressCatalog("en");
+const bibleCatalog = getBibleProgressCatalog("en");
+---
+
+<BaseLayout title="My Bibli" lang="en" alternateLanguage={{ code: "es", label: "Español", href: sitePath("/mi-bibli/") }}>
+  <main class="page personal-page" data-utility-root data-utility-kind="personal-dashboard">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href={sitePath("/en/")}>Home</a><span>›</span><span>My Bibli</span></nav>
+    <header class="personal-hero">
+      <span class="personal-hero-icon" aria-hidden="true"><Icon name="bookmark" size={24} /></span>
+      <div><p class="eyebrow">Your personal space</p><h1>My Bibli</h1><p>Resume your reading, revisit saved content, and review your notes and progress from one place.</p></div>
+    </header>
+    <PersonalDashboard lang="en" studyCatalog={studyCatalog} bibleCatalog={bibleCatalog} />
+  </main>
+</BaseLayout>
+
+<style>
+  .personal-page{width:min(var(--content-max),calc(100% - 32px));margin:0 auto;padding:18px 0 76px}.personal-hero{display:flex;align-items:flex-start;gap:1rem;margin:0 0 1rem;padding:clamp(1.3rem,3vw,2rem);border:1px solid var(--border-color);border-radius:22px;background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent-soft) 30%,var(--surface)));box-shadow:var(--shadow-sm)}.personal-hero-icon{width:52px;height:52px;display:grid;place-items:center;flex:0 0 52px;border-radius:15px;background:var(--accent);color:var(--accent-contrast)}.personal-hero h1{margin:.25rem 0 .55rem;color:var(--heading-color);font-size:clamp(1.8rem,4vw,2.7rem);letter-spacing:-.04em}.personal-hero p:last-child{max-width:760px;margin:0;color:var(--text-muted);line-height:1.65}@media(max-width:600px){.personal-page{width:min(100% - 20px,var(--content-max));padding-top:10px}.personal-hero{padding:1.15rem;border-radius:18px}.personal-hero-icon{width:44px;height:44px;flex-basis:44px}}
+</style>

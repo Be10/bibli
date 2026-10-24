@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run repo:validate && npm run ui:validate && npm run i18n:audit && npm run studies:validate && npm run studies:import && npm run db:validate",
+    "prebuild": "npm run repo:validate && npm run ui:validate && npm run i18n:audit && npm run personal:validate && npm run studies:validate && npm run studies:import && npm run content:validate && npm run connections:validate && npm run db:validate",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -26,13 +26,17 @@
     "bible:audit:kjv:spacing": "node scripts/audit-bible-kjv-spacing.mjs",
     "studies:status": "node scripts/studies-status.mjs",
     "ui:validate": "node scripts/validate-ui.mjs",
-    "postbuild": "npm run site:audit",
+    "postbuild": "npm run site:audit && npm run derived:validate",
     "site:audit": "node scripts/audit-site.mjs",
     "i18n:audit": "node scripts/audit-i18n.mjs",
+    "personal:validate": "node scripts/validate-personal-state.mjs",
     "qa:e2e:setup": "node scripts/setup-browser-qa.mjs",
     "qa:e2e": "node scripts/run-browser-qa.mjs",
     "qa:all": "npm run build && npm run qa:e2e",
-    "qa:ci": "node scripts/run-browser-qa.mjs"
+    "qa:ci": "node scripts/run-browser-qa.mjs",
+    "content:validate": "node scripts/validate-content.mjs",
+    "derived:validate": "node scripts/validate-derived-output.mjs",
+    "connections:validate": "node scripts/validate-connections.mjs"
   },
   "dependencies": {
     "astro": "^7.0.3",

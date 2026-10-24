@@ -1,0 +1,289 @@
+---
+import Icon from "./Icon.astro";
+import type { BibleProgressCatalog, StudyProgressCatalog } from "../lib/personal-progress-catalog";
+
+interface Props {
+  lang: "es" | "en";
+  studyCatalog: StudyProgressCatalog;
+  bibleCatalog: BibleProgressCatalog;
+}
+
+const { lang, studyCatalog, bibleCatalog } = Astro.props;
+const copy = lang === "en"
+  ? {
+      studyHeading: "Study progress",
+      completedLessons: "Lessons completed",
+      activeRoutes: "Routes with activity",
+      routeHeading: "Progress by route and module",
+      bookHeading: "Study progress by book",
+      emptyStudy: "Complete or open a lesson to see detailed study progress.",
+      sourceLanguage: "Study route and module titles remain in Spanish until equivalent English study content is available.",
+      bibleHeading: "Bible reading progress",
+      bibleHint: "Mark a chapter as read from the Bible reader to build your reading progress.",
+      chaptersRead: "Chapters read",
+      booksStarted: "Books started",
+      emptyBible: "No chapters are marked as read yet.",
+      lessons: "lessons",
+      modules: "modules",
+      chapters: "chapters",
+    }
+  : {
+      studyHeading: "Progreso de estudio",
+      completedLessons: "Lecciones completadas",
+      activeRoutes: "Rutas con actividad",
+      routeHeading: "Progreso por ruta y módulo",
+      bookHeading: "Progreso de estudio por libro",
+      emptyStudy: "Completa o abre una lección para ver el progreso detallado del estudio.",
+      sourceLanguage: "",
+      bibleHeading: "Progreso de lectura bíblica",
+      bibleHint: "Marca un capítulo como leído desde el lector bíblico para construir tu progreso de lectura.",
+      chaptersRead: "Capítulos leídos",
+      booksStarted: "Libros iniciados",
+      emptyBible: "Todavía no has marcado capítulos como leídos.",
+      lessons: "lecciones",
+      modules: "módulos",
+      chapters: "capítulos",
+    };
+---
+
+<section
+  class="personal-panel personal-progress-panel"
+  aria-labelledby="personal-progress-title"
+  data-personal-progress-detail
+  data-personal-progress-lang={lang}
+  data-study-catalog={JSON.stringify(studyCatalog)}
+  data-bible-catalog={JSON.stringify(bibleCatalog)}
+  data-empty-study={copy.emptyStudy}
+  data-empty-bible={copy.emptyBible}
+  data-lessons-label={copy.lessons}
+  data-modules-label={copy.modules}
+  data-chapters-label={copy.chapters}
+>
+  <header class="personal-panel-header">
+    <span class="personal-panel-icon" aria-hidden="true"><Icon name="list-checks" size={18} /></span>
+    <h2 id="personal-progress-title">{copy.studyHeading}</h2>
+  </header>
+  <div class="personal-progress-stats">
+    <div><strong data-personal-progress="completed">0</strong><span>{copy.completedLessons}</span></div>
+    <div><strong data-personal-progress="routes">0</strong><span>{copy.activeRoutes}</span></div>
+  </div>
+  {lang === "en" && studyCatalog.routes.some((route) => route.language !== "en") && (
+    <p class="personal-progress-note">{copy.sourceLanguage}</p>
+  )}
+  <div class="personal-progress-group">
+    <h3>{copy.routeHeading}</h3>
+    <div class="personal-progress-list" data-study-route-progress-list></div>
+  </div>
+  <div class="personal-progress-group">
+    <h3>{copy.bookHeading}</h3>
+    <div class="personal-progress-list" data-study-book-progress-list></div>
+  </div>
+</section>
+
+<section
+  class="personal-panel personal-bible-progress-panel"
+  aria-labelledby="personal-bible-progress-title"
+  data-personal-bible-progress
+  data-personal-progress-lang={lang}
+  data-bible-catalog={JSON.stringify(bibleCatalog)}
+  data-empty-bible={copy.emptyBible}
+  data-chapters-label={copy.chapters}
+>
+  <header class="personal-panel-header">
+    <span class="personal-panel-icon" aria-hidden="true"><Icon name="book-text" size={18} /></span>
+    <h2 id="personal-bible-progress-title">{copy.bibleHeading}</h2>
+  </header>
+  <div class="personal-progress-stats">
+    <div><strong data-personal-bible-stat="chapters">0</strong><span>{copy.chaptersRead}</span></div>
+    <div><strong data-personal-bible-stat="books">0</strong><span>{copy.booksStarted}</span></div>
+  </div>
+  <p class="personal-progress-note">{copy.bibleHint}</p>
+  <div class="personal-progress-list" data-bible-version-progress-list></div>
+</section>
+
+<script>
+  import { LEARNING_PROGRESS_STORAGE_KEY, readLearningProgress } from "../lib/personal-state";
+  import type { BibleProgressCatalog, StudyProgressCatalog } from "../lib/personal-progress-catalog";
+
+  const parseDataset = <T,>(value: string | undefined, fallback: T): T => {
+    if (!value) return fallback;
+    try { return JSON.parse(value) as T; } catch { return fallback; }
+  };
+
+  const percent = (done: number, total: number) => total > 0 ? Math.round((done / total) * 100) : 0;
+
+  const createEmpty = (text: string) => {
+    const node = document.createElement("p");
+    node.className = "personal-progress-empty";
+    node.textContent = text;
+    return node;
+  };
+
+  const createBar = (value: number, label: string) => {
+    const track = document.createElement("div");
+    track.className = "personal-progress-track";
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", label);
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(value));
+    const fill = document.createElement("span");
+    fill.style.width = `${value}%`;
+    track.append(fill);
+    return track;
+  };
+
+  const createProgressRow = (title: string, done: number, total: number, unit: string) => {
+    const row = document.createElement("article");
+    row.className = "personal-progress-row";
+    const header = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = title;
+    const meta = document.createElement("span");
+    meta.textContent = `${done}/${total} ${unit} · ${percent(done, total)}%`;
+    header.append(strong, meta);
+    row.append(header, createBar(percent(done, total), `${title}: ${percent(done, total)}%`));
+    return row;
+  };
+
+  const syncStudyProgress = (root: HTMLElement) => {
+    const catalog = parseDataset<StudyProgressCatalog>(root.dataset.studyCatalog, { routes: [], modules: [], books: [], lessons: [] });
+    const progress = readLearningProgress();
+    const completed = new Set(progress.completed);
+    const lessonById = new Map(catalog.lessons.map((lesson) => [lesson.id, lesson]));
+    const routeList = root.querySelector<HTMLElement>("[data-study-route-progress-list]");
+    const bookList = root.querySelector<HTMLElement>("[data-study-book-progress-list]");
+    if (!routeList || !bookList) return;
+
+    const completedStat = root.querySelector<HTMLElement>('[data-personal-progress="completed"]');
+    const routesStat = root.querySelector<HTMLElement>('[data-personal-progress="routes"]');
+    if (completedStat) completedStat.textContent = String(progress.completed.length);
+    if (routesStat) routesStat.textContent = String(Object.keys(progress.lastLessonByRoute).length);
+
+    routeList.replaceChildren();
+    let visibleRoutes = 0;
+    for (const route of catalog.routes) {
+      const routeLessons = catalog.lessons.filter((lesson) => lesson.routeId === route.id);
+      const done = routeLessons.filter((lesson) => completed.has(lesson.id)).length;
+      const lastLessonId = progress.lastLessonByRoute[route.id];
+      if (!done && !lastLessonId) continue;
+      visibleRoutes += 1;
+      const card = document.createElement("section");
+      card.className = "personal-progress-card";
+      const heading = document.createElement("div");
+      heading.className = "personal-progress-card-heading";
+      const title = document.createElement("strong");
+      title.textContent = route.title;
+      const meta = document.createElement("span");
+      meta.textContent = `${done}/${route.totalLessons} ${root.dataset.lessonsLabel || ""} · ${percent(done, route.totalLessons)}%`;
+      heading.append(title, meta);
+      card.append(heading, createBar(percent(done, route.totalLessons), `${route.title}: ${percent(done, route.totalLessons)}%`));
+
+      const currentModuleId = lastLessonId ? lessonById.get(lastLessonId)?.moduleId : null;
+      const activeModules = catalog.modules.filter((module) => {
+        if (module.routeId !== route.id) return false;
+        const moduleLessons = routeLessons.filter((lesson) => lesson.moduleId === module.id);
+        return module.id === currentModuleId || moduleLessons.some((lesson) => completed.has(lesson.id));
+      });
+      if (activeModules.length) {
+        const modules = document.createElement("div");
+        modules.className = "personal-progress-sublist";
+        for (const module of activeModules) {
+          const moduleLessons = routeLessons.filter((lesson) => lesson.moduleId === module.id);
+          const moduleDone = moduleLessons.filter((lesson) => completed.has(lesson.id)).length;
+          modules.append(createProgressRow(module.title, moduleDone, module.totalLessons, root.dataset.lessonsLabel || ""));
+        }
+        card.append(modules);
+      }
+      routeList.append(card);
+    }
+    if (!visibleRoutes) routeList.append(createEmpty(root.dataset.emptyStudy || ""));
+
+    bookList.replaceChildren();
+    let visibleBooks = 0;
+    for (const book of catalog.books) {
+      const done = new Set(catalog.lessons
+        .filter((lesson) => lesson.bookId === book.id && completed.has(lesson.id))
+        .map((lesson) => lesson.id)).size;
+      if (!done) continue;
+      visibleBooks += 1;
+      bookList.append(createProgressRow(book.name, done, book.totalLessons, root.dataset.lessonsLabel || ""));
+    }
+    if (!visibleBooks) bookList.append(createEmpty(root.dataset.emptyStudy || ""));
+  };
+
+  const syncBibleProgress = (root: HTMLElement) => {
+    const lang = root.dataset.personalProgressLang === "en" ? "en" : "es";
+    const catalog = parseDataset<BibleProgressCatalog>(root.dataset.bibleCatalog, { versions: [], books: [] });
+    const progress = readLearningProgress();
+    const readKeys = progress.readBibleChapters.filter((key) => key.startsWith(`bible-chapter:${lang}:`));
+    const counts = new Map<string, number>();
+    for (const key of readKeys) {
+      const match = key.match(/^bible-chapter:(es|en):([^:]+):([^:]+):(\d+)$/);
+      if (!match) continue;
+      const bucket = `${match[2]}:${match[3].toUpperCase()}`;
+      counts.set(bucket, (counts.get(bucket) ?? 0) + 1);
+    }
+
+    const chaptersStat = root.querySelector<HTMLElement>('[data-personal-bible-stat="chapters"]');
+    const booksStat = root.querySelector<HTMLElement>('[data-personal-bible-stat="books"]');
+    const list = root.querySelector<HTMLElement>("[data-bible-version-progress-list]");
+    if (!list) return;
+    if (chaptersStat) chaptersStat.textContent = String(readKeys.length);
+    if (booksStat) {
+      const uniqueBooks = new Set([...counts.keys()].map((key) => key.split(":")[1]).filter(Boolean));
+      booksStat.textContent = String(uniqueBooks.size);
+    }
+
+    list.replaceChildren();
+    let anyRead = false;
+    for (const version of catalog.versions) {
+      const versionBooks = catalog.books.filter((book) => book.versionId === version.id);
+      const versionDone = versionBooks.reduce((sum, book) => sum + (counts.get(`${version.id}:${book.usfmCode.toUpperCase()}`) ?? 0), 0);
+      const card = document.createElement("section");
+      card.className = "personal-progress-card";
+      const heading = document.createElement("div");
+      heading.className = "personal-progress-card-heading";
+      const title = document.createElement("strong");
+      title.textContent = `${version.name} (${version.abbreviation})`;
+      const meta = document.createElement("span");
+      meta.textContent = `${versionDone}/${version.totalChapters} ${root.dataset.chaptersLabel || ""} · ${percent(versionDone, version.totalChapters)}%`;
+      heading.append(title, meta);
+      card.append(heading, createBar(percent(versionDone, version.totalChapters), `${version.name}: ${percent(versionDone, version.totalChapters)}%`));
+
+      const startedBooks = versionBooks.filter((book) => (counts.get(`${version.id}:${book.usfmCode.toUpperCase()}`) ?? 0) > 0);
+      if (startedBooks.length) {
+        anyRead = true;
+        const books = document.createElement("div");
+        books.className = "personal-progress-sublist";
+        for (const book of startedBooks) {
+          const done = counts.get(`${version.id}:${book.usfmCode.toUpperCase()}`) ?? 0;
+          books.append(createProgressRow(book.name, done, book.totalChapters, root.dataset.chaptersLabel || ""));
+        }
+        card.append(books);
+      }
+      list.append(card);
+    }
+    if (!catalog.versions.length || !anyRead) {
+      const empty = createEmpty(root.dataset.emptyBible || "");
+      empty.classList.add("personal-progress-empty-note");
+      list.prepend(empty);
+    }
+  };
+
+  const syncAll = () => {
+    document.querySelectorAll<HTMLElement>("[data-personal-progress-detail]").forEach(syncStudyProgress);
+    document.querySelectorAll<HTMLElement>("[data-personal-bible-progress]").forEach(syncBibleProgress);
+  };
+
+  syncAll();
+  window.addEventListener("pageshow", syncAll);
+  window.addEventListener("storage", (event) => {
+    if (event.key === LEARNING_PROGRESS_STORAGE_KEY) syncAll();
+  });
+  document.addEventListener("bibli:progress-change", syncAll);
+</script>
+
+<style>
+  .personal-panel{min-width:0;padding:1rem;border:1px solid var(--border-color);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-sm)}.personal-panel-header{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.65rem;margin-bottom:.15rem}.personal-panel-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:var(--accent-soft);color:var(--accent)}.personal-panel h2{margin:0;color:var(--heading-color);font-size:1.05rem;letter-spacing:-.02em}.personal-progress-panel,.personal-bible-progress-panel{display:grid;gap:.8rem}.personal-progress-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}.personal-progress-stats>div{padding:.85rem;border-radius:14px;background:var(--accent-soft)}.personal-progress-stats strong{display:block;color:var(--accent);font-size:1.45rem}.personal-progress-stats span{display:block;margin-top:.15rem;color:var(--text-muted);font-size:.8rem}.personal-progress-note,.personal-progress-empty{margin:0;color:var(--text-muted);font-size:.82rem;line-height:1.5}.personal-progress-group{display:grid;gap:.55rem}.personal-progress-group h3{margin:.1rem 0 0;color:var(--heading-color);font-size:.86rem}.personal-progress-list{display:grid;gap:.6rem}.personal-progress-card,.personal-progress-row{display:grid;gap:.45rem;padding:.72rem;border:1px solid var(--border-color);border-radius:13px;background:color-mix(in srgb,var(--surface) 94%,var(--accent-soft))}.personal-progress-card-heading,.personal-progress-row>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:.65rem}.personal-progress-card-heading strong,.personal-progress-row strong{min-width:0;color:var(--heading-color);font-size:.83rem}.personal-progress-card-heading span,.personal-progress-row span{flex:0 0 auto;color:var(--text-muted);font-size:.72rem}.personal-progress-track{height:7px;overflow:hidden;border-radius:999px;background:var(--surface-soft)}.personal-progress-track>span{display:block;height:100%;border-radius:inherit;background:var(--accent)}.personal-progress-sublist{display:grid;gap:.45rem;margin-top:.15rem;padding-left:.6rem;border-left:2px solid var(--accent-soft)}.personal-progress-sublist .personal-progress-row{padding:.58rem .65rem;background:var(--surface)}.personal-progress-empty-note{order:-1}@media(max-width:520px){.personal-progress-card-heading,.personal-progress-row>div:first-child{align-items:flex-start;flex-direction:column;gap:.15rem}.personal-progress-card-heading span,.personal-progress-row span{flex:auto}.personal-progress-sublist{padding-left:.4rem}}
+</style>

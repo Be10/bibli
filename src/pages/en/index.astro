@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
 import HomeStudyVisual from "../../components/HomeStudyVisual.astro";
+import PersonalContinue from "../../components/PersonalContinue.astro";
 import { sitePath } from "../../lib/site-paths";
 import { getAllBooksByLanguage, getBibleVersionsByLanguage } from "../../lib/queries";
 
@@ -34,6 +35,8 @@ const books = getAllBooksByLanguage("en").filter((book) => book.status !== "Borr
       <article><span><Icon name="book" size={18} /></span><strong>{books.length}</strong><small>books</small></article>
       <article><span><Icon name="bible" size={18} /></span><strong>{versions.length}</strong><small>{versions.length === 1 ? "Bible version" : "Bible versions"}</small></article>
     </section>
+
+    <PersonalContinue lang="en" />
 
     <section class="en-home-grid" aria-label="English areas">
       <a href={sitePath("/en/bible/")} class="en-home-card">

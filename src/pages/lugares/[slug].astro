@@ -5,6 +5,8 @@ import {
   getAllPlaces,
   getEventsByPlaceId,
   getLessonsByPlaceId,
+  getPeopleByPlaceIdViaEvents,
+  type DerivedRelatedItem,
   type Event,
   type Lesson,
   type Place,
@@ -14,6 +16,7 @@ type Props = {
   place: Place;
   events: Event[];
   lessons: Lesson[];
+  people: DerivedRelatedItem[];
 };
 
 export function getStaticPaths() {
@@ -27,11 +30,12 @@ export function getStaticPaths() {
         place,
         events: getEventsByPlaceId(place.id),
         lessons: getLessonsByPlaceId(place.id),
+        people: getPeopleByPlaceIdViaEvents(place.id),
       },
     }));
 }
 
-const { place, events, lessons } = Astro.props as Props;
+const { place, events, lessons, people } = Astro.props as Props;
 
 const hasCoordinates = place.latitude !== null && place.longitude !== null;
 const coordinatesLabel = hasCoordinates
@@ -183,7 +187,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
 
         <div class="place-events-grid">
           {events.map((event) => (
-            <a href={sitePath(`/eventos/${event.slug}/`)} class="place-event-card">
+            <a href={sitePath(`/eventos/${event.slug}/`)} class="place-event-card" data-explicit-connection="event-places">
               <span>{event.approximate_date ?? event.biblical_period ?? "Evento bíblico"}</span>
               <strong>{event.title}</strong>
 
@@ -204,6 +208,76 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
       </section>
     )}
 
+
+    {people.length > 0 ? (
+      <section class="section place-people-section" data-derived-connections="person-places-via-events">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Conexión derivada · vía eventos</p>
+            <h2>Personajes vinculados por eventos</h2>
+            <p class="derived-connection-note">
+              Estos personajes se obtienen de eventos que relacionan explícitamente al lugar y al personaje; no representan una relación Lugar↔Personaje directa.
+            </p>
+          </div>
+
+          <span class="section-count">
+            {people.length} {people.length === 1 ? "personaje" : "personajes"}
+          </span>
+        </div>
+
+        <div class="place-people-grid">
+          {people.map((person) => (
+            <article class="place-person-card">
+              <span>Derivado de eventos</span>
+              <a
+                href={sitePath(`/personajes/${person.slug}/`)}
+                class="place-person-primary"
+                data-derived-connection="person-places-via-events"
+                data-derived-via="event-people,event-places"
+                data-derived-evidence-count={person.via_event_count}
+              >
+                <strong>{person.title}</strong>
+              </a>
+              {person.summary && <small>{person.summary}</small>}
+              <small class="derived-evidence">
+                {person.via_event_count} {person.via_event_count === 1 ? "evento compartido" : "eventos compartidos"}
+              </small>
+
+              <details
+                class="derived-evidence-events"
+                data-derived-evidence-events="person-places-via-events"
+                data-derived-evidence-count={person.evidence_events.length}
+              >
+                <summary>
+                  Ver {person.evidence_events.length} {person.evidence_events.length === 1 ? "evento de evidencia" : "eventos de evidencia"}
+                </summary>
+                <ul>
+                  {person.evidence_events.map((event) => (
+                    <li>
+                      <a
+                        href={sitePath(`/eventos/${event.slug}/`)}
+                        data-derived-evidence-event="person-places-via-events"
+                        data-derived-evidence-via="event-people,event-places"
+                      >
+                        {event.title}
+                      </a>
+                      {event.approximate_date && <small>{event.approximate_date}</small>}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : (
+      <section class="section place-empty-section">
+        <p class="eyebrow">Conexión derivada · vía eventos</p>
+        <h2>Personajes vinculados por eventos</h2>
+        <p>Todavía no hay personajes derivados de eventos registrados para este lugar.</p>
+      </section>
+    )}
+
     {lessons.length > 0 ? (
       <section class="section place-lessons-section">
         <div class="section-header">
@@ -219,7 +293,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
 
         <div class="place-lessons-grid">
           {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="place-lesson-card">
+            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="place-lesson-card" data-explicit-connection="lesson-places">
               <span>Lección {lesson.lesson_number}</span>
               <strong>{lesson.title}</strong>
 
@@ -345,6 +419,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   .place-map-panel,
   .place-importance-section,
   .place-events-section,
+  .place-people-section,
   .place-lessons-section,
   .place-empty-section {
     background: var(--surface);
@@ -392,6 +467,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-events-grid,
+  .place-people-grid,
   .place-lessons-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -399,6 +475,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-event-card,
+  .place-person-card,
   .place-lesson-card {
     display: grid;
     align-content: start;
@@ -416,6 +493,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-event-card:hover,
+  .place-person-card:hover,
   .place-lesson-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
@@ -423,6 +501,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-event-card span,
+  .place-person-card span,
   .place-lesson-card span {
     color: var(--accent);
     font-size: 0.78rem;
@@ -432,6 +511,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-event-card strong,
+  .place-person-card strong,
   .place-lesson-card strong {
     color: var(--heading-color);
     font-size: 1.12rem;
@@ -439,10 +519,71 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   }
 
   .place-event-card small,
+  .place-person-card small,
   .place-lesson-card small {
     color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
+  }
+
+
+  .derived-connection-note {
+    max-width: 760px;
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .derived-evidence {
+    font-weight: 800;
+  }
+
+  .place-person-primary {
+    width: fit-content;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .place-person-primary:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+
+  .derived-evidence-events {
+    padding-top: 6px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .derived-evidence-events summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 0.88rem;
+    font-weight: 900;
+    line-height: 1.4;
+  }
+
+  .derived-evidence-events ul {
+    display: grid;
+    gap: 8px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .derived-evidence-events li {
+    display: grid;
+    gap: 2px;
+  }
+
+  .derived-evidence-events a {
+    color: var(--accent);
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .derived-evidence-events a:hover {
+    text-decoration: underline;
   }
 
 
@@ -451,6 +592,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   html[data-theme="dark"] .place-map-panel,
   html[data-theme="dark"] .place-importance-section,
   html[data-theme="dark"] .place-events-section,
+  html[data-theme="dark"] .place-people-section,
   html[data-theme="dark"] .place-lessons-section,
   html[data-theme="dark"] .place-empty-section {
     background: var(--surface);
@@ -462,6 +604,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   html[data-theme="dark"] .place-empty-map,
   html[data-theme="dark"] .place-importance-card,
   html[data-theme="dark"] .place-event-card,
+  html[data-theme="dark"] .place-person-card,
   html[data-theme="dark"] .place-lesson-card {
     background: var(--surface-soft);
     border-color: var(--border-color);
@@ -470,6 +613,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   html[data-theme="dark"] .place-hero-card span,
   html[data-theme="dark"] .place-meta-card span,
   html[data-theme="dark"] .place-event-card span,
+  html[data-theme="dark"] .place-person-card span,
   html[data-theme="dark"] .place-lesson-card span,
   html[data-theme="dark"] .place-map-link {
     color: var(--accent);
@@ -480,6 +624,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   html[data-theme="dark"] .place-map-preview strong,
   html[data-theme="dark"] .place-empty-map strong,
   html[data-theme="dark"] .place-event-card strong,
+  html[data-theme="dark"] .place-person-card strong,
   html[data-theme="dark"] .place-lesson-card strong {
     color: var(--heading-color);
   }
@@ -490,6 +635,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
   html[data-theme="dark"] .place-importance-card p,
   html[data-theme="dark"] .place-empty-section p,
   html[data-theme="dark"] .place-event-card small,
+  html[data-theme="dark"] .place-person-card small,
   html[data-theme="dark"] .place-lesson-card small {
     color: var(--text-muted);
   }
@@ -509,11 +655,13 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
     }
 
     .place-events-grid,
+    .place-people-grid,
     .place-lessons-grid {
       grid-template-columns: 1fr;
     }
 
     .place-event-card,
+    .place-person-card,
     .place-lesson-card {
       min-height: auto;
     }

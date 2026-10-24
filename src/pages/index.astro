@@ -3,12 +3,14 @@ import { sitePath } from "../lib/site-paths";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import HomeStudyVisual from "../components/HomeStudyVisual.astro";
+import PersonalContinue from "../components/PersonalContinue.astro";
 import {
   getAllBibleVersions,
   getLessonsByRouteId,
   getRouteBySlug,
   getRouteModules,
 } from "../lib/queries";
+import { LEARNING_PROGRESS_STORAGE_KEY } from "../lib/personal-state";
 
 const siteTitle = "Biblioteca Bíblica";
 const primaryRoute = getRouteBySlug("de-la-creacion-al-pacto");
@@ -38,10 +40,10 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
   title={siteTitle}
   alternateLanguage={{ code: "en", label: "English", href: sitePath("/en/") }}
 >
-  <script is:inline define:vars={{ routeId: primaryRoute?.id ?? "", routeLessons: primaryLessonTargets }}>
+  <script is:inline define:vars={{ routeId: primaryRoute?.id ?? "", routeLessons: primaryLessonTargets, progressKey: LEARNING_PROGRESS_STORAGE_KEY }}>
     (() => {
       let progress = {};
-      try { progress = JSON.parse(localStorage.getItem("bibli-learning-progress-v1") || "{}"); } catch {}
+      try { progress = JSON.parse(localStorage.getItem(progressKey) || "{}"); } catch {}
       if (!progress || typeof progress !== "object") progress = {};
       const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
       const count = routeLessons.filter((lesson) => completed.has(lesson.id)).length;
@@ -90,6 +92,8 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
       ))}
     </section>
 
+    <PersonalContinue lang="es" />
+
     <section class="home-grid" aria-label="Áreas principales">
       {quickLinks.map((item) => (
         <a href={item.href} class="home-card">
@@ -106,7 +110,8 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
 </BaseLayout>
 
 <script>
-  const PROGRESS_KEY = "bibli-learning-progress-v1";
+  import { LEARNING_PROGRESS_STORAGE_KEY, readLearningProgress } from "../lib/personal-state";
+
   const continueLink = document.querySelector<HTMLAnchorElement>("[data-home-continue]");
 
   function syncHomeContinuation() {
@@ -117,7 +122,7 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
     let progress: { completed?: string[]; lastLessonByRoute?: Record<string, string> } = {};
 
     try { lessons = JSON.parse(continueLink.dataset.routeLessons || "[]"); } catch {}
-    try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); } catch {}
+    progress = readLearningProgress();
 
     const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
     const routeCompletedCount = lessons.filter((lesson) => completed.has(lesson.id)).length;
@@ -144,7 +149,7 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
 
   syncHomeContinuation();
   window.addEventListener("storage", (event) => {
-    if (event.key === PROGRESS_KEY) syncHomeContinuation();
+    if (event.key === LEARNING_PROGRESS_STORAGE_KEY) syncHomeContinuation();
   });
   document.addEventListener("bibli:learning-progress-change", syncHomeContinuation);
   window.addEventListener("pageshow", syncHomeContinuation);

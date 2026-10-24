@@ -276,6 +276,22 @@ export function getGlossaryByLessonId(lessonId: string): RelatedItem[] {
     .all(lessonId) as RelatedItem[];
 }
 
+export function getLessonsByGlossaryId(glossaryId: string): Lesson[] {
+  return db
+    .prepare(
+      `
+      SELECT lessons.*
+      FROM lesson_glossary
+      JOIN lessons ON lessons.id = lesson_glossary.lesson_id
+      WHERE
+        lesson_glossary.glossary_id = ?
+        AND lessons.status != 'Borrador'
+      ORDER BY lessons.lesson_number ASC
+      `
+    )
+    .all(glossaryId) as Lesson[];
+}
+
 export function getAllRoutes(): Route[] {
   return db
     .prepare(
@@ -522,6 +538,7 @@ export function getEventsByPlaceId(placeId: string): Event[] {
 }
 
 export type EventRelatedPlace = {
+  id: string;
   title: string;
   slug: string;
   place_type: string | null;
@@ -529,6 +546,17 @@ export type EventRelatedPlace = {
   latitude: number | null;
   longitude: number | null;
   geographical_certainty: string | null;
+};
+
+export type DerivedEventRelatedPlace = EventRelatedPlace & {
+  via_event_count: number;
+  evidence_events: Event[];
+};
+
+export type DerivedRelatedItem = RelatedItem & {
+  id: string;
+  via_event_count: number;
+  evidence_events: Event[];
 };
 
 export function getPeopleByEventId(eventId: string): RelatedItem[] {
@@ -577,28 +605,99 @@ export function getLessonsByPersonId(personId: string): Lesson[] {
     .all(personId) as Lesson[];
 }
 
-export function getPlacesByPersonId(personId: string): EventRelatedPlace[] {
+export function getEventsByPersonAndPlaceIds(personId: string, placeId: string): Event[] {
   return db
     .prepare(
       `
-      SELECT DISTINCT
+      SELECT DISTINCT events.*
+      FROM events
+      JOIN event_people ON event_people.event_id = events.id
+      JOIN event_places ON event_places.event_id = events.id
+      WHERE
+        event_people.person_id = ?
+        AND event_places.place_id = ?
+        AND events.status != 'Borrador'
+      ORDER BY events.chronological_order ASC, events.title ASC
+      `
+    )
+    .all(personId, placeId) as Event[];
+}
+
+export function getPlacesByPersonIdViaEvents(personId: string): DerivedEventRelatedPlace[] {
+  const places = db
+    .prepare(
+      `
+      SELECT
+        places.id,
         places.name AS title,
         places.slug,
         places.place_type,
         places.summary,
         places.latitude,
         places.longitude,
-        places.geographical_certainty
+        places.geographical_certainty,
+        COUNT(DISTINCT event_people.event_id) AS via_event_count
       FROM event_people
       JOIN event_places ON event_places.event_id = event_people.event_id
+      JOIN events ON events.id = event_people.event_id
       JOIN places ON places.id = event_places.place_id
       WHERE
         event_people.person_id = ?
+        AND events.status != 'Borrador'
         AND places.status != 'Borrador'
+      GROUP BY
+        places.id,
+        places.name,
+        places.slug,
+        places.place_type,
+        places.summary,
+        places.latitude,
+        places.longitude,
+        places.geographical_certainty
       ORDER BY places.name ASC
       `
     )
-    .all(personId) as EventRelatedPlace[];
+    .all(personId) as Array<Omit<DerivedEventRelatedPlace, 'evidence_events'>>;
+
+  return places.map((place) => ({
+    ...place,
+    evidence_events: getEventsByPersonAndPlaceIds(personId, place.id),
+  }));
+}
+
+/** @deprecated Use getPlacesByPersonIdViaEvents to preserve derived provenance. */
+export function getPlacesByPersonId(personId: string): DerivedEventRelatedPlace[] {
+  return getPlacesByPersonIdViaEvents(personId);
+}
+
+export function getPeopleByPlaceIdViaEvents(placeId: string): DerivedRelatedItem[] {
+  const people = db
+    .prepare(
+      `
+      SELECT
+        people.id,
+        people.name AS title,
+        people.slug,
+        people.summary,
+        COUNT(DISTINCT event_places.event_id) AS via_event_count
+      FROM event_places
+      JOIN event_people ON event_people.event_id = event_places.event_id
+      JOIN events ON events.id = event_places.event_id
+      JOIN people ON people.id = event_people.person_id
+      WHERE
+        event_places.place_id = ?
+        AND events.status != 'Borrador'
+        AND people.status != 'Borrador'
+      GROUP BY people.id, people.name, people.slug, people.summary
+      ORDER BY people.name ASC
+      `
+    )
+    .all(placeId) as Array<Omit<DerivedRelatedItem, 'evidence_events'>>;
+
+  return people.map((person) => ({
+    ...person,
+    evidence_events: getEventsByPersonAndPlaceIds(person.id, placeId),
+  }));
 }
 
 export function getPlacesByEventId(eventId: string): EventRelatedPlace[] {
@@ -606,6 +705,7 @@ export function getPlacesByEventId(eventId: string): EventRelatedPlace[] {
     .prepare(
       `
       SELECT
+        places.id,
         places.name AS title,
         places.slug,
         places.place_type,
@@ -823,6 +923,16 @@ export type Passage = {
   status: string;
 };
 
+export type EventRelatedPassage = Passage & {
+  relation_type: string;
+  relation_position: number;
+};
+
+export type PassageRelatedEvent = Event & {
+  relation_type: string;
+  relation_position: number;
+};
+
 export function getAllPassages(): Passage[] {
   return db
     .prepare(
@@ -879,7 +989,7 @@ export function getPassagesByLessonId(lessonId: string): Passage[] {
     .all(lessonId) as Passage[];
 }
 
-export function getPassagesByEventId(eventId: string): Passage[] {
+export function getPassagesByEventId(eventId: string): EventRelatedPassage[] {
   return db
     .prepare(
       `
@@ -887,7 +997,9 @@ export function getPassagesByEventId(eventId: string): Passage[] {
         passages.*,
         books.name AS book_name,
         books.slug AS book_slug,
-        books.usfm_code AS book_usfm_code
+        books.usfm_code AS book_usfm_code,
+        event_passages.relation_type AS relation_type,
+        event_passages.position AS relation_position
       FROM event_passages
       JOIN passages ON passages.id = event_passages.passage_id
       JOIN books ON books.id = passages.book_id
@@ -895,7 +1007,7 @@ export function getPassagesByEventId(eventId: string): Passage[] {
       ORDER BY event_passages.position ASC
       `
     )
-    .all(eventId) as Passage[];
+    .all(eventId) as EventRelatedPassage[];
 }
 
 export function getLessonsByPassageId(passageId: string): Lesson[] {
@@ -912,18 +1024,21 @@ export function getLessonsByPassageId(passageId: string): Lesson[] {
     .all(passageId) as Lesson[];
 }
 
-export function getEventsByPassageId(passageId: string): Event[] {
+export function getEventsByPassageId(passageId: string): PassageRelatedEvent[] {
   return db
     .prepare(
       `
-      SELECT events.*
+      SELECT
+        events.*,
+        event_passages.relation_type AS relation_type,
+        event_passages.position AS relation_position
       FROM event_passages
       JOIN events ON events.id = event_passages.event_id
       WHERE event_passages.passage_id = ?
       ORDER BY events.chronological_order ASC, events.title ASC
       `
     )
-    .all(passageId) as Event[];
+    .all(passageId) as PassageRelatedEvent[];
 }
 
 export type BibleVerse = {

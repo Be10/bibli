@@ -1,0 +1,374 @@
+---
+import Icon from "./Icon.astro";
+import PersonalContinue from "./PersonalContinue.astro";
+import PersonalProgress from "./PersonalProgress.astro";
+import type { BibleProgressCatalog, StudyProgressCatalog } from "../lib/personal-progress-catalog";
+import { sitePath } from "../lib/site-paths";
+
+interface Props {
+  lang?: "es" | "en";
+  studyCatalog: StudyProgressCatalog;
+  bibleCatalog: BibleProgressCatalog;
+}
+
+const { lang = "es", studyCatalog, bibleCatalog } = Astro.props;
+const copy = lang === "en"
+  ? {
+      privacy: "Personal data on this device",
+      privacyDetail: "Saved items, notes, history and progress stay in this browser for now.",
+      saved: "Saved",
+      notes: "Notes",
+      recent: "Recent",
+      completed: "Completed",
+      favoritesHeading: "Saved items",
+      favoritesEmpty: "You have no saved items yet.",
+      notesHeading: "Personal notes",
+      notesEmpty: "You have no personal notes yet.",
+      historyHeading: "Reading history",
+      historyEmpty: "Your reading history is empty.",
+      activityHeading: "Recent activity",
+      activityEmpty: "You have no recent activity yet.",
+      activityVisited: "Visited",
+      activitySaved: "Saved",
+      activityNoteUpdated: "Note updated",
+      activityProgressUpdated: "Progress updated",
+      activityProgressTitle: "Personal progress",
+      offlineHeading: "Offline library",
+      offlineText: "Manage the Bibli packages saved on this device.",
+      offlineAction: "Manage downloads",
+      open: "Open",
+      remove: "Remove",
+      deleteNote: "Delete note",
+      clearHistory: "Clear history",
+      statusBookmarkRemoved: "Saved item removed.",
+      statusNoteDeleted: "Note deleted.",
+      statusHistoryCleared: "Reading history cleared.",
+    }
+  : {
+      privacy: "Datos personales en este dispositivo",
+      privacyDetail: "Favoritos, notas, historial y progreso permanecen por ahora en este navegador.",
+      saved: "Favoritos",
+      notes: "Notas",
+      recent: "Recientes",
+      completed: "Completadas",
+      favoritesHeading: "Favoritos",
+      favoritesEmpty: "Todavía no tienes contenido guardado.",
+      notesHeading: "Notas personales",
+      notesEmpty: "Todavía no tienes notas personales.",
+      historyHeading: "Historial de lectura",
+      historyEmpty: "Tu historial de lectura está vacío.",
+      activityHeading: "Actividad reciente",
+      activityEmpty: "Todavía no tienes actividad reciente.",
+      activityVisited: "Visitado",
+      activitySaved: "Guardado",
+      activityNoteUpdated: "Nota actualizada",
+      activityProgressUpdated: "Progreso actualizado",
+      activityProgressTitle: "Progreso personal",
+      offlineHeading: "Biblioteca sin conexión",
+      offlineText: "Administra los paquetes de Bibli guardados en este dispositivo.",
+      offlineAction: "Administrar descargas",
+      open: "Abrir",
+      remove: "Quitar",
+      deleteNote: "Eliminar nota",
+      clearHistory: "Limpiar historial",
+      statusBookmarkRemoved: "Favorito eliminado.",
+      statusNoteDeleted: "Nota eliminada.",
+      statusHistoryCleared: "Historial de lectura limpiado.",
+    };
+const offlineHref = lang === "en" ? sitePath("/en/download/") : sitePath("/descargar/");
+---
+
+<section
+  class="personal-dashboard"
+  data-personal-dashboard
+  data-personal-lang={lang}
+  data-open-label={copy.open}
+  data-remove-label={copy.remove}
+  data-delete-note-label={copy.deleteNote}
+  data-empty-bookmarks={copy.favoritesEmpty}
+  data-empty-notes={copy.notesEmpty}
+  data-empty-history={copy.historyEmpty}
+  data-empty-activity={copy.activityEmpty}
+  data-activity-visited={copy.activityVisited}
+  data-activity-saved={copy.activitySaved}
+  data-activity-note-updated={copy.activityNoteUpdated}
+  data-activity-progress-updated={copy.activityProgressUpdated}
+  data-activity-progress-title={copy.activityProgressTitle}
+  data-status-bookmark-removed={copy.statusBookmarkRemoved}
+  data-status-note-deleted={copy.statusNoteDeleted}
+  data-status-history-cleared={copy.statusHistoryCleared}
+>
+  <div class="personal-privacy">
+    <span class="personal-privacy-icon" aria-hidden="true"><Icon name="bookmark" size={18} /></span>
+    <div><strong>{copy.privacy}</strong><p>{copy.privacyDetail}</p></div>
+  </div>
+
+  <PersonalContinue lang={lang} />
+
+  <div class="personal-stats" aria-label={lang === "en" ? "Personal summary" : "Resumen personal"}>
+    <article><span>{copy.saved}</span><strong data-personal-stat="bookmarks">0</strong></article>
+    <article><span>{copy.notes}</span><strong data-personal-stat="notes">0</strong></article>
+    <article><span>{copy.recent}</span><strong data-personal-stat="history">0</strong></article>
+    <article><span>{copy.completed}</span><strong data-personal-stat="completed">0</strong></article>
+  </div>
+
+  <div class="personal-grid">
+    <section class="personal-panel" aria-labelledby="personal-favorites-title">
+      <header class="personal-panel-header">
+        <span class="personal-panel-icon" aria-hidden="true"><Icon name="bookmark" size={18} /></span>
+        <h2 id="personal-favorites-title">{copy.favoritesHeading}</h2>
+      </header>
+      <div class="personal-list" data-personal-bookmarks-list></div>
+    </section>
+
+    <section class="personal-panel" aria-labelledby="personal-notes-title">
+      <header class="personal-panel-header">
+        <span class="personal-panel-icon" aria-hidden="true"><Icon name="book-text" size={18} /></span>
+        <h2 id="personal-notes-title">{copy.notesHeading}</h2>
+      </header>
+      <div class="personal-list" data-personal-notes-list></div>
+    </section>
+
+    <section class="personal-panel personal-activity-panel" aria-labelledby="personal-activity-title">
+      <header class="personal-panel-header">
+        <span class="personal-panel-icon" aria-hidden="true"><Icon name="list-checks" size={18} /></span>
+        <h2 id="personal-activity-title">{copy.activityHeading}</h2>
+      </header>
+      <div class="personal-list" data-personal-activity-list></div>
+    </section>
+
+    <section class="personal-panel" aria-labelledby="personal-history-title">
+      <header class="personal-panel-header personal-panel-header-actions">
+        <span class="personal-panel-icon" aria-hidden="true"><Icon name="clock" size={18} /></span>
+        <h2 id="personal-history-title">{copy.historyHeading}</h2>
+        <button type="button" class="personal-clear-button" data-personal-history-clear hidden>{copy.clearHistory}</button>
+      </header>
+      <div class="personal-list" data-personal-history-list></div>
+    </section>
+
+    <PersonalProgress lang={lang} studyCatalog={studyCatalog} bibleCatalog={bibleCatalog} />
+
+    <section class="personal-panel personal-offline-panel" aria-labelledby="personal-offline-title">
+      <header class="personal-panel-header">
+        <span class="personal-panel-icon" aria-hidden="true"><Icon name="download" size={18} /></span>
+        <h2 id="personal-offline-title">{copy.offlineHeading}</h2>
+      </header>
+      <p>{copy.offlineText}</p>
+      <a class="personal-offline-link" href={offlineHref}><span>{copy.offlineAction}</span><Icon name="arrow-right" size={16} /></a>
+    </section>
+  </div>
+
+  <p class="sr-only" data-personal-dashboard-status role="status" aria-live="polite" aria-atomic="true"></p>
+</section>
+
+<script>
+  import {
+    BOOKMARKS_STORAGE_KEY,
+    HISTORY_STORAGE_KEY,
+    LEARNING_PROGRESS_STORAGE_KEY,
+    NOTES_STORAGE_KEY,
+    clearHistory,
+    deleteBookmark,
+    deleteNote,
+    readBookmarks,
+    readHistory,
+    readLearningProgress,
+    readNotes,
+    type PersonalContentRefV1,
+  } from "../lib/personal-state";
+
+  const roots = [...document.querySelectorAll<HTMLElement>("[data-personal-dashboard]")];
+
+  const asTimestamp = (value: string) => {
+    const parsed = Date.parse(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+
+  const createEmpty = (message: string) => {
+    const empty = document.createElement("p");
+    empty.className = "personal-empty";
+    empty.textContent = message;
+    return empty;
+  };
+
+  const createContentLink = (item: PersonalContentRefV1, openLabel: string) => {
+    const link = document.createElement("a");
+    link.className = "personal-item-link";
+    link.href = item.href;
+    const title = document.createElement("strong");
+    title.textContent = item.title;
+    const action = document.createElement("span");
+    action.textContent = openLabel;
+    link.append(title, action);
+    return link;
+  };
+
+  const syncDashboard = (root: HTMLElement) => {
+    const lang = root.dataset.personalLang === "en" ? "en" : "es";
+    const locale = lang === "en" ? "en-US" : "es-PE";
+    const openLabel = root.dataset.openLabel || (lang === "en" ? "Open" : "Abrir");
+    const removeLabel = root.dataset.removeLabel || (lang === "en" ? "Remove" : "Quitar");
+    const deleteNoteLabel = root.dataset.deleteNoteLabel || (lang === "en" ? "Delete note" : "Eliminar nota");
+    const bookmarkList = root.querySelector<HTMLElement>("[data-personal-bookmarks-list]");
+    const notesList = root.querySelector<HTMLElement>("[data-personal-notes-list]");
+    const historyList = root.querySelector<HTMLElement>("[data-personal-history-list]");
+    const activityList = root.querySelector<HTMLElement>("[data-personal-activity-list]");
+    const clearHistoryButton = root.querySelector<HTMLButtonElement>("[data-personal-history-clear]");
+    const status = root.querySelector<HTMLElement>("[data-personal-dashboard-status]");
+    if (!bookmarkList || !notesList || !historyList || !activityList || !clearHistoryButton) return;
+
+    const bookmarks = readBookmarks().items
+      .filter((item) => item.lang === lang)
+      .sort((a, b) => asTimestamp(b.createdAt) - asTimestamp(a.createdAt));
+    const notes = readNotes().items
+      .filter((item) => item.lang === lang)
+      .sort((a, b) => asTimestamp(b.updatedAt) - asTimestamp(a.updatedAt));
+    const history = readHistory().items
+      .filter((item) => item.lang === lang)
+      .sort((a, b) => asTimestamp(b.visitedAt) - asTimestamp(a.visitedAt));
+    const progress = readLearningProgress();
+
+    const setStat = (name: string, value: number) => {
+      const target = root.querySelector<HTMLElement>(`[data-personal-stat="${name}"]`);
+      if (target) target.textContent = String(value);
+    };
+    const activity = [
+      ...history.map((item) => ({ kind: "visit" as const, at: item.visitedAt, ref: item })),
+      ...bookmarks.map((item) => ({ kind: "bookmark" as const, at: item.createdAt, ref: item })),
+      ...notes.map((item) => ({ kind: "note" as const, at: item.updatedAt, ref: item })),
+      ...(progress.updatedAt ? [{ kind: "progress" as const, at: progress.updatedAt }] : []),
+    ].sort((a, b) => asTimestamp(b.at) - asTimestamp(a.at));
+
+    setStat("bookmarks", bookmarks.length);
+    setStat("notes", notes.length);
+    setStat("history", history.length);
+    setStat("completed", progress.completed.length);
+
+    const announce = (message: string) => {
+      if (status) status.textContent = message;
+    };
+
+    bookmarkList.replaceChildren();
+    if (!bookmarks.length) {
+      bookmarkList.append(createEmpty(root.dataset.emptyBookmarks || ""));
+    } else {
+      for (const item of bookmarks) {
+        const row = document.createElement("article");
+        row.className = "personal-item";
+        row.append(createContentLink(item, openLabel));
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "personal-item-remove";
+        button.textContent = removeLabel;
+        button.addEventListener("click", () => {
+          deleteBookmark(item);
+          announce(root.dataset.statusBookmarkRemoved || "");
+        });
+        row.append(button);
+        bookmarkList.append(row);
+      }
+    }
+
+    notesList.replaceChildren();
+    if (!notes.length) {
+      notesList.append(createEmpty(root.dataset.emptyNotes || ""));
+    } else {
+      for (const item of notes) {
+        const row = document.createElement("article");
+        row.className = "personal-item personal-note-item";
+        row.append(createContentLink(item, openLabel));
+        const noteText = document.createElement("p");
+        noteText.textContent = item.text;
+        row.append(noteText);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "personal-item-remove";
+        button.textContent = deleteNoteLabel;
+        button.addEventListener("click", () => {
+          deleteNote(item);
+          announce(root.dataset.statusNoteDeleted || "");
+        });
+        row.append(button);
+        notesList.append(row);
+      }
+    }
+
+    activityList.replaceChildren();
+    const visibleActivity = activity.slice(0, 12);
+    if (!visibleActivity.length) {
+      activityList.append(createEmpty(root.dataset.emptyActivity || ""));
+    } else {
+      const activityFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" });
+      const activityLabels = {
+        visit: root.dataset.activityVisited || (lang === "en" ? "Visited" : "Visitado"),
+        bookmark: root.dataset.activitySaved || (lang === "en" ? "Saved" : "Guardado"),
+        note: root.dataset.activityNoteUpdated || (lang === "en" ? "Note updated" : "Nota actualizada"),
+        progress: root.dataset.activityProgressUpdated || (lang === "en" ? "Progress updated" : "Progreso actualizado"),
+      };
+      for (const item of visibleActivity) {
+        const row = document.createElement("article");
+        row.className = "personal-item personal-activity-item";
+        if ("ref" in item && item.ref) {
+          row.append(createContentLink(item.ref, openLabel));
+        } else {
+          const title = document.createElement("strong");
+          title.className = "personal-activity-title";
+          title.textContent = root.dataset.activityProgressTitle || (lang === "en" ? "Personal progress" : "Progreso personal");
+          row.append(title);
+        }
+        const meta = document.createElement("div");
+        meta.className = "personal-activity-meta";
+        const kind = document.createElement("span");
+        kind.textContent = activityLabels[item.kind];
+        const time = document.createElement("time");
+        time.dateTime = item.at;
+        const parsed = new Date(item.at);
+        time.textContent = Number.isNaN(parsed.getTime()) ? "" : activityFormatter.format(parsed);
+        meta.append(kind, time);
+        row.append(meta);
+        activityList.append(row);
+      }
+    }
+
+    historyList.replaceChildren();
+    const visibleHistory = history.slice(0, 12);
+    clearHistoryButton.hidden = history.length === 0;
+    if (!visibleHistory.length) {
+      historyList.append(createEmpty(root.dataset.emptyHistory || ""));
+    } else {
+      const formatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium" });
+      for (const item of visibleHistory) {
+        const row = document.createElement("article");
+        row.className = "personal-item personal-history-item";
+        row.append(createContentLink(item, openLabel));
+        const time = document.createElement("time");
+        time.dateTime = item.visitedAt;
+        const parsed = new Date(item.visitedAt);
+        time.textContent = Number.isNaN(parsed.getTime()) ? "" : formatter.format(parsed);
+        row.append(time);
+        historyList.append(row);
+      }
+    }
+
+    clearHistoryButton.onclick = () => {
+      clearHistory(lang);
+      syncDashboard(root);
+      announce(root.dataset.statusHistoryCleared || "");
+    };
+  };
+
+  const syncAll = () => roots.forEach(syncDashboard);
+  syncAll();
+  window.addEventListener("pageshow", syncAll);
+  window.addEventListener("storage", (event) => {
+    if ([BOOKMARKS_STORAGE_KEY, NOTES_STORAGE_KEY, HISTORY_STORAGE_KEY, LEARNING_PROGRESS_STORAGE_KEY].includes(event.key || "")) syncAll();
+  });
+  document.addEventListener("bibli:bookmarks-change", syncAll);
+  document.addEventListener("bibli:notes-change", syncAll);
+  document.addEventListener("bibli:history-change", syncAll);
+  document.addEventListener("bibli:progress-change", syncAll);
+</script>
+
+<style>
+  .personal-dashboard{display:grid;gap:1rem}.personal-privacy{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem 1rem;border:1px solid var(--border-color);border-radius:16px;background:color-mix(in srgb,var(--accent-soft) 12%,var(--surface))}.personal-privacy-icon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px;border-radius:11px;background:var(--accent-soft);color:var(--accent)}.personal-privacy strong{display:block;color:var(--heading-color);font-size:.92rem}.personal-privacy p{margin:.2rem 0 0;color:var(--text-muted);font-size:.82rem;line-height:1.45}.personal-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}.personal-stats article{padding:1rem;border:1px solid var(--border-color);border-radius:16px;background:var(--surface);box-shadow:var(--shadow-sm)}.personal-stats span{display:block;color:var(--text-muted);font-size:.76rem;font-weight:750}.personal-stats strong{display:block;margin-top:.2rem;color:var(--heading-color);font-size:1.55rem;letter-spacing:-.04em}.personal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.personal-panel{min-width:0;padding:1rem;border:1px solid var(--border-color);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-sm)}.personal-panel-header{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.65rem;margin-bottom:.8rem}.personal-panel-header-actions{grid-template-columns:auto minmax(0,1fr) auto}.personal-panel-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:var(--accent-soft);color:var(--accent)}.personal-panel h2{margin:0;color:var(--heading-color);font-size:1.05rem;letter-spacing:-.02em}.personal-list{display:grid;gap:.65rem}.personal-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:.65rem;padding:.75rem;border:1px solid var(--border-color);border-radius:14px;background:color-mix(in srgb,var(--surface) 92%,var(--accent-soft))}.personal-note-item{grid-template-columns:minmax(0,1fr) auto}.personal-note-item p{grid-column:1 / -1;margin:0;color:var(--text-muted);font-size:.85rem;line-height:1.5;white-space:pre-wrap}.personal-history-item time{grid-column:1 / -1;color:var(--text-muted);font-size:.75rem}.personal-activity-item{grid-template-columns:1fr}.personal-activity-title{color:var(--heading-color)}.personal-activity-meta{display:flex;align-items:center;justify-content:space-between;gap:.75rem;color:var(--text-muted);font-size:.75rem}.personal-activity-meta span{font-weight:750;color:var(--accent)}.personal-activity-meta time{text-align:right}.personal-item-link{min-width:0;display:flex;flex-direction:column;gap:.15rem;color:var(--heading-color);text-decoration:none}.personal-item-link strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.personal-item-link span{color:var(--accent);font-size:.75rem;font-weight:750}.personal-item-link:hover strong{text-decoration:underline;text-underline-offset:3px}.personal-item-remove,.personal-clear-button{min-height:44px;padding:.55rem .75rem;border:1px solid var(--border-color);border-radius:11px;background:var(--surface);color:var(--text-muted);font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}.personal-item-remove:hover,.personal-item-remove:focus-visible,.personal-clear-button:hover,.personal-clear-button:focus-visible{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}.personal-empty{margin:.25rem 0;color:var(--text-muted);font-size:.88rem;line-height:1.5}.personal-offline-panel>p{margin:.8rem 0 0;color:var(--text-muted);font-size:.85rem;line-height:1.5}.personal-offline-link{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;margin-top:.8rem;padding:0 .85rem;border:1px solid var(--border-color);border-radius:12px;background:var(--surface);color:var(--accent);font-weight:750;text-decoration:none}.personal-offline-link:hover{border-color:var(--accent);background:var(--accent-soft)}@media(max-width:760px){.personal-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.personal-grid{grid-template-columns:1fr}.personal-panel-header-actions{grid-template-columns:auto minmax(0,1fr)}.personal-clear-button{grid-column:1 / -1;width:100%}}@media(max-width:420px){.personal-stats{grid-template-columns:1fr 1fr}.personal-item,.personal-note-item{grid-template-columns:1fr}.personal-item-remove{width:100%}}
+</style>

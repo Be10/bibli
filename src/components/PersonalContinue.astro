@@ -1,0 +1,134 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang?: "es" | "en";
+}
+
+const { lang = "es" } = Astro.props;
+const copy = lang === "en"
+  ? {
+      eyebrow: "Recent reading",
+      heading: "Continue where you left off",
+      action: "Continue",
+    }
+  : {
+      eyebrow: "Lectura reciente",
+      heading: "Continúa donde lo dejaste",
+      action: "Continuar",
+    };
+---
+
+<section class="personal-continue" data-personal-continue data-personal-lang={lang} hidden>
+  <span class="personal-continue-icon" aria-hidden="true"><Icon name="book" size={20} /></span>
+  <div class="personal-continue-copy">
+    <span>{copy.eyebrow}</span>
+    <h2>{copy.heading}</h2>
+    <p data-personal-continue-title></p>
+  </div>
+  <a class="personal-continue-link" href="#" data-personal-continue-link>
+    <span>{copy.action}</span>
+    <Icon name="arrow-right" size={17} />
+  </a>
+</section>
+
+<script>
+  import { HISTORY_STORAGE_KEY, getLatestHistoryEntry } from "../lib/personal-state";
+
+  const roots = [...document.querySelectorAll<HTMLElement>("[data-personal-continue]")];
+
+  const syncPersonalContinue = (root: HTMLElement) => {
+    const lang = root.dataset.personalLang === "en" ? "en" : "es";
+    const entry = getLatestHistoryEntry(lang);
+    const link = root.querySelector<HTMLAnchorElement>("[data-personal-continue-link]");
+    const title = root.querySelector<HTMLElement>("[data-personal-continue-title]");
+    if (!entry || !link || !title) {
+      root.hidden = true;
+      return;
+    }
+    link.href = entry.href;
+    title.textContent = entry.title;
+    root.hidden = false;
+  };
+
+  const syncAllPersonalContinue = () => roots.forEach(syncPersonalContinue);
+
+  syncAllPersonalContinue();
+  window.addEventListener("pageshow", syncAllPersonalContinue);
+  window.addEventListener("storage", (event) => {
+    if (event.key === HISTORY_STORAGE_KEY) syncAllPersonalContinue();
+  });
+  document.addEventListener("bibli:history-change", syncAllPersonalContinue);
+</script>
+
+<style>
+  .personal-continue {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:center;
+    gap:.9rem;
+    margin-top:var(--ui-section-gap, .85rem);
+    padding:var(--ui-card-pad, 1rem);
+    border:1px solid var(--border-color);
+    border-radius:var(--ui-card-radius, 16px);
+    background:color-mix(in srgb,var(--accent-soft) 16%,var(--surface));
+    box-shadow:var(--ui-shadow-card, 0 8px 24px rgba(15,23,42,.04));
+  }
+  .personal-continue[hidden] { display:none !important; }
+  .personal-continue-icon {
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background:var(--accent-soft);
+    color:var(--accent);
+  }
+  .personal-continue-copy { min-width:0; }
+  .personal-continue-copy > span {
+    display:block;
+    margin-bottom:.2rem;
+    color:var(--accent);
+    font-size:.72rem;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .personal-continue-copy h2 {
+    margin:0;
+    color:var(--heading-color);
+    font-size:1rem;
+    letter-spacing:-.02em;
+  }
+  .personal-continue-copy p {
+    margin:.25rem 0 0;
+    overflow:hidden;
+    color:var(--text-muted);
+    font-size:.86rem;
+    line-height:1.45;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .personal-continue-link {
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.45rem;
+    padding:0 .9rem;
+    border:1px solid var(--border-color);
+    border-radius:var(--ui-control-radius, 12px);
+    background:var(--surface);
+    color:var(--accent);
+    font-weight:750;
+    text-decoration:none;
+  }
+  .personal-continue-link:hover {
+    border-color:color-mix(in srgb,var(--accent) 45%,var(--border-color));
+    background:var(--accent-soft);
+  }
+  @media(max-width:620px) {
+    .personal-continue { grid-template-columns:auto minmax(0,1fr); }
+    .personal-continue-link { grid-column:1 / -1; width:100%; box-sizing:border-box; }
+  }
+</style>

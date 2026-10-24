@@ -38,3 +38,7 @@ exports/
 
 # redundant upstream KJV source checkout (canonical import lives in kjv-study)
 data/import/kjv-source/
+# Playwright generated test artifacts
+test-results/
+playwright-report/
+blob-report/

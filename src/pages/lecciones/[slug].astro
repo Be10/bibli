@@ -8,15 +8,18 @@ import { sitePath } from "../../lib/site-paths";
 import { getBibleChapterPath } from "../../lib/bible-routes";
 import { getStudyIntro, getStudySlug, getStudyTitle } from "../../lib/studies";
 import { parseStudyReference } from "../../lib/study-reference";
+import { LEARNING_PROGRESS_STORAGE_KEY } from "../../lib/personal-state";
 import {
   getAllRoutes,
   getBookById,
+  getBooksByLessonId,
   getBibleVersesForRange,
   getEventsByLessonId,
   getGlossaryByLessonId,
   getLessonBySlug,
   getLessonsByRouteId,
   getPeopleByLessonId,
+  getPassagesByLessonId,
   getRoutesByLessonId,
   getRouteModules,
   getStudyPlacesByLessonId,
@@ -63,13 +66,15 @@ const routeOptions = getAllRoutes()
     href: sitePath(`/rutas/${item.slug}/`),
   }));
 
+const relatedBooks = getBooksByLessonId(lesson.id);
+const relatedPassages = getPassagesByLessonId(lesson.id);
 const glossary = getGlossaryByLessonId(lesson.id);
 const people = getPeopleByLessonId(lesson.id);
 const places = getStudyPlacesByLessonId(lesson.id);
 const topics = getTopicsByLessonId(lesson.id);
 const events = getEventsByLessonId(lesson.id);
 const visualResources = getVisualResourcesByLessonId(lesson.id);
-const studyAidCount = glossary.length + people.length + places.length + topics.length + events.length + visualResources.filter((resource) => Boolean(resource.url)).length;
+const studyAidCount = relatedBooks.length + relatedPassages.length + glossary.length + people.length + places.length + topics.length + events.length + visualResources.filter((resource) => Boolean(resource.url)).length;
 const hasStudyAids = studyAidCount > 0;
 
 const range = parseStudyReference(entry.data.primary_reference);
@@ -97,7 +102,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 ---
 
 <BaseLayout title={title} description={intro || `Estudio de ${entry.data.primary_reference}`}>
-  <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-has-aids={hasStudyAids ? "true" : "empty"}>
+  <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-progress-storage-key={LEARNING_PROGRESS_STORAGE_KEY} data-has-aids={hasStudyAids ? "true" : "empty"}>
     <script is:inline>
       (() => {
         const script = document.currentScript;
@@ -105,8 +110,9 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         if (!(shell instanceof HTMLElement) || !shell.matches("[data-learning-shell]")) return;
         let routeLessonIds = [];
         try { routeLessonIds = JSON.parse(shell.dataset.routeLessonIds || "[]"); } catch {}
+        const progressKey = shell.dataset.progressStorageKey || "bibli-learning-progress-v1";
         let progress = {};
-        try { progress = JSON.parse(localStorage.getItem("bibli-learning-progress-v1") || "{}"); } catch {}
+        try { progress = JSON.parse(localStorage.getItem(progressKey) || "{}"); } catch {}
         const completed = new Set(Array.isArray(progress.completed) ? progress.completed : []);
         const lessonId = shell.dataset.lessonId || "";
         const routeId = shell.dataset.routeId || "";
@@ -448,6 +454,8 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         <div class="aids-column" id="lesson-aids-panel" data-aids-column>
           <button type="button" class="aids-mobile-close" data-aids-close aria-label="Cerrar ayudas de estudio"><Icon name="close" size={17} /></button>
           <StudyAids
+            books={relatedBooks}
+            passages={relatedPassages}
             glossary={glossary}
             people={people}
             places={places}
@@ -467,25 +475,14 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 </BaseLayout>
 
 <script>
+  import {
+    LEARNING_PROGRESS_STORAGE_KEY,
+    readLearningProgress,
+    writeLearningProgress,
+  } from "../../lib/personal-state";
+
   document.documentElement.dataset.lessonDock = "true";
-  const PROGRESS_KEY = "bibli-learning-progress-v1";
   const MODE_KEY = "bibli-lesson-mode-v1";
-
-  function readProgress() {
-    try {
-      const value = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}");
-      return {
-        completed: Array.isArray(value.completed) ? value.completed : [],
-        lastLessonByRoute: value.lastLessonByRoute && typeof value.lastLessonByRoute === "object" ? value.lastLessonByRoute : {},
-      };
-    } catch {
-      return { completed: [], lastLessonByRoute: {} };
-    }
-  }
-
-  function writeProgress(progress) {
-    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
-  }
 
   document.querySelectorAll<HTMLElement>("[data-learning-shell]").forEach((shell) => {
     const lessonId = shell.dataset.lessonId || "";
@@ -500,7 +497,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     const progressTrack = shell.querySelector<HTMLElement>("[data-route-progress-track]");
 
     function updateProgressUi() {
-      const progress = readProgress();
+      const progress = readLearningProgress();
       const completed = new Set(progress.completed);
       const count = routeId ? routeLessonIds.filter((id) => completed.has(id)).length : (completed.has(lessonId) ? 1 : 0);
       const percent = total > 0 ? Math.round((count / total) * 100) : 0;
@@ -520,15 +517,15 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       }
     }
 
-    const progress = readProgress();
+    const progress = readLearningProgress();
     if (routeId) progress.lastLessonByRoute[routeId] = lessonId;
-    writeProgress(progress);
+    writeLearningProgress(progress);
     completeButton?.addEventListener("click", () => {
-      const next = readProgress();
+      const next = readLearningProgress();
       const completed = new Set(next.completed);
       if (completed.has(lessonId)) completed.delete(lessonId); else completed.add(lessonId);
       next.completed = [...completed];
-      writeProgress(next);
+      writeLearningProgress(next);
       updateProgressUi();
       document.dispatchEvent(new CustomEvent("bibli:learning-progress-change"));
     });
@@ -536,7 +533,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     shell.dataset.progressReady = "true";
     shell.dataset.persistedReady = "true";
     window.addEventListener("storage", (event) => {
-      if (event.key === PROGRESS_KEY) updateProgressUi();
+      if (event.key === LEARNING_PROGRESS_STORAGE_KEY) updateProgressUi();
     });
     window.addEventListener("pageshow", updateProgressUi);
 

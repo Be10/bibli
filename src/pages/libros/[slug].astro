@@ -240,7 +240,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(book.name)}`;
 
         <div class="book-lessons-grid">
           {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="book-lesson-card">
+            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="book-lesson-card" data-explicit-connection="lesson-books">
               <span>Lección {lesson.lesson_number}</span>
               <strong>{lesson.title}</strong>
 
@@ -274,7 +274,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(book.name)}`;
 
         <div class="book-events-grid">
           {events.map((event) => (
-            <a href={sitePath(`/eventos/${event.slug}/`)} class="book-event-card">
+            <a href={sitePath(`/eventos/${event.slug}/`)} class="book-event-card" data-explicit-connection="event-books">
               <span>{event.biblical_period ?? event.event_type ?? "Evento bíblico"}</span>
               <strong>{event.title}</strong>
 

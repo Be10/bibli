@@ -14,7 +14,7 @@ import {
   type EventRelatedPlace,
   type Lesson,
   type RelatedItem,
-  type Passage,
+  type EventRelatedPassage,
 } from "../../lib/queries";
 
 type Props = {
@@ -24,7 +24,7 @@ type Props = {
   people: RelatedItem[];
   places: EventRelatedPlace[];
   topics: RelatedItem[];
-  passages: Passage[];
+  passages: EventRelatedPassage[];
 };
 
 export function getStaticPaths() {
@@ -211,7 +211,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
               <ul class="pill-list">
                 {books.map((book) => (
                   <li>
-                    <a href={sitePath(`/libros/${book.slug}/`)}>{book.name}</a>
+                    <a href={sitePath(`/libros/${book.slug}/`)} data-explicit-connection="event-books">{book.name}</a>
                   </li>
                 ))}
               </ul>
@@ -225,8 +225,14 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
               <ul class="pill-list">
                 {passages.map((passage) => (
                   <li>
-                    <a href={sitePath(`/pasajes/${passage.slug}/`)}>
+                    <a
+                      href={sitePath(`/pasajes/${passage.slug}/`)}
+                      class="event-passage-link"
+                      data-explicit-connection="event-passages"
+                      data-connection-relation-type={passage.relation_type}
+                    >
                       {passage.display_reference}
+                      <span class="connection-role">Relación: {passage.relation_type}</span>
                     </a>
                   </li>
                 ))}
@@ -266,7 +272,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
                 )}
 
                 <div class="event-card-actions">
-                  <a href={sitePath(`/lugares/${place.slug}/`)}>Ver lugar</a>
+                  <a href={sitePath(`/lugares/${place.slug}/`)} data-explicit-connection="event-places">Ver lugar</a>
 
                   {hasCoordinates && (
                     <a href={sitePath(`/mapa/?lugar=${place.slug}`)}>Ver en mapa</a>
@@ -302,7 +308,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
               <ul class="event-list">
                 {people.map((person) => (
                   <li>
-                    <a href={sitePath(`/personajes/${person.slug}/`)}>{person.title}</a>
+                    <a href={sitePath(`/personajes/${person.slug}/`)} data-explicit-connection="event-people">{person.title}</a>
                     {person.summary && <span>{person.summary}</span>}
                   </li>
                 ))}
@@ -317,7 +323,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
               <ul class="event-list">
                 {topics.map((topic) => (
                   <li>
-                    <a href={sitePath(`/temas/${topic.slug}/`)}>{topic.title}</a>
+                    <a href={sitePath(`/temas/${topic.slug}/`)} data-explicit-connection="event-topics">{topic.title}</a>
                     {topic.definition && <span>{topic.definition}</span>}
                   </li>
                 ))}
@@ -343,7 +349,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
 
         <div class="event-lessons-grid">
           {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="event-lesson-card">
+            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="event-lesson-card" data-explicit-connection="lesson-events">
               <span>Lección {lesson.lesson_number}</span>
               <strong>{lesson.title}</strong>
 
@@ -524,6 +530,15 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(event.title)}`
   .event-link-panel h3 {
     margin: 0 0 16px;
     color: var(--text-color);
+  }
+
+  .event-passage-link .connection-role {
+    margin-left: 6px;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   .event-places-grid {

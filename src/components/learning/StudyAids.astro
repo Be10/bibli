@@ -2,9 +2,11 @@
 import { sitePath } from "../../lib/site-paths";
 import Icon from "../Icon.astro";
 import LessonMap from "./LessonMap.astro";
-import type { Event, RelatedItem, StudyPlace, VisualResource } from "../../lib/queries";
+import type { Book, Event, Passage, RelatedItem, StudyPlace, VisualResource } from "../../lib/queries";
 
 type Props = {
+  books: Book[];
+  passages: Passage[];
   glossary: RelatedItem[];
   people: RelatedItem[];
   places: StudyPlace[];
@@ -12,9 +14,8 @@ type Props = {
   events: Event[];
   visualResources: VisualResource[];
 };
-const { glossary, people, places, topics, events, visualResources } = Astro.props;
-const readyVisuals = visualResources.filter((resource) => Boolean(resource.url));
-const count = glossary.length + people.length + places.length + topics.length + events.length + readyVisuals.length;
+const { books, passages, glossary, people, places, topics, events, visualResources } = Astro.props;
+const count = books.length + passages.length + glossary.length + people.length + places.length + topics.length + events.length + visualResources.length;
 ---
 
 <aside class="study-aids" data-study-aids-panel aria-label="Ayudas de estudio">
@@ -33,6 +34,26 @@ const count = glossary.length + people.length + places.length + topics.length + 
     </div>
   )}
 
+  {(books.length > 0 || passages.length > 0) && (
+    <details data-explicit-connections="lesson-scripture">
+      <summary><span class="summary-main"><Icon name="book-text" size={17} />Base bíblica</span><span class="summary-meta"><span>{books.length + passages.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
+      <div class="scripture-connections">
+        {books.length > 0 && (
+          <div>
+            <span class="connection-label">Libro</span>
+            <div class="chips">{books.map((book) => <a href={sitePath(`/libros/${book.slug}/`)} data-explicit-connection="lesson-books">{book.name}</a>)}</div>
+          </div>
+        )}
+        {passages.length > 0 && (
+          <div>
+            <span class="connection-label">Pasaje</span>
+            <div class="chips">{passages.map((passage) => <a href={sitePath(`/pasajes/${passage.slug}/`)} data-explicit-connection="lesson-passages">{passage.display_reference}</a>)}</div>
+          </div>
+        )}
+      </div>
+    </details>
+  )}
+
   {places.length > 0 && (
     <details open>
       <summary><span class="summary-main"><Icon name="map" size={17} />Lugares y mapa</span><span class="summary-meta"><span>{places.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
@@ -40,7 +61,7 @@ const count = glossary.length + people.length + places.length + topics.length + 
       <ul class="aid-list">
         {places.map((place) => (
           <li>
-            <a href={sitePath(`/lugares/${place.slug}/`)}><strong>{place.title}</strong></a>
+            <a href={sitePath(`/lugares/${place.slug}/`)} data-explicit-connection="lesson-places"><strong>{place.title}</strong></a>
             {place.summary && <p>{place.summary}</p>}
           </li>
         ))}
@@ -54,7 +75,7 @@ const count = glossary.length + people.length + places.length + topics.length + 
       <div class="definition-list">
         {glossary.map((term) => (
           <article>
-            <a href={sitePath(`/glosario/${term.slug}/`)}><strong>{term.title}</strong></a>
+            <a href={sitePath(`/glosario/${term.slug}/`)} data-explicit-connection="lesson-glossary"><strong>{term.title}</strong></a>
             {term.definition && <p>{term.definition}</p>}
           </article>
         ))}
@@ -65,31 +86,38 @@ const count = glossary.length + people.length + places.length + topics.length + 
   {people.length > 0 && (
     <details>
       <summary><span class="summary-main"><Icon name="users" size={17} />Personajes</span><span class="summary-meta"><span>{people.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
-      <div class="chips">{people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)}>{person.title}</a>)}</div>
+      <div class="chips">{people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)} data-explicit-connection="lesson-people">{person.title}</a>)}</div>
     </details>
   )}
 
   {topics.length > 0 && (
     <details>
       <summary><span class="summary-main"><Icon name="tag" size={17} />Temas</span><span class="summary-meta"><span>{topics.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
-      <div class="chips">{topics.map((topic) => <a href={sitePath(`/temas/${topic.slug}/`)}>{topic.title}</a>)}</div>
+      <div class="chips">{topics.map((topic) => <a href={sitePath(`/temas/${topic.slug}/`)} data-explicit-connection="lesson-topics">{topic.title}</a>)}</div>
     </details>
   )}
 
   {events.length > 0 && (
     <details>
       <summary><span class="summary-main"><Icon name="timeline" size={17} />Eventos</span><span class="summary-meta"><span>{events.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
-      <ul class="aid-list compact">{events.map((event) => <li><a href={sitePath(`/eventos/${event.slug}/`)}>{event.title}</a></li>)}</ul>
+      <ul class="aid-list compact">{events.map((event) => <li><a href={sitePath(`/eventos/${event.slug}/`)} data-explicit-connection="lesson-events">{event.title}</a></li>)}</ul>
     </details>
   )}
 
-  {readyVisuals.length > 0 && (
+  {visualResources.length > 0 && (
     <details>
-      <summary><span class="summary-main"><Icon name="image" size={17} />Recursos visuales</span><span class="summary-meta"><span>{readyVisuals.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
+      <summary><span class="summary-main"><Icon name="image" size={17} />Recursos visuales</span><span class="summary-meta"><span>{visualResources.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
       <div class="visual-grid">
-        {readyVisuals.map((resource) => (
-          <a href={sitePath(`/recursos/${resource.slug}/`)} class="visual-card">
-            <img src={resource.url!} alt={resource.alt_text ?? resource.title} loading="lazy" />
+        {visualResources.map((resource) => (
+          <a href={sitePath(`/recursos/${resource.slug}/`)} class="visual-card" data-explicit-connection="lesson-visual-resources">
+            {resource.url ? (
+              <img src={resource.url} alt={resource.alt_text ?? resource.title} loading="lazy" />
+            ) : (
+              <span class="visual-placeholder" aria-label={`Imagen pendiente · ${resource.status}`}>
+                <Icon name="image" size={20} />
+                <small>{resource.status === "Idea" ? "En preparación" : resource.status}</small>
+              </span>
+            )}
             <strong>{resource.title}</strong>
           </a>
         ))}
@@ -124,6 +152,9 @@ const count = glossary.length + people.length + places.length + topics.length + 
   .aid-list a,.definition-list a { color:var(--heading-color); text-underline-offset:.18em; }
   .aid-list p,.definition-list p { margin:.18rem 0 0; color:var(--text-muted); font-size:.81rem; line-height:1.5; }
   .aid-list.compact { gap:.32rem; }
+  .scripture-connections { display:grid; gap:.7rem; padding:.7rem 0; }
+  .scripture-connections > div { display:grid; gap:.28rem; }
+  .connection-label { color:var(--text-muted); font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
   .definition-list { display:grid; gap:.65rem; padding:.7rem 0; }
   .definition-list article + article { border-top:1px solid var(--border-color); padding-top:.6rem; }
   .chips { display:flex; flex-wrap:wrap; gap:.35rem; padding:.7rem 0; }
@@ -132,6 +163,8 @@ const count = glossary.length + people.length + places.length + topics.length + 
   .visual-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; padding:.7rem 0; }
   .visual-card { display:grid; gap:.35rem; color:var(--text-color); text-decoration:none; }
   .visual-card img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:9px; }
+  .visual-placeholder { width:100%; aspect-ratio:16/10; display:grid; place-items:center; align-content:center; gap:.35rem; border:1px dashed var(--border-color); border-radius:9px; background:var(--surface-soft); color:var(--accent); }
+  .visual-placeholder small { color:var(--text-muted); font-size:.68rem; font-weight:700; }
   .visual-card strong { font-size:.78rem; }
   @media(max-width:700px){ .visual-grid{grid-template-columns:1fr;} }
   @media(prefers-reduced-motion:reduce){ .summary-chevron{transition:none;} }

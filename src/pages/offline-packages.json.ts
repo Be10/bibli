@@ -145,6 +145,8 @@ export function GET() {
   const appUrls = [
     sitePath("/"),
     sitePath("/en/"),
+    sitePath("/mi-bibli/"),
+    sitePath("/en/my-bibli/"),
     sitePath("/buscar/"),
     sitePath("/en/search/"),
     sitePath("/explorar/"),

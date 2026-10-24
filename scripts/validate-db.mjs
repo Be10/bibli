@@ -105,14 +105,18 @@ try {
     if (!sourcePaths.has(file.path)) fail(`Lección del manifest no indexada: ${file.path}`);
   }
 
-  const duplicatePrimary = db.prepare(`
-    SELECT lesson_id, COUNT(*) AS n
-    FROM route_lessons
-    WHERE is_primary = 1
-    GROUP BY lesson_id
-    HAVING COUNT(*) <> 1
+  const invalidPrimaryRoutes = db.prepare(`
+    SELECT s.id AS lesson_id, COUNT(rl.lesson_id) AS n
+    FROM study_lessons s
+    LEFT JOIN route_lessons rl
+      ON rl.lesson_id = s.id
+     AND rl.is_primary = 1
+    GROUP BY s.id
+    HAVING COUNT(rl.lesson_id) <> 1
   `).all();
-  if (duplicatePrimary.length > 0) fail(`Lecciones sin ruta primaria única: ${duplicatePrimary.length}`);
+  if (invalidPrimaryRoutes.length > 0) {
+    fail(`Lecciones sin ruta primaria única: ${invalidPrimaryRoutes.length}`);
+  }
 
   const pendingLicenseMetadata = db.prepare(`
     SELECT id FROM bible_versions

@@ -1,0 +1,407 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: "es" | "en";
+}
+
+const { lang } = Astro.props;
+const copy = lang === "en"
+  ? {
+      label: "Personal actions",
+      save: "Save",
+      saved: "Saved",
+      addNote: "Add note",
+      editNote: "Edit note",
+      noteLabel: "Personal note",
+      notePlaceholder: "Write a note for this content…",
+      saveNote: "Save note",
+      deleteNote: "Delete",
+      close: "Close",
+      bookmarkSaved: "Saved to this device.",
+      bookmarkRemoved: "Removed from saved items.",
+      noteSaved: "Note saved on this device.",
+      noteDeleted: "Note deleted.",
+      bibleReadOff: "Mark chapter read",
+      bibleReadOn: "Chapter read",
+      bibleReadMarked: "Chapter marked as read.",
+      bibleReadUnmarked: "Chapter removed from reading progress.",
+    }
+  : {
+      label: "Acciones personales",
+      save: "Guardar",
+      saved: "Guardado",
+      addNote: "Añadir nota",
+      editNote: "Editar nota",
+      noteLabel: "Nota personal",
+      notePlaceholder: "Escribe una nota para este contenido…",
+      saveNote: "Guardar nota",
+      deleteNote: "Eliminar",
+      close: "Cerrar",
+      bookmarkSaved: "Guardado en este dispositivo.",
+      bookmarkRemoved: "Eliminado de guardados.",
+      noteSaved: "Nota guardada en este dispositivo.",
+      noteDeleted: "Nota eliminada.",
+      bibleReadOff: "Marcar capítulo leído",
+      bibleReadOn: "Capítulo leído",
+      bibleReadMarked: "Capítulo marcado como leído.",
+      bibleReadUnmarked: "Capítulo retirado del progreso de lectura.",
+    };
+---
+
+<section
+  class="personal-actions-shell"
+  data-personal-actions
+  data-personal-lang={lang}
+  data-bookmark-off={copy.save}
+  data-bookmark-on={copy.saved}
+  data-note-add={copy.addNote}
+  data-note-edit={copy.editNote}
+  data-status-bookmark-saved={copy.bookmarkSaved}
+  data-status-bookmark-removed={copy.bookmarkRemoved}
+  data-status-note-saved={copy.noteSaved}
+  data-status-note-deleted={copy.noteDeleted}
+  data-bible-read-off={copy.bibleReadOff}
+  data-bible-read-on={copy.bibleReadOn}
+  data-status-bible-read-marked={copy.bibleReadMarked}
+  data-status-bible-read-unmarked={copy.bibleReadUnmarked}
+  aria-label={copy.label}
+  hidden
+>
+  <div class="personal-actions-bar">
+    <button
+      type="button"
+      class="personal-action-button"
+      data-personal-bookmark
+      aria-pressed="false"
+    >
+      <Icon name="bookmark" size={17} />
+      <span data-personal-bookmark-label>{copy.save}</span>
+    </button>
+
+    <button
+      type="button"
+      class="personal-action-button"
+      data-personal-bible-read
+      aria-pressed="false"
+      hidden
+    >
+      <Icon name="check" size={17} />
+      <span data-personal-bible-read-label>{copy.bibleReadOff}</span>
+    </button>
+
+    <button
+      type="button"
+      class="personal-action-button"
+      data-personal-note-toggle
+      aria-expanded="false"
+      aria-controls="bibli-personal-note-panel"
+    >
+      <Icon name="book-text" size={17} />
+      <span data-personal-note-label>{copy.addNote}</span>
+    </button>
+  </div>
+
+  <section
+    id="bibli-personal-note-panel"
+    class="personal-note-panel"
+    data-personal-note-panel
+    aria-label={copy.noteLabel}
+    hidden
+  >
+    <label class="personal-note-label" for="bibli-personal-note-input">{copy.noteLabel}</label>
+    <textarea
+      id="bibli-personal-note-input"
+      data-personal-note-input
+      aria-label={copy.noteLabel}
+      placeholder={copy.notePlaceholder}
+      rows="4"
+      maxlength="4000"
+    ></textarea>
+    <div class="personal-note-actions">
+      <button type="button" class="button personal-note-save" data-personal-note-save>{copy.saveNote}</button>
+      <button type="button" class="button secondary personal-note-delete" data-personal-note-delete hidden>{copy.deleteNote}</button>
+      <button type="button" class="button secondary" data-personal-note-close>{copy.close}</button>
+    </div>
+  </section>
+
+  <p class="sr-only" data-personal-status role="status" aria-live="polite" aria-atomic="true"></p>
+</section>
+
+<script>
+  import {
+    createPersonalContentRef,
+    deleteNote,
+    getBookmarkForContent,
+    getNoteForContent,
+    isBibleChapterRead,
+    toggleBibleChapterRead,
+    toggleBookmark,
+    upsertNote,
+  } from "../lib/personal-state";
+
+  (() => {
+    const root = document.querySelector("[data-personal-actions]");
+    if (!(root instanceof HTMLElement)) return;
+
+    const bookmarkButton = root.querySelector("[data-personal-bookmark]");
+    const bookmarkLabel = root.querySelector("[data-personal-bookmark-label]");
+    const bibleReadButton = root.querySelector("[data-personal-bible-read]");
+    const bibleReadLabel = root.querySelector("[data-personal-bible-read-label]");
+    const noteToggle = root.querySelector("[data-personal-note-toggle]");
+    const noteLabel = root.querySelector("[data-personal-note-label]");
+    const notePanel = root.querySelector("[data-personal-note-panel]");
+    const noteInput = root.querySelector("[data-personal-note-input]");
+    const noteSave = root.querySelector("[data-personal-note-save]");
+    const noteDelete = root.querySelector("[data-personal-note-delete]");
+    const noteClose = root.querySelector("[data-personal-note-close]");
+    const status = root.querySelector("[data-personal-status]");
+
+    if (!(bookmarkButton instanceof HTMLButtonElement)
+      || !(bookmarkLabel instanceof HTMLElement)
+      || !(bibleReadButton instanceof HTMLButtonElement)
+      || !(bibleReadLabel instanceof HTMLElement)
+      || !(noteToggle instanceof HTMLButtonElement)
+      || !(noteLabel instanceof HTMLElement)
+      || !(notePanel instanceof HTMLElement)
+      || !(noteInput instanceof HTMLTextAreaElement)
+      || !(noteSave instanceof HTMLButtonElement)
+      || !(noteDelete instanceof HTMLButtonElement)
+      || !(noteClose instanceof HTMLButtonElement)) return;
+
+    const lang = root.dataset.personalLang === "en" ? "en" : "es";
+    const copy = {
+      bookmarkOff: root.dataset.bookmarkOff ?? (lang === "en" ? "Save" : "Guardar"),
+      bookmarkOn: root.dataset.bookmarkOn ?? (lang === "en" ? "Saved" : "Guardado"),
+      noteAdd: root.dataset.noteAdd ?? (lang === "en" ? "Add note" : "Añadir nota"),
+      noteEdit: root.dataset.noteEdit ?? (lang === "en" ? "Edit note" : "Editar nota"),
+      bookmarkSaved: root.dataset.statusBookmarkSaved ?? "",
+      bookmarkRemoved: root.dataset.statusBookmarkRemoved ?? "",
+      noteSaved: root.dataset.statusNoteSaved ?? "",
+      noteDeleted: root.dataset.statusNoteDeleted ?? "",
+      bibleReadOff: root.dataset.bibleReadOff ?? (lang === "en" ? "Mark chapter read" : "Marcar capítulo leído"),
+      bibleReadOn: root.dataset.bibleReadOn ?? (lang === "en" ? "Chapter read" : "Capítulo leído"),
+      bibleReadMarked: root.dataset.statusBibleReadMarked ?? "",
+      bibleReadUnmarked: root.dataset.statusBibleReadUnmarked ?? "",
+    };
+
+    const currentRef = () => {
+      const title = document.documentElement.dataset.personalPageTitle || document.title || "Bibli";
+      return createPersonalContentRef({
+        pathname: window.location.pathname,
+        href: `${window.location.pathname}${window.location.hash}`,
+        title,
+        lang,
+      });
+    };
+
+    const announce = (message: string) => {
+      if (status instanceof HTMLElement) status.textContent = message;
+    };
+
+    const closeNote = ({ returnFocus = true } = {}) => {
+      notePanel.hidden = true;
+      noteToggle.setAttribute("aria-expanded", "false");
+      if (returnFocus) noteToggle.focus();
+    };
+
+    const sync = () => {
+      const ref = currentRef();
+      if (!ref) {
+        root.hidden = true;
+        return;
+      }
+
+      root.hidden = false;
+      const bookmark = getBookmarkForContent(ref);
+      const note = getNoteForContent(ref);
+      const isBibleChapter = ref.contentType === "bible-chapter";
+      const bibleChapterRead = isBibleChapter && isBibleChapterRead(ref);
+      const bookmarked = Boolean(bookmark);
+      bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+      bookmarkButton.classList.toggle("is-active", bookmarked);
+      bookmarkLabel.textContent = bookmarked ? copy.bookmarkOn : copy.bookmarkOff;
+      bibleReadButton.hidden = !isBibleChapter;
+      bibleReadButton.setAttribute("aria-pressed", bibleChapterRead ? "true" : "false");
+      bibleReadButton.classList.toggle("is-active", bibleChapterRead);
+      bibleReadLabel.textContent = bibleChapterRead ? copy.bibleReadOn : copy.bibleReadOff;
+      noteLabel.textContent = note ? copy.noteEdit : copy.noteAdd;
+      noteDelete.hidden = !note;
+      if (!notePanel.hidden) noteInput.value = note?.text ?? "";
+    };
+
+    bookmarkButton.addEventListener("click", () => {
+      const ref = currentRef();
+      if (!ref) return;
+      const result = toggleBookmark(ref);
+      announce(result.bookmarked ? copy.bookmarkSaved : copy.bookmarkRemoved);
+      sync();
+    });
+
+    bibleReadButton.addEventListener("click", () => {
+      const ref = currentRef();
+      if (!ref || ref.contentType !== "bible-chapter") return;
+      const result = toggleBibleChapterRead(ref);
+      announce(result.read ? copy.bibleReadMarked : copy.bibleReadUnmarked);
+      sync();
+    });
+
+    noteToggle.addEventListener("click", () => {
+      const ref = currentRef();
+      if (!ref) return;
+      if (!notePanel.hidden) {
+        closeNote();
+        return;
+      }
+      const note = getNoteForContent(ref);
+      noteInput.value = note?.text ?? "";
+      noteDelete.hidden = !note;
+      notePanel.hidden = false;
+      noteToggle.setAttribute("aria-expanded", "true");
+      requestAnimationFrame(() => noteInput.focus());
+    });
+
+    noteSave.addEventListener("click", () => {
+      const ref = currentRef();
+      if (!ref) return;
+      const note = upsertNote(ref, noteInput.value);
+      announce(note ? copy.noteSaved : copy.noteDeleted);
+      sync();
+      closeNote();
+    });
+
+    noteDelete.addEventListener("click", () => {
+      const ref = currentRef();
+      if (!ref) return;
+      if (deleteNote(ref)) announce(copy.noteDeleted);
+      noteInput.value = "";
+      sync();
+      closeNote();
+    });
+
+    noteClose.addEventListener("click", () => closeNote());
+    noteInput.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      closeNote();
+    });
+
+    window.addEventListener("hashchange", sync, { passive: true });
+    document.addEventListener("bibli:bookmarks-change", sync);
+    document.addEventListener("bibli:notes-change", sync);
+    document.addEventListener("bibli:progress-change", sync);
+    sync();
+  })();
+</script>
+
+<style>
+  .personal-actions-shell {
+    width: min(1180px, calc(100% - 32px));
+    margin: 10px auto 0;
+    position: relative;
+    z-index: 20;
+  }
+
+  .personal-actions-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .personal-action-button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--surface);
+    color: var(--text-color);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .personal-action-button:hover,
+  .personal-action-button:focus-visible,
+  .personal-action-button.is-active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .personal-note-panel {
+    width: min(460px, 100%);
+    margin: 10px 0 0 auto;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: var(--surface-elevated);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .personal-note-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--heading-color);
+    font-weight: 800;
+  }
+
+  .personal-note-panel textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 112px;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text-color);
+    font: inherit;
+    line-height: 1.5;
+  }
+
+  .personal-note-panel textarea:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 34%, transparent);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+
+  .personal-note-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .personal-note-actions .button {
+    min-height: 44px;
+  }
+
+  @media (max-width: 640px) {
+    .personal-actions-shell {
+      width: min(100% - 24px, 1180px);
+      margin-top: 8px;
+    }
+
+    .personal-actions-bar {
+      justify-content: stretch;
+    }
+
+    .personal-action-button {
+      flex: 1 1 0;
+    }
+
+    .personal-note-panel {
+      width: 100%;
+    }
+
+    .personal-note-actions .button {
+      flex: 1 1 120px;
+    }
+  }
+</style>

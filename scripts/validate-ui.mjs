@@ -1045,7 +1045,7 @@ for (const [homeName, homePath] of [["Inicio ES", homeEsPath], ["Inicio EN", hom
 }
 if (fs.existsSync(homeEsPath)) {
   const homeEs = fs.readFileSync(homeEsPath, "utf8");
-  for (const token of ["data-home-continue", "bibli-learning-progress-v1", "syncHomeContinuation", "bibli:learning-progress-change", "homePrimaryRouteState", "home-route-label", 'is:inline define:vars', 'window.addEventListener("pageshow"', 'HomeStudyVisual', "allCompleted", "data-route-href"]) {
+  for (const token of ["data-home-continue", "LEARNING_PROGRESS_STORAGE_KEY", "readLearningProgress", "syncHomeContinuation", "bibli:learning-progress-change", "homePrimaryRouteState", "home-route-label", 'is:inline define:vars', 'window.addEventListener("pageshow"', 'HomeStudyVisual', "allCompleted", "data-route-href"]) {
     if (!homeEs.includes(token)) problems.push(`Inicio ES: falta continuación inteligente de ruta (${token})`);
   }
 }

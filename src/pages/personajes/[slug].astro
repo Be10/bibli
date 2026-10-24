@@ -5,9 +5,9 @@ import {
   getAllPeople,
   getEventsByPersonId,
   getLessonsByPersonId,
-  getPlacesByPersonId,
+  getPlacesByPersonIdViaEvents,
+  type DerivedEventRelatedPlace,
   type Event,
-  type EventRelatedPlace,
   type Lesson,
   type Person,
 } from "../../lib/queries";
@@ -16,7 +16,7 @@ type Props = {
   person: Person;
   events: Event[];
   lessons: Lesson[];
-  places: EventRelatedPlace[];
+  places: DerivedEventRelatedPlace[];
 };
 
 export function getStaticPaths() {
@@ -30,7 +30,7 @@ export function getStaticPaths() {
         person,
         events: getEventsByPersonId(person.id),
         lessons: getLessonsByPersonId(person.id),
-        places: getPlacesByPersonId(person.id),
+        places: getPlacesByPersonIdViaEvents(person.id),
       },
     }));
 }
@@ -89,10 +89,10 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
       </div>
 
       <aside class="person-hero-card" aria-label="Resumen rápido del personaje">
-        <span>Conexiones</span>
+        <span>Conexiones mostradas</span>
         <strong>{events.length + lessons.length + places.length}</strong>
         <p>
-          {events.length} eventos · {lessons.length} lecciones · {places.length} lugares
+          {events.length} eventos · {lessons.length} lecciones · {places.length} lugares vía eventos
         </p>
       </aside>
     </section>
@@ -109,7 +109,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
       </article>
 
       <article class="person-meta-card">
-        <span>Lugares</span>
+        <span>Lugares vía eventos</span>
         <strong>{places.length}</strong>
       </article>
 
@@ -147,7 +147,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
 
         <div class="person-events-grid">
           {events.map((event) => (
-            <a href={sitePath(`/eventos/${event.slug}/`)} class="person-event-card">
+            <a href={sitePath(`/eventos/${event.slug}/`)} class="person-event-card" data-explicit-connection="event-people">
               <span>{event.biblical_period ?? event.event_type ?? "Evento bíblico"}</span>
               <strong>{event.title}</strong>
 
@@ -173,11 +173,14 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
     )}
 
     {places.length > 0 ? (
-      <section class="section person-places-section">
+      <section class="section person-places-section" data-derived-connections="person-places-via-events">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Geografía bíblica</p>
-            <h2>Lugares relacionados</h2>
+            <p class="eyebrow">Conexión derivada · vía eventos</p>
+            <h2>Lugares vinculados por eventos</h2>
+            <p class="derived-connection-note">
+              Estos lugares se obtienen de eventos que relacionan explícitamente al personaje y al lugar; no representan una relación Personaje↔Lugar directa.
+            </p>
           </div>
 
           <span class="section-count">
@@ -202,8 +205,41 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
                   <small>Certeza: {place.geographical_certainty}</small>
                 )}
 
+                <small class="derived-evidence">
+                  Derivado de {place.via_event_count} {place.via_event_count === 1 ? "evento compartido" : "eventos compartidos"}
+                </small>
+
+                <details
+                  class="derived-evidence-events"
+                  data-derived-evidence-events="person-places-via-events"
+                  data-derived-evidence-count={place.evidence_events.length}
+                >
+                  <summary>
+                    Ver {place.evidence_events.length} {place.evidence_events.length === 1 ? "evento de evidencia" : "eventos de evidencia"}
+                  </summary>
+                  <ul>
+                    {place.evidence_events.map((event) => (
+                      <li>
+                        <a
+                          href={sitePath(`/eventos/${event.slug}/`)}
+                          data-derived-evidence-event="person-places-via-events"
+                          data-derived-evidence-via="event-people,event-places"
+                        >
+                          {event.title}
+                        </a>
+                        {event.approximate_date && <small>{event.approximate_date}</small>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+
                 <div class="person-card-actions">
-                  <a href={sitePath(`/lugares/${place.slug}/`)}>
+                  <a
+                    href={sitePath(`/lugares/${place.slug}/`)}
+                    data-derived-connection="person-places-via-events"
+                    data-derived-via="event-people,event-places"
+                    data-derived-evidence-count={place.via_event_count}
+                  >
                     Ver lugar
                   </a>
 
@@ -220,9 +256,9 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
       </section>
     ) : (
       <section class="section person-empty-section">
-        <p class="eyebrow">Geografía bíblica</p>
-        <h2>Lugares relacionados</h2>
-        <p>Todavía no hay lugares relacionados registrados para este personaje.</p>
+        <p class="eyebrow">Conexión derivada · vía eventos</p>
+        <h2>Lugares vinculados por eventos</h2>
+        <p>Todavía no hay lugares derivados de eventos registrados para este personaje.</p>
       </section>
     )}
 
@@ -241,7 +277,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
 
         <div class="person-lessons-grid">
           {lessons.map((lesson) => (
-            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="person-lesson-card">
+            <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="person-lesson-card" data-explicit-connection="lesson-people">
               <span>Lección {lesson.lesson_number}</span>
               <strong>{lesson.title}</strong>
 
@@ -428,6 +464,55 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(person.name)}`
     color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
+  }
+
+
+  .derived-connection-note {
+    max-width: 760px;
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .derived-evidence {
+    font-weight: 800;
+  }
+
+  .derived-evidence-events {
+    padding-top: 4px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .derived-evidence-events summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 0.88rem;
+    font-weight: 900;
+    line-height: 1.4;
+  }
+
+  .derived-evidence-events ul {
+    display: grid;
+    gap: 8px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .derived-evidence-events li {
+    display: grid;
+    gap: 2px;
+  }
+
+  .derived-evidence-events a {
+    color: var(--accent);
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .derived-evidence-events a:hover {
+    text-decoration: underline;
   }
 
   .person-card-badges {

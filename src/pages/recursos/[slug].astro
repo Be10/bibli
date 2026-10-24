@@ -70,7 +70,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(resource.title
           </a>
 
           {lessons[0] && (
-            <a href={sitePath(`/lecciones/${lessons[0].slug}/`)} class="button">
+            <a href={sitePath(`/lecciones/${lessons[0].slug}/`)} class="button" data-explicit-connection="lesson-visual-resources">
               Ver lección relacionada
             </a>
           )}
@@ -165,7 +165,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(resource.title
         <ol class="lesson-track">
           {lessons.map((lesson) => (
             <li class="lesson-track-item">
-              <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="lesson-track-card">
+              <a href={sitePath(`/lecciones/${lesson.slug}/`)} class="lesson-track-card" data-explicit-connection="lesson-visual-resources">
                 <span class="lesson-track-number">
                   {String(lesson.lesson_number).padStart(2, "0")}
                 </span>
