@@ -145,6 +145,7 @@ repo:validate
 → studies:validate
 → studies:import
 → content:validate
+→ bibliimg:validate
 → connections:validate
 → db:validate
 
@@ -154,6 +155,58 @@ postbuild
 site:audit
 → derived:validate
 ```
+
+Validar el snapshot BibliImg ya integrado y sus derivados web:
+
+```bash
+npm run bibliimg:validate
+```
+
+Sincronizar localmente paquetes BibliImg `approved` desde la raíz canónica de OneDrive hacia el snapshot de Bibli:
+
+```bash
+npm run bibliimg:sync
+```
+
+El comando detecta `bibli_images_OneDrive_Only` en la raíz local de OneDrive y ubicaciones compatibles; puede sobreescribirse con `BIBLI_IMAGES_ROOT` o `--source`. Solo integra coincidencias seguras de `slug`, overrides explícitos en `content/bibli-images-integration-map.json` o identidades confirmadas por `content/bibli-images-glossary-published.json`; no crea términos ni relaciones editoriales por similitud de nombres. Los masters permanecen fuera de Git y solo se generan derivados WebP versionados.
+
+Comprobar si la fuente editorial local y el snapshot versionado están sincronizados, sin escribir:
+
+```bash
+npm run bibliimg:sync:check
+```
+
+Generar una cola de revisión para paquetes `approved` que todavía no tienen término de Glosario. Este comando **no modifica SQLite**: detecta términos existentes, candidatos seguros para creación y colisiones bloqueantes, y conserva nombres canónicos calificados cuando existen homónimos:
+
+```bash
+npm run bibliimg:plan
+```
+
+Comprobar que la cola versionada sigue alineada con los paquetes locales y el Glosario actual:
+
+```bash
+npm run bibliimg:plan:check
+```
+
+Previsualizar la publicación de términos `ready_to_create` sin modificar archivos ni SQLite:
+
+```bash
+npm run bibliimg:publish:preview
+```
+
+Publicar de forma explícita los términos aprobados por el plan. Este comando revalida colisiones, inserta solo términos nuevos en `glossary_terms` y mantiene dos fuentes reproducibles: `content/bibli-images-glossary-published.json` y `data/bibliimg-glossary.sql`:
+
+```bash
+npm run bibliimg:publish
+```
+
+Comprobar que el manifest de publicación, el SQL canónico y la SQLite actual siguen siendo equivalentes:
+
+```bash
+npm run bibliimg:publish:check
+```
+
+La publicación **nunca ocurre durante `build`**. El `prebuild` ejecuta únicamente `bibliimg:publish:check` para impedir drift. Después de publicar términos nuevos, vuelve a ejecutar `bibliimg:plan` y `bibliimg:sync` para que los paquetes recién habilitados se integren con sus derivados WebP.
 
 Validar únicamente las conexiones editoriales y sus guardrails de reciprocidad/procedencia:
 
@@ -179,7 +232,7 @@ npm run qa:all
 npm run db:reset
 ```
 
-Reconstruye la capa editorial desde `schema.sql`, `seed.sql`, `editorial.sql` y los Markdown canónicos. Después deben reimportarse los textos bíblicos:
+Reconstruye la capa editorial desde `schema.sql`, `seed.sql`, `editorial.sql`, `bibliimg-glossary.sql` y los Markdown canónicos. Después deben reimportarse los textos bíblicos:
 
 ```bash
 npm run bible:import:rvr1960

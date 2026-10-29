@@ -139,6 +139,19 @@ test('Bookmarks and notes persist, update and delete on Spanish content', async 
 });
 
 
+test('Non-Bible content keeps Bible reading progress action hidden', async ({ page }) => {
+  await page.goto(`${base}/glosario/abraham/`);
+
+  const actions = page.locator('[data-personal-actions]');
+  const readButton = page.locator('[data-personal-bible-read]');
+  await expect(actions).toBeVisible();
+  await expect(page.locator('[data-personal-bookmark]')).toBeVisible();
+  await expect(page.locator('[data-personal-note-toggle]')).toBeVisible();
+  await expect(readButton).toBeHidden();
+  await expect(readButton).toHaveAttribute('hidden', '');
+});
+
+
 test('Personal actions keep English Bible content language-safe', async ({ page }) => {
   const bookmarksKey = 'bibli-bookmarks-v1';
   const notesKey = 'bibli-notes-v1';

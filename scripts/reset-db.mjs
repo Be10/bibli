@@ -8,6 +8,7 @@ const dbPath = path.join(rootDir, "data", "bibli.sqlite");
 const schemaPath = path.join(rootDir, "data", "schema.sql");
 const seedPath = path.join(rootDir, "data", "seed.sql");
 const editorialPath = path.join(rootDir, "data", "editorial.sql");
+const bibliimgGlossaryPath = path.join(rootDir, "data", "bibliimg-glossary.sql");
 
 if (fs.existsSync(dbPath)) fs.unlinkSync(dbPath);
 
@@ -18,6 +19,7 @@ try {
   db.exec(fs.readFileSync(schemaPath, "utf8"));
   db.exec(fs.readFileSync(seedPath, "utf8"));
   db.exec(fs.readFileSync(editorialPath, "utf8"));
+  db.exec(fs.readFileSync(bibliimgGlossaryPath, "utf8"));
 
   const studies = indexStudies(db, { rootDir });
 

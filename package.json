@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run repo:validate && npm run ui:validate && npm run i18n:audit && npm run personal:validate && npm run studies:validate && npm run studies:import && npm run content:validate && npm run connections:validate && npm run db:validate",
+    "prebuild": "npm run repo:validate && npm run ui:validate && npm run i18n:audit && npm run personal:validate && npm run studies:validate && npm run studies:import && npm run content:validate && npm run bibliimg:validate && npm run bibliimg:publish:check && npm run connections:validate && npm run db:validate",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -36,7 +36,15 @@
     "qa:ci": "node scripts/run-browser-qa.mjs",
     "content:validate": "node scripts/validate-content.mjs",
     "derived:validate": "node scripts/validate-derived-output.mjs",
-    "connections:validate": "node scripts/validate-connections.mjs"
+    "connections:validate": "node scripts/validate-connections.mjs",
+    "bibliimg:validate": "node scripts/validate-bibli-images.mjs",
+    "bibliimg:sync": "node scripts/sync-bibli-images.mjs",
+    "bibliimg:sync:check": "node scripts/sync-bibli-images.mjs --check",
+    "bibliimg:plan": "node scripts/plan-bibli-image-glossary.mjs",
+    "bibliimg:plan:check": "node scripts/plan-bibli-image-glossary.mjs --check",
+    "bibliimg:publish:preview": "node scripts/publish-bibli-image-glossary.mjs --preview",
+    "bibliimg:publish": "node scripts/publish-bibli-image-glossary.mjs --apply",
+    "bibliimg:publish:check": "node scripts/publish-bibli-image-glossary.mjs --check"
   },
   "dependencies": {
     "astro": "^7.0.3",
@@ -52,6 +60,8 @@
   "devDependencies": {
     "@playwright/test": "1.56.1",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/leaflet": "^1.9.21"
+    "@types/leaflet": "^1.9.21",
+    "js-yaml": "4.3.0",
+    "sharp": "0.34.5"
   }
 }

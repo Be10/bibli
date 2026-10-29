@@ -10,6 +10,7 @@ const dbPath = path.join(rootDir, "data", "bibli.sqlite");
 const schemaPath = path.join(rootDir, "data", "schema.sql");
 const seedPath = path.join(rootDir, "data", "seed.sql");
 const editorialPath = path.join(rootDir, "data", "editorial.sql");
+const bibliimgGlossaryPath = path.join(rootDir, "data", "bibliimg-glossary.sql");
 const manifestPath = path.join(rootDir, "content", "studies", "manifest.json");
 
 const EXPECTED = {
@@ -45,6 +46,7 @@ function fail(message) {
 
 if (!fs.existsSync(dbPath)) fail(`No existe ${dbPath}`);
 if (!fs.existsSync(editorialPath)) fail(`No existe ${editorialPath}`);
+if (!fs.existsSync(bibliimgGlossaryPath)) fail(`No existe ${bibliimgGlossaryPath}`);
 if (!fs.existsSync(manifestPath)) fail(`No existe ${manifestPath}`);
 
 const db = new Database(dbPath, { readonly: true });
@@ -146,6 +148,7 @@ try {
     expectedDb.exec(fs.readFileSync(schemaPath, "utf8"));
     expectedDb.exec(fs.readFileSync(seedPath, "utf8"));
     expectedDb.exec(fs.readFileSync(editorialPath, "utf8"));
+    expectedDb.exec(fs.readFileSync(bibliimgGlossaryPath, "utf8"));
 
     // Import twice to verify that study indexing is idempotent. This catches
     // stale generated-passage references that only surface on a refresh over
@@ -164,7 +167,7 @@ try {
       const expectedRows = tableRows(expectedDb, table);
       const actualRows = tableRows(db, table);
       if (digest(expectedRows) !== digest(actualRows)) {
-        fail(`La SQLite no coincide con schema + seed + editorial + studies en ${table} ` +
+        fail(`La SQLite no coincide con schema + seed + editorial + bibliimg-glossary + studies en ${table} ` +
           `(esperado ${expectedRows.length}, actual ${actualRows.length})`);
       }
     }

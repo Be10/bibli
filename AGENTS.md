@@ -16,6 +16,13 @@ Markdown                                                      = cuerpo completo 
 data/bibli.sqlite                                             = índice/navegación/relaciones para build
 ```
 
+Para términos de Glosario publicados desde BibliImg:
+
+```text
+content/bibli-images-glossary-published.json = fuente canónica de términos creados por BibliImg
+data/bibliimg-glossary.sql                    = snapshot SQL generado; no editar manualmente
+```
+
 Nunca reconstruir el estudio desde columnas rígidas de SQLite.
 
 ## Versionado de Markdown
@@ -32,6 +39,8 @@ Revisar:
 data/schema.sql
 data/seed.sql
 data/editorial.sql
+data/bibliimg-glossary.sql
+content/bibli-images-glossary-published.json
 content/editorial-structure.yaml
 content/routes.json
 content/study-enrichments.json

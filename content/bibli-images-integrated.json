@@ -1,0 +1,2462 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": "bibli_images_OneDrive_Only",
+  "entries": {
+    "aaron-sumo-sacerdote": {
+      "entityKey": "personajes-aaron-sumo-sacerdote",
+      "canonicalName": "Aarón (sumo sacerdote)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "aaron-sumo-sacerdote",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Aarón (sumo sacerdote)",
+          "definition": "Aarón fue hermano de Moisés, levita y colaborador suyo durante el éxodo. En la narrativa bíblica fue consagrado para ejercer el sacerdocio y aparece como el primer sumo sacerdote de Israel, con funciones representativas y cultuales vinculadas al tabernáculo.",
+          "historical_context": "Para este retrato editorial, Aarón se representa específicamente en su función de sumo sacerdote. Éxodo 28 y 39 describe las vestiduras sagradas: túnica de lino, manto azul, efod elaborado con oro y fibras azul, púrpura y carmesí, pectoral cuadrado con doce piedras, piedras sobre los hombros, turbante y lámina de oro frontal. Levítico 8 describe a Moisés vistiéndolo con estas prendas durante su consagración. La forma exacta de varias piezas, especialmente el efod, y la identificación moderna de varias piedras siguen siendo inciertas; además, no se conservan representaciones arqueológicas seguras de este conjunto exacto. Por eso la imagen es una reconstrucción sobria y no una afirmación de aspecto exacto.",
+          "original_language_note": "Hebreo אַהֲרֹן (ʾAharon / Aharón). La etimología no está establecida con seguridad; se han propuesto varios orígenes, incluido uno egipcio, pero no existe un significado demostrado.",
+          "alt_text": "Figura aislada de cuerpo entero de Aarón como sumo sacerdote, un hombre israelita adulto mayor de apariencia levantina plausible, de pie en postura neutral. Lleva túnica de lino, manto azul, efod abierto de tejidos azul, púrpura y carmesí con detalles de oro, dos piedras sobre los hombros, pectoral cuadrado con doce piedras dispuestas en cuatro filas de tres, turbante y lámina frontal de oro. Fondo completamente transparente, sin halo, resplandor ni escenario."
+        },
+        "en-US": {
+          "display_name": "Aaron (high priest)",
+          "definition": "Aaron was Moses' brother, a Levite, and his associate during the exodus. In the biblical narrative he was consecrated to priestly service and appears as Israel's first high priest, carrying representative and cultic responsibilities connected with the tabernacle.",
+          "historical_context": "For this editorial portrait, Aaron is represented specifically in his role as high priest. Exodus 28 and 39 describe the sacred vestments: a linen tunic, blue robe, ephod worked with gold and blue, purple, and crimson fibers, a square breastpiece with twelve stones, shoulder stones, a turban, and a gold forehead plate. Leviticus 8 describes Moses clothing Aaron with these garments at his consecration. The precise form of several components, especially the ephod, and the modern identification of several gemstones remain uncertain; no securely identified archaeological depiction preserves this exact ensemble. The image therefore remains a restrained reconstruction rather than a claim to Aaron's exact historical appearance.",
+          "original_language_note": "Hebrew אַהֲרֹן (ʾAharon / Aharon). Its etymology is not securely established; several origins have been proposed, including an Egyptian derivation, but no meaning is demonstrably certain.",
+          "alt_text": "Isolated full-length figure of Aaron as high priest, shown as an older Israelite man with plausible Levantine features standing in a neutral pose. He wears a linen tunic, blue robe, open-sided ephod of blue, purple, and crimson textiles with gold details, two shoulder stones, a square breastpiece with twelve stones arranged in four rows of three, a turban, and a gold forehead plate. Fully transparent background, with no halo, glow, or scenery."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אַהֲרֹן",
+          "transliteration": "ʾAharon",
+          "lemma": "אַהֲרֹן",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "EXO 4:14-16",
+            "EXO 6:20,23",
+            "EXO 7:1-2,7",
+            "EXO 28:1-43",
+            "EXO 29:1-37",
+            "EXO 39:1-31",
+            "LEV 8:6-12",
+            "NUM 20:22-29"
+          ],
+          "en-US": [
+            "EXO 4:14-16",
+            "EXO 6:20,23",
+            "EXO 7:1-2,7",
+            "EXO 28:1-43",
+            "EXO 29:1-37",
+            "EXO 39:1-31",
+            "LEV 8:6-12",
+            "NUM 20:22-29"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "EXO 32",
+            "LEV 9-10",
+            "LEV 16",
+            "NUM 12",
+            "NUM 16-17",
+            "NUM 20",
+            "NUM 33:38-39",
+            "DEU 10:6",
+            "PSA 99:6",
+            "PSA 105:26",
+            "MIC 6:4",
+            "HEB 5:4",
+            "HEB 7:11"
+          ],
+          "en-US": [
+            "EXO 32",
+            "LEV 9-10",
+            "LEV 16",
+            "NUM 12",
+            "NUM 16-17",
+            "NUM 20",
+            "NUM 33:38-39",
+            "DEU 10:6",
+            "PSA 99:6",
+            "PSA 105:26",
+            "MIC 6:4",
+            "HEB 5:4",
+            "HEB 7:11"
+          ]
+        },
+        "occurrencesSource": "Bibli registry: per-aaron",
+        "occurrencesCount": 352
+      },
+      "historical": {
+        "period": null,
+        "region": null,
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "8e0036c7280e4592b1c48591e81ff02cee3325566737ea614ae55b86f71c5405",
+        "optimizedPath": "/media/editorial/personajes/aaron-sumo-sacerdote/v001/aaron-sumo-sacerdote--optimized.webp",
+        "highPath": "/media/editorial/personajes/aaron-sumo-sacerdote/v001/aaron-sumo-sacerdote--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "fc39da44c261f2636cde83baadd490bcf494facd86599e935326bebd6c45c3e2",
+        "highChecksum": "744913b044770901c2154087d2015ac9ef7ba2b57f88f104452043b0a5e32d6b"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T21:48:10Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/aaron-sumo-sacerdote/entry.yaml"
+    },
+    "abdias-mayordomo-acab": {
+      "entityKey": "personajes-abdias-mayordomo-acab",
+      "canonicalName": "Abdías (mayordomo de Acab)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abdias-mayordomo-acab",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abdías (mayordomo de Acab)",
+          "definition": "Abdías fue el funcionario encargado de la casa o palacio del rey Acab. El relato destaca que temía profundamente a Jehová y que, durante la persecución promovida por Jezabel, escondió a cien profetas de Jehová en cuevas y los sostuvo con pan y agua. Más tarde, durante la gran sequía, encontró a Elías y llevó a Acab el aviso de que el profeta estaba presente.",
+          "historical_context": "Su cargo corresponde a la expresión “sobre la casa”, es decir, un alto responsable de la administración doméstica o palaciega del rey. Acab pertenece al reino septentrional de Israel de la dinastía de Omri, en el siglo IX a. C.; fuentes asirias posteriores conocieron ese reino como la “Casa de Omri”. Para la apariencia se usó solo una reconstrucción prudente: la vestimenta general se apoyó en evidencia levantina e israelita del siglo IX a. C., incluida la iconografía del Obelisco Negro asociada con Jehú, sin tratarla como retrato de Abdías ni copiar atuendo real.",
+          "original_language_note": "Hebreo עֹבַדְיָהוּ (ʿOvadyāhû; también forma abreviada עֹבַדְיָה), nombre entendido como “siervo de Yah”. El mismo nombre pertenece a varias personas bíblicas, por lo que este Abdías debe distinguirse del profeta del libro de Abdías.",
+          "alt_text": "Reconstrucción de cuerpo entero de Abdías, alto funcionario israelita del siglo IX a. C., como un hombre adulto barbado con túnica larga tejida, flecos discretos y cinturón sencillo, llevando una pequeña provisión de pan y un odre de agua; figura aislada sobre fondo transparente, sin corona ni vestiduras sacerdotales."
+        },
+        "en-US": {
+          "display_name": "Obadiah (Ahab’s household administrator)",
+          "definition": "Obadiah was the official in charge of King Ahab’s household or palace. The narrative emphasizes that he deeply feared the LORD and, during Jezebel’s persecution, hid one hundred prophets of the LORD in caves and supplied them with bread and water. During the severe drought he later encountered Elijah and carried word of Elijah’s presence to Ahab.",
+          "historical_context": "His title literally places him “over the house,” indicating a senior royal household or palace administrative role. Ahab belonged to the ninth-century BCE northern kingdom of Israel under the Omride dynasty; later Assyrian sources referred to Israel as the “House of Omri.” The illustration therefore uses a cautious ninth-century Levantine/Israelite reconstruction, drawing only broad clothing cues from near-contemporary evidence such as the Black Obelisk imagery associated with Jehu, not treating that monument as a portrait of Obadiah or copying royal regalia.",
+          "original_language_note": "Hebrew עֹבַדְיָהוּ (ʿOvadyāhû; also shortened עֹבַדְיָה), commonly understood as “servant of Yah.” The name belongs to several biblical individuals, so this Obadiah must not be conflated with the prophet of the book of Obadiah.",
+          "alt_text": "Full-body reconstruction of Obadiah, a ninth-century BCE Israelite senior official, shown as a bearded adult man in a long woven tunic or robe with restrained fringe and a simple belt, carrying a small provision of bread and a leather waterskin; isolated on a transparent background with no crown or priestly vestments."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "עֹבַדְיָהוּ",
+          "transliteration": "ʿOvadyāhû",
+          "lemma": "עֹבַדְיָהוּ",
+          "meaning": {
+            "es-419": "siervo de Yah",
+            "en-US": "servant of Yah"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1KI 18:3-16"
+          ],
+          "en-US": [
+            "1KI 18:3-16"
+          ]
+        },
+        "additional": {
+          "es-419": [],
+          "en-US": []
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "ninth century BCE",
+        "region": "northern kingdom of Israel",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "658a55bdc9e92f976d7902e6fe7b7df9505c11466a29a17240d0cf9524575de4",
+        "optimizedPath": "/media/editorial/personajes/abdias-mayordomo-acab/v001/abdias-mayordomo-acab--optimized.webp",
+        "highPath": "/media/editorial/personajes/abdias-mayordomo-acab/v001/abdias-mayordomo-acab--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "e3d877b39013ee1301cf09ab255b3a80a6b48a835c766c496ae079c627c106dd",
+        "highChecksum": "5c99cbfa9221c8eb43a9bfeb92157f3f99cadbdec206870f413849239bccaa3d"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T22:00:06Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abdias-mayordomo-acab/entry.yaml"
+    },
+    "abdias-profeta-libro": {
+      "entityKey": "personajes-abdias-profeta-libro",
+      "canonicalName": "Abdías (profeta del libro de Abdías)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abdias-profeta-libro",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abdías (profeta del libro de Abdías)",
+          "definition": "Abdías es el profeta identificado por nombre en la apertura del libro que lleva su nombre, una breve profecía dirigida principalmente contra Edom. El texto condena la violencia y la complacencia de Edom ante la calamidad de Jerusalén y anuncia juicio sobre Edom, restauración para Sion y el dominio final de YHWH.",
+          "historical_context": "La fecha exacta del libro es discutida, pero buena parte de la investigación sitúa su forma actual poco después de la destrucción babilónica de Jerusalén en 586 a. C., porque Abdías 10–14 describe a Edom contemplando, aprovechando y participando en la desgracia de Judá. Para la imagen se adopta, por tanto, un horizonte judaíta de finales de la Edad del Hierro II / comienzos del exilio, sin afirmar que el rostro o la vestimenta exactos del profeta sean recuperables. Como referencia material general para la indumentaria levantina/judaíta se usan representaciones del siglo VII a. C. cercanas cronológicamente, como los relieves de Laquis, pero solo para ropa ordinaria y no como retrato del profeta.",
+          "original_language_note": "Hebreo עֹבַדְיָה (ʿOvadyah / ʿObadyah), comúnmente entendido como “siervo de YHWH” o “servidor de YHWH”. El encabezado del libro no aporta padre, tribu, ciudad de origen ni otro dato biográfico que permita identificarlo con certeza con alguno de los otros Abdías bíblicos; por eso no se lo fusiona con el mayordomo de Acab.",
+          "alt_text": "Figura aislada de cuerpo entero de Abdías, representado como un varón judaíta adulto de apariencia levantina plausible, con barba y cabello oscuro, de pie en postura serena y sobria. Lleva una túnica sencilla en tonos naturales, un manto tejido sobre los hombros, un cinturón sencillo y sandalias de cuero. No lleva corona, vestiduras sacerdotales, armas, halo ni elementos sobrenaturales. Fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Obadiah (prophet of the Book of Obadiah)",
+          "definition": "Obadiah is the prophet named in the opening of the book that bears his name, a short prophecy directed primarily against Edom. The text condemns Edom’s violence and gloating over Jerusalem’s calamity and announces judgment on Edom, restoration for Zion, and YHWH’s ultimate kingship.",
+          "historical_context": "The book’s exact date is debated, but much scholarship places its present form shortly after the Babylonian destruction of Jerusalem in 586 BCE, since Obadiah 10–14 portrays Edom as watching, exploiting, and participating in Judah’s disaster. The portrait therefore uses a late Iron Age II / early exilic Judahite horizon without claiming that the prophet’s actual face or exact clothing can be recovered. Near-contemporary material evidence such as the Lachish reliefs is used only as a cautious guide to ordinary Levantine/Judahite clothing, not as a portrait source.",
+          "original_language_note": "Hebrew עֹבַדְיָה (ʿOvadyah / ʿObadyah), commonly understood as “servant of YHWH.” The book’s superscription gives no father, tribe, hometown, or other biographical detail that would securely identify him with any of the other biblical men named Obadiah; he is therefore not merged with Ahab’s steward.",
+          "alt_text": "Isolated full-length figure of Obadiah, represented as an adult Judahite man with plausible Levantine features, dark hair and beard, standing in a calm, restrained pose. He wears a simple tunic in natural tones, a woven mantle over the shoulders, a simple belt, and leather sandals. He has no crown, priestly vestments, weapons, halo, or supernatural effects. Fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "עֹבַדְיָה",
+          "transliteration": "ʿOvadyah / ʿObadyah",
+          "lemma": "עֹבַדְיָה",
+          "meaning": {
+            "es-419": "siervo de YHWH / servidor de YHWH",
+            "en-US": "servant of YHWH"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "OBA 1:1",
+            "OBA 1:10-14",
+            "OBA 1:15-21"
+          ],
+          "en-US": [
+            "OBA 1:1",
+            "OBA 1:10-14",
+            "OBA 1:15-21"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "JER 49:7-22",
+            "PSA 137:7",
+            "EZK 25:12-14",
+            "EZK 35:1-15",
+            "LAM 4:21-22"
+          ],
+          "en-US": [
+            "JER 49:7-22",
+            "PSA 137:7",
+            "EZK 25:12-14",
+            "EZK 35:1-15",
+            "LAM 4:21-22"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "late Iron Age II / early exilic period, often dated shortly after 586 BCE",
+        "region": "Judah, with Edom as the primary target of the prophecy",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "4925ed106746a0235caf36b2bcf5a06fc4c9cbd5b0999470fb49d1bd51c5226d",
+        "optimizedPath": "/media/editorial/personajes/abdias-profeta-libro/v001/abdias-profeta-libro--optimized.webp",
+        "highPath": "/media/editorial/personajes/abdias-profeta-libro/v001/abdias-profeta-libro--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "17d1800fba3cdf1d2599f6875f17af7853f69eaed2330cb05535585a28a54c60",
+        "highChecksum": "9284a5549d8fb20b8b0c33efa7908b10140925805fb8c6d1f5a8a62a6d6def18"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T22:16:22Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abdias-profeta-libro/entry.yaml"
+    },
+    "abel": {
+      "entityKey": "personajes-abel",
+      "canonicalName": "Abel",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abel",
+          "definition": "Abel fue hijo de Adán y Eva y hermano de Caín. Génesis lo presenta como pastor de ovejas, cuya ofrenda de los primogénitos de su rebaño fue mirada con agrado por Dios; posteriormente fue asesinado por su hermano Caín. El Nuevo Testamento lo recuerda como “justo” y como ejemplo de fe.",
+          "historical_context": "Génesis sitúa a Abel en la narrativa primordial y no proporciona una cronología histórica que permita asignarlo responsablemente a una cultura arqueológica concreta. Su oficio de pastor está explícitamente documentado en Génesis 4:2. La cría de ovejas, la lana y prendas sencillas de fibras animales o vegetales fueron realidades muy antiguas del Cercano Oriente, pero esos paralelos solo sirven para una reconstrucción general y no permiten afirmar la ropa, peinado o apariencia exactos de Abel. Por eso la imagen evita rasgos israelitas posteriores, vestimenta ceremonial y detalles cronológicos demasiado específicos.",
+          "original_language_note": "Hebreo הֶבֶל (Hevel). El nombre suele relacionarse con el sustantivo hebreo hevel, “aliento”, “vapor” o algo fugaz; sin embargo, la etimología del nombre propio no es completamente segura y léxicos clásicos también han propuesto una posible relación con el acadio ablu, “hijo”. Por ello, Bibli no presentará un significado único como demostrado.",
+          "alt_text": "Figura aislada de cuerpo entero de Abel, representado como un hombre adulto del antiguo Cercano Oriente de apariencia plausible, con cabello y barba naturales y vestimenta sencilla de tejido sin teñir. Permanece de pie en postura neutral junto a una oveja, indicando su oficio de pastor. Fondo completamente transparente, sin paisaje, halo, resplandor, altar ni escena de su muerte."
+        },
+        "en-US": {
+          "display_name": "Abel",
+          "definition": "Abel was a son of Adam and Eve and the brother of Cain. Genesis presents him as a keeper of sheep whose offering from the firstborn of his flock was regarded favorably by God; he was later murdered by his brother Cain. The New Testament remembers him as “righteous” and as an example of faith.",
+          "historical_context": "Genesis places Abel within the primeval narrative and gives no historical chronology that would responsibly anchor him to a specific archaeological culture. His occupation as a keeper of sheep is explicit in Genesis 4:2. Sheep husbandry, wool, and simple garments made from animal or plant fibers were ancient Near Eastern realities, but such parallels support only a broad reconstruction and cannot establish Abel’s exact clothing, hairstyle, or appearance. The image therefore avoids later Israelite markers, ceremonial clothing, and overly precise chronological details.",
+          "original_language_note": "Hebrew הֶבֶל (Hevel). The name is often associated with the Hebrew noun hevel, “breath,” “vapor,” or something fleeting; however, the personal-name etymology is not completely secure, and classical lexicons also note a possible connection with Akkadian ablu, “son.” Bibli therefore does not present one meaning as definitively proven.",
+          "alt_text": "Isolated full-length figure of Abel, represented as an adult ancient Near Eastern man with plausible features, natural hair and beard, and simple undyed woven clothing. He stands in a neutral pose beside a sheep, indicating his occupation as a shepherd. Fully transparent background, with no landscape, halo, glow, altar, or depiction of his death."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "הֶבֶל",
+          "transliteration": "Hevel",
+          "lemma": "הֶבֶל",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "GEN 4:2-10",
+            "HEB 11:4"
+          ],
+          "en-US": [
+            "GEN 4:2-10",
+            "HEB 11:4"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "GEN 4:25",
+            "MAT 23:35",
+            "LUK 11:51",
+            "HEB 12:24",
+            "1JN 3:12"
+          ],
+          "en-US": [
+            "GEN 4:25",
+            "MAT 23:35",
+            "LUK 11:51",
+            "HEB 12:24",
+            "1JN 3:12"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "primeval narrative; no securely assignable archaeological chronology",
+        "region": "ancient Near Eastern setting represented only in broad, non-specific terms",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "2e74750718e1f6563bb0b87286fff32d76b58f84027db777cde14a405eab648b",
+        "optimizedPath": "/media/editorial/personajes/abel/v001/abel--optimized.webp",
+        "highPath": "/media/editorial/personajes/abel/v001/abel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "29f85d999cbf1a5689598c65f6c898651c1d5f1981901417b57c4163e45c28a2",
+        "highChecksum": "11353c08e3f133b6f689603228af5a5e8390852ead6802ed08b9fa52758b60ed"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T22:24:49Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abel/entry.yaml"
+    },
+    "abiam-abias-rey-juda": {
+      "entityKey": "personajes-abiam-abias-rey-juda",
+      "canonicalName": "Abiam / Abías (rey de Judá; hijo de Roboam)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abiam-abias-rey-juda",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abiam / Abías (rey de Judá; hijo de Roboam)",
+          "definition": "Abiam/Abías fue hijo y sucesor de Roboam y el segundo rey de Judá después de la división del reino. Reinó tres años en Jerusalén; 1 Reyes evalúa negativamente su fidelidad religiosa, mientras que 2 Crónicas destaca su confrontación con Jeroboam, su discurso en el monte Zemaraim y la victoria de Judá. Su hijo Asa lo sucedió en el trono.",
+          "historical_context": "Su reinado pertenece a la monarquía dividida de comienzos del siglo IX a. C. en Judá. No existe un retrato contemporáneo identificable de Abías ni una descripción bíblica de su rostro, edad exacta o vestimenta. La ilustración adopta una reconstrucción sobria de un rey judaíta de la Edad del Hierro II. Los relieves de Laquis son posteriores —siglo VIII a. C.— y solo sirven como referencia amplia para siluetas y prendas levantinas/judaítas, no como modelo exacto del rey.",
+          "original_language_note": "En 1 Reyes aparece principalmente la forma hebrea אֲבִיָּם (Aviyyam / Abiyam, “Abiam/Abijam”), mientras que Crónicas conserva אֲבִיָּה / אֲבִיָּהוּ (Aviyyah / Aviyyahu, “Abías/Abijah”). La forma Abías es normalmente entendida como “YHWH es mi padre” o “mi padre es YHWH”; la explicación exacta de Abiam es discutida y no debe presentarse como segura. Ambas formas se refieren aquí al mismo rey.",
+          "alt_text": "Figura aislada de cuerpo entero de Abiam/Abías, rey de Judá, representado como un varón judaíta adulto de apariencia levantina plausible. Lleva una túnica interior clara hasta los tobillos y una sobretúnica real de lana teñida en índigo oscuro hasta la rodilla, con bandas tejidas ornamentales en cuello y bordes, ceñida por un cinturón ancho de cuero decorado. Un manto claro de mejor calidad descansa doblado sobre uno de sus antebrazos. No lleva corona, cetro, armas, armadura, halo ni elementos sobrenaturales. Fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Abijam / Abijah (king of Judah; son of Rehoboam)",
+          "definition": "Abijam/Abijah was the son and successor of Rehoboam and the second king of Judah after the kingdom divided. He reigned for three years in Jerusalem; 1 Kings gives a negative assessment of his religious fidelity, while 2 Chronicles emphasizes his confrontation with Jeroboam, his speech at Mount Zemaraim, and Judah’s victory. His son Asa succeeded him.",
+          "historical_context": "His reign belongs to the early ninth-century BCE divided monarchy in Judah. No identifiable contemporary portrait of Abijah survives, and Scripture does not describe his face, exact age, or clothing. The illustration therefore uses a restrained Iron Age II Judahite royal reconstruction. The Lachish reliefs are later—eighth century BCE—and are used only as broad comparative evidence for Judahite/Levantine dress silhouettes, not as an exact royal model.",
+          "original_language_note": "In 1 Kings the principal Hebrew form is אֲבִיָּם (Aviyyam / Abiyam, “Abijam”), while Chronicles preserves אֲבִיָּה / אֲבִיָּהוּ (Aviyyah / Aviyyahu, “Abijah”). Abijah is commonly understood as “YHWH is my father” or “my father is YHWH”; the precise explanation of the Abijam form is disputed and should not be stated as certain. Both forms refer here to the same king.",
+          "alt_text": "Isolated full-length figure of Abijam/Abijah, king of Judah, represented as an adult Judahite man with plausible Levantine features. He wears a light ankle-length inner tunic and a more structured dark-indigo dyed wool royal over-tunic reaching the knee, with ornamental woven bands at the neckline and edges, secured by a broad decorated leather belt. A higher-quality light mantle is folded over one forearm rather than worn across the shoulders. He has no crown, scepter, weapons, armor, halo, or supernatural effects. Fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲבִיָּם",
+          "transliteration": "Aviyyam / Abiyam",
+          "lemma": "אֲבִיָּם",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "disputed"
+        },
+        {
+          "language": "hebrew",
+          "script": "אֲבִיָּה / אֲבִיָּהוּ",
+          "transliteration": "Aviyyah / Aviyyahu",
+          "lemma": "אֲבִיָּה",
+          "meaning": {
+            "es-419": "YHWH es mi padre / mi padre es YHWH",
+            "en-US": "YHWH is my father / my father is YHWH"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1KI 14:31",
+            "1KI 15:1-8",
+            "2CH 12:16",
+            "2CH 13:1-22"
+          ],
+          "en-US": [
+            "1KI 14:31",
+            "1KI 15:1-8",
+            "2CH 12:16",
+            "2CH 13:1-22"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1CH 3:10",
+            "2CH 11:20-23",
+            "2CH 14:1",
+            "MAT 1:7"
+          ],
+          "en-US": [
+            "1CH 3:10",
+            "2CH 11:20-23",
+            "2CH 14:1",
+            "MAT 1:7"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early ninth century BCE; divided monarchy",
+        "region": "Judah / southern Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "e0ff883e987327a3abfef4252c897cb82885848fb658eaaa2da71e95b9d88210",
+        "optimizedPath": "/media/editorial/personajes/abiam-abias-rey-juda/v001/abiam-abias-rey-juda--optimized.webp",
+        "highPath": "/media/editorial/personajes/abiam-abias-rey-juda/v001/abiam-abias-rey-juda--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "4754ae2d38d42db63ce08f242dbb6ba369a83b278c10f9919b78654bac1aee51",
+        "highChecksum": "e2684abd17b9f769c133aba7a21db9d6c599718002b097b64cead71857ef288d"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T22:35:28Z",
+        "notes": "Approved by user after regeneration to differentiate the figure visually from Obadiah the prophet; current regenerated candidate accepted."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abiam-abias-rey-juda/entry.yaml"
+    },
+    "abimelec-hijo-gedeon": {
+      "entityKey": "personajes-abimelec-hijo-gedeon",
+      "canonicalName": "Abimelec (hijo de Gedeón/Jerobaal)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abimelec-hijo-gedeon",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abimelec (hijo de Gedeón/Jerobaal)",
+          "definition": "Abimelec fue hijo de Gedeón/Jerobaal y de una concubina de Siquem. Tras la muerte de Gedeón obtuvo el apoyo de los líderes de Siquem, hizo matar a sus hermanos —con excepción de Jotam— y fue proclamado rey. El relato lo presenta gobernando tres años antes de que se rompiera su alianza con Siquem; después destruyó la ciudad y murió durante el ataque a Tebes, cuando una mujer dejó caer sobre su cabeza una piedra superior de molino y él pidió a su escudero que lo rematara con la espada. Su historia funciona como una crítica severa al poder obtenido mediante violencia y traición.",
+          "historical_context": "La narración está ambientada en el periodo de los Jueces y se concentra en Siquem, un importante centro urbano de las tierras altas. Las excavaciones de Tell Balata documentan una ciudad fortificada y un gran complejo cultual que diversos investigadores han relacionado con el templo de Baal-berit/El-berit de Jueces 9; la identificación arqueológica directa de una destrucción concreta con Abimelec debe mantenerse como interpretación, no como hecho demostrado. Para la imagen no se reconstruye una corona ni insignias regias, porque el texto no describe su atuendo. Se adopta una apariencia plausible de jefe guerrero del Levante central de transición Bronce tardío–Hierro I: túnica tejida relativamente corta para movilidad, capa o paño de lana sobre un hombro, cinturón ancho de cuero y sandalias, sin armadura elaborada ni símbolos monárquicos posteriores.",
+          "original_language_note": "Hebreo אֲבִימֶלֶךְ (ʾAvîmelekh / Abimelek). El nombre combina elementos relacionados con “padre” y “rey”. Una traducción habitual es “mi padre es rey” o “el padre es rey”; la tradición lexicográfica también ha propuesto una lectura en la que Melek funciona como elemento divino. La matización exacta no es completamente segura.",
+          "alt_text": "Figura aislada de cuerpo entero de Abimelec, hijo de Gedeón, representado como un hombre adulto del Levante central de apariencia plausible, de constitución fuerte y expresión severa. Lleva una túnica de lino sin blanquear hasta cerca de las rodillas, una prenda exterior de lana oscura con discretas franjas tejidas rojizas, un manto corto colocado sobre un solo hombro, cinturón ancho de cuero con pequeños herrajes de bronce y sandalias. Cabello oscuro ondulado y barba corta. Postura firme de jefe militar, sin corona, cetro, halo, escenario ni elementos sobrenaturales; fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Abimelech (son of Gideon/Jerubbaal)",
+          "definition": "Abimelech was a son of Gideon/Jerubbaal by a concubine from Shechem. After Gideon’s death he secured the support of Shechem’s leaders, had his brothers killed—with Jotham escaping—and was made king. The narrative depicts him ruling for three years before his alliance with Shechem collapsed; he later destroyed the city and died while attacking Thebez, after a woman dropped an upper millstone on his head and he ordered his armor-bearer to finish him with a sword. His story functions as a severe critique of power gained through violence and betrayal.",
+          "historical_context": "The account belongs to the period of the Judges and centers on Shechem, a major highland urban center. Excavations at Tell Balata document a fortified city and substantial cultic complex that several scholars have connected with the Baal-berith/El-berith temple of Judges 9; directly assigning a particular destruction layer to Abimelech remains an interpretation rather than a securely demonstrated fact. The Bible gives no description of his clothing or royal insignia, so the illustration avoids a crown and later-style regalia. It uses a restrained central-Levantine warrior-chieftain reconstruction appropriate to the Late Bronze–Iron I transition: a relatively short woven tunic for mobility, a wool shoulder wrap, broad leather belt, and sandals, without elaborate armor or later royal symbols.",
+          "original_language_note": "Hebrew אֲבִימֶלֶךְ (ʾAvîmelekh / Abimelek). The name combines elements associated with “father” and “king.” A common rendering is “my father is king” or “the father is king”; older lexicographic discussion also allows a reading in which Melek functions as a divine-name element. The precise nuance is not fully certain.",
+          "alt_text": "Isolated full-length figure of Abimelech, son of Gideon, represented as a strongly built adult man from the central Levant with plausible regional features and a stern expression. He wears an unbleached linen tunic reaching near the knees, a dark wool outer garment with restrained reddish woven bands, a short mantle over one shoulder, a broad leather belt with small bronze fittings, and sandals. He has dark wavy hair and a short beard. His stance suggests a military chieftain, with no crown, scepter, halo, scenery, or supernatural effects; fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲבִימֶלֶךְ",
+          "transliteration": "ʾAvîmelekh / Abimelek",
+          "lemma": "אֲבִימֶלֶךְ",
+          "meaning": {
+            "es-419": "“mi padre es rey” o “el padre es rey” (matiz exacto no completamente seguro)",
+            "en-US": "“my father is king” or “the father is king” (precise nuance not fully certain)"
+          },
+          "certainty": "plausible_reconstruction"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Jueces 8:30–35",
+            "Jueces 9:1–57"
+          ],
+          "en-US": [
+            "Judges 8:30–35",
+            "Judges 9:1–57"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Jueces 10:1",
+            "2 Samuel 11:21"
+          ],
+          "en-US": [
+            "Judges 10:1",
+            "2 Samuel 11:21"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Periodo de los Jueces; transición Bronce tardío–Hierro I",
+        "region": "Siquem / Levante central",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "447f496bd735d860c6d01a34a00779acb932068f1a42541127fc8fa7c5843b25",
+        "optimizedPath": "/media/editorial/personajes/abimelec-hijo-gedeon/v001/abimelec-hijo-gedeon--optimized.webp",
+        "highPath": "/media/editorial/personajes/abimelec-hijo-gedeon/v001/abimelec-hijo-gedeon--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "e3166ab699ce4c76221ae6727176313442ebbf8701934dbbe75b701d493cf30c",
+        "highChecksum": "976dd8c60db55f66922b1f6ac81b6fc49bdebbbf334bd16d3b673107ad2e7ca6"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T22:40:29Z",
+        "notes": "Approved by user in active BibliImg sequential workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abimelec-hijo-gedeon/entry.yaml"
+    },
+    "abisag-sunamita": {
+      "entityKey": "personajes-abisag-sunamita",
+      "canonicalName": "Abisag sunamita",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abisag-sunamita",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abisag sunamita",
+          "definition": "Abisag fue una joven sunamita escogida en los últimos días del rey David para atenderlo y ayudar a darle calor. El texto la describe como muy hermosa, señala expresamente que David no tuvo relaciones sexuales con ella y la presenta después en el trasfondo de la sucesión: Adonías pidió casarse con Abisag, petición que Salomón interpretó como ligada a una pretensión al reino.",
+          "historical_context": "1 Reyes usa para Abisag el término femenino sōkhenet. Su sentido exacto es debatido: puede entenderse como asistente o cuidadora del rey, y estudios recientes han propuesto una función más formal dentro de la administración de la casa real. Esa interpretación ayuda a explicar su presencia en la cámara de David durante la crisis sucesoria, pero debe conservarse como reconstrucción académica, no como detalle inequívoco del texto. La Biblia no describe su ropa, peinado ni joyas. La imagen usa una reconstrucción prudente de una joven mujer adulta israelita del comienzo de la monarquía, con túnica larga de fibra natural, cinturón textil, pequeño manto de lana y sandalias, sin convertirla en princesa o figura sexualizada.",
+          "original_language_note": "Hebreo אֲבִישַׁג (ʾĂvîšag / Abishag). La etimología es incierta. Brown-Driver-Briggs recoge con signo de duda una explicación semejante a \"mi padre es un errante\"; por eso Bibli no debe presentar ese significado como seguro.",
+          "alt_text": "Figura aislada de cuerpo entero de Abisag sunamita, representada como una joven mujer adulta israelita de apariencia levantina plausible, con cabello oscuro ondulado parcialmente recogido y expresión serena. Lleva una túnica larga de lino sin blanquear, una banda textil tejida de tonos terrosos, un manto azul grisáceo de lana sobre los hombros y sandalias de cuero. No lleva corona, joyería ostentosa, velo ceremonial, halo ni objetos simbólicos; fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Abishag the Shunammite",
+          "definition": "Abishag was a young Shunammite woman selected during King David's final days to attend him and help keep him warm. The text describes her as very beautiful, explicitly states that David did not have sexual relations with her, and later places her within the succession crisis: Adonijah asked to marry Abishag, a request Solomon interpreted as connected with a claim to the kingdom.",
+          "historical_context": "First Kings uses the feminine term sōkhenet for Abishag. Its precise nuance is debated: it can denote an attendant or caregiver to the king, while recent scholarship has argued for a more formal household-administrative role. That proposal helps explain her presence in David's chamber during the succession crisis, but it remains a scholarly reconstruction rather than an unambiguous detail of the biblical text. Scripture does not describe her clothing, hairstyle, or jewelry. The image therefore uses a restrained reconstruction of a young adult Israelite woman of the early monarchy, with a long natural-fiber tunic, woven belt, small wool mantle, and leather sandals, without portraying her as a princess or sexualized court figure.",
+          "original_language_note": "Hebrew אֲבִישַׁג (ʾĂvîšag / Abishag). The etymology is uncertain. Brown-Driver-Briggs tentatively records a meaning similar to \"my father is a wanderer,\" so Bibli should not present that gloss as established fact.",
+          "alt_text": "Isolated full-length figure of Abishag the Shunammite, represented as a young adult Israelite woman with plausible Levantine features, dark wavy hair partly gathered, and a calm expression. She wears a long unbleached linen tunic, an earth-toned woven sash, a blue-gray wool mantle over her shoulders, and leather sandals. She has no crown, ostentatious jewelry, ceremonial veil, halo, or symbolic objects; fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲבִישַׁג",
+          "transliteration": "ʾĂvîšag / Abishag",
+          "lemma": "אֲבִישַׁג",
+          "meaning": {
+            "es-419": "etimología incierta; \"mi padre es un errante\" es una propuesta lexicográfica dudosa",
+            "en-US": "uncertain etymology; \"my father is a wanderer\" is a tentative lexicographic proposal"
+          },
+          "certainty": "hypothetical"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Reyes 1:1-4",
+            "1 Reyes 1:15",
+            "1 Reyes 2:13-25"
+          ],
+          "en-US": [
+            "1 Kings 1:1-4",
+            "1 Kings 1:15",
+            "1 Kings 2:13-25"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Reyes 1:3",
+            "1 Reyes 2:17,21-22"
+          ],
+          "en-US": [
+            "1 Kings 1:3",
+            "1 Kings 2:17,21-22"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Final del reinado de David; comienzo de la monarquía israelita",
+        "region": "Sunem y Jerusalén / Levante meridional",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "85be397224c88cc76c12376c9f622bfe8b0a393b60e49f2dc182848643d352ed",
+        "optimizedPath": "/media/editorial/personajes/abisag-sunamita/v001/abisag-sunamita--optimized.webp",
+        "highPath": "/media/editorial/personajes/abisag-sunamita/v001/abisag-sunamita--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "f29cddb7b23d574386423117b0f3915cbf6314b5e7b0fe4f1ee0194bfdc46c45",
+        "highChecksum": "77b5800c05ced3931d2d45190712b6b638a04483f75252dcd8d07a5d2681ee1c"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T23:00:04Z",
+        "notes": "Approved by user in active BibliImg sequential workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abisag-sunamita/entry.yaml"
+    },
+    "abraham": {
+      "entityKey": "personajes-abraham",
+      "canonicalName": "Abraham",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "abraham",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Abraham",
+          "definition": "Abraham, llamado primero Abram, es hijo de Taré, esposo de Sara y uno de los grandes patriarcas de Génesis. Dios lo llama a dejar Harán y dirigirse a Canaán, le promete descendencia, tierra y bendición para las naciones, establece pacto con él y cambia su nombre de Abram a Abraham. Es padre de Ismael e Isaac y ocupa un lugar central en la memoria bíblica de Israel y en la reflexión posterior sobre la fe.",
+          "historical_context": "Génesis presenta a Abraham como jefe de una casa extensa, económicamente próspera, con ganado, servidores, tiendas y movilidad entre Canaán, el Néguev y Egipto; por eso no debe reducirse visualmente al estereotipo moderno de un beduino solitario. No existe evidencia arqueológica que permita identificar directamente al Abraham histórico ni fijar con seguridad una “época patriarcal” concreta. La relación de las tradiciones patriarcales con el segundo milenio a. C. sigue siendo discutida, por lo que la imagen usa un horizonte visual comparativo de Asia occidental del Bronce Medio sin presentarlo como datación demostrada. Como paralelo material prudente, las figuras de Asia occidental representadas en la tumba de Khnumhotep II en Beni Hasan orientan únicamente la silueta general y ciertos textiles, nunca el rostro real de Abraham.",
+          "original_language_note": "Hebreo אַבְרָם (ʾAvram / Abram) y, desde Génesis 17, אַבְרָהָם (ʾAvraham / Abraham). Génesis 17:5 vincula el nuevo nombre mediante un juego de palabras con la idea de “padre de multitud de naciones”. Filológicamente, la etimología exacta es discutida: Abram y Abraham pueden entenderse como variantes del mismo nombre relacionadas con “el padre es exaltado”, mientras que “padre de multitud” funciona como explicación narrativa del cambio de nombre.",
+          "alt_text": "Figura aislada de cuerpo entero de Abraham, representado como un hombre anciano pero vigoroso de apariencia occidental-asiática plausible, con rostro marcado por la edad y barba abundante entrecana. Lleva un tocado textil claro, una túnica larga de tejido natural en tono crema, un amplio manto tejido con bandas geométricas discretas en rojo apagado, azul y crema, una faja textil ancha y sandalias de cuero. Permanece de pie en postura serena, sin bastón, corona, halo, armas ni otros objetos simbólicos; fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Abraham",
+          "definition": "Abraham, first called Abram, is the son of Terah, husband of Sarah, and one of the major patriarchs in Genesis. God calls him to leave Haran for Canaan, promises descendants, land, and blessing for the nations, establishes a covenant with him, and changes his name from Abram to Abraham. He is the father of Ishmael and Isaac and becomes a central ancestral figure in biblical memory and later reflection on faith.",
+          "historical_context": "Genesis portrays Abraham as the head of a substantial household, wealthy in livestock and other resources, living in tents and moving through Canaan, the Negeb, and Egypt. He should therefore not be reduced visually to a modern stereotype of a solitary Bedouin wanderer. No archaeological evidence securely identifies the historical Abraham or fixes a precise “patriarchal age.” The relationship between the patriarchal traditions and the second millennium BCE remains debated, so the illustration uses a comparative Middle Bronze Age western-Asian visual horizon without presenting that dating as proven. As a cautious material parallel, western-Asian figures represented in the tomb of Khnumhotep II at Beni Hasan inform only broad silhouette and textile choices, never Abraham's actual face.",
+          "original_language_note": "Hebrew אַבְרָם (ʾAvram / Abram) and, from Genesis 17 onward, אַבְרָהָם (ʾAvraham / Abraham). Genesis 17:5 connects the new name by wordplay with the idea of “father of a multitude of nations.” The exact philological etymology is debated: Abram and Abraham may be treated as variants of the same name related to “the father is exalted,” while “father of a multitude” functions as the narrative explanation of the renaming.",
+          "alt_text": "Isolated full-length figure of Abraham, represented as an elderly but vigorous man with plausible western-Asian features, an age-lined face, and a full graying beard. He wears a light-colored textile head covering, a long cream natural-fiber tunic, a broad woven mantle with restrained geometric bands in muted red, blue, and cream, a wide woven sash, and leather sandals. He stands calmly with no staff, crown, halo, weapons, or other symbolic objects; fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אַבְרָם",
+          "transliteration": "ʾAvram / Abram",
+          "lemma": "אַבְרָם",
+          "meaning": {
+            "es-419": "“el padre es exaltado” como explicación filológica probable; etimología no absolutamente segura",
+            "en-US": "“the father is exalted” as a probable philological explanation; etymology not absolutely certain"
+          },
+          "certainty": "plausible_reconstruction"
+        },
+        {
+          "language": "hebrew",
+          "script": "אַבְרָהָם",
+          "transliteration": "ʾAvraham / Abraham",
+          "lemma": "אַבְרָהָם",
+          "meaning": {
+            "es-419": "Génesis 17:5 lo explica narrativamente como “padre de multitud de naciones”",
+            "en-US": "Genesis 17:5 narratively explains it as “father of a multitude of nations”"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Génesis 11:26-25:10",
+            "Génesis 12:1-9",
+            "Génesis 15:1-21",
+            "Génesis 17:1-27",
+            "Génesis 22:1-19"
+          ],
+          "en-US": [
+            "Genesis 11:26-25:10",
+            "Genesis 12:1-9",
+            "Genesis 15:1-21",
+            "Genesis 17:1-27",
+            "Genesis 22:1-19"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Nehemías 9:7-8",
+            "Hechos 7:2-8",
+            "Romanos 4:1-25",
+            "Gálatas 3:6-18",
+            "Hebreos 11:8-19",
+            "Santiago 2:21-23"
+          ],
+          "en-US": [
+            "Nehemiah 9:7-8",
+            "Acts 7:2-8",
+            "Romans 4:1-25",
+            "Galatians 3:6-18",
+            "Hebrews 11:8-19",
+            "James 2:21-23"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Tradiciones patriarcales; datación histórica exacta no establecida",
+        "region": "Harán, Canaán, Néguev y Egipto / Asia occidental y Levante",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "15a6f720de9c60d91ce8ff64eb8100cdc3bc7a237d35cbe4466e404a2b064265",
+        "optimizedPath": "/media/editorial/personajes/abraham/v001/abraham--optimized.webp",
+        "highPath": "/media/editorial/personajes/abraham/v001/abraham--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "dcb5d0c44c157599fa9d93962f41b4e3f915986416c99722b8acbca87e49422a",
+        "highChecksum": "64eb27b71e9af2596343a283723ccf82bea62f15092c830e8e821a281b747f54"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T23:24:31Z",
+        "notes": "Approved by user in active BibliImg sequential workflow. Accessibility alt text synchronized to the approved image during final QA."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/abraham/entry.yaml"
+    },
+    "absalon-hijo-david": {
+      "entityKey": "personajes-absalon-hijo-david",
+      "canonicalName": "Absalón (hijo de David)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "absalon-hijo-david",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Absalón (hijo de David)",
+          "definition": "Absalón fue hijo del rey David y de Maaca, hija de Talmai, rey de Gesur. La narrativa de 2 Samuel lo presenta como un príncipe israelita de notable apariencia, hermano de Tamar, vengador de la agresión de Amnón y, más tarde, líder de una rebelión contra David que terminó con su muerte. 2 Samuel destaca de manera excepcional su belleza física y la abundancia de su cabello.",
+          "historical_context": "Absalón pertenece al contexto narrativo de la monarquía de David. Su condición de hijo del rey y su ascendencia materna real permiten representarlo como un hombre de alto estatus, pero la Biblia no describe su atuendo concreto. Para cubrir ese vacío, la reconstrucción se limita a prendas tejidas plausibles del Levante de la Edad del Hierro —lana y/o lino— con acabado de calidad y ornamentación contenida. Los textiles de Timna de los siglos XIII–X a. C. documentan lana, lino y tejidos teñidos dentro de sociedades jerarquizadas de la región, pero funcionan solo como paralelo material y no como evidencia del guardarropa personal de Absalón.",
+          "original_language_note": "Hebreo אַבְשָׁלוֹם (ʾAvshalom / Avshalom), normalmente entendido como “padre es paz”, formado con ʾav (“padre”) y shalom (“paz/bienestar”). La forma más larga Abishalom puede analizarse como “mi padre es paz”. Esta explicación es lingüística y no debe leerse como una descripción moral de su vida.",
+          "alt_text": "Figura aislada de cuerpo entero de Absalón, hijo de David, representado como un hombre adulto del antiguo Levante de apariencia cuidada, con cabello oscuro muy abundante, largo y ondulado, y barba natural. Viste una túnica larga color crema con bordes geométricos discretos, una faja tejida ancha, un manto marrón a rayas con flecos y sandalias de cuero. Permanece de pie en postura neutral, sin corona, armas ni insignias reales; fondo completamente transparente, sin árbol, mula, paisaje, halo ni escena de su muerte."
+        },
+        "en-US": {
+          "display_name": "Absalom (son of David)",
+          "definition": "Absalom was a son of King David and Maacah, daughter of Talmai, king of Geshur. The narrative in 2 Samuel presents him as an Israelite prince of remarkable appearance, Tamar’s brother, the avenger of Amnon’s assault, and later the leader of a rebellion against David that ended in his death. Second Samuel gives unusual emphasis to his physical beauty and abundant hair.",
+          "historical_context": "Absalom belongs to the narrative setting of David’s monarchy. His status as a royal son and his maternal royal ancestry support depicting him as a high-status man, but Scripture does not describe his specific clothing. The reconstruction therefore uses restrained, period-plausible Iron Age Levantine woven garments—wool and/or linen—with quality workmanship and limited decoration. Textile finds from Timna dating to the thirteenth–tenth centuries BCE document wool, linen, and dyed fabrics within stratified regional societies, but they serve only as material parallels, not evidence for Absalom’s personal wardrobe.",
+          "original_language_note": "Hebrew אַבְשָׁלוֹם (ʾAvshalom / Avshalom), commonly understood as “father is peace,” combining ʾav (“father”) and shalom (“peace/well-being”). The longer form Abishalom may be analyzed as “my father is peace.” This is a linguistic explanation and should not be treated as a moral description of his life.",
+          "alt_text": "Isolated full-length figure of Absalom, son of David, represented as a well-groomed adult ancient Levantine man with very abundant long wavy dark hair and a natural beard. He wears a long cream tunic with restrained geometric trim, a wide woven sash, a brown striped fringed mantle, and leather sandals. He stands in a neutral pose without crown, weapons, or royal insignia; fully transparent background, with no tree, mule, landscape, halo, or depiction of his death."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אַבְשָׁלוֹם",
+          "transliteration": "ʾAvshalom / Avshalom",
+          "lemma": "אַבְשָׁלוֹם",
+          "meaning": {
+            "es-419": "“padre es paz” como explicación habitual del nombre; la forma más larga Abishalom puede analizarse como “mi padre es paz”",
+            "en-US": "“father is peace” as the usual explanation of the name; the longer form Abishalom may be analyzed as “my father is peace”"
+          },
+          "certainty": "plausible_reconstruction"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Samuel 3:3",
+            "2 Samuel 14:25-27",
+            "2 Samuel 15:1-12",
+            "2 Samuel 18:9-18"
+          ],
+          "en-US": [
+            "2 Samuel 3:3",
+            "2 Samuel 14:25-27",
+            "2 Samuel 15:1-12",
+            "2 Samuel 18:9-18"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Samuel 13:1-39",
+            "2 Samuel 14:1-33",
+            "2 Samuel 15-19",
+            "Salmo 3"
+          ],
+          "en-US": [
+            "2 Samuel 13:1-39",
+            "2 Samuel 14:1-33",
+            "2 Samuel 15-19",
+            "Psalm 3"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Monarquía de David; horizonte de Edad del Hierro temprana",
+        "region": "Israel, Jerusalén y Gesur / Levante meridional",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "25e6a549eeb4ba9b903e54799342117666bf6930be33ba468a095cf6b5ef6508",
+        "optimizedPath": "/media/editorial/personajes/absalon-hijo-david/v001/absalon-hijo-david--optimized.webp",
+        "highPath": "/media/editorial/personajes/absalon-hijo-david/v001/absalon-hijo-david--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "70d8d4784e4bbd9efa9950635707bcca0e738fbb050dc8c647341a60135bb0af",
+        "highChecksum": "dd2242078dcca1bb43a7dc7a47fc6177b973710c287b8527bba01e1187e0bbf9"
+      },
+      "approval": {
+        "approved_at": "2026-10-28T23:30:33Z",
+        "notes": "Approved by user in active BibliImg sequential workflow. Final QA verified real alpha transparency and synchronized accessibility alt text to the exact approved image."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/absalon-hijo-david/entry.yaml"
+    },
+    "acab-rey-israel": {
+      "entityKey": "personajes-acab-rey-israel",
+      "canonicalName": "Acab (rey de Israel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "acab-rey-israel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Acab (rey de Israel)",
+          "definition": "Acab fue hijo y sucesor de Omri, esposo de Jezabel y rey de Israel con capital en Samaria durante veintidós años. 1 Reyes lo presenta en conflicto repetido con el profeta Elías, involucrado en guerras con Aram y responsable, junto con Jezabel, del caso de la viña de Nabot; murió después de ser herido en batalla en Ramot de Galaad.",
+          "historical_context": "Acab pertenece a la dinastía omrida y al reino septentrional de Israel del siglo IX a. C. Su matrimonio con Jezabel, princesa fenicia, encaja en una política de alianzas y contactos comerciales con Tiro; Samaria muestra además un entorno de élite asociado con arquitectura monumental y objetos de lujo, incluidos marfiles de tradición fenicia. Una inscripción neoasiria de Salmanasar III relacionada con la batalla de Qarqar, en 853 a. C., menciona explícitamente a “Acab el israelita” dentro de una coalición occidental y le atribuye una fuerza importante de carros y soldados. Las cifras de las inscripciones reales asirias no deben tomarse como censos exactos, pero sí apoyan que Acab gobernó un reino militarmente significativo.",
+          "original_language_note": "Hebreo אַחְאָב (ʾAḥʾāv / Aḥab). Los léxicos tradicionales lo explican como “hermano del padre” o “pariente/amigo del padre”; como ocurre con muchos antropónimos antiguos, conviene tratar esta explicación etimológica con cautela.",
+          "alt_text": "Figura aislada de cuerpo entero de Acab, rey de Israel, representado como un hombre adulto de apariencia levantina del siglo IX a. C., de mediana edad, cabello oscuro corto y barba bien cuidada. Lleva una túnica larga de lino o lana clara, un manto real de lana en tono rojo oscuro o granate con decoración geométrica contenida, faja ancha tejida y sandalias de cuero. Su porte es firme y regio, pero sin corona, cetro, espada, armadura, halo ni elementos sobrenaturales. Fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Ahab (king of Israel)",
+          "definition": "Ahab was the son and successor of Omri, husband of Jezebel, and king of Israel with his capital at Samaria for twenty-two years. First Kings presents him repeatedly in conflict with the prophet Elijah, involved in wars with Aram, implicated with Jezebel in the seizure of Naboth’s vineyard, and ultimately dying after being wounded in battle at Ramoth-gilead.",
+          "historical_context": "Ahab belongs to the Omride dynasty and the ninth-century BCE northern kingdom of Israel. His marriage to Jezebel, a Phoenician princess, fits a policy of alliance and commercial contact with Tyre; Samaria also reflects an elite environment of monumental architecture and luxury goods, including Phoenician-style ivories. A Neo-Assyrian inscription of Shalmaneser III associated with the 853 BCE Battle of Qarqar explicitly names “Ahab the Israelite” among a western coalition and attributes to him a substantial chariot and infantry force. Assyrian royal numbers should not be treated as exact census data, but the record strongly supports Ahab’s status as a significant regional ruler.",
+          "original_language_note": "Hebrew אַחְאָב (ʾAḥʾāv / Aḥab). Traditional lexicons explain the name as “father’s brother” or a related sense such as “friend/kinsman of the father”; as with many ancient personal names, the precise etymological nuance should be treated cautiously.",
+          "alt_text": "Isolated full-length figure of Ahab, king of Israel, represented as a middle-aged ninth-century BCE Levantine man with short dark hair and a well-groomed beard. He wears a long light linen-or-wool tunic, a dark red or maroon woven wool royal mantle with restrained geometric decoration, a broad woven sash, and leather sandals. His stance is firm and regal, with no crown, scepter, sword, armor, halo, or supernatural effects. Fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אַחְאָב",
+          "transliteration": "ʾAḥʾāv / Aḥab",
+          "lemma": "אַחְאָב",
+          "meaning": {
+            "es-419": "Tradicionalmente explicado como “hermano del padre” o sentido afín; etimología tratada con cautela.",
+            "en-US": "Traditionally explained as “father’s brother” or a related sense; etymology treated cautiously."
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Reyes 16:28–34",
+            "1 Reyes 17:1",
+            "1 Reyes 18:1–46",
+            "1 Reyes 20:1–43",
+            "1 Reyes 21:1–29",
+            "1 Reyes 22:1–40"
+          ],
+          "en-US": [
+            "1 Reyes 16:28–34",
+            "1 Reyes 17:1",
+            "1 Reyes 18:1–46",
+            "1 Reyes 20:1–43",
+            "1 Reyes 21:1–29",
+            "1 Reyes 22:1–40"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Reyes 1:1",
+            "2 Reyes 3:1–5",
+            "2 Reyes 8:16–18",
+            "2 Reyes 9:7–10",
+            "2 Reyes 9:25–26",
+            "2 Reyes 10:1–17",
+            "2 Crónicas 18:1–34",
+            "Miqueas 6:16"
+          ],
+          "en-US": [
+            "2 Reyes 1:1",
+            "2 Reyes 3:1–5",
+            "2 Reyes 8:16–18",
+            "2 Reyes 9:7–10",
+            "2 Reyes 9:25–26",
+            "2 Reyes 10:1–17",
+            "2 Crónicas 18:1–34",
+            "Miqueas 6:16"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo IX a. C. / ninth century BCE",
+        "region": "Reino del norte de Israel; Samaria / Northern Kingdom of Israel; Samaria",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "9594098a69d75505cf2cd2f897328c855f95bc0f5d7325ec64b33f0a2e7b63c9",
+        "optimizedPath": "/media/editorial/personajes/acab-rey-israel/v001/acab-rey-israel--optimized.webp",
+        "highPath": "/media/editorial/personajes/acab-rey-israel/v001/acab-rey-israel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "e8108c5e1ce1f05a10bfa8738dd88e25f052caeb081654c3fafafe589a6cabb1",
+        "highChecksum": "49ecdfaf8641c50927b863daf81d1fe2f1d3212cc3bdd4c22b57644c3f29a6d7"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T00:10:33Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/acab-rey-israel/entry.yaml"
+    },
+    "acaz-rey-juda": {
+      "entityKey": "personajes-acaz-rey-juda",
+      "canonicalName": "Acaz (rey de Judá)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "acaz-rey-juda",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Acaz (rey de Judá)",
+          "definition": "Acaz fue hijo de Jotam, rey de Judá, y reinó en Jerusalén durante dieciséis años. Su gobierno estuvo marcado por la guerra siro-efraimita, su recurso a Tiglat-pileser III de Asiria y profundas alteraciones religiosas en Judá.",
+          "historical_context": "Rey de Judá del siglo VIII a. C. en el contexto de expansión neoasiria; las inscripciones asirias preservan una forma Yauhazi vinculada con el gobernante de Judá. La apariencia visual es una reconstrucción prudente de élite judaita de la Edad del Hierro II.",
+          "original_language_note": "Hebreo אָחָז (ʾĀḥāz / Ahaz), relacionado con la idea de asir, tomar o sostener; la etimología exacta se trata con cautela.",
+          "alt_text": "Figura aislada de cuerpo entero de Acaz, rey de Judá, como hombre adulto del Levante meridional con cabello oscuro ondulado y barba recortada, túnica larga marfil, manto de lana marrón rojiza con borde geométrico discreto, cinturón ancho de cuero y sandalias; sin corona, cetro, armas, halo, arquitectura ni paisaje; fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Ahaz (king of Judah)",
+          "definition": "Ahaz was the son of Jotham, king of Judah, and reigned in Jerusalem for sixteen years. His reign was marked by the Syro-Ephraimite crisis, his appeal to Tiglath-pileser III of Assyria, and major religious changes in Judah.",
+          "historical_context": "Eighth-century BCE king of Judah in the context of Neo-Assyrian expansion; Assyrian inscriptions preserve a Yauhazi form associated with the Judahite ruler. The visual appearance is a restrained Iron Age II Judahite elite reconstruction.",
+          "original_language_note": "Hebrew אָחָז (ʾĀḥāz / Ahaz), related to the idea of grasping, taking hold, or holding fast; the exact etymology is treated cautiously.",
+          "alt_text": "Isolated full-length figure of Ahaz, king of Judah, as a plausible adult man from the southern Levant with dark wavy hair and a trimmed beard, wearing a long ivory tunic, reddish-brown wool mantle with restrained geometric edging, broad leather belt, and sandals; no crown, scepter, weapons, halo, architecture, or scenery; transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אָחָז",
+          "transliteration": "ʾĀḥāz",
+          "lemma": "אָחָז",
+          "meaning": {
+            "es-419": "relacionado con asir/tomar/sostener; matiz exacto incierto",
+            "en-US": "related to grasp/take hold/hold fast; exact nuance uncertain"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Kings 16:1–20",
+            "2 Chronicles 28:1–27",
+            "Isaiah 7:1–17"
+          ],
+          "en-US": [
+            "2 Kings 16:1–20",
+            "2 Chronicles 28:1–27",
+            "Isaiah 7:1–17"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Kings 18:1",
+            "Isaiah 1:1",
+            "Isaiah 14:28",
+            "Hosea 1:1",
+            "Micah 1:1",
+            "Matthew 1:9"
+          ],
+          "en-US": [
+            "2 Kings 18:1",
+            "Isaiah 1:1",
+            "Isaiah 14:28",
+            "Hosea 1:1",
+            "Micah 1:1",
+            "Matthew 1:9"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "8th century BCE",
+        "region": "Judah / southern Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "e8587deb0e83da862ddd3beb6fe2ba51d89cda634e4647e790d7e20f223084fb",
+        "optimizedPath": "/media/editorial/personajes/acaz-rey-juda/v001/acaz-rey-juda--optimized.webp",
+        "highPath": "/media/editorial/personajes/acaz-rey-juda/v001/acaz-rey-juda--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "f4a27a9161f069b6befe41b71f7f1fc944e44252df712a6a6ce816ceac1ea686",
+        "highChecksum": "add457b8a2ccd7c9642ba51709ef6e0651d77b4903a952b081ef60482a5f86a7"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T00:56:16Z",
+        "notes": "Approved by user in active BibliImg sequential editorial session."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/acaz-rey-juda/entry.yaml"
+    },
+    "adan": {
+      "entityKey": "personajes-adan",
+      "canonicalName": "Adán",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "adan",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Adán",
+          "definition": "Adán es presentado en Génesis como el primer hombre: Dios lo forma del polvo de la tierra, le da aliento de vida, lo coloca en Edén y le da a Eva como esposa. Después de su desobediencia, ambos son expulsados del jardín; Adán aparece luego como padre de Caín, Abel, Set y otros hijos e hijas. En el Nuevo Testamento, Pablo lo identifica como el primer hombre y lo contrasta con Cristo en su exposición sobre pecado, muerte y vida.",
+          "historical_context": "El relato de Adán pertenece a la historia primordial de Génesis y no puede asignarse responsablemente a una cultura arqueológica, cronología, etnia o vestimenta histórica concreta. La imagen toma como momento editorial representativo el posterior a Génesis 3:21, donde el texto especifica vestiduras de piel. La forma exacta y el método de confección no se describen; por eso se usa una prenda sencilla tipo túnica de piel, sin el estereotipo moderno del hombre de las cavernas.",
+          "original_language_note": "Hebreo אָדָם (ʾādām). El término puede significar ser humano, hombre o humanidad, y Génesis 2:7 establece un juego verbal entre הָאָדָם (ha-ʾādām, el humano) y הָאֲדָמָה (ha-ʾădāmâ, la tierra/el suelo). No se reduce el nombre a la explicación popular tierra roja.",
+          "alt_text": "Figura aislada de cuerpo entero de Adán, representado editorialmente como un hombre adulto de anatomía natural, tono de piel medio, cabello oscuro ondulado y barba. Lleva una sencilla túnica marrón de piel hasta aproximadamente las rodillas. Está descalzo y permanece de pie en postura neutral, sin herramientas, joyas, hojas de higuera, serpiente, árboles, halo, resplandor ni escenario; fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Adam",
+          "definition": "Genesis presents Adam as the first man: God forms him from the dust of the ground, gives him the breath of life, places him in Eden, and gives Eve to him as his wife. After their disobedience they are expelled from the garden; Adam later appears as the father of Cain, Abel, Seth, and other sons and daughters. In the New Testament, Paul identifies him as the first man and contrasts him with Christ in his discussion of sin, death, and life.",
+          "historical_context": "Adam belongs to the primeval narrative of Genesis and cannot responsibly be assigned to a securely recoverable archaeological culture, date, ethnicity, or historical costume tradition. The image uses the representative editorial moment after Genesis 3:21, where the text specifies garments of skin. Their precise cut and construction method are not described, so the image uses a simple hide tunic rather than a modern caveman costume.",
+          "original_language_note": "Hebrew אָדָם (ʾādām). The word can mean human, man, or humankind, and Genesis 2:7 plays on הָאָדָם (ha-ʾādām, the human) and הָאֲדָמָה (ha-ʾădāmâ, the ground/soil). The name is not reduced to the popular but overly specific gloss red earth.",
+          "alt_text": "Isolated full-length figure of Adam, editorially reconstructed as an adult man with natural human proportions, medium skin tone, dark wavy hair, and a beard. He wears a simple matte-brown hide tunic reaching approximately to the knees. He is barefoot and stands neutrally, with no tools, jewelry, fig leaves, serpent, trees, halo, glow, or scenery; fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אָדָם",
+          "transliteration": "ʾādām",
+          "lemma": "אָדָם",
+          "meaning": {
+            "es-419": "ser humano, hombre o humanidad",
+            "en-US": "human, man, or humankind"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Genesis 1:26-31",
+            "Genesis 2:7-25",
+            "Genesis 3:1-24",
+            "Genesis 4:1-2,25",
+            "Genesis 5:1-5"
+          ],
+          "en-US": [
+            "Genesis 1:26-31",
+            "Genesis 2:7-25",
+            "Genesis 3:1-24",
+            "Genesis 4:1-2,25",
+            "Genesis 5:1-5"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Chronicles 1:1",
+            "Luke 3:38",
+            "Romans 5:12-21",
+            "1 Corinthians 15:21-22,45-49",
+            "1 Timothy 2:13-14",
+            "Jude 14"
+          ],
+          "en-US": [
+            "1 Chronicles 1:1",
+            "Luke 3:38",
+            "Romans 5:12-21",
+            "1 Corinthians 15:21-22,45-49",
+            "1 Timothy 2:13-14",
+            "Jude 14"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "primeval narrative; not historically assignable",
+        "region": "Eden; archaeological location unspecified",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "43034b5158e6936e3423e77003e9e2a060b99cffd904cc594b755474e742aba4",
+        "optimizedPath": "/media/editorial/personajes/adan/v001/adan--optimized.webp",
+        "highPath": "/media/editorial/personajes/adan/v001/adan--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "99b2f25c963adea54b0f84dbda0911f49efa5742dd234e168276643c100c9829",
+        "highChecksum": "23b7afdd9d6641afd11469d59fe22d40dc5fb21b49d8d5385525507e3fb5804c"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T01:08:43Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/adan/entry.yaml"
+    },
+    "adonias-hijo-david": {
+      "entityKey": "personajes-adonias-hijo-david",
+      "canonicalName": "Adonías (hijo de David y Haguit)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "adonias-hijo-david",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Adonías (hijo de David y Haguit)",
+          "definition": "Hijo de David y Haguit y uno de los hijos nacidos en Hebrón. Cuando David envejeció, Adonías intentó adelantarse en la sucesión proclamando su aspiración al trono, organizó una exhibición propia de un pretendiente real y obtuvo el apoyo de Joab y del sacerdote Abiatar; David, sin embargo, hizo reconocer a Salomón como rey. Después, Adonías pidió a Abisag sunamita por esposa, solicitud que Salomón interpretó como una nueva pretensión dinástica y que terminó con la muerte de Adonías.",
+          "historical_context": "El relato pertenece a la crisis de sucesión al final del reinado de David, en el marco de la monarquía temprana de Israel. 1 Reyes presenta a Adonías usando carros, jinetes y cincuenta hombres que corrían delante de él como parte de su autoafirmación real; también lo describe como de muy buen parecer, pero no conserva datos seguros sobre su rostro, peinado o vestimenta específica. La reconstrucción visual es por ello sobria: un príncipe israelita adulto del antiguo Levante, sin corona, trono ni insignias regias inventadas. Comparaciones iconográficas levantinas posteriores se usan solo para orientar de manera prudente textiles y silueta general, no como retrato directo de la época de David.",
+          "original_language_note": "Hebreo אֲדֹנִיָּהוּ (ʾAdōniyyāhû / Adoniyyahu), nombre teofórico cuyo sentido es aproximadamente “YHWH es mi Señor”.",
+          "alt_text": "Figura aislada de cuerpo entero de Adonías, hijo de David y Haguit, representado editorialmente como un hombre adulto de aspecto distinguido, cabello oscuro ondulado y barba. Lleva una túnica clara de tejido visible con bordes ornamentados, manto azul oscuro con flecos, faja tejida y sandalias de cuero; permanece de pie en postura serena y segura, sin corona, trono, armas, halo ni escenario, sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Adonijah (son of David and Haggith)",
+          "definition": "A son of David and Haggith and one of the sons born to David at Hebron. As David grew old, Adonijah moved to secure the succession for himself, adopted the public display of a royal claimant, and gained the support of Joab and the priest Abiathar; David instead had Solomon acknowledged as king. Adonijah later asked to marry Abishag the Shunammite, a request Solomon interpreted as another dynastic claim, leading to Adonijah’s death.",
+          "historical_context": "The narrative belongs to the succession crisis at the end of David’s reign, within the setting of Israel’s early monarchy. First Kings depicts Adonijah using chariots, horsemen, and fifty runners as part of his royal self-presentation and describes him as very handsome, but it preserves no reliable details about his specific face, hairstyle, or clothing. The visual reconstruction is therefore restrained: an adult Israelite prince in historically plausible ancient Levantine dress, without an invented crown, throne, or royal insignia. Later Levantine iconographic comparisons are used only cautiously to inform textiles and general silhouette, not as direct evidence for Davidic-period costume.",
+          "original_language_note": "Hebrew אֲדֹנִיָּהוּ (ʾAdōniyyāhû / Adoniyyahu), a theophoric name meaning approximately “YHWH is my Lord.”",
+          "alt_text": "Isolated full-length figure of Adonijah, son of David and Haggith, editorially reconstructed as a distinguished-looking adult man with dark wavy hair and a beard. He wears a light woven tunic with patterned borders, a deep blue fringed mantle, a woven sash, and leather sandals; he stands in a calm, confident pose with no crown, throne, weapons, halo, or scenery, on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲדֹנִיָּהוּ",
+          "transliteration": "ʾAdōniyyāhû",
+          "lemma": "אֲדֹנִיָּה / אֲדֹנִיָּהוּ",
+          "meaning": {
+            "es-419": "YHWH es mi Señor",
+            "en-US": "YHWH is my Lord"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Samuel 3:4",
+            "1 Chronicles 3:2",
+            "1 Kings 1:5-53",
+            "1 Kings 2:13-25"
+          ],
+          "en-US": [
+            "2 Samuel 3:4",
+            "1 Chronicles 3:2",
+            "1 Kings 1:5-53",
+            "1 Kings 2:13-25"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Kings 2:28"
+          ],
+          "en-US": [
+            "1 Kings 2:28"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early Israelite monarchy; David–Solomon succession narrative",
+        "region": "Hebron and Jerusalem / ancient Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "55546a17d200abbf543a7c871fe2ab3445edc057a65387518e7b11d92be47a20",
+        "optimizedPath": "/media/editorial/personajes/adonias-hijo-david/v001/adonias-hijo-david--optimized.webp",
+        "highPath": "/media/editorial/personajes/adonias-hijo-david/v001/adonias-hijo-david--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "0eb1996402144651cd2dc5c01d18f59b5479992ec4ed7b9f66fede234733f683",
+        "highChecksum": "5be89c569db92b3b83e950a2027836c2f11dcb92fc7922190e6a194968defaf2"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T03:20:21Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/adonias-hijo-david/entry.yaml"
+    },
+    "agar": {
+      "entityKey": "personajes-agar",
+      "canonicalName": "Agar",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "agar",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Agar",
+          "definition": "Agar es presentada en Génesis como la sierva egipcia de Sarai. Ante la falta de hijos de Sarai, fue dada a Abram para que concibiera por medio de ella; Agar dio a luz a Ismael. Más adelante, ella e Ismael fueron enviados fuera de la casa de Abraham, y el relato describe la provisión de Dios para ambos en el desierto. Génesis la identifica explícitamente como egipcia y como mujer en condición servil dentro de la casa de Sarai.",
+          "historical_context": "El relato presupone una casa patriarcal con una marcada jerarquía social: Agar pertenece al ámbito doméstico de Sarai y es incorporada a la estrategia de descendencia de la familia. Textos y estudios sobre el antiguo Cercano Oriente muestran que existieron arreglos domésticos donde mujeres dependientes o esclavizadas podían participar en la procreación del hogar, aunque no permiten reconstruir con precisión el estatus jurídico de Agar. Para la imagen, su origen egipcio sí es textual, pero su fecha exacta, rostro, tono de piel, peinado y vestimenta no están descritos. Como paralelo material prudente, el Egipto del Reino Medio documenta el uso extensivo del lino y representaciones femeninas con vestidos largos y sencillos; esto sirve solo para limitar la reconstrucción, no para afirmar que Agar vistiera un modelo concreto.",
+          "original_language_note": "Hebreo הָגָר (Hāgār). El significado del nombre no es seguro. Se han propuesto conexiones con raíces semíticas relacionadas con emigrar, huir o ser extranjero, pero ninguna etimología debe presentarse como demostrada.",
+          "alt_text": "Figura aislada de cuerpo entero de Agar, reconstruida editorialmente como una mujer egipcia adulta de la antigüedad, con cabello oscuro natural y vestimenta sencilla de tejido claro hasta los tobillos. Lleva una pequeña bolsa de agua de piel al hombro como referencia sobria a Génesis 21, está descalza y adopta una postura serena y natural. No hay joyas, halo, paisaje, arquitectura ni otros personajes; el fondo es completamente transparente."
+        },
+        "en-US": {
+          "display_name": "Hagar",
+          "definition": "Genesis introduces Hagar as Sarai’s Egyptian female servant. Because Sarai had not borne children, she gave Hagar to Abram so that a child might be born through her; Hagar became the mother of Ishmael. Later, Hagar and Ishmael were sent away from Abraham’s household, and the narrative describes God providing for them in the wilderness. Genesis explicitly identifies her as Egyptian and as a woman of servile status within Sarai’s household.",
+          "historical_context": "The narrative assumes a patriarchal household with a pronounced social hierarchy: Hagar belongs to Sarai’s domestic sphere and is incorporated into the household’s attempt to secure offspring. Ancient Near Eastern evidence shows that dependent or enslaved women could be involved in household childbearing arrangements, but it does not allow Hagar’s exact legal status to be reconstructed with precision. Her Egyptian origin is textual, while her exact date, face, complexion, hairstyle, and clothing are not described. As a restrained material parallel, Middle Kingdom Egypt documents extensive linen use and female representations in long, simple dresses; this is used only to constrain the reconstruction, not to claim Hagar wore a specific documented costume.",
+          "original_language_note": "Hebrew הָגָר (Hāgār). The meaning of the name is uncertain. Connections with Semitic roots associated with migration, flight, or foreignness have been proposed, but none should be presented as established etymology.",
+          "alt_text": "Isolated full-length figure of Hagar, editorially reconstructed as an adult Egyptian woman of antiquity with natural dark hair and a simple light-colored ankle-length woven garment. She carries a small leather water skin over one shoulder as a restrained reference to Genesis 21, is barefoot, and stands in a calm natural posture. No jewelry, halo, landscape, architecture, or other people are present; the background is fully transparent."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "הָגָר",
+          "transliteration": "Hāgār",
+          "lemma": "הָגָר",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Genesis 16:1-16",
+            "Genesis 21:8-21",
+            "Genesis 25:12"
+          ],
+          "en-US": [
+            "Genesis 16:1-16",
+            "Genesis 21:8-21",
+            "Genesis 25:12"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Galatians 4:21-31"
+          ],
+          "en-US": [
+            "Galatians 4:21-31"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "patriarchal narrative; exact historical chronology uncertain",
+        "region": "Canaan, Negev, and wilderness regions in the Genesis narrative",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "5eaef506a2ea43f647e8933873dc856f052296a4e07804e8b3bc2885876f7ca8",
+        "optimizedPath": "/media/editorial/personajes/agar/v001/agar--optimized.webp",
+        "highPath": "/media/editorial/personajes/agar/v001/agar--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "4d04b2a7070eb24085fae470e02073c7a77f4a49af53802df915fcb07abf531e",
+        "highChecksum": "1f7f2cac1b0faaa28037566e0d1f4f962a12e8a743a5c60388dba34a65e53d4d"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T03:31:05Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/agar/entry.yaml"
+    },
+    "ahias-silonita-profeta": {
+      "entityKey": "personajes-ahias-silonita-profeta",
+      "canonicalName": "Ahías silonita (profeta)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "ahias-silonita-profeta",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Ahías silonita (profeta)",
+          "definition": "Profeta de Silo activo en la transición entre el reinado de Salomón y el surgimiento del reino del norte. Anunció a Jeroboam que recibiría diez tribus mediante el signo de romper una vestidura nueva en doce partes; más tarde, ya anciano, comunicó juicio contra la casa de Jeroboam. 1 Reyes 12:15 presenta la división del reino como cumplimiento de la palabra dada por medio de Ahías.",
+          "historical_context": "El relato se sitúa en el marco de la ruptura de la monarquía tras Salomón y el ascenso de Jeroboam I. El gesto de romper la vestidura funciona como acción profética simbólica de la división del reino. Más adelante, 1 Reyes describe explícitamente a Ahías como un hombre de edad avanzada cuya vista se había perdido por la vejez; no conserva, en cambio, rasgos faciales, peinado ni vestimenta personal precisa. Por ello, la imagen se reconstruye como Ahías en su vejez, con indumentaria levantina sobria y genérica, sin insignias sacerdotales, corona, halo ni accesorios inventados. Relieves neoasirios posteriores que representan habitantes del Levante/Israel sirven solo como comparación regional cautelosa para prendas sencillas, no como retratos ni como evidencia directa del atuendo de Ahías.",
+          "original_language_note": "Hebreo אֲחִיָּה / אֲחִיָּהוּ (ʾAḥiyyāh / ʾAḥiyyāhû), nombre teofórico entendido aproximadamente como «hermano de Yah» o «YHWH es mi hermano». El mismo nombre pertenece a varias personas bíblicas, por lo que esta entrada queda estrictamente delimitada al profeta de Silo.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Ahías silonita en su vejez, representado como un anciano israelita de porte sobrio y vista debilitada, con túnica y manto sencillos del antiguo Levante, aislado sobre fondo transparente y sin atributos inventados."
+        },
+        "en-US": {
+          "display_name": "Ahijah the Shilonite (prophet)",
+          "definition": "A prophet from Shiloh active during the transition from Solomon’s reign to the emergence of the northern kingdom. He announced that Jeroboam would receive ten tribes through the symbolic act of tearing a new garment into twelve pieces; later, when already elderly, he delivered judgment against Jeroboam’s house. First Kings 12:15 presents the kingdom’s division as the fulfillment of the word spoken through Ahijah.",
+          "historical_context": "The narrative belongs to the division of the monarchy after Solomon and the rise of Jeroboam I. Tearing the garment functions as a prophetic symbolic action representing the kingdom’s division. Later, First Kings explicitly describes Ahijah as an elderly man whose sight had failed because of age, but it preserves no reliable details about his facial features, hairstyle, or personal clothing. The visual therefore uses a late-life presentation of Ahijah, with restrained generic ancient Levantine dress and no invented priestly insignia, crown, halo, or accessories. Later Neo-Assyrian reliefs depicting Levantine/Israelite people are useful only as cautious regional clothing comparisons, not as portraits or direct evidence for Ahijah’s appearance.",
+          "original_language_note": "Hebrew אֲחִיָּה / אֲחִיָּהוּ (ʾAḥiyyāh / ʾAḥiyyāhû), a theophoric name commonly understood approximately as “brother of Yah” or “YHWH is my brother.” Several biblical individuals bear this name, so this entry is specifically limited to the prophet from Shiloh.",
+          "alt_text": "Full-body historical illustration of Ahijah the Shilonite in old age, shown as a sober elderly Israelite man with weakened sight, wearing simple ancient Levantine tunic and mantle, isolated on a transparent background without invented attributes."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲחִיָּה / אֲחִיָּהוּ",
+          "transliteration": "ʾAḥiyyāh / ʾAḥiyyāhû",
+          "lemma": "אֲחִיָּה / אֲחִיָּהוּ",
+          "meaning": {
+            "es-419": "aprox. «hermano de Yah» / «YHWH es mi hermano»",
+            "en-US": "approx. “brother of Yah” / “YHWH is my brother”"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Kings 11:29-39",
+            "1 Kings 12:15",
+            "1 Kings 14:1-18"
+          ],
+          "en-US": [
+            "1 Kings 11:29-39",
+            "1 Kings 12:15",
+            "1 Kings 14:1-18"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Kings 15:29",
+            "2 Chronicles 9:29",
+            "2 Chronicles 10:15"
+          ],
+          "en-US": [
+            "1 Kings 15:29",
+            "2 Chronicles 9:29",
+            "2 Chronicles 10:15"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early Israelite monarchy; transition from Solomon to Jeroboam I",
+        "region": "Shiloh and the kingdoms of Israel/Judah in the biblical narrative",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "c5a4ce79de55cd301665b16e4bbf6ce6ae60fae6e57cb89dcf7cd7c422b88e3b",
+        "optimizedPath": "/media/editorial/personajes/ahias-silonita-profeta/v001/ahias-silonita-profeta--optimized.webp",
+        "highPath": "/media/editorial/personajes/ahias-silonita-profeta/v001/ahias-silonita-profeta--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "6a7c02bb24aa62624ffe8fac2b0f80fc182c37b5e82a835062b2e7cbacda6c60",
+        "highChecksum": "c564f4ad2395e54c914cbb302bf9595fd3af35bd2592d1849d226661750425eb"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T03:46:53Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/ahias-silonita-profeta/entry.yaml"
+    },
+    "ahitofel-gilonita": {
+      "entityKey": "personajes-ahitofel-gilonita",
+      "canonicalName": "Ahitofel gilonita",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "ahitofel-gilonita",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Ahitofel gilonita",
+          "definition": "Consejero de David procedente de Gilo que, durante la rebelión de Absalón, abandonó al rey y pasó a asesorar al hijo rebelde. El relato destaca la extraordinaria autoridad que tenía su consejo; cuando Absalón prefirió la estrategia de Husai y su propio plan fue desechado, Ahitofel regresó a su ciudad, puso en orden su casa y se quitó la vida.",
+          "historical_context": "Ahitofel aparece dentro de la corte de la monarquía temprana de Israel como un consejero real de gran prestigio político. El texto no describe su rostro, edad exacta, peinado, vestimenta ni insignias, por lo que la reconstrucción visual mantiene baja especificidad: un varón judeano adulto, de porte sobrio y distinguido, vestido con túnica larga y manto plausibles para el antiguo Levante, sin corona ni símbolos sacerdotales o militares. La evidencia material sobre vestimenta israelita es escasa; representaciones asirias posteriores de judeanos, como los relieves de Laquis del siglo VIII a. C., sirven únicamente como comparación regional prudente y no como retrato directo del siglo de David.",
+          "original_language_note": "Hebreo אֲחִיתֹפֶל (ʾAḥîtōfel / Ahithophel). La etimología es incierta; algunas explicaciones tradicionales la relacionan con «hermano de necedad/insensatez», pero esa interpretación no debe presentarse como significado seguro.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Ahitofel gilonita, consejero real, representado como un hombre judeano adulto de porte serio con túnica larga y manto sobrios del antiguo Levante, aislado sobre fondo transparente y sin atributos regios."
+        },
+        "en-US": {
+          "display_name": "Ahithophel the Gilonite",
+          "definition": "David’s counselor from Giloh who defected during Absalom’s rebellion and became an adviser to the rebel prince. The narrative emphasizes the exceptional authority attached to his counsel; after Absalom preferred Hushai’s strategy and rejected his plan, Ahithophel returned to his hometown, put his household in order, and took his own life.",
+          "historical_context": "Ahithophel belongs to the royal-court setting of Israel’s early monarchy and is portrayed as a political adviser of exceptional standing. Scripture gives no physical description of his face, exact age, hairstyle, clothing, or insignia, so the visual reconstruction remains restrained: an adult Judean man of dignified bearing in a long tunic and mantle plausible for the ancient Levant, without crown, priestly emblems, or military equipment. Material evidence for Israelite clothing is limited; later Assyrian depictions of Judeans, including the eighth-century BCE Lachish reliefs, provide only cautious regional comparison rather than a direct model for David’s period.",
+          "original_language_note": "Hebrew אֲחִיתֹפֶל (ʾAḥîtōfel / Ahithophel). Its etymology is uncertain; traditional explanations sometimes connect it with “brother of folly/foolishness,” but that meaning should not be treated as secure.",
+          "alt_text": "Full-body historical illustration of Ahithophel the Gilonite, a royal counselor, shown as a serious adult Judean man in a restrained ancient Levantine long tunic and mantle, isolated on a transparent background without royal insignia."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲחִיתֹפֶל",
+          "transliteration": "ʾAḥîtōfel / Ahithophel",
+          "lemma": "אֲחִיתֹפֶל",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "uncertain"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Samuel 15:12,31-34",
+            "2 Samuel 16:15-23",
+            "2 Samuel 17:1-23"
+          ],
+          "en-US": [
+            "2 Samuel 15:12,31-34",
+            "2 Samuel 16:15-23",
+            "2 Samuel 17:1-23"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Chronicles 27:33-34"
+          ],
+          "en-US": [
+            "1 Chronicles 27:33-34"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early Israelite monarchy; reign of David and Absalom’s rebellion",
+        "region": "Giloh/Judah and Jerusalem in the biblical narrative",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "a948b6181d7519e119e3c842b9ed60eee62ba2e9739c953874e1979d7ca29e91",
+        "optimizedPath": "/media/editorial/personajes/ahitofel-gilonita/v001/ahitofel-gilonita--optimized.webp",
+        "highPath": "/media/editorial/personajes/ahitofel-gilonita/v001/ahitofel-gilonita--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "f9b86388682f50c40f3e9f1dcbf9f67a3d74d8bdf9c8826dd9f9c1874156bf3d",
+        "highChecksum": "b448810de163feb6b8a64b73fe314ff24ce4993849c27383d7a2aa72276a9ad0"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T03:54:15Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/ahitofel-gilonita/entry.yaml"
+    },
+    "aholiab-artesano-del-tabernaculo": {
+      "entityKey": "personajes-aholiab-artesano-del-tabernaculo",
+      "canonicalName": "Aholiab (artesano del tabernáculo)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "aholiab-artesano-del-tabernaculo",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Aholiab (artesano del tabernáculo)",
+          "definition": "Hijo de Ahisamac, de la tribu de Dan, Aholiab fue designado junto con Bezaleel para la obra artesanal del tabernáculo. El texto lo presenta con capacidad para enseñar y lo vincula con trabajos de artífice, diseñador y recamador en azul, púrpura, carmesí y lino fino.",
+          "historical_context": "Aholiab aparece dentro de una organización de artesanos especializados dedicados al santuario, no como un trabajador genérico. Éxodo destaca tanto su destreza como su capacidad de transmitirla a otros. La Biblia no conserva su edad, rostro, peinado ni vestimenta particular. Para la reconstrucción visual se mantiene, por tanto, una apariencia masculina adulta y sobria del antiguo Cercano Oriente, sin convertir paralelos egipcios en evidencia directa. Como comparación material prudente, se conservan herramientas de tejido y lino del Egipto del Reino Nuevo, que demuestran tecnologías textiles compatibles con el amplio entorno cultural de la época, pero no pertenecen a Aholiab ni permiten fijar su aspecto personal.",
+          "original_language_note": "Hebreo אָהֳלִיאָב (ʾOholiʾav / Oholiab). El nombre se analiza tradicionalmente a partir de ʾohel (“tienda”) y ʾav (“padre”), con el sentido aproximado de «tienda del padre» / «tienda de su padre».",
+          "alt_text": "Ilustración histórica de cuerpo entero de Aholiab, artesano israelita adulto, con vestimenta antigua sobria y un pequeño paño de lino con hilos azul, púrpura y carmesí como referencia a su trabajo textil, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Oholiab (Tabernacle artisan)",
+          "definition": "Son of Ahisamach of the tribe of Dan, Oholiab was appointed alongside Bezalel for the skilled work associated with the Tabernacle. The biblical text credits him with the ability to teach and identifies him with engraving, designing, and embroidery in blue, purple, and scarlet yarn and fine linen.",
+          "historical_context": "Oholiab is presented within an organized body of specialized artisans serving the sanctuary rather than as an undifferentiated laborer. Exodus emphasizes both craftsmanship and the ability to teach others. Scripture preserves no reliable details about his age, face, hairstyle, or specific clothing. The visual reconstruction therefore uses a restrained adult male figure from the ancient Near Eastern setting without treating Egyptian parallels as direct evidence. Surviving New Kingdom Egyptian weaving tools and linen provide cautious material-culture comparison for textile technology in the broader regional world, not evidence for Oholiab’s personal appearance.",
+          "original_language_note": "Hebrew אָהֳלִיאָב (ʾOholiʾav / Oholiab). The name is traditionally analyzed from ʾohel (“tent”) and ʾav (“father”), approximately “father’s tent” / “tent of his father.”",
+          "alt_text": "Full-body historical illustration of Oholiab, an adult Israelite artisan in restrained ancient clothing, holding a small linen textile with blue, purple, and scarlet threads referencing his craft, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אָהֳלִיאָב",
+          "transliteration": "ʾOholiʾav / Oholiab",
+          "lemma": "אָהֳלִיאָב",
+          "meaning": {
+            "es-419": "tienda del padre / tienda de su padre",
+            "en-US": "father’s tent / tent of his father"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Exodus 31:6",
+            "Exodus 35:34-35",
+            "Exodus 38:23"
+          ],
+          "en-US": [
+            "Exodus 31:6",
+            "Exodus 35:34-35",
+            "Exodus 38:23"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Exodus 36:1-2"
+          ],
+          "en-US": [
+            "Exodus 36:1-2"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "tabernacle construction narrative in Exodus",
+        "region": "Sinai wilderness in the biblical narrative",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "d6ffb38e51348ea13ca1fcdb83ae9f1aab154d377377d35ed96d01d964b593ee",
+        "optimizedPath": "/media/editorial/personajes/aholiab-artesano-del-tabernaculo/v001/aholiab-artesano-del-tabernaculo--optimized.webp",
+        "highPath": "/media/editorial/personajes/aholiab-artesano-del-tabernaculo/v001/aholiab-artesano-del-tabernaculo--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "03e662bf7ccfd357bb8cc563e0ead447a0cb21173a9f6a7d56e36ab985422dc8",
+        "highChecksum": "2551f9eb5dc5662297b925efe288e232a646ac38503189721d5f7d64124e2776"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T04:02:01Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/aholiab-artesano-del-tabernaculo/entry.yaml"
+    },
+    "aman-hijo-hamedata": {
+      "entityKey": "personajes-aman-hijo-hamedata",
+      "canonicalName": "Amán (hijo de Hamedata; agagueo)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "aman-hijo-hamedata",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Amán (hijo de Hamedata; agagueo)",
+          "definition": "Alto funcionario de Asuero en el libro de Ester. Después de ser elevado sobre los demás príncipes, reaccionó contra Mardoqueo por negarse a inclinarse ante él y promovió un decreto para destruir a los judíos del imperio; Ester finalmente expuso su plan ante el rey, y Amán murió en la misma estructura que había preparado para Mardoqueo.",
+          "historical_context": "Ester sitúa a Amán en la corte aqueménida de Asuero, generalmente relacionado por los estudiosos con Jerjes I, dentro del ambiente palaciego de Susa. La historicidad concreta de Amán y de los acontecimientos narrados no está corroborada por fuentes externas, aunque el libro refleja varios rasgos compatibles con la vida cortesana aqueménida. Para la imagen se usa una reconstrucción prudente de un alto cortesano adulto, con vestimenta formal del entorno aqueménida inspirada únicamente en paralelos de Persépolis; sin corona, diadema real, armas ni una caracterización étnica derivada del término «agagueo».",
+          "original_language_note": "Hebreo הָמָן (Hāmān). El significado del nombre no es seguro; se han propuesto varias etimologías, incluidas conexiones iranias o elamitas, pero ninguna debe presentarse como definitiva. El título «agagueo» pertenece al texto bíblico, pero no permite por sí solo reconstruir una etnia, genealogía o indumentaria amalecita específica.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Amán, hijo de Hamedata, representado como un alto funcionario adulto de la corte aqueménida con túnica larga ceñida y vestimenta formal sobria, aislado sobre fondo transparente, sin corona, armas ni atributos regios."
+        },
+        "en-US": {
+          "display_name": "Haman (son of Hammedatha; Agagite)",
+          "definition": "A high official of Ahasuerus in the Book of Esther. After being elevated above the other officials, he reacted against Mordecai for refusing to bow before him and promoted a decree to destroy the Jews throughout the empire; Esther ultimately exposed his scheme before the king, and Haman died on the same structure he had prepared for Mordecai.",
+          "historical_context": "Esther places Haman in the Achaemenid court of Ahasuerus, commonly associated by scholars with Xerxes I, within the palace setting of Susa. Haman and the narrated events are not independently corroborated by surviving historical sources, although Esther preserves several details compatible with Achaemenid court culture. The visual reconstruction therefore uses a restrained adult high court official in period-plausible Achaemenid court dress informed only by Persepolis parallels, without crown, royal diadem, weapons, or an invented ethnic costume based on the word “Agagite.”",
+          "original_language_note": "Hebrew הָמָן (Hāmān). The meaning of the name is uncertain; several Iranian or Elamite derivations have been proposed, but none should be treated as definitive. The biblical epithet “Agagite” should not by itself be used to reconstruct a specific Amalekite ethnicity, genealogy, or costume.",
+          "alt_text": "Full-body historical illustration of Haman, son of Hammedatha, shown as an adult high official of the Achaemenid court in a restrained long belted court garment, isolated on a transparent background without crown, weapons, or royal insignia."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "הָמָן",
+          "transliteration": "Hāmān",
+          "lemma": "הָמָן",
+          "meaning": {
+            "es-419": null,
+            "en-US": null
+          },
+          "certainty": "uncertain"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Esther 3:1-15",
+            "Esther 5:9-14",
+            "Esther 6:4-14",
+            "Esther 7:1-10",
+            "Esther 9:24-25"
+          ],
+          "en-US": [
+            "Esther 3:1-15",
+            "Esther 5:9-14",
+            "Esther 6:4-14",
+            "Esther 7:1-10",
+            "Esther 9:24-25"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Esther 4:7",
+            "Esther 8:1-7"
+          ],
+          "en-US": [
+            "Esther 4:7",
+            "Esther 8:1-7"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Achaemenid Persian period in the setting of Esther",
+        "region": "Susa and the Persian imperial court in the narrative",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "d1fbe0e312b729fe50294a85aac11e607e10bd695d5c46a11e64b2dc5b0d4c08",
+        "optimizedPath": "/media/editorial/personajes/aman-hijo-hamedata/v001/aman-hijo-hamedata--optimized.webp",
+        "highPath": "/media/editorial/personajes/aman-hijo-hamedata/v001/aman-hijo-hamedata--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "cba1f67089049ca852857178a9ae1fef03fcb8b330b42fbf052cd0de5e02f82f",
+        "highChecksum": "a2a4e7c7b1e31043802d4334b14ddfad6aa06b041daca832577cf261fcd30389"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T12:27:45Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/aman-hijo-hamedata/entry.yaml"
+    },
+    "amasias-rey-juda": {
+      "entityKey": "personajes-amasias-rey-juda",
+      "canonicalName": "Amasías (rey de Judá)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "amasias-rey-juda",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Amasías (rey de Judá)",
+          "definition": "Hijo y sucesor del rey Joás de Judá. Amasías subió al trono a los 25 años y reinó 29 años en Jerusalén; consolidó su autoridad castigando a los asesinos de su padre sin ejecutar a sus hijos, derrotó a Edom y posteriormente desafió a Joás de Israel, fue vencido en Bet-semes y capturado, y años después murió en una conspiración tras huir a Laquis.",
+          "historical_context": "Amasías pertenece a la monarquía de Judá de comienzos del siglo VIII a. C. Su reinado estuvo marcado por la reorganización militar de Judá, la campaña contra Edom, la posterior derrota ante Israel y tensiones internas que terminaron en su asesinato en Laquis. La Biblia no conserva una descripción fiable de su rostro, cabello ni vestimenta específica. La reconstrucción visual debe ser, por tanto, sobria: un rey judaíta adulto, con indumentaria levantina plausible de la Edad del Hierro, sin convertir coronas, joyas o insignias regias no descritas en hechos históricos. Los relieves asirios de Laquis, aunque varias décadas posteriores, sirven solo como comparación regional prudente para vestimenta judaíta, no como retrato ni evidencia directa de Amasías.",
+          "original_language_note": "Hebreo אֲמַצְיָהוּ / אֲמַצְיָה (ʾĂmaṣyāhû / ʾĂmaṣyāh). El nombre se interpreta comúnmente como «YHWH es fuerte/poderoso»; las fuentes léxicas registran cierta variación en la explicación etimológica, por lo que no debe tratarse como una traducción absolutamente segura.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Amasías, rey de Judá, representado como un hombre adulto con túnica marfil y manto granate decorados con bordados geométricos, sandalias de cuero y postura digna, aislado sobre fondo transparente y sin corona ni armas."
+        },
+        "en-US": {
+          "display_name": "Amaziah (king of Judah)",
+          "definition": "Son and successor of King Joash of Judah. Amaziah became king at age 25 and reigned in Jerusalem for 29 years; he secured his rule by executing his father’s assassins without killing their children, defeated Edom, later challenged Joash of Israel, was defeated and captured at Beth-shemesh, and was eventually killed after fleeing a conspiracy to Lachish.",
+          "historical_context": "Amaziah belongs to Judah’s monarchy in the early eighth century BCE. His reign included military reorganization, a campaign against Edom, defeat by the northern kingdom of Israel, and internal opposition that culminated in his assassination at Lachish. Scripture preserves no reliable description of his face, hair, or specific clothing. The visual reconstruction should therefore remain restrained: an adult Judahite king in plausible Iron Age Levantine dress, without turning unattested crowns, jewelry, or royal insignia into historical fact. The Assyrian Lachish reliefs are several decades later and are useful only as cautious regional comparison for Judahite clothing, not as direct evidence for Amaziah’s appearance.",
+          "original_language_note": "Hebrew אֲמַצְיָהוּ / אֲמַצְיָה (ʾĂmaṣyāhû / ʾĂmaṣyāh). The name is commonly interpreted approximately as “YHWH is strong/mighty.” Lexical sources preserve some variation in its etymological explanation, so the gloss should not be treated as absolutely certain.",
+          "alt_text": "Full-body historical illustration of Amaziah, king of Judah, shown as an adult man in an ivory tunic and deep maroon mantle with geometric embroidery, leather sandals, and a dignified stance, isolated on a transparent background without a crown or weapons."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲמַצְיָהוּ / אֲמַצְיָה",
+          "transliteration": "ʾĂmaṣyāhû / ʾĂmaṣyāh",
+          "lemma": null,
+          "meaning": {
+            "es-419": "YHWH es fuerte/poderoso (aproximado)",
+            "en-US": "YHWH is strong/mighty (approximate)"
+          },
+          "certainty": "qualified"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Kings 12:21",
+            "2 Kings 14:1-22",
+            "2 Chronicles 25:1-28"
+          ],
+          "en-US": [
+            "2 Kings 12:21",
+            "2 Kings 14:1-22",
+            "2 Chronicles 25:1-28"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Chronicles 3:12",
+            "2 Kings 15:1-3",
+            "2 Chronicles 26:1",
+            "2 Chronicles 26:4"
+          ],
+          "en-US": [
+            "1 Chronicles 3:12",
+            "2 Kings 15:1-3",
+            "2 Chronicles 26:1",
+            "2 Chronicles 26:4"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early 8th century BCE, monarchy of Judah",
+        "region": "kingdom of Judah and southern Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "b4d7fc6fa19d5943f3e3c48c53a3528cd6e6b9b0c5e4ce8138cc761c1d483f90",
+        "optimizedPath": "/media/editorial/personajes/amasias-rey-juda/v001/amasias-rey-juda--optimized.webp",
+        "highPath": "/media/editorial/personajes/amasias-rey-juda/v001/amasias-rey-juda--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "e5708c251a1bfc6bebc9c0aba69aa8becfa8516df7678324fe7ac511c91abfee",
+        "highChecksum": "5aeb6bddc422373e292e0789dfe6aeb51798b78babc070b366ba282b3ed7a4c5"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T12:43:17Z",
+        "notes": "Approved by user in sequential BibliImg workflow."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/amasias-rey-juda/entry.yaml"
+    },
+    "amasias-sacerdote-betel-amos7": {
+      "entityKey": "personajes-amasias-sacerdote-betel-amos7",
+      "canonicalName": "Amasías (sacerdote de Bet-el; Amós 7)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "amasias-sacerdote-betel-amos7",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Amasías (sacerdote de Bet-el; Amós 7)",
+          "definition": "Amasías fue el sacerdote de Bet-el que denunció ante Jeroboam II la predicación de Amós y luego ordenó al profeta que abandonara Bet-el. El propio relato vincula su función sacerdotal con un santuario estrechamente asociado a la monarquía del reino de Israel.",
+          "historical_context": "El episodio se sitúa en el reino del norte durante el siglo VIII a. C., en tiempos de Jeroboam II. Bet-el funcionaba en el relato como un centro religioso de importancia estatal; Amasías llama al lugar «santuario del rey» y «capital del reino», lo que muestra la proximidad entre culto y poder político en esta escena. La arqueología confirma una ocupación importante de Bet-el durante el Iron Age IIB del siglo VIII a. C., aunque no ha identificado de manera concluyente el santuario descrito en el texto. Por eso la imagen se reconstruye prudentemente como un sacerdote israelita de esa época, sin reproducir un templo específico ni afirmar una vestimenta sacerdotal exacta.",
+          "original_language_note": "Hebreo אֲמַצְיָה (ʾĂmaṣyāh / Amatsyah). El nombre se entiende normalmente como «Yah es poderoso» o «fortaleza de Yah»; el mismo nombre corresponde a varios israelitas distintos, por lo que esta entrada queda específicamente calificada por Amós 7.",
+          "alt_text": "Figura aislada de cuerpo entero de Amasías, sacerdote de Bet-el en el siglo VIII a. C., reconstruido como un hombre israelita adulto del antiguo Levante. Viste una túnica larga de tejido natural, un manto sobrio, cinturón sencillo y sandalias de cuero; lleva cabello y barba oscuros y adopta una postura firme y formal. No porta pectoral, efod sumosacerdotal, corona, joyas, rollos ni símbolos inventados; no aparecen altar, templo, paisaje ni otros personajes, y el fondo es transparente."
+        },
+        "en-US": {
+          "display_name": "Amaziah (priest of Bethel; Amos 7)",
+          "definition": "Amaziah was the priest of Bethel who reported Amos's preaching to King Jeroboam II and then ordered the prophet to leave Bethel. The narrative itself closely associates his priestly office with a sanctuary tied to the monarchy of the kingdom of Israel.",
+          "historical_context": "The episode belongs to the northern kingdom in the eighth century BCE, during the reign of Jeroboam II. In the narrative, Bethel functions as a religious center closely connected to the state; Amaziah calls it the king's sanctuary and a royal center, showing how cult and political authority intersect in the scene. Archaeological study supports substantial Iron Age IIB occupation at Bethel in the eighth century BCE, but no sanctuary matching the biblical description has been conclusively identified. The visual reconstruction therefore cautiously represents an Israelite priest of the period without claiming an exact temple setting or a documented priestly costume.",
+          "original_language_note": "Hebrew אֲמַצְיָה (ʾĂmaṣyāh / Amatsyah). The name is commonly understood as “Yah is mighty” or “strength of Yah.” Several different Israelites bear this name, so this entry is specifically qualified by Amos 7.",
+          "alt_text": "Isolated full-length figure of Amaziah, priest of Bethel in the eighth century BCE, editorially reconstructed as an adult Israelite man of the ancient Levant. He wears a long natural-fiber tunic, a restrained mantle, a simple belt, and leather sandals, with dark hair and beard and a firm formal posture. He has no high-priestly breastpiece, ephod, crown, jewelry, scroll, or invented religious symbol; no altar, temple, landscape, or other people are present, and the background is transparent."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֲמַצְיָה",
+          "transliteration": "ʾĂmaṣyāh / Amatsyah",
+          "lemma": null,
+          "meaning": {
+            "es-419": "Yah es poderoso / fortaleza de Yah",
+            "en-US": "Yah is mighty / strength of Yah"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "AMO 7:10-17"
+          ],
+          "en-US": [
+            "AMO 7:10-17"
+          ]
+        },
+        "additional": {
+          "es-419": [],
+          "en-US": []
+        },
+        "occurrencesSource": "Amós 7",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo VIII a. C. / eighth century BCE",
+        "region": "Bet-el, reino del norte de Israel / Bethel, northern kingdom of Israel",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "aa9439a1530f59fde2e185f9179ab174ce2605c8591e792e52407ea40d2b6281",
+        "optimizedPath": "/media/editorial/personajes/amasias-sacerdote-betel-amos7/v001/amasias-sacerdote-betel-amos7--optimized.webp",
+        "highPath": "/media/editorial/personajes/amasias-sacerdote-betel-amos7/v001/amasias-sacerdote-betel-amos7--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "9837507afc693c13cb6fdd58891f9046d555d8bbe54e3d65326f90a3f41b7711",
+        "highChecksum": "024c284c87eeb6b34ee1ba74e822ba0c920f789c26c9c70ff4801f0190887483"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T12:58:44Z",
+        "notes": "Aprobación explícita del usuario; imagen y paquete bilingüe aceptados conjuntamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/amasias-sacerdote-betel-amos7/entry.yaml"
+    },
+    "amnon-hijo-david": {
+      "entityKey": "personajes-amnon-hijo-david",
+      "canonicalName": "Amnón (hijo de David)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "amnon-hijo-david",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Amnón (hijo de David)",
+          "definition": "Amnón fue el primogénito de David, nacido en Hebrón de Ahinoam jezreelita. En 2 Samuel 13 engañó a Tamar, su media hermana, para dejarla sola con él y la violó; dos años después, Absalón ordenó matarlo durante una celebración en Baal-hazor como venganza por lo sucedido.",
+          "historical_context": "El texto lo presenta como hijo del rey y primogénito de David, con casa y servidores propios, pero no describe su rostro, estatura, peinado ni vestimenta. La imagen evita presentarlo como príncipe heredero con corona o insignias y lo muestra como un joven adulto de la casa real israelita de comienzos de la monarquía. La vestimenta es una reconstrucción sobria del antiguo Levante: túnica tejida, cinturón sencillo, manto y sandalias. Los relieves de Laquis del siglo VIII a. C. sirven solo como paralelo judeano posterior para calibrar siluetas y prendas regionales, no como evidencia directa para Amnón.",
+          "original_language_note": "Hebreo אַמְנוֹן (ʾAmnôn). Brown–Driver–Briggs y Strong lo relacionan con la raíz אָמַן (ʾāman) y dan el sentido aproximado «fiel».",
+          "alt_text": "Ilustración histórica de cuerpo entero de Amnón, hijo primogénito de David, representado como un joven adulto israelita de porte aristocrático sobrio, con túnica antigua de tejido natural, manto, cinturón y sandalias. Figura aislada sobre fondo transparente, sin corona, armas, joyas ostentosas ni elementos narrativos relacionados con Tamar."
+        },
+        "en-US": {
+          "display_name": "Amnon (son of David)",
+          "definition": "Amnon was David’s firstborn son, born in Hebron to Ahinoam of Jezreel. In 2 Samuel 13 he deceived Tamar, his half-sister, into being alone with him and raped her; two years later Absalom arranged for Amnon to be killed during a feast at Baal-hazor in retaliation for the assault.",
+          "historical_context": "The narrative identifies him as the king’s son and David’s firstborn, with his own household and servants, but gives no reliable description of his face, height, hairstyle, or clothing. The image therefore avoids presenting him as a formally designated crown prince with a crown or royal insignia. Instead, he is shown as a young adult member of the early Israelite royal household in restrained ancient Levantine clothing: a woven tunic, simple belt, mantle, and sandals. The eighth-century BCE Lachish reliefs provide only a later Judean regional comparison for garment silhouettes and are not direct evidence for a tenth-century BCE Amnon.",
+          "original_language_note": "Hebrew אַמְנוֹן (ʾAmnôn). Brown–Driver–Briggs and Strong connect it with the root אָמַן (ʾāman) and give the approximate sense “faithful.”",
+          "alt_text": "Full-body historical illustration of Amnon, David’s firstborn son, shown as a sober young adult Israelite of elevated social status wearing an ancient natural-fiber tunic, mantle, simple belt, and sandals. The figure is isolated on a transparent background with no crown, weapons, ostentatious jewelry, or narrative elements connected with Tamar."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אַמְנוֹן",
+          "transliteration": "ʾAmnôn",
+          "lemma": "אָמַן",
+          "meaning": {
+            "es-419": "fiel (aprox.)",
+            "en-US": "faithful (approx.)"
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2SA 3:2",
+            "2SA 13:1-39"
+          ],
+          "en-US": [
+            "2SA 3:2",
+            "2SA 13:1-39"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1CH 3:1"
+          ],
+          "en-US": [
+            "1CH 3:1"
+          ]
+        },
+        "occurrencesSource": "Bibli registry + editorial review",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "early Israelite monarchy; approximately 10th century BCE",
+        "region": "Hebron / Judah / Israel",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "fbdb958637e2387947abaeb5b88591195a95e1c70acd45bf68db87263d1742fe",
+        "optimizedPath": "/media/editorial/personajes/amnon-hijo-david/v001/amnon-hijo-david--optimized.webp",
+        "highPath": "/media/editorial/personajes/amnon-hijo-david/v001/amnon-hijo-david--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "f3a3ae05b13e29180af1680d70e719ec42af89e063b422a9c20ca1b652de2795",
+        "highChecksum": "601ddd5ae8d1829123b3ca2d3af9275abe28c2bb9ff3213bb4e7f76cf3b437d4"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T13:06:49Z",
+        "notes": "Approved atomically with es-419 and en-US package. Sexual violence is not depicted or romanticized."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/amnon-hijo-david/entry.yaml"
+    },
+    "amos-profeta-tecoa": {
+      "entityKey": "personajes-amos-profeta-tecoa",
+      "canonicalName": "Amós (profeta de Tecoa)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "amos-profeta-tecoa",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Amós (profeta de Tecoa)",
+          "definition": "Profeta originario de Tecoa, en Judá, activo durante los reinados de Uzías de Judá y Jeroboam II de Israel. El propio libro lo presenta ligado al cuidado de ganado y de sicómoros antes de ser llamado a profetizar a Israel; su confrontación con Amasías en Bet-el deja claro que su autoridad profética no dependía de una profesión o gremio profético, sino del llamado recibido.",
+          "historical_context": "Su ministerio se sitúa en el siglo VIII a. C., probablemente hacia mediados de ese siglo, en una etapa de estabilidad y prosperidad relativa para Israel y Judá que coexistía con desigualdad y corrupción social. La Biblia no describe su rostro, edad exacta, cabello ni vestimenta. La ilustración usa una reconstrucción prudente de un varón judeano adulto con túnica y manto sencillos de tejido manual, cinturón y sandalias, sin insignias sacerdotales, corona, rollo, halo ni atributos proféticos inventados. Los relieves de Laquis, realizados unas décadas después, sirven únicamente como comparación material regional posterior y no como retrato directo de Amós.",
+          "original_language_note": "Hebreo עָמוֹס (ʿĀmôs). El nombre se relaciona habitualmente con la raíz hebrea עמס (ʿ-m-s), “cargar / llevar una carga”; esta asociación etimológica no se usa como interpretación teológica del personaje.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Amós, profeta de Tecoa, como un hombre judeano adulto de cabello oscuro y barba, con túnica clara, manto marrón de franjas tejidas, cinturón y sandalias, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Amos (prophet of Tekoa)",
+          "definition": "A prophet from Tekoa in Judah who was active during the reigns of Uzziah of Judah and Jeroboam II of Israel. His book associates him with tending livestock and sycamore figs before being called to prophesy to Israel; his confrontation with Amaziah at Bethel makes clear that his prophetic authority did not depend on a professional prophetic office or guild, but on the call he received.",
+          "historical_context": "His ministry belongs to the eighth century BCE, probably around the middle of that century, during a period of relative stability and prosperity in Israel and Judah that also included serious social inequality and corruption. Scripture does not describe his face, exact age, hair, or clothing. The illustration uses a restrained reconstruction of an adult Judean man in a simple handwoven tunic and mantle, belt, and sandals, without priestly insignia, crown, scroll, halo, or invented prophetic attributes. The Lachish reliefs, made several decades later, are used only as a cautious later regional material comparison and not as a direct portrait of Amos.",
+          "original_language_note": "Hebrew עָמוֹס (ʿĀmôs). The name is commonly connected with the Hebrew root עמס (ʿ-m-s), “to load / carry a burden”; this etymological association is not used as a theological interpretation of the person.",
+          "alt_text": "Full-body historical illustration of Amos, the prophet of Tekoa, shown as an adult Judean man with dark hair and beard, wearing a light tunic, a brown striped woven mantle, belt, and sandals, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "עָמוֹס",
+          "transliteration": "ʿĀmôs",
+          "lemma": null,
+          "meaning": {
+            "es-419": "cargar / llevar una carga",
+            "en-US": "to load / carry a burden"
+          },
+          "certainty": "common_etymological_association"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "AMO 1:1",
+            "AMO 7:10-17"
+          ],
+          "en-US": [
+            "AMO 1:1",
+            "AMO 7:10-17"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "AMO 7:8",
+            "AMO 8:2",
+            "2KI 14:23-29",
+            "2CH 26:1-15"
+          ],
+          "en-US": [
+            "AMO 7:8",
+            "AMO 8:2",
+            "2KI 14:23-29",
+            "2CH 26:1-15"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo VIII a. C. / eighth century BCE",
+        "region": "Tecoa, Judá; ministerio dirigido a Israel / Tekoa, Judah; ministry directed to Israel",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "bf4e305bc0526acdb6d01f7b5f91ad6f0b2fc6346b6190f1ac3b484039a439b8",
+        "optimizedPath": "/media/editorial/personajes/amos-profeta-tecoa/v001/amos-profeta-tecoa--optimized.webp",
+        "highPath": "/media/editorial/personajes/amos-profeta-tecoa/v001/amos-profeta-tecoa--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "bd40289a83805c54ff1234005d50c43417bf2192e624517ae99179140a78e5fd",
+        "highChecksum": "956fd68850a50fc6b63eee63383e77b3cb50b42e3849c27eb8e54574f22acade"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T13:16:38Z",
+        "notes": "Aprobado explícitamente por el usuario en flujo BibliImg secuencial."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/amos-profeta-tecoa/entry.yaml"
+    },
+    "ana-madre-samuel": {
+      "entityKey": "personajes-ana-madre-samuel",
+      "canonicalName": "Ana (madre de Samuel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "ana-madre-samuel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Ana (madre de Samuel)",
+          "definition": "Esposa de Elcana y madre del profeta Samuel. En Silo, Ana oró con profunda aflicción y formuló un voto respecto del hijo que pedía; después del nacimiento y destete de Samuel, lo llevó al santuario para dedicarlo al servicio de Dios. Su relato continúa con un cántico de alabanza y con sus visitas anuales, en las que llevaba a Samuel una pequeña túnica hecha por ella.",
+          "historical_context": "El relato pertenece al marco premonárquico de Israel, en la transición entre la época de los jueces y el surgimiento de la monarquía. En términos arqueológicos amplios, este entorno corresponde al Levante de comienzos de la Edad del Hierro, cuya fase Iron Age I suele situarse aproximadamente entre 1200 y 1000 a. C. La Biblia no conserva la edad exacta, rostro, cabello ni vestimenta de Ana. La reconstrucción visual es por ello deliberadamente sobria: mujer israelita adulta, vestimenta levantina sencilla de tejido manual y sandalias, sin joyería ostentosa ni rasgos presentados como retrato auténtico. Como único atributo identificador se usa una pequeña túnica infantil doblada, directamente anclada en 1 Samuel 2:19.",
+          "original_language_note": "Hebreo חַנָּה (Ḥannāh). El nombre procede de la raíz חנן (ḥ-n-n), asociada con favor o gracia; puede expresarse prudentemente como «favorecida» / «gracia».",
+          "alt_text": "Ilustración histórica de cuerpo entero de Ana, madre de Samuel, representada como una mujer israelita adulta con vestimenta sencilla del antiguo Levante, sosteniendo discretamente una pequeña túnica infantil doblada sobre un antebrazo, aislada sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Hannah (mother of Samuel)",
+          "definition": "Wife of Elkanah and mother of the prophet Samuel. At Shiloh, Hannah prayed in deep distress and made a vow concerning the child she sought; after Samuel was born and weaned, she brought him to the sanctuary and dedicated him to God’s service. Her story continues with a song of praise and with her yearly visits, when she brought Samuel a small robe she had made.",
+          "historical_context": "The narrative belongs to Israel’s premonarchic setting, during the transition from the period of the judges toward the rise of the monarchy. In broad archaeological terms, this setting falls within the early Iron Age Levant, with Iron Age I commonly dated to approximately 1200–1000 BCE. Scripture preserves no exact age, facial features, hairstyle, or clothing for Hannah. The visual reconstruction is therefore deliberately restrained: an adult Israelite woman in simple handwoven Levantine clothing and sandals, without ostentatious jewelry or any claim to an authentic portrait. The only identifying object is a small folded child’s robe, directly grounded in 1 Samuel 2:19.",
+          "original_language_note": "Hebrew חַנָּה (Ḥannāh). The name derives from the Hebrew root חנן (ḥ-n-n), associated with favor or grace; it may cautiously be rendered “favored” / “grace.”",
+          "alt_text": "Full-body historical illustration of Hannah, mother of Samuel, shown as an adult Israelite woman in simple ancient Levantine clothing, discreetly holding a small folded child’s robe over one forearm, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "חַנָּה",
+          "transliteration": "Ḥannāh",
+          "lemma": "חנן",
+          "meaning": {
+            "es-419": "favorecida / gracia",
+            "en-US": "favored / grace"
+          },
+          "certainty": "traditional_lexical_analysis"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1SA 1:1-28",
+            "1SA 2:1-10",
+            "1SA 2:19-21"
+          ],
+          "en-US": [
+            "1SA 1:1-28",
+            "1SA 2:1-10",
+            "1SA 2:19-21"
+          ]
+        },
+        "additional": {
+          "es-419": [],
+          "en-US": []
+        },
+        "occurrencesSource": "Bibli editorial identity resolution / 1 Samuel audit",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "premonarchic Israel / early Iron Age Levant",
+        "region": "Israel / Shiloh and the central highlands context",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "be5ecdcf6a517ac2938e02071e045dfc141d7f566b9cd46a7d2cdb615c0e3085",
+        "optimizedPath": "/media/editorial/personajes/ana-madre-samuel/v001/ana-madre-samuel--optimized.webp",
+        "highPath": "/media/editorial/personajes/ana-madre-samuel/v001/ana-madre-samuel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "c0a5233cbefb6bbaa2d2c6041088921d389a19ba15aad0e0b3971b8b60eacbd0",
+        "highChecksum": "592fa5d0b9037e49756d39674a0798a7c941cd0733692d02dfa226ddaf3108e7"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T13:26:44Z",
+        "notes": "Aprobación explícita del usuario; imagen y paquete bilingüe aprobados atómicamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/ana-madre-samuel/entry.yaml"
+    },
+    "ana-profetisa-hija-fanuel": {
+      "entityKey": "personajes-ana-profetisa-hija-fanuel",
+      "canonicalName": "Ana (profetisa; hija de Fanuel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "ana-profetisa-hija-fanuel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Ana (profetisa; hija de Fanuel)",
+          "definition": "Profetisa anciana, hija de Fanuel y de la tribu de Aser, que aparece en el Templo de Jerusalén durante la presentación de Jesús. Lucas la describe dedicada al servicio de Dios con ayunos y oraciones; al encontrarse con el niño, dio gracias a Dios y habló de él a quienes esperaban la redención de Jerusalén.",
+          "historical_context": "La escena pertenece al ambiente judío de Jerusalén del período del Segundo Templo. Lucas la llama explícitamente profetisa y la presenta como una mujer de edad muy avanzada. La expresión sobre los ochenta y cuatro años admite más de una lectura —edad total o duración de la viudez—, por lo que la ilustración no fija una edad numérica exacta: se muestra simplemente como una mujer muy anciana. Tampoco se infiere una indumentaria especial por pertenecer a Aser. Para cubrir lo que el texto no describe, la reconstrucción usa de manera prudente vestimenta corriente de Judea romana: túnica y manto de tejido sencillo, con sandalias, como reconstrucción histórica general y no como retrato auténtico.",
+          "original_language_note": "Griego Ἅννα (Hánna), forma de origen hebreo relacionada con חַנָּה (Ḥannāh), nombre normalmente asociado con «favor» o «gracia».",
+          "alt_text": "Ilustración histórica de cuerpo entero de Ana, hija de Fanuel, representada como una mujer judía muy anciana con túnica larga, manto sencillo y sandalias, de pie en actitud serena con una mano ligeramente levantada como si estuviera dando gracias y hablando, aislada sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Anna (prophetess; daughter of Phanuel)",
+          "definition": "An elderly prophetess, daughter of Phanuel and of the tribe of Asher, who appears at the Jerusalem Temple during Jesus’ presentation. Luke describes her as devoted to serving God with fasting and prayer; when she encountered the child, she gave thanks to God and spoke about him to those awaiting the redemption of Jerusalem.",
+          "historical_context": "The scene belongs to Jewish Jerusalem in the Second Temple period. Luke explicitly calls Anna a prophetess and describes her as very advanced in age. The wording concerning eighty-four years can be read either as her age or as the duration of her widowhood, so the illustration does not assign a precise numerical age; she is simply shown as very elderly. No distinctive tribal costume is inferred from her Asher identity. Where the text is silent, the reconstruction uses restrained Roman Judean clothing—a simple tunic and mantle with sandals—as general historical reconstruction rather than an authentic portrait.",
+          "original_language_note": "Greek Ἅννα (Hánna), a name of Hebrew origin related to חַנָּה (Ḥannāh), commonly associated with “favor” or “grace.”",
+          "alt_text": "Full-body historical illustration of Anna, daughter of Phanuel, shown as a very elderly Jewish woman wearing a long tunic, simple mantle, and sandals, standing calmly with one hand slightly raised as if giving thanks and speaking, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἅννα",
+          "transliteration": "Hánna",
+          "lemma": "Ἅννα",
+          "meaning": {
+            "es-419": "nombre de origen hebreo asociado con favor / gracia",
+            "en-US": "name of Hebrew origin associated with favor / grace"
+          },
+          "certainty": "traditional_lexical_analysis"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "LUK 2:36-38"
+          ],
+          "en-US": [
+            "LUK 2:36-38"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "LUK 2:22-38"
+          ],
+          "en-US": [
+            "LUK 2:22-38"
+          ]
+        },
+        "occurrencesSource": "Bibli editorial identity resolution / Luke audit",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "Second Temple period / early Roman Judea",
+        "region": "Jerusalem / Judea",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "5f6d6e80aab66de3dcb16988dee1166639d08fa40daf33fc77f440057faa1c3a",
+        "optimizedPath": "/media/editorial/personajes/ana-profetisa-hija-fanuel/v001/ana-profetisa-hija-fanuel--optimized.webp",
+        "highPath": "/media/editorial/personajes/ana-profetisa-hija-fanuel/v001/ana-profetisa-hija-fanuel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "0178967e2288cf9f6eebe191ef7bd284a535e1f3f5aa6f770100ac37b826a8e1",
+        "highChecksum": "55ad6bc9f64ffce749fa66905daa21a196288f533cb35a89eecc40204deca031"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T13:41:52Z",
+        "notes": "Aprobación explícita del usuario; imagen y paquete bilingüe aprobados atómicamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/ana-profetisa-hija-fanuel/entry.yaml"
+    },
+    "andres-apostol": {
+      "entityKey": "personajes-andres-apostol",
+      "canonicalName": "Andrés (apóstol; hermano de Pedro)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "andres-apostol",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Andrés (apóstol; hermano de Pedro)",
+          "definition": "Discípulo de Jesús, hermano de Simón Pedro y uno de los Doce. Los Evangelios lo presentan como pescador del mar de Galilea; en Juan aparece primero siguiendo a Jesús y llevando a su hermano Simón ante él, después señalando al muchacho que tenía cinco panes de cebada y dos peces, y más tarde acompañando a Felipe cuando unos griegos quisieron acercarse a Jesús.",
+          "historical_context": "Andrés fue un judío galileo del siglo I asociado con Betsaida y con la pesca en el mar de Galilea. Mateo y Marcos lo muestran trabajando con redes junto a Pedro, actividad físicamente exigente y propia de la economía lacustre de Galilea. La Biblia no conserva su edad exacta, estatura, rostro, cabello, barba ni vestimenta concreta. La reconstrucción visual es deliberadamente sobria: un hombre judío adulto de Galilea con túnica y manto sencillos, sandalias y una red de pesca recogida como atributo profesional respaldado por el texto. Se excluyen la posterior cruz en forma de X y otros atributos hagiográficos.",
+          "original_language_note": "Griego Ἀνδρέας (Andréas), nombre relacionado tradicionalmente con ἀνήρ / ἀνδρός («varón»); suele glosarse como «viril» o «varonil». Esta explicación léxica no describe el carácter físico o moral del Andrés histórico.",
+          "alt_text": "Ilustración histórica de cuerpo entero de Andrés, apóstol y hermano de Pedro, representado como un pescador judío adulto de Galilea con túnica y manto sencillos, sandalias, una red de pesca con pesos sobre un hombro y una cuerda enrollada en la otra mano, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Andrew (apostle; brother of Peter)",
+          "definition": "A disciple of Jesus, brother of Simon Peter, and one of the Twelve. The Gospels identify him as a fisherman on the Sea of Galilee; in John he first follows Jesus and brings his brother Simon to him, later points out the boy with five barley loaves and two fish, and subsequently joins Philip when some Greeks seek access to Jesus.",
+          "historical_context": "Andrew was a first-century Galilean Jew associated with Bethsaida and the fishing economy of the Sea of Galilee. Matthew and Mark portray him working with nets alongside Peter, a labor-intensive occupation in the lakeside economy. Scripture preserves no exact age, height, facial features, hairstyle, beard style, or specific garments. The visual reconstruction remains deliberately restrained: an adult Jewish Galilean man in a simple tunic and mantle with sandals, carrying a gathered fishing net as a text-grounded occupational attribute. The later X-shaped cross and other hagiographic attributes are excluded.",
+          "original_language_note": "Greek Ἀνδρέας (Andréas), a name traditionally connected with ἀνήρ / ἀνδρός (“man”); commonly glossed “manly” or “masculine.” This lexical explanation should not be treated as a description of the historical Andrew’s appearance or personality.",
+          "alt_text": "Full-body historical illustration of Andrew, apostle and brother of Peter, shown as an adult Jewish Galilean fisherman wearing a simple tunic, mantle, and sandals, with a weighted fishing net over one shoulder and a coil of rope in the other hand, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἀνδρέας",
+          "transliteration": "Andréas",
+          "lemma": "Ἀνδρέας",
+          "meaning": {
+            "es-419": "nombre griego relacionado tradicionalmente con ἀνήρ / ἀνδρός; suele glosarse «viril» o «varonil»",
+            "en-US": "Greek name traditionally related to ἀνήρ / ἀνδρός; commonly glossed “manly” or “masculine”"
+          },
+          "certainty": "traditional_lexical_analysis"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "MAT 4:18-20",
+            "MAT 10:2",
+            "MRK 1:16-18",
+            "JHN 1:40-44"
+          ],
+          "en-US": [
+            "MAT 4:18-20",
+            "MAT 10:2",
+            "MRK 1:16-18",
+            "JHN 1:40-44"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "MRK 1:29",
+            "MRK 3:18",
+            "MRK 13:3",
+            "LUK 6:14",
+            "JHN 6:8-9",
+            "JHN 12:22",
+            "ACT 1:13"
+          ],
+          "en-US": [
+            "MRK 1:29",
+            "MRK 3:18",
+            "MRK 13:3",
+            "LUK 6:14",
+            "JHN 6:8-9",
+            "JHN 12:22",
+            "ACT 1:13"
+          ]
+        },
+        "occurrencesSource": "Bibli editorial identity resolution / New Testament audit",
+        "occurrencesCount": 13
+      },
+      "historical": {
+        "period": "first century CE / early Roman Galilee",
+        "region": "Galilee / Bethsaida / Sea of Galilee",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "b29d9426e44a9fbb2b74e50b8194537bc4c3319d9a098d07e914eee2d108af99",
+        "optimizedPath": "/media/editorial/personajes/andres-apostol/v001/andres-apostol--optimized.webp",
+        "highPath": "/media/editorial/personajes/andres-apostol/v001/andres-apostol--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "98c1942a5d09befb3d6489d08b6352ffcd708eb890514efed2286a9094adc1c3",
+        "highChecksum": "0c6af3d070702bbbef062acbb6fefe77311b2e9d23e924232a56cb311480abbd"
+      },
+      "approval": {
+        "approved_at": "2026-10-29T14:12:54Z",
+        "notes": "Aprobación explícita del usuario; tercera candidata aprobada tras corregir pose y acabado visual. Imagen y paquete bilingüe aprobados atómicamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/andres-apostol/entry.yaml"
+    }
+  }
+}
