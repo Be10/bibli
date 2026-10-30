@@ -1,0 +1,351 @@
+name: R2 Publish Pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-pilot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish and verify Abraham optimized image
+        env:
+          BIBLI_R2_ENDPOINT: ${{ secrets.BIBLI_R2_ENDPOINT }}
+          BIBLI_R2_ACCESS_KEY_ID: ${{ secrets.BIBLI_R2_ACCESS_KEY_ID }}
+          BIBLI_R2_SECRET_ACCESS_KEY: ${{ secrets.BIBLI_R2_SECRET_ACCESS_KEY }}
+          BIBLI_R2_BUCKET: ${{ secrets.BIBLI_R2_BUCKET }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from "node:fs/promises";
+          import crypto from "node:crypto";
+
+          import {
+            S3Client,
+            HeadObjectCommand,
+            PutObjectCommand,
+            GetObjectCommand
+          } from "@aws-sdk/client-s3";
+
+          const filePath =
+            "public/media/editorial/personajes/abraham/v001/abraham--optimized.webp";
+
+          const key =
+            "editorial/personajes/abraham/v001/abraham--optimized.webp";
+
+          const body = await fs.readFile(filePath);
+
+          const sha256 = crypto
+            .createHash("sha256")
+            .update(body)
+            .digest("hex");
+
+          const r2 = new S3Client({
+            region: "auto",
+            endpoint: process.env.BIBLI_R2_ENDPOINT,
+            credentials: {
+              accessKeyId: process.env.BIBLI_R2_ACCESS_KEY_ID,
+              secretAccessKey: process.env.BIBLI_R2_SECRET_ACCESS_KEY
+            }
+          });
+
+          let exists = false;
+
+          try {
+            const existing = await r2.send(
+              new HeadObjectCommand({
+                Bucket: process.env.BIBLI_R2_BUCKET,
+                Key: key
+              })
+            );
+
+            exists = true;
+
+            if (existing.Metadata?.sha256 !== sha256) {
+              throw new Error(
+                "El objeto ya existe en R2 pero su SHA-256 no coincide."
+              );
+            }
+
+            console.log("Existing object: checksum compatible");
+          } catch (error) {
+            const status = error?.$metadata?.httpStatusCode;
+
+            if (status !== 404) {
+              throw error;
+            }
+          }
+
+          if (!exists) {
+            await r2.send(
+              new PutObjectCommand({
+                Bucket: process.env.BIBLI_R2_BUCKET,
+                Key: key,
+                Body: body,
+                ContentType: "image/webp",
+                CacheControl: "public, max-age=31536000, immutable",
+                Metadata: {
+                  sha256
+                },
+                IfNoneMatch: "*"
+              })
+            );
+
+            console.log("Upload: PASS");
+          } else {
+            console.log("Upload: REUSED");
+          }
+
+          const head = await r2.send(
+            new HeadObjectCommand({
+              Bucket: process.env.BIBLI_R2_BUCKET,
+              Key: key
+            })
+          );
+
+          if (head.ContentType !== "image/webp") {
+            throw new Error(
+              `Content-Type inesperado: ${head.ContentType}`
+            );
+          }
+
+          if (
+            head.CacheControl !==
+            "public, max-age=31536000, immutable"
+          ) {
+            throw new Error(
+              `Cache-Control inesperado: ${head.CacheControl}`
+            );
+          }
+
+          if (head.Metadata?.sha256 !== sha256) {
+            throw new Error(
+              "El SHA-256 almacenado en metadata no coincide."
+            );
+          }
+
+          if (Number(head.ContentLength) !== body.length) {
+            throw new Error(
+              "El tamaño remoto no coincide con el archivo local."
+            );
+          }
+
+          const downloaded = await r2.send(
+            new GetObjectCommand({
+              Bucket: process.env.BIBLI_R2_BUCKET,
+              Key: key
+            })
+          );
+
+          const remoteBytes = Buffer.from(
+            await downloaded.Body.transformToByteArray()
+          );
+
+          const remoteSha256 = crypto
+            .createHash("sha256")
+            .update(remoteBytes)
+            .digest("hex");
+
+          if (remoteSha256 !== sha256) {
+            throw new Error(
+              "Los bytes descargados desde R2 no coinciden."
+            );
+          }
+
+          console.log("R2 pilot: PASS");
+          console.log("Object:", key);
+          console.log("Content-Type:", head.ContentType);
+          console.log("Cache-Control:", head.CacheControl);
+          console.log("Bytes:", body.length);
+          console.log("SHA-256 verification: PASS");
+          NODE
+EOFcat > .github/workflows/r2-publish-pilot.yml <<'EOF'
+name: R2 Publish Pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-pilot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish and verify Abraham optimized image
+        env:
+          BIBLI_R2_ENDPOINT: ${{ secrets.BIBLI_R2_ENDPOINT }}
+          BIBLI_R2_ACCESS_KEY_ID: ${{ secrets.BIBLI_R2_ACCESS_KEY_ID }}
+          BIBLI_R2_SECRET_ACCESS_KEY: ${{ secrets.BIBLI_R2_SECRET_ACCESS_KEY }}
+          BIBLI_R2_BUCKET: ${{ secrets.BIBLI_R2_BUCKET }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from "node:fs/promises";
+          import crypto from "node:crypto";
+
+          import {
+            S3Client,
+            HeadObjectCommand,
+            PutObjectCommand,
+            GetObjectCommand
+          } from "@aws-sdk/client-s3";
+
+          const filePath =
+            "public/media/editorial/personajes/abraham/v001/abraham--optimized.webp";
+
+          const key =
+            "editorial/personajes/abraham/v001/abraham--optimized.webp";
+
+          const body = await fs.readFile(filePath);
+
+          const sha256 = crypto
+            .createHash("sha256")
+            .update(body)
+            .digest("hex");
+
+          const r2 = new S3Client({
+            region: "auto",
+            endpoint: process.env.BIBLI_R2_ENDPOINT,
+            credentials: {
+              accessKeyId: process.env.BIBLI_R2_ACCESS_KEY_ID,
+              secretAccessKey: process.env.BIBLI_R2_SECRET_ACCESS_KEY
+            }
+          });
+
+          let exists = false;
+
+          try {
+            const existing = await r2.send(
+              new HeadObjectCommand({
+                Bucket: process.env.BIBLI_R2_BUCKET,
+                Key: key
+              })
+            );
+
+            exists = true;
+
+            if (existing.Metadata?.sha256 !== sha256) {
+              throw new Error(
+                "El objeto ya existe en R2 pero su SHA-256 no coincide."
+              );
+            }
+
+            console.log("Existing object: checksum compatible");
+          } catch (error) {
+            const status = error?.$metadata?.httpStatusCode;
+
+            if (status !== 404) {
+              throw error;
+            }
+          }
+
+          if (!exists) {
+            await r2.send(
+              new PutObjectCommand({
+                Bucket: process.env.BIBLI_R2_BUCKET,
+                Key: key,
+                Body: body,
+                ContentType: "image/webp",
+                CacheControl: "public, max-age=31536000, immutable",
+                Metadata: {
+                  sha256
+                },
+                IfNoneMatch: "*"
+              })
+            );
+
+            console.log("Upload: PASS");
+          } else {
+            console.log("Upload: REUSED");
+          }
+
+          const head = await r2.send(
+            new HeadObjectCommand({
+              Bucket: process.env.BIBLI_R2_BUCKET,
+              Key: key
+            })
+          );
+
+          if (head.ContentType !== "image/webp") {
+            throw new Error(
+              `Content-Type inesperado: ${head.ContentType}`
+            );
+          }
+
+          if (
+            head.CacheControl !==
+            "public, max-age=31536000, immutable"
+          ) {
+            throw new Error(
+              `Cache-Control inesperado: ${head.CacheControl}`
+            );
+          }
+
+          if (head.Metadata?.sha256 !== sha256) {
+            throw new Error(
+              "El SHA-256 almacenado en metadata no coincide."
+            );
+          }
+
+          if (Number(head.ContentLength) !== body.length) {
+            throw new Error(
+              "El tamaño remoto no coincide con el archivo local."
+            );
+          }
+
+          const downloaded = await r2.send(
+            new GetObjectCommand({
+              Bucket: process.env.BIBLI_R2_BUCKET,
+              Key: key
+            })
+          );
+
+          const remoteBytes = Buffer.from(
+            await downloaded.Body.transformToByteArray()
+          );
+
+          const remoteSha256 = crypto
+            .createHash("sha256")
+            .update(remoteBytes)
+            .digest("hex");
+
+          if (remoteSha256 !== sha256) {
+            throw new Error(
+              "Los bytes descargados desde R2 no coinciden."
+            );
+          }
+
+          console.log("R2 pilot: PASS");
+          console.log("Object:", key);
+          console.log("Content-Type:", head.ContentType);
+          console.log("Cache-Control:", head.CacheControl);
+          console.log("Bytes:", body.length);
+          console.log("SHA-256 verification: PASS");
+          NODE
