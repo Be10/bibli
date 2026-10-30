@@ -44,7 +44,10 @@
     "bibliimg:plan:check": "node scripts/plan-bibli-image-glossary.mjs --check",
     "bibliimg:publish:preview": "node scripts/publish-bibli-image-glossary.mjs --preview",
     "bibliimg:publish": "node scripts/publish-bibli-image-glossary.mjs --apply",
-    "bibliimg:publish:check": "node scripts/publish-bibli-image-glossary.mjs --check"
+    "bibliimg:publish:check": "node scripts/publish-bibli-image-glossary.mjs --check",
+    "bibliimg:r2:plan": "node scripts/publish-bibli-images-r2.mjs --plan",
+    "bibliimg:r2:publish": "node scripts/publish-bibli-images-r2.mjs --publish",
+    "bibliimg:r2:check": "node scripts/publish-bibli-images-r2.mjs --check"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1161.0",

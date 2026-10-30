@@ -1,0 +1,43 @@
+name: R2 Publish BibliImg
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bibliimg-r2-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    env:
+      BIBLI_R2_ENDPOINT: ${{ secrets.BIBLI_R2_ENDPOINT }}
+      BIBLI_R2_ACCESS_KEY_ID: ${{ secrets.BIBLI_R2_ACCESS_KEY_ID }}
+      BIBLI_R2_SECRET_ACCESS_KEY: ${{ secrets.BIBLI_R2_SECRET_ACCESS_KEY }}
+      BIBLI_R2_BUCKET: ${{ secrets.BIBLI_R2_BUCKET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate BibliImg R2 plan
+        run: npm run bibliimg:r2:plan
+
+      - name: Publish BibliImg derivatives to R2
+        run: npm run bibliimg:r2:publish
+
+      - name: Verify complete R2 publication
+        run: npm run bibliimg:r2:check
