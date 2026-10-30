@@ -1,0 +1,68 @@
+name: R2 Smoke Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-r2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test R2 connection
+        env:
+          BIBLI_R2_ENDPOINT: ${{ secrets.BIBLI_R2_ENDPOINT }}
+          BIBLI_R2_ACCESS_KEY_ID: ${{ secrets.BIBLI_R2_ACCESS_KEY_ID }}
+          BIBLI_R2_SECRET_ACCESS_KEY: ${{ secrets.BIBLI_R2_SECRET_ACCESS_KEY }}
+          BIBLI_R2_BUCKET: ${{ secrets.BIBLI_R2_BUCKET }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
+
+          const required = [
+            "BIBLI_R2_ENDPOINT",
+            "BIBLI_R2_ACCESS_KEY_ID",
+            "BIBLI_R2_SECRET_ACCESS_KEY",
+            "BIBLI_R2_BUCKET"
+          ];
+
+          for (const name of required) {
+            if (!process.env[name]) {
+              throw new Error(`Missing GitHub secret: ${name}`);
+            }
+          }
+
+          const r2 = new S3Client({
+            region: "auto",
+            endpoint: process.env.BIBLI_R2_ENDPOINT,
+            credentials: {
+              accessKeyId: process.env.BIBLI_R2_ACCESS_KEY_ID,
+              secretAccessKey: process.env.BIBLI_R2_SECRET_ACCESS_KEY
+            }
+          });
+
+          const result = await r2.send(
+            new ListObjectsV2Command({
+              Bucket: process.env.BIBLI_R2_BUCKET,
+              MaxKeys: 5
+            })
+          );
+
+          console.log("R2 connection: PASS");
+          console.log("Bucket:", process.env.BIBLI_R2_BUCKET);
+          console.log("Objects:", result.KeyCount ?? 0);
+          NODE

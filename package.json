@@ -47,6 +47,7 @@
     "bibliimg:publish:check": "node scripts/publish-bibli-image-glossary.mjs --check"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
     "astro": "^7.0.3",
     "better-sqlite3": "^12.11.1",
     "leaflet": "^1.9.4",
