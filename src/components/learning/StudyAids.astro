@@ -2,6 +2,11 @@
 import { sitePath } from "../../lib/site-paths";
 import Icon from "../Icon.astro";
 import LessonMap from "./LessonMap.astro";
+import BibliImgViewer from "../BibliImgViewer.astro";
+import {
+  bibliImgMediaUrl,
+  getIntegratedGlossaryEntry,
+} from "../../lib/bibli-images";
 import type { Book, Event, Passage, RelatedItem, StudyPlace, VisualResource } from "../../lib/queries";
 
 type Props = {
@@ -16,6 +21,32 @@ type Props = {
 };
 const { books, passages, glossary, people, places, topics, events, visualResources } = Astro.props;
 const count = books.length + passages.length + glossary.length + people.length + places.length + topics.length + events.length + visualResources.length;
+
+const glossaryAids = glossary.map((item) => {
+  const media = getIntegratedGlossaryEntry(item.slug);
+
+  return {
+    item,
+    media,
+    localized: media?.locales["es-419"],
+  };
+});
+
+const peopleAids = people.map((item) => {
+  const candidate =
+    getIntegratedGlossaryEntry(item.slug);
+
+  const media =
+    candidate?.group === "personajes"
+      ? candidate
+      : undefined;
+
+  return {
+    item,
+    media,
+    localized: media?.locales["es-419"],
+  };
+});
 ---
 
 <aside class="study-aids" data-study-aids-panel aria-label="Ayudas de estudio">
@@ -70,13 +101,39 @@ const count = books.length + passages.length + glossary.length + people.length +
   )}
 
   {glossary.length > 0 && (
-    <details>
+    <details data-study-aid-section="glossary">
       <summary><span class="summary-main"><Icon name="library" size={17} />Glosario</span><span class="summary-meta"><span>{glossary.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
       <div class="definition-list">
-        {glossary.map((term) => (
-          <article>
-            <a href={sitePath(`/glosario/${term.slug}/`)} data-explicit-connection="lesson-glossary"><strong>{term.title}</strong></a>
-            {term.definition && <p>{term.definition}</p>}
+        {glossaryAids.map(({ item: term, media, localized }) => (
+          <article class:list={["aid-entity", { "has-media": Boolean(media && localized) }]}>
+            {media && localized && (
+              <button
+                type="button"
+                class="aid-media-button"
+                data-bibli-img-open
+                data-bibli-img-aid={media.entityKey}
+                data-bibli-img-high={bibliImgMediaUrl(media.visual.highPath)}
+                data-bibli-img-alt={localized.alt_text}
+                data-bibli-img-caption={`${localized.display_name} · Ilustración editorial`}
+                aria-label={`Ampliar imagen de ${term.title}`}
+                aria-haspopup="dialog"
+                aria-controls="study-aid-bibli-img-viewer"
+              >
+                <img
+                  src={bibliImgMediaUrl(media.visual.optimizedPath)}
+                  width={media.visual.optimizedWidth}
+                  height={media.visual.optimizedHeight}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                />
+              </button>
+            )}
+            <div class="aid-entity-copy">
+              <a href={sitePath(`/glosario/${term.slug}/`)} data-explicit-connection="lesson-glossary"><strong>{term.title}</strong></a>
+              {term.definition && <p>{term.definition}</p>}
+            </div>
           </article>
         ))}
       </div>
@@ -84,9 +141,41 @@ const count = books.length + passages.length + glossary.length + people.length +
   )}
 
   {people.length > 0 && (
-    <details>
+    <details data-study-aid-section="people">
       <summary><span class="summary-main"><Icon name="users" size={17} />Personajes</span><span class="summary-meta"><span>{people.length}</span><Icon name="chevron-down" size={15} class="summary-chevron" /></span></summary>
-      <div class="chips">{people.map((person) => <a href={sitePath(`/personajes/${person.slug}/`)} data-explicit-connection="lesson-people">{person.title}</a>)}</div>
+      <div class="people-aid-list">
+        {peopleAids.map(({ item: person, media, localized }) => (
+          <article class:list={["aid-entity", { "has-media": Boolean(media && localized) }]}>
+            {media && localized && (
+              <button
+                type="button"
+                class="aid-media-button"
+                data-bibli-img-open
+                data-bibli-img-aid={media.entityKey}
+                data-bibli-img-high={bibliImgMediaUrl(media.visual.highPath)}
+                data-bibli-img-alt={localized.alt_text}
+                data-bibli-img-caption={`${localized.display_name} · Ilustración editorial`}
+                aria-label={`Ampliar imagen de ${person.title}`}
+                aria-haspopup="dialog"
+                aria-controls="study-aid-bibli-img-viewer"
+              >
+                <img
+                  src={bibliImgMediaUrl(media.visual.optimizedPath)}
+                  width={media.visual.optimizedWidth}
+                  height={media.visual.optimizedHeight}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                />
+              </button>
+            )}
+            <div class="aid-entity-copy">
+              <a href={sitePath(`/personajes/${person.slug}/`)} data-explicit-connection="lesson-people"><strong>{person.title}</strong></a>
+            </div>
+          </article>
+        ))}
+      </div>
     </details>
   )}
 
@@ -126,6 +215,8 @@ const count = books.length + passages.length + glossary.length + people.length +
   )}
 </aside>
 
+<BibliImgViewer id="study-aid-bibli-img-viewer" />
+
 <style>
   .study-aids { display:grid; gap:6px; }
   .study-aids-heading { min-height:34px; display:flex; align-items:center; justify-content:space-between; gap:.7rem; padding:0 .1rem .35rem; }
@@ -157,6 +248,92 @@ const count = books.length + passages.length + glossary.length + people.length +
   .connection-label { color:var(--text-muted); font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
   .definition-list { display:grid; gap:.65rem; padding:.7rem 0; }
   .definition-list article + article { border-top:1px solid var(--border-color); padding-top:.6rem; }
+
+  .aid-entity {
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:.58rem;
+    align-items:start;
+    min-width:0;
+  }
+
+  .aid-entity.has-media {
+    grid-template-columns:54px minmax(0,1fr);
+  }
+
+  .aid-entity-copy {
+    min-width:0;
+  }
+
+  .aid-entity-copy > a {
+    color:var(--heading-color);
+    text-underline-offset:.18em;
+  }
+
+  .aid-media-button {
+    width:54px;
+    height:62px;
+    display:grid;
+    place-items:center;
+    padding:3px;
+    border:1px solid var(--border-color);
+    border-radius:10px;
+    background:var(--surface-soft);
+    cursor:zoom-in;
+    overflow:hidden;
+    touch-action:manipulation;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease;
+  }
+
+  .aid-media-button img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+
+  .aid-media-button:hover {
+    background:var(--accent-soft);
+    border-color:
+      color-mix(
+        in srgb,
+        var(--accent) 40%,
+        var(--border-color)
+      );
+  }
+
+  .aid-media-button:focus-visible {
+    outline:3px solid
+      color-mix(in srgb,var(--accent) 72%,white);
+    outline-offset:2px;
+  }
+
+  .people-aid-list {
+    display:grid;
+    gap:.5rem;
+    padding:.7rem 0;
+  }
+
+  .people-aid-list .aid-entity {
+    align-items:center;
+    min-height:38px;
+  }
+
+  .people-aid-list .aid-entity + .aid-entity {
+    border-top:1px solid var(--border-color);
+    padding-top:.5rem;
+  }
+
+  .people-aid-list .aid-entity-copy > a {
+    font-size:.78rem;
+    text-decoration:none;
+  }
+
+  .people-aid-list .aid-entity-copy > a:hover {
+    text-decoration:underline;
+  }
   .chips { display:flex; flex-wrap:wrap; gap:.35rem; padding:.7rem 0; }
   .chips a { padding:.36rem .55rem; border:1px solid var(--border-color); border-radius:9px; background:var(--surface-soft); color:var(--text-color); text-decoration:none; font-size:.76rem; transition:background-color 140ms ease,border-color 140ms ease; }
   .chips a:hover { background:var(--accent-soft); border-color:color-mix(in srgb,var(--accent) 40%,var(--border-color)); }

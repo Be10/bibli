@@ -105,3 +105,109 @@ test('Glossary entries without an integrated BibliImg package keep the existing 
   await expect(page.locator('.glossary-definition-card')).toBeVisible();
   await expect(page.locator('[data-explicit-connections="lesson-glossary"]')).toBeAttached();
 });
+
+
+test('Study aids render optimized BibliImg thumbnails and open the high-quality viewer', async ({ page }) => {
+  await page.goto(
+    `${base}/lecciones/pentateuco-leccion-003-genesis-3-1-a-24/`
+  );
+
+  const peopleSection =
+    page.locator('[data-study-aid-section="people"]');
+
+  if (!(await peopleSection.isVisible())) {
+    const aidsToggle = page
+      .locator(
+        '[data-aids-toggle]:visible, [data-dock-action="aids"]:visible'
+      )
+      .first();
+
+    await expect(aidsToggle).toBeVisible();
+    await aidsToggle.click();
+    await expect(peopleSection).toBeVisible();
+  }
+
+  if (
+    (await peopleSection.getAttribute('open')) === null
+  ) {
+    await peopleSection.locator('summary').click();
+  }
+
+  const trigger =
+    peopleSection.locator(
+      '[data-bibli-img-aid="personajes-adan"]'
+    );
+
+  await expect(trigger).toBeVisible();
+
+  const thumbnail = trigger.locator('img');
+
+  const mediaBase =
+    process.env.PUBLIC_BIBLI_MEDIA_BASE_URL
+      ?.replace(/\/+$/, '');
+
+  const optimizedSrc = mediaBase
+    ? `${mediaBase}/editorial/personajes/adan/v001/adan--optimized.webp`
+    : `${base}/media/editorial/personajes/adan/v001/adan--optimized.webp`;
+
+  const highSrc = mediaBase
+    ? `${mediaBase}/editorial/personajes/adan/v001/adan--high.webp`
+    : `${base}/media/editorial/personajes/adan/v001/adan--high.webp`;
+
+  await expect(thumbnail).toHaveAttribute(
+    'src',
+    optimizedSrc
+  );
+
+  await expect(thumbnail).toHaveAttribute(
+    'loading',
+    'lazy'
+  );
+
+  await expect(thumbnail).not.toHaveAttribute(
+    'srcset',
+    /.+/
+  );
+
+  await trigger.click();
+
+  const viewer =
+    page.locator('#study-aid-bibli-img-viewer');
+
+  await expect(viewer).toBeVisible();
+
+  const viewerImage =
+    viewer.locator('[data-bibli-img-dialog-image]');
+
+  await expect(viewerImage).toHaveAttribute(
+    'src',
+    highSrc
+  );
+
+  await expect(viewerImage).toHaveAttribute(
+    'alt',
+    /Adán/i
+  );
+
+  await expect(
+    viewer.locator('[data-bibli-img-close]')
+  ).toBeFocused();
+
+  await expect.poll(
+    () =>
+      viewerImage.evaluate((element) =>
+        element instanceof HTMLImageElement
+          ? element.naturalWidth
+          : 0
+      ),
+    {
+      message:
+        'Study Aid expanded BibliImg should load',
+    }
+  ).toBeGreaterThan(0);
+
+  await page.keyboard.press('Escape');
+
+  await expect(viewer).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+});
