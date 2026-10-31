@@ -31,6 +31,62 @@ test('Approved BibliImg package enriches the Abraham glossary entry without repl
     { message: 'BibliImg image should load successfully' }
   ).toBeGreaterThan(0);
 
+  const viewerTrigger =
+    figure.locator('[data-bibli-img-open]');
+
+  const viewer =
+    page.locator('[data-bibli-img-dialog]');
+
+  const viewerImage =
+    viewer.locator('[data-bibli-img-dialog-image]');
+
+  const expectedHighSrc = mediaBase
+    ? `${mediaBase}/editorial/personajes/abraham/v001/abraham--high.webp`
+    : `${base}/media/editorial/personajes/abraham/v001/abraham--high.webp`;
+
+  await expect(viewerTrigger).toHaveAttribute(
+    'aria-label',
+    /Ampliar imagen de Abraham/
+  );
+
+  await expect(viewerTrigger).toHaveAttribute(
+    'aria-haspopup',
+    'dialog'
+  );
+
+  await viewerTrigger.click();
+
+  await expect(viewer).toBeVisible();
+
+  await expect(viewerImage).toHaveAttribute(
+    'src',
+    expectedHighSrc
+  );
+
+  await expect(viewerImage).toHaveAttribute(
+    'alt',
+    /Figura aislada de cuerpo entero de Abraham/
+  );
+
+  await expect(
+    viewer.locator('[data-bibli-img-close]')
+  ).toBeFocused();
+
+  await expect.poll(
+    () =>
+      viewerImage.evaluate((element) =>
+        element instanceof HTMLImageElement
+          ? element.naturalWidth
+          : 0
+      ),
+    { message: 'Expanded BibliImg should load successfully' }
+  ).toBeGreaterThan(0);
+
+  await page.keyboard.press('Escape');
+
+  await expect(viewer).not.toBeVisible();
+  await expect(viewerTrigger).toBeFocused();
+
   const editorial = page.locator('[data-bibli-img-content="personajes-abraham"]');
   await expect(editorial).toBeVisible();
   await expect(editorial).toContainText('Génesis presenta a Abraham');
