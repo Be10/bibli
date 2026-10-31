@@ -7,6 +7,10 @@ const root = process.cwd();
 const registryPath = path.join(root, "content", "bibli-images-integrated.json");
 const dbPath = path.join(root, "data", "bibli.sqlite");
 const mappingPath = path.join(root, "content", "bibli-images-integration-map.json");
+const deliveryPath = path.join(root, "content", "bibli-images-r2.json");
+const mediaBaseUrl = (process.env.PUBLIC_BIBLI_MEDIA_BASE_URL ?? "")
+  .trim()
+  .replace(/\/+$/, "");
 
 function fail(message) {
   console.error(`BibliImg integration: FAIL\n- ${message}`);
@@ -24,13 +28,41 @@ function sha256(filePath) {
 assert(fs.existsSync(registryPath), "Falta content/bibli-images-integrated.json");
 assert(fs.existsSync(dbPath), "Falta data/bibli.sqlite");
 assert(fs.existsSync(mappingPath), "Falta content/bibli-images-integration-map.json");
+if (mediaBaseUrl) {
+  assert(
+    fs.existsSync(deliveryPath),
+    "Falta content/bibli-images-r2.json para entrega R2"
+  );
+}
 
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 const mapping = JSON.parse(fs.readFileSync(mappingPath, "utf8"));
+const delivery = mediaBaseUrl
+  ? JSON.parse(fs.readFileSync(deliveryPath, "utf8"))
+  : null;
+
+const deliveryAssets = new Map(
+  (delivery?.assets ?? []).map((asset) => [asset.key, asset])
+);
 assert(registry.schemaVersion === 1, `schemaVersion no soportado: ${registry.schemaVersion}`);
 assert(registry.entries && typeof registry.entries === "object", "entries debe ser un objeto");
 assert(mapping.schemaVersion === 1, "bibli-images-integration-map.json: schemaVersion inválido");
 assert(mapping.overrides && typeof mapping.overrides === "object", "bibli-images-integration-map.json: overrides inválido");
+
+if (delivery) {
+  assert(
+    delivery.schemaVersion === 1,
+    `bibli-images-r2.json: schemaVersion no soportado: ${delivery.schemaVersion}`
+  );
+  assert(
+    delivery.source === "content/bibli-images-integrated.json",
+    "bibli-images-r2.json: source inválido"
+  );
+  assert(
+    Array.isArray(delivery.assets),
+    "bibli-images-r2.json: assets debe ser un arreglo"
+  );
+}
 
 const db = new Database(dbPath, { readonly: true });
 const glossaryLookup = db.prepare("SELECT id, slug, status FROM glossary_terms WHERE slug = ?");
@@ -69,11 +101,61 @@ for (const [key, entry] of Object.entries(registry.entries)) {
     const expectedChecksum = entry.visual?.[`${tier}Checksum`];
     assert(typeof urlPath === "string" && urlPath.startsWith("/media/"), `${key}: ${tier}Path inválido`);
     assert(urlPath.endsWith(".webp"), `${key}: ${tier} debe ser WebP en el piloto`);
-    const filePath = path.join(root, "public", urlPath.replace(/^\//, ""));
-    assert(fs.existsSync(filePath), `${key}: falta ${urlPath}`);
-    const actualChecksum = sha256(filePath);
-    assert(actualChecksum === expectedChecksum, `${key}: checksum ${tier} no coincide`);
-    mediaBytes += fs.statSync(filePath).size;
+    if (delivery) {
+      const objectKey = urlPath.replace(/^\/media\//, "");
+      const asset = deliveryAssets.get(objectKey);
+
+      assert(
+        asset,
+        `${key}: falta ${objectKey} en content/bibli-images-r2.json`
+      );
+      assert(
+        asset.slug === key,
+        `${key}: slug ${tier} no coincide en bibli-images-r2.json`
+      );
+      assert(
+        asset.tier === tier,
+        `${key}: tier ${tier} no coincide en bibli-images-r2.json`
+      );
+      assert(
+        asset.version === entry.visual.version,
+        `${key}: version ${tier} no coincide en bibli-images-r2.json`
+      );
+      assert(
+        asset.sha256 === expectedChecksum,
+        `${key}: checksum ${tier} no coincide con bibli-images-r2.json`
+      );
+      assert(
+        asset.width === entry.visual[`${tier}Width`],
+        `${key}: width ${tier} no coincide en bibli-images-r2.json`
+      );
+      assert(
+        asset.height === entry.visual[`${tier}Height`],
+        `${key}: height ${tier} no coincide en bibli-images-r2.json`
+      );
+      assert(
+        Number.isInteger(asset.bytes) && asset.bytes > 0,
+        `${key}: bytes ${tier} inválidos en bibli-images-r2.json`
+      );
+
+      mediaBytes += asset.bytes;
+    } else {
+      const filePath = path.join(
+        root,
+        "public",
+        urlPath.replace(/^\//, "")
+      );
+
+      assert(fs.existsSync(filePath), `${key}: falta ${urlPath}`);
+
+      const actualChecksum = sha256(filePath);
+      assert(
+        actualChecksum === expectedChecksum,
+        `${key}: checksum ${tier} no coincide`
+      );
+
+      mediaBytes += fs.statSync(filePath).size;
+    }
   }
 
   assert(Array.isArray(entry.biblicalReferences?.primary?.["es-419"]), `${key}: faltan referencias principales es-419`);
@@ -99,4 +181,11 @@ console.log("BibliImg integration: PASS");
 console.log(`Entradas integradas: ${integratedCount}`);
 console.log(`Locales requeridos: es-419 + en-US`);
 console.log(`Derivados web verificados: ${integratedCount * 2} · ${(mediaBytes / 1024).toFixed(0)} KB totales`);
+console.log(
+  `Entrega media: ${
+    delivery
+      ? `R2 (${mediaBaseUrl})`
+      : "fallback local public/media"
+  }`
+);
 console.log("Masters editoriales: permanecen fuera del repositorio Bibli");
