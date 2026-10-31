@@ -12,9 +12,24 @@ test('Approved BibliImg package enriches the Abraham glossary entry without repl
   await expect(figure).toHaveAttribute('data-bibli-img-certainty', 'plausible_reconstruction');
 
   const image = figure.locator('img');
-  await expect(image).toHaveAttribute('src', `${base}/media/editorial/personajes/abraham/v001/abraham--optimized.webp`);
+  const mediaBase = process.env.PUBLIC_BIBLI_MEDIA_BASE_URL?.replace(/\\\/$/, '');
+  const expectedImageSrc = mediaBase
+    ? `${mediaBase}/editorial/personajes/abraham/v001/abraham--optimized.webp`
+    : `${base}/media/editorial/personajes/abraham/v001/abraham--optimized.webp`;
+
+  await expect(image).toHaveAttribute('src', expectedImageSrc);
   await expect(image).toHaveAttribute('srcset', /abraham--optimized\.webp 512w, .*abraham--high\.webp 960w/);
   await expect(image).toHaveAttribute('alt', /Figura aislada de cuerpo entero de Abraham/);
+
+  await expect.poll(
+    () =>
+      image.evaluate((element) =>
+        element instanceof HTMLImageElement
+          ? element.naturalWidth
+          : 0
+      ),
+    { message: 'BibliImg image should load successfully' }
+  ).toBeGreaterThan(0);
 
   const editorial = page.locator('[data-bibli-img-content="personajes-abraham"]');
   await expect(editorial).toBeVisible();

@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_BIBLI_MEDIA_BASE_URL: ${{ vars.PUBLIC_BIBLI_MEDIA_BASE_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -32,6 +34,28 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Validate BibliImg public media configuration
+        run: |
+          node --input-type=module <<'NODECHECK'
+          const value = process.env.PUBLIC_BIBLI_MEDIA_BASE_URL?.trim() ?? "";
+
+          if (!value) {
+            throw new Error(
+              "PUBLIC_BIBLI_MEDIA_BASE_URL no está configurada."
+            );
+          }
+
+          const url = new URL(value);
+
+          if (url.protocol !== "https:") {
+            throw new Error(
+              "PUBLIC_BIBLI_MEDIA_BASE_URL debe usar HTTPS."
+            );
+          }
+
+          console.log("BibliImg public media configuration: PASS");
+          NODECHECK
 
       - name: Validate and build site
         run: npm run build

@@ -1,4 +1,5 @@
 import registryJson from "../../content/bibli-images-integrated.json";
+import { sitePath } from "./site-paths";
 
 export type BibliImgLocale = "es-419" | "en-US";
 
@@ -71,6 +72,24 @@ type Registry = {
 };
 
 const registry = registryJson as Registry;
+
+
+const configuredMediaBaseUrl =
+  import.meta.env.PUBLIC_BIBLI_MEDIA_BASE_URL?.trim().replace(/\/+$/, "") ?? "";
+
+export function bibliImgMediaUrl(publicPath: string): string {
+  if (!publicPath.startsWith("/media/editorial/")) {
+    throw new Error(`Ruta BibliImg inesperada: ${publicPath}`);
+  }
+
+  if (!configuredMediaBaseUrl) {
+    return sitePath(publicPath);
+  }
+
+  const objectKey = publicPath.replace(/^\/media\//, "");
+
+  return `${configuredMediaBaseUrl}/${objectKey}`;
+}
 
 export function getIntegratedGlossaryEntry(slug: string): IntegratedBibliImgEntry | undefined {
   const entry = registry.entries[slug];

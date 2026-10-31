@@ -2,7 +2,7 @@
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
-import { getIntegratedGlossaryEntry } from "../../lib/bibli-images";
+import { bibliImgMediaUrl, getIntegratedGlossaryEntry } from "../../lib/bibli-images";
 import {
   getAllGlossaryTerms,
   getLessonsByGlossaryId,
@@ -62,8 +62,8 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(term.term)}`;
           data-bibli-img-certainty={editorialEntry.historical.certainty}
         >
           <img
-            src={sitePath(editorialEntry.visual.optimizedPath)}
-            srcset={`${sitePath(editorialEntry.visual.optimizedPath)} ${editorialEntry.visual.optimizedWidth}w, ${sitePath(editorialEntry.visual.highPath)} ${editorialEntry.visual.highWidth}w`}
+            src={bibliImgMediaUrl(editorialEntry.visual.optimizedPath)}
+            srcset={`${bibliImgMediaUrl(editorialEntry.visual.optimizedPath)} ${editorialEntry.visual.optimizedWidth}w, ${bibliImgMediaUrl(editorialEntry.visual.highPath)} ${editorialEntry.visual.highWidth}w`}
             sizes="(max-width: 820px) 72vw, 280px"
             width={editorialEntry.visual.optimizedWidth}
             height={editorialEntry.visual.optimizedHeight}
