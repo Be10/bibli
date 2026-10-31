@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { sitePath } from "../lib/site-paths";
+import bibliImgDelivery from "../../content/bibli-images-r2.json";
 import {
   getBibleBookPath,
   getBibleChapterPath,
@@ -32,6 +33,37 @@ type OfflinePackage = {
   urls: string[];
   urlCount: number;
   revision: string;
+};
+
+type MediaQuality = "optimized" | "high";
+
+type OfflineMediaAsset = {
+  slug: string;
+  version: number;
+  key: string;
+  url: string;
+  sha256: string;
+  bytes: number;
+};
+
+type OfflineMediaVariant = {
+  quality: MediaQuality;
+  label: { es: string; en: string };
+  urls: string[];
+  urlCount: number;
+  totalBytes: number;
+  revision: string;
+  assets: OfflineMediaAsset[];
+};
+
+type OfflineMediaPackage = {
+  id: "bibliimg";
+  kind: "media";
+  language: "all";
+  title: { es: string; en: string };
+  description: { es: string; en: string };
+  revision: string;
+  variants: Record<MediaQuality, OfflineMediaVariant>;
 };
 
 const root = process.cwd();
@@ -112,6 +144,69 @@ function buildPackage(
   };
 }
 
+function mediaAssetUrl(key: string) {
+  const configured =
+    import.meta.env.PUBLIC_BIBLI_MEDIA_BASE_URL
+      ?.trim()
+      .replace(/\/+$/, "") ?? "";
+
+  return configured
+    ? `${configured}/${key}`
+    : sitePath(`/media/${key}`);
+}
+
+function buildMediaVariant(
+  quality: MediaQuality,
+): OfflineMediaVariant {
+  const assets = bibliImgDelivery.assets
+    .filter((asset) => asset.tier === quality)
+    .map((asset) => ({
+      slug: asset.slug,
+      version: asset.version,
+      key: asset.key,
+      url: mediaAssetUrl(asset.key),
+      sha256: asset.sha256,
+      bytes: asset.bytes,
+    }))
+    .sort((a, b) => a.key.localeCompare(b.key));
+
+  const urls = assets.map((asset) => asset.url);
+
+  const totalBytes = assets.reduce(
+    (sum, asset) => sum + asset.bytes,
+    0,
+  );
+
+  const revision = digestParts([
+    "bibliimg-media-v1",
+    bibliImgDelivery.revision,
+    quality,
+    ...assets.map(
+      (asset) =>
+        `${asset.url}\t${asset.sha256}\t${asset.bytes}`,
+    ),
+  ]);
+
+  return {
+    quality,
+    label:
+      quality === "optimized"
+        ? {
+            es: "Optimizado para uso sin conexión",
+            en: "Optimized for offline use",
+          }
+        : {
+            es: "Alta calidad",
+            en: "High quality",
+          },
+    urls,
+    urlCount: urls.length,
+    totalBytes,
+    revision,
+    assets,
+  };
+}
+
 function bibleContentRevision(versionId: string, language: "es" | "en") {
   const version = getAllBibleVersions().find((item) => item.id === versionId);
   const books = getAllBooksByLanguage(language)
@@ -174,7 +269,7 @@ export function GET() {
       .map((lesson) => sitePath(`/lecciones/${lesson.slug}/`)),
   ]);
 
-  const packages: OfflinePackage[] = [
+  const packages: Array<OfflinePackage | OfflineMediaPackage> = [
     buildPackage(
       {
         id: "app",
@@ -242,8 +337,37 @@ export function GET() {
     );
   }
 
+  const optimizedMedia =
+    buildMediaVariant("optimized");
+
+  const highMedia =
+    buildMediaVariant("high");
+
+  packages.push({
+    id: "bibliimg",
+    kind: "media",
+    language: "all",
+    title: {
+      es: "Imágenes del Glosario",
+      en: "Glossary images",
+    },
+    description: {
+      es: "Ilustraciones editoriales de BibliImg disponibles para lectura sin conexión.",
+      en: "BibliImg editorial illustrations available for offline reading.",
+    },
+    revision: digestParts([
+      "bibliimg-media-package-v1",
+      optimizedMedia.revision,
+      highMedia.revision,
+    ]),
+    variants: {
+      optimized: optimizedMedia,
+      high: highMedia,
+    },
+  });
+
   return new Response(JSON.stringify({
-    schemaVersion: "1.1.0",
+    schemaVersion: "1.2.0",
     revisionStrategy: REVISION_STRATEGY,
     packages,
   }), {

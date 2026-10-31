@@ -37,6 +37,12 @@ const integratedManifestPath = path.join(
   "bibli-images-integrated.json"
 );
 
+const deliveryManifestPath = path.join(
+  repoRoot,
+  "content",
+  "bibli-images-r2.json"
+);
+
 function assertSha256(value, label) {
   if (!/^[a-f0-9]{64}$/i.test(value ?? "")) {
     throw new Error(`SHA-256 inválido para ${label}`);
@@ -264,6 +270,86 @@ async function buildAssetPlan() {
     integratedEntries,
     assets
   };
+}
+
+function buildDeliveryManifest(plan) {
+  const assets = plan.assets
+    .map((asset) => ({
+      slug: asset.slug,
+      group: asset.group ?? null,
+      canonicalName: asset.canonicalName ?? asset.slug,
+      version: asset.version,
+      tier: asset.tier,
+      key: asset.key,
+      sha256: asset.sha256,
+      bytes: asset.bytes,
+      width: asset.width,
+      height: asset.height
+    }))
+    .sort((a, b) => a.key.localeCompare(b.key));
+
+  const summarizeTier = (tier) => {
+    const selected = assets.filter(
+      (asset) => asset.tier === tier
+    );
+
+    return {
+      assetCount: selected.length,
+      totalBytes: selected.reduce(
+        (sum, asset) => sum + asset.bytes,
+        0
+      )
+    };
+  };
+
+  const revisionSource = assets.map((asset) => ({
+    slug: asset.slug,
+    version: asset.version,
+    tier: asset.tier,
+    key: asset.key,
+    sha256: asset.sha256,
+    bytes: asset.bytes,
+    width: asset.width,
+    height: asset.height
+  }));
+
+  const revision = crypto
+    .createHash("sha256")
+    .update(JSON.stringify(revisionSource))
+    .digest("hex")
+    .slice(0, 16);
+
+  return {
+    schemaVersion: 1,
+    source: "content/bibli-images-integrated.json",
+    revision,
+    entryCount: plan.integratedEntries,
+    assetCount: assets.length,
+    tiers: {
+      optimized: summarizeTier("optimized"),
+      high: summarizeTier("high")
+    },
+    assets
+  };
+}
+
+async function writeDeliveryManifest(plan) {
+  const manifest = buildDeliveryManifest(plan);
+
+  await fs.writeFile(
+    deliveryManifestPath,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    "utf8"
+  );
+
+  console.log(
+    "Delivery manifest:",
+    path.relative(repoRoot, deliveryManifestPath)
+  );
+  console.log(
+    "Delivery revision:",
+    manifest.revision
+  );
 }
 
 function printPlan(plan) {
@@ -576,6 +662,10 @@ async function check(plan) {
 const plan = await buildAssetPlan();
 
 printPlan(plan);
+
+if (mode === "plan") {
+  await writeDeliveryManifest(plan);
+}
 
 if (mode === "publish") {
   console.log("");

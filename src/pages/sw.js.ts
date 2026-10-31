@@ -4,16 +4,23 @@ export function GET() {
   const rawBase = import.meta.env.BASE_URL ?? "/";
   const base = rawBase === "/" ? "" : rawBase.replace(/\/$/, "");
   const scope = base ? `${base}/` : "/";
+  const rawMediaBase = import.meta.env.PUBLIC_BIBLI_MEDIA_BASE_URL?.trim() ?? "";
+  const mediaBase = rawMediaBase.replace(/\/+$/, "");
+  const mediaOrigin = mediaBase ? new URL(mediaBase).origin : "";
   const cacheVersion = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
 
   const source = `
 const BASE = ${JSON.stringify(base)};
+const MEDIA_ORIGIN = ${JSON.stringify(mediaOrigin)};
+const MEDIA_PATH_PREFIX = "/editorial/";
 const CACHE_VERSION = ${JSON.stringify(cacheVersion)};
 const SHELL_CACHE = "bibli-shell-" + CACHE_VERSION;
 const RUNTIME_CACHE = "bibli-runtime-" + CACHE_VERSION;
 const MAX_RUNTIME_ENTRIES = 140;
 const MAX_RUNTIME_RESPONSE_BYTES = 2000000;
 const PACKAGE_CACHE_PREFIX = "bibli-package-";
+const BIBLIIMG_CONTROL_CACHE = "bibli-package-bibliimg-control-v1";
+const BIBLIIMG_CONTROL_URL = self.location.origin + "/__bibliimg-control__";
 const CORE_URLS = [
   BASE + "/",
   BASE + "/en/",
@@ -50,6 +57,87 @@ async function cacheResponse(cacheName, request, response) {
   await cache.put(request, response.clone());
   if (cacheName === RUNTIME_CACHE) await trimCache(RUNTIME_CACHE, MAX_RUNTIME_ENTRIES);
   return response;
+}
+
+function bibliImgVariantUrl(url, tier) {
+  if (
+    !/--(?:optimized|high)\.webp$/.test(
+      url.pathname
+    )
+  ) {
+    return null;
+  }
+
+  const variant = new URL(url.href);
+
+  variant.pathname = variant.pathname.replace(
+    /--(?:optimized|high)\.webp$/,
+    "--" + tier + ".webp"
+  );
+
+  return variant.href;
+}
+
+async function matchActiveBibliImg(url) {
+  const controlCache =
+    await caches.open(
+      BIBLIIMG_CONTROL_CACHE
+    );
+
+  const controlResponse =
+    await controlCache.match(
+      BIBLIIMG_CONTROL_URL
+    );
+
+  if (!controlResponse) {
+    return null;
+  }
+
+  let active;
+
+  try {
+    active =
+      await controlResponse.json();
+  } catch {
+    return null;
+  }
+
+  if (
+    !active ||
+    typeof active.cacheName !== "string"
+  ) {
+    return null;
+  }
+
+  const activeCache =
+    await caches.open(active.cacheName);
+
+  const highUrl =
+    bibliImgVariantUrl(url, "high");
+
+  const optimizedUrl =
+    bibliImgVariantUrl(
+      url,
+      "optimized"
+    );
+
+  if (highUrl) {
+    const high =
+      await activeCache.match(highUrl);
+
+    if (high) return high;
+  }
+
+  if (optimizedUrl) {
+    const optimized =
+      await activeCache.match(
+        optimizedUrl
+      );
+
+    if (optimized) return optimized;
+  }
+
+  return activeCache.match(url.href);
 }
 
 async function warmShell() {
@@ -93,7 +181,29 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+  const isExternalBibliImgMedia =
+    Boolean(MEDIA_ORIGIN) &&
+    url.origin === MEDIA_ORIGIN &&
+    url.pathname.startsWith(MEDIA_PATH_PREFIX);
+  const isLocalBibliImgMedia =
+    url.origin === self.location.origin &&
+    url.pathname.startsWith(BASE + "/media/editorial/");
+  const isBibliImgMedia = isExternalBibliImgMedia || isLocalBibliImgMedia;
+
+  if (url.origin !== self.location.origin && !isBibliImgMedia) return;
+
+  if (isBibliImgMedia) {
+    event.respondWith((async () => {
+      try {
+        return await fetch(request);
+      } catch {
+        return (
+          await matchActiveBibliImg(url)
+        ) || Response.error();
+      }
+    })());
+    return;
+  }
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {

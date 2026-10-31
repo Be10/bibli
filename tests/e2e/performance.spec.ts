@@ -153,17 +153,52 @@ test('Offline package revisions change with content, not only URL membership', a
     return response.json();
   }, `${base}/offline-packages.json`);
 
-  expect(payload.schemaVersion).toBe('1.1.0');
+  expect(payload.schemaVersion).toBe('1.2.0');
   expect(payload.revisionStrategy).toBe('content-v2');
   expect(Array.isArray(payload.packages)).toBe(true);
   expect(payload.packages.length).toBeGreaterThan(2);
 
   for (const pkg of payload.packages) {
     expect(pkg.revision).toMatch(/^[a-f0-9]{16}$/i);
+
+    if (pkg.kind === 'media') {
+      expect(pkg.id).toBe('bibliimg');
+      expect(pkg.variants).toBeTruthy();
+
+      for (const quality of ['optimized', 'high']) {
+        const variant = pkg.variants?.[quality];
+
+        expect(variant).toBeTruthy();
+        expect(variant.quality).toBe(quality);
+        expect(Array.isArray(variant.urls)).toBe(true);
+        expect(variant.revision).toMatch(/^[a-f0-9]{16}$/i);
+
+        const legacyUrlRevision = createHash('sha1')
+          .update([...variant.urls].sort().join('\n'))
+          .digest('hex')
+          .slice(0, 12);
+
+        expect(variant.revision).not.toBe(legacyUrlRevision);
+
+        expect(Array.isArray(variant.assets)).toBe(true);
+        expect(variant.assets).toHaveLength(variant.urls.length);
+
+        for (const asset of variant.assets) {
+          expect(asset.sha256).toMatch(/^[a-f0-9]{64}$/i);
+          expect(asset.bytes).toBeGreaterThan(0);
+        }
+      }
+
+      continue;
+    }
+
+    expect(Array.isArray(pkg.urls)).toBe(true);
+
     const legacyUrlRevision = createHash('sha1')
       .update([...pkg.urls].sort().join('\n'))
       .digest('hex')
       .slice(0, 12);
+
     expect(pkg.revision).not.toBe(legacyUrlRevision);
   }
 });

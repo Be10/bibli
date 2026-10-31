@@ -16,9 +16,11 @@ const copy = lang === "en"
       app: "App",
       lessons: "Lessons",
       bible: "Bible",
+      images: "Images",
       items: "pages",
       download: "Download",
       update: "Update",
+      changeQuality: "Change quality",
       remove: "Remove",
       installed: "Downloaded",
       upToDate: "Up to date",
@@ -26,6 +28,7 @@ const copy = lang === "en"
       packagesReady: "packages ready",
       updates: "updates",
       downloading: "Downloading",
+      verifying: "Verifying integrity…",
       finalizing: "Saving local resources…",
       done: "Package ready offline.",
       removed: "Package removed.",
@@ -42,9 +45,11 @@ const copy = lang === "en"
       app: "Aplicación",
       lessons: "Lecciones",
       bible: "Biblia",
+      images: "Imágenes",
       items: "páginas",
       download: "Descargar",
       update: "Actualizar",
+      changeQuality: "Cambiar calidad",
       remove: "Eliminar",
       installed: "Descargado",
       upToDate: "Actualizado",
@@ -52,6 +57,7 @@ const copy = lang === "en"
       packagesReady: "paquetes listos",
       updates: "actualizaciones",
       downloading: "Descargando",
+      verifying: "Verificando integridad…",
       finalizing: "Guardando recursos locales…",
       done: "Paquete listo para usar sin conexión.",
       removed: "Paquete eliminado.",
@@ -92,23 +98,80 @@ const copy = lang === "en"
     const summary = root.querySelector("[data-offline-summary]");
     const stateKey = "bibli-offline-packages-v1";
     const cachePrefix = "bibli-package-";
+    const bibliImgControlCacheName = "bibli-package-bibliimg-control-v1";
+    const bibliImgControlUrl = location.origin + "/__bibliimg-control__";
+    const bibliImgCachePrefix = "bibli-package-bibliimg-";
+    const mediaSelections = {};
     let packages = [];
     let busyPackageId = null;
 
     const escapeHtml = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
     const cacheName = (id) => `${cachePrefix}${id}-v1`;
+    const isMediaPackage = (pkg) => pkg?.id === "bibliimg" && pkg?.kind === "media";
+    const mediaCacheName = (quality, revision) =>
+      `${bibliImgCachePrefix}${quality}-${revision}-stage-${Date.now().toString(36)}`;
     const loadState = () => {
       try { return JSON.parse(localStorage.getItem(stateKey) || "{}"); } catch { return {}; }
     };
     const saveState = (state) => localStorage.setItem(stateKey, JSON.stringify(state));
+    const readBibliImgControl = async () => {
+      try {
+        const cache = await caches.open(bibliImgControlCacheName);
+        const response = await cache.match(bibliImgControlUrl);
+        if (!response) return null;
+        const value = await response.json();
+        return value && typeof value.cacheName === "string" && typeof value.quality === "string"
+          ? value
+          : null;
+      } catch {
+        return null;
+      }
+    };
+    const writeBibliImgControl = async (value) => {
+      const cache = await caches.open(bibliImgControlCacheName);
+      await cache.put(
+        bibliImgControlUrl,
+        new Response(JSON.stringify(value), {
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }),
+      );
+    };
+    const cleanupBibliImgCaches = async (activeCacheName = null) => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter(
+            (key) =>
+              key.startsWith(bibliImgCachePrefix) &&
+              key !== bibliImgControlCacheName &&
+              key !== activeCacheName,
+          )
+          .map((key) => caches.delete(key)),
+      );
+    };
+    const sha256Hex = async (buffer) => {
+      const digest = await crypto.subtle.digest("SHA-256", buffer);
+      return Array.from(new Uint8Array(digest), (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join("");
+    };
     const formatBytes = (bytes) => {
       if (!Number.isFinite(bytes) || bytes <= 0) return "0 MB";
       const mb = bytes / 1024 / 1024;
       return `${mb < 10 ? mb.toFixed(1) : Math.round(mb)} MB`;
     };
-    const kindLabel = (kind) => kind === "app" ? copy.app : kind === "lessons" ? copy.lessons : copy.bible;
+    const kindLabel = (kind) =>
+      kind === "app"
+        ? copy.app
+        : kind === "lessons"
+          ? copy.lessons
+          : kind === "media"
+            ? copy.images
+            : copy.bible;
     const titleFor = (pkg) => pkg.title?.[language] ?? pkg.title?.es ?? pkg.id;
     const descriptionFor = (pkg) => pkg.description?.[language] ?? pkg.description?.es ?? "";
+    const variantLabelFor = (variant) =>
+      variant?.label?.[language] ?? variant?.label?.es ?? variant?.quality ?? "";
 
     const updateConnection = () => {
       if (!(connection instanceof HTMLElement)) return;
@@ -140,7 +203,23 @@ const copy = lang === "en"
       const keys = await caches.keys();
       const state = loadState();
       const installed = {};
+      const control = await readBibliImgControl();
       for (const pkg of packages) {
+        if (isMediaPackage(pkg)) {
+          const exists = Boolean(control?.cacheName && keys.includes(control.cacheName));
+          const savedMeta = state[pkg.id] ?? null;
+          const meta = exists
+            ? {
+                ...(savedMeta ?? {}),
+                revision: control.packageRevision ?? savedMeta?.revision ?? null,
+                quality: control.quality,
+                variantRevision: control.revision ?? savedMeta?.variantRevision ?? null,
+                installedAt: control.activatedAt ?? savedMeta?.installedAt ?? null,
+              }
+            : null;
+          installed[pkg.id] = { exists, meta };
+          continue;
+        }
         const exists = keys.includes(cacheName(pkg.id));
         installed[pkg.id] = { exists, meta: state[pkg.id] ?? null };
       }
@@ -154,7 +233,13 @@ const copy = lang === "en"
       const installedCount = visible.filter((pkg) => installed[pkg.id]?.exists).length;
       const outdatedCount = visible.filter((pkg) => {
         const info = installed[pkg.id];
-        return info?.exists && info?.meta?.revision !== pkg.revision;
+        if (!info?.exists) return false;
+        if (isMediaPackage(pkg)) {
+          const quality = info.meta?.quality;
+          const variant = quality ? pkg.variants?.[quality] : null;
+          return !variant || info.meta?.variantRevision !== variant.revision;
+        }
+        return info.meta?.revision !== pkg.revision;
       }).length;
 
       if (summary instanceof HTMLElement) {
@@ -165,8 +250,63 @@ const copy = lang === "en"
       list.innerHTML = visible.map((pkg) => {
         const info = installed[pkg.id];
         const current = Boolean(info?.exists);
-        const outdated = current && info?.meta?.revision !== pkg.revision;
         const working = busyPackageId === pkg.id;
+
+        if (isMediaPackage(pkg)) {
+          const activeQuality = current ? info?.meta?.quality ?? null : null;
+          const selectedQuality = mediaSelections[pkg.id] ?? activeQuality ?? "optimized";
+          mediaSelections[pkg.id] = selectedQuality;
+          const variant = pkg.variants?.[selectedQuality] ?? pkg.variants?.optimized;
+          const activeVariant = activeQuality ? pkg.variants?.[activeQuality] : null;
+          const outdated = Boolean(current && (!activeVariant || info?.meta?.variantRevision !== activeVariant.revision));
+          const changingQuality = Boolean(current && activeQuality && selectedQuality !== activeQuality);
+          const sameCurrentQuality = Boolean(current && activeQuality === selectedQuality && !outdated);
+          const downloadDisabled = working || !navigator.onLine || sameCurrentQuality;
+          const actionLabel = sameCurrentQuality
+            ? copy.upToDate
+            : changingQuality
+              ? copy.changeQuality
+              : current
+                ? copy.update
+                : copy.download;
+          const statusLabel = outdated
+            ? copy.updateAvailable
+            : current && activeVariant
+              ? `${copy.installed} · ${variantLabelFor(activeVariant)}`
+              : "";
+          const options = ["optimized", "high"]
+            .map((quality) => {
+              const option = pkg.variants?.[quality];
+              if (!option) return "";
+              const selected = quality === selectedQuality ? " selected" : "";
+              return `<option value="${escapeHtml(quality)}"${selected}>${escapeHtml(variantLabelFor(option))} · ${escapeHtml(formatBytes(option.totalBytes))}</option>`;
+            })
+            .join("");
+
+          return `<article class="offline-package-card${outdated ? " has-update" : ""}" data-package-id="${escapeHtml(pkg.id)}" aria-busy="${working}">
+            <div class="package-copy">
+              <span class="package-kind">${escapeHtml(kindLabel(pkg.kind))}</span>
+              <h3>${escapeHtml(titleFor(pkg))}</h3>
+              <p>${escapeHtml(descriptionFor(pkg))}</p>
+              <label class="package-quality">
+                <span>${escapeHtml(copy.changeQuality)}</span>
+                <select data-media-quality="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${options}</select>
+              </label>
+              <div class="package-meta">
+                <span>${variant?.urlCount ?? 0} ${escapeHtml(copy.images)}</span>
+                <span>${escapeHtml(formatBytes(variant?.totalBytes ?? 0))}</span>
+                ${statusLabel ? `<strong class="${outdated ? "is-outdated" : "is-current"}">${escapeHtml(statusLabel)}</strong>` : ""}
+              </div>
+            </div>
+            <div class="package-actions">
+              <button type="button" class="package-download" data-package-download="${escapeHtml(pkg.id)}" ${downloadDisabled ? "disabled" : ""}>${escapeHtml(actionLabel)}</button>
+              ${current ? `<button type="button" class="package-remove" data-package-remove="${escapeHtml(pkg.id)}" ${working ? "disabled" : ""}>${escapeHtml(copy.remove)}</button>` : ""}
+            </div>
+            <div class="package-progress" data-package-progress="${escapeHtml(pkg.id)}" role="progressbar" aria-label="${escapeHtml(titleFor(pkg))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" ${working ? "" : "hidden"}><span></span><small></small></div>
+          </article>`;
+        }
+
+        const outdated = current && info?.meta?.revision !== pkg.revision;
         const downloadDisabled = working || !navigator.onLine;
         const statusLabel = outdated ? copy.updateAvailable : copy.upToDate;
         return `<article class="offline-package-card${outdated ? " has-update" : ""}" data-package-id="${escapeHtml(pkg.id)}" aria-busy="${working}">
@@ -184,6 +324,13 @@ const copy = lang === "en"
         </article>`;
       }).join("");
 
+      list.querySelectorAll("[data-media-quality]").forEach((select) => select.addEventListener("change", () => {
+        const id = select.getAttribute("data-media-quality");
+        if (id && select instanceof HTMLSelectElement) {
+          mediaSelections[id] = select.value;
+          void render();
+        }
+      }));
       list.querySelectorAll("[data-package-download]").forEach((button) => button.addEventListener("click", () => downloadPackage(button.getAttribute("data-package-download"))));
       list.querySelectorAll("[data-package-remove]").forEach((button) => button.addEventListener("click", () => removePackage(button.getAttribute("data-package-remove"))));
     };
@@ -228,7 +375,7 @@ const copy = lang === "en"
       return found;
     };
 
-    const setProgress = (id, completed, total, finalizing = false) => {
+    const setProgress = (id, completed, total, finalizing = false, verifying = false) => {
       const card = list?.querySelector(`[data-package-id="${CSS.escape(id)}"]`);
       const progress = card?.querySelector("[data-package-progress]");
       if (!(progress instanceof HTMLElement)) return;
@@ -238,14 +385,123 @@ const copy = lang === "en"
       const pct = total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
       progress.setAttribute("aria-valuenow", String(pct));
       if (bar instanceof HTMLElement) bar.style.width = `${pct}%`;
-      if (label) label.textContent = finalizing ? copy.finalizing : `${copy.downloading} ${completed}/${total}`;
+      if (label) {
+        label.textContent = finalizing
+          ? copy.finalizing
+          : verifying
+            ? copy.verifying
+            : `${copy.downloading} ${completed}/${total}`;
+      }
     };
+
+    async function downloadMediaPackage(pkg) {
+      const id = pkg.id;
+      if (busyPackageId || !navigator.onLine || !globalThis.crypto?.subtle) {
+        if (feedback) feedback.textContent = copy.failed;
+        return;
+      }
+
+      const installedState = loadState()[id] ?? null;
+      const quality = mediaSelections[id] ?? installedState?.quality ?? "optimized";
+      const variant = pkg.variants?.[quality];
+      if (!variant || !Array.isArray(variant.assets) || variant.assets.length === 0) {
+        if (feedback) feedback.textContent = copy.failed;
+        return;
+      }
+
+      busyPackageId = id;
+      await render();
+      if (feedback) feedback.textContent = `${copy.downloading}: ${titleFor(pkg)} · ${variantLabelFor(variant)}`;
+
+      const stageCacheName = mediaCacheName(quality, variant.revision);
+      const cache = await caches.open(stageCacheName);
+      let completed = 0;
+
+      try {
+        for (let cursor = 0; cursor < variant.assets.length; cursor += 4) {
+          const batch = variant.assets.slice(cursor, cursor + 4);
+          await Promise.all(batch.map(async (asset) => {
+            const response = await fetch(asset.url, {
+              cache: "no-cache",
+              credentials: "omit",
+              mode: "cors",
+            });
+            if (!response.ok) throw new Error(`${response.status} ${asset.url}`);
+
+            const buffer = await response.arrayBuffer();
+            if (buffer.byteLength !== asset.bytes) {
+              throw new Error(`BibliImg size mismatch: ${asset.key}`);
+            }
+
+            const digest = await sha256Hex(buffer);
+            if (digest !== asset.sha256) {
+              throw new Error(`BibliImg SHA-256 mismatch: ${asset.key}`);
+            }
+
+            const headers = new Headers(response.headers);
+            if (!headers.has("Content-Type")) headers.set("Content-Type", "image/webp");
+            await cache.put(
+              asset.url,
+              new Response(buffer, {
+                status: 200,
+                headers,
+              }),
+            );
+
+            completed += 1;
+            setProgress(id, completed, variant.assets.length);
+          }));
+        }
+
+        setProgress(id, completed, variant.assets.length, false, true);
+        for (const asset of variant.assets) {
+          const cached = await cache.match(asset.url);
+          if (!cached) throw new Error(`BibliImg cache incomplete: ${asset.key}`);
+        }
+
+        setProgress(id, completed, variant.assets.length, true);
+        const activatedAt = new Date().toISOString();
+        await writeBibliImgControl({
+          cacheName: stageCacheName,
+          quality,
+          revision: variant.revision,
+          packageRevision: pkg.revision,
+          activatedAt,
+        });
+
+        const state = loadState();
+        state[id] = {
+          revision: pkg.revision,
+          quality,
+          variantRevision: variant.revision,
+          urlCount: variant.urlCount,
+          cachedEntries: variant.assets.length,
+          installedAt: activatedAt,
+        };
+        saveState(state);
+        await cleanupBibliImgCaches(stageCacheName);
+        mediaSelections[id] = quality;
+        if (feedback) feedback.textContent = `${titleFor(pkg)} · ${variantLabelFor(variant)}: ${copy.done}`;
+      } catch (error) {
+        console.error("BibliImg offline package failed", error);
+        await caches.delete(stageCacheName);
+        if (feedback) feedback.textContent = copy.failed;
+      } finally {
+        busyPackageId = null;
+        await render();
+        await updateStorage();
+      }
+    }
 
     async function downloadPackage(id) {
       if (!id || busyPackageId) return;
       const pkg = packages.find((item) => item.id === id);
       if (!pkg || !navigator.onLine) {
         if (feedback) feedback.textContent = copy.failed;
+        return;
+      }
+      if (isMediaPackage(pkg)) {
+        await downloadMediaPackage(pkg);
         return;
       }
       busyPackageId = id;
@@ -299,12 +555,22 @@ const copy = lang === "en"
 
     async function removePackage(id) {
       if (!id || busyPackageId || !confirm(copy.confirmRemove)) return;
+      const pkg = packages.find((item) => item.id === id);
+      if (!pkg) return;
       busyPackageId = id;
       await render();
-      await caches.delete(cacheName(id));
+
+      if (isMediaPackage(pkg)) {
+        await caches.delete(bibliImgControlCacheName);
+        await cleanupBibliImgCaches(null);
+      } else {
+        await caches.delete(cacheName(id));
+      }
+
       const state = loadState();
       delete state[id];
       saveState(state);
+      delete mediaSelections[id];
       busyPackageId = null;
       if (feedback) feedback.textContent = copy.removed;
       await render();
@@ -359,6 +625,10 @@ const copy = lang === "en"
   [data-offline-manager] .package-kind { display:inline-flex; align-items:center; min-height:24px; padding:0 .5rem; border-radius:8px; background:var(--accent-soft); color:var(--accent); font-size:.64rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
   [data-offline-manager] .package-copy h3 { margin:.6rem 0 .4rem; color:var(--heading-color); font-size:1.04rem; line-height:1.28; }
   [data-offline-manager] .package-copy p { margin:0; color:var(--text-muted); font-size:.8rem; line-height:1.55; }
+  [data-offline-manager] .package-quality { display:grid; gap:.35rem; width:min(100%,360px); margin-top:.8rem; color:var(--text-muted); font-size:.68rem; font-weight:760; }
+  [data-offline-manager] .package-quality select { width:100%; min-height:40px; padding:0 .7rem; border:1px solid var(--border-color); border-radius:var(--ui-control-radius,12px); background:var(--surface-soft); color:var(--text-color); font:inherit; font-size:.75rem; cursor:pointer; }
+  [data-offline-manager] .package-quality select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  [data-offline-manager] .package-quality select:disabled { opacity:.6; cursor:wait; }
   [data-offline-manager] .package-meta { display:flex; flex-wrap:wrap; gap:.35rem .55rem; margin-top:auto; padding-top:.75rem; color:var(--text-muted); font-size:.7rem; }
   [data-offline-manager] .package-meta span,
   [data-offline-manager] .package-meta strong { display:inline-flex; align-items:center; min-height:24px; padding:0 .45rem; border-radius:8px; background:var(--surface-soft); }

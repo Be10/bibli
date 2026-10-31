@@ -482,22 +482,79 @@ let hasContentSensitiveOfflineRevisions = false;
 if (fs.existsSync(offlinePackagesPath)) {
   try {
     const payload = JSON.parse(fs.readFileSync(offlinePackagesPath, 'utf8'));
-    if (payload?.schemaVersion !== '1.1.0' || payload?.revisionStrategy !== 'content-v2') {
+    if (payload?.schemaVersion !== '1.2.0' || payload?.revisionStrategy !== 'content-v2') {
       errors.push('PWA: offline-packages.json no declara la estrategia de revisión content-v2');
     } else if (!Array.isArray(payload?.packages) || payload.packages.length === 0) {
       errors.push('PWA: offline-packages.json no contiene paquetes versionados');
     } else {
-      let revisionsAreContentSensitive = true;
-      for (const pkg of payload.packages) {
-        if (!Array.isArray(pkg?.urls) || !/^[a-f0-9]{16}$/i.test(String(pkg?.revision ?? ''))) {
-          revisionsAreContentSensitive = false;
-          break;
+      const hasContentSensitiveRevision = (urls, revision) => {
+        if (
+          !Array.isArray(urls) ||
+          !/^[a-f0-9]{16}$/i.test(String(revision ?? ''))
+        ) {
+          return false;
         }
+
         const legacyUrlRevision = createHash('sha1')
-          .update([...pkg.urls].sort().join('\n'))
+          .update([...urls].sort().join('\n'))
           .digest('hex')
           .slice(0, 12);
-        if (pkg.revision === legacyUrlRevision) {
+
+        return revision !== legacyUrlRevision;
+      };
+
+      const hasValidMediaAssets = (variant) =>
+        Array.isArray(variant?.assets) &&
+        variant.assets.length === variant.urls.length &&
+        variant.assets.every(
+          (asset) =>
+            typeof asset?.url === 'string' &&
+            /^[a-f0-9]{64}$/i.test(String(asset?.sha256 ?? '')) &&
+            Number.isInteger(asset?.bytes) &&
+            asset.bytes > 0
+        );
+
+      let revisionsAreContentSensitive = true;
+
+      for (const pkg of payload.packages) {
+        if (pkg?.kind === 'media') {
+          if (
+            !/^[a-f0-9]{16}$/i.test(String(pkg?.revision ?? '')) ||
+            !pkg?.variants ||
+            typeof pkg.variants !== 'object'
+          ) {
+            revisionsAreContentSensitive = false;
+            break;
+          }
+
+          for (const quality of ['optimized', 'high']) {
+            const variant = pkg.variants[quality];
+
+            if (
+              !hasContentSensitiveRevision(
+                variant?.urls,
+                variant?.revision
+              ) ||
+              !hasValidMediaAssets(variant)
+            ) {
+              revisionsAreContentSensitive = false;
+              break;
+            }
+          }
+
+          if (!revisionsAreContentSensitive) {
+            break;
+          }
+
+          continue;
+        }
+
+        if (
+          !hasContentSensitiveRevision(
+            pkg?.urls,
+            pkg?.revision
+          )
+        ) {
           revisionsAreContentSensitive = false;
           break;
         }

@@ -8,6 +8,10 @@ const root = process.cwd();
 const dist = path.join(root, 'dist');
 const dbPath = path.join(root, 'data', 'bibli.sqlite');
 const base = '/bibli';
+const mediaBaseUrl =
+  (process.env.PUBLIC_BIBLI_MEDIA_BASE_URL ?? '')
+    .trim()
+    .replace(/\/+$/, '');
 const errors = [];
 const projectKey = createHash('sha1').update(root).digest('hex').slice(0, 12);
 const buildSnapshotDir = path.join(os.tmpdir(), `bibli-build-audit-${projectKey}`);
@@ -216,6 +220,12 @@ function siteUrl(route) {
   return `${base}${route}`;
 }
 
+function mediaUrlForKey(key) {
+  return mediaBaseUrl
+    ? `${mediaBaseUrl}/${key}`
+    : siteUrl(`/media/${key}`);
+}
+
 function getDefaultVersionIds() {
   const configPath = path.join(root, 'src', 'lib', 'bible-config.ts');
   if (!fs.existsSync(configPath)) {
@@ -416,11 +426,57 @@ try {
     return packages;
   }
 
-  const offlinePath = generatedArtifactPath('offline-packages.json');
-  const offline = readJson(offlinePath, 'offline');
+  const bibliImgDelivery = readJson(
+    path.join(
+      root,
+      'content',
+      'bibli-images-r2.json',
+    ),
+    'bibliimg delivery',
+  );
+
+  function expectedBibliImgVariant(quality) {
+    if (
+      !bibliImgDelivery ||
+      !Array.isArray(bibliImgDelivery.assets)
+    ) {
+      return null;
+    }
+
+    const assets = bibliImgDelivery.assets
+      .filter((asset) => asset.tier === quality)
+      .map((asset) => ({
+        slug: asset.slug,
+        version: asset.version,
+        key: asset.key,
+        url: mediaUrlForKey(asset.key),
+        sha256: asset.sha256,
+        bytes: asset.bytes,
+      }))
+      .sort((a, b) =>
+        a.key.localeCompare(b.key)
+      );
+
+    return {
+      assets,
+      urls: new Set(
+        assets.map((asset) => asset.url),
+      ),
+      totalBytes: assets.reduce(
+        (sum, asset) => sum + asset.bytes,
+        0,
+      ),
+    };
+  }
+
+  const offlinePath =
+    generatedArtifactPath('offline-packages.json');
+
+  const offline =
+    readJson(offlinePath, 'offline');
   if (offline) {
-    if (offline.schemaVersion !== '1.1.0' || offline.revisionStrategy !== 'content-v2') {
-      fail('offline: se esperaba schemaVersion 1.1.0 con revisionStrategy content-v2');
+    if (offline.schemaVersion !== '1.2.0' || offline.revisionStrategy !== 'content-v2') {
+      fail('offline: se esperaba schemaVersion 1.2.0 con revisionStrategy content-v2');
     }
     if (!Array.isArray(offline.packages)) {
       fail('offline: packages debe ser un arreglo');
@@ -428,12 +484,179 @@ try {
       const expectedPackages = expectedOfflinePackages();
       const actualPackageIds = new Set();
       for (const pkg of offline.packages) {
-        if (!pkg || typeof pkg.id !== 'string' || !Array.isArray(pkg.urls)) {
+        if (!pkg || typeof pkg.id !== 'string') {
           fail('offline: paquete con estructura inválida');
           continue;
         }
-        if (actualPackageIds.has(pkg.id)) fail(`offline: paquete duplicado ${pkg.id}`);
+
+        if (actualPackageIds.has(pkg.id)) {
+          fail(`offline: paquete duplicado ${pkg.id}`);
+        }
+
         actualPackageIds.add(pkg.id);
+
+        if (pkg.id === 'bibliimg') {
+          if (
+            pkg.kind !== 'media' ||
+            !pkg.variants ||
+            typeof pkg.variants !== 'object'
+          ) {
+            fail('offline bibliimg: estructura media inválida');
+            continue;
+          }
+
+          for (const quality of [
+            'optimized',
+            'high',
+          ]) {
+            const variant =
+              pkg.variants[quality];
+
+            const expected =
+              expectedBibliImgVariant(quality);
+
+            if (
+              !variant ||
+              !expected ||
+              !Array.isArray(variant.urls) ||
+              !Array.isArray(variant.assets)
+            ) {
+              fail(
+                `offline bibliimg ${quality}: variante inválida`,
+              );
+              continue;
+            }
+
+            if (variant.quality !== quality) {
+              fail(
+                `offline bibliimg ${quality}: quality inválido`,
+              );
+            }
+
+            if (
+              variant.urlCount !==
+              variant.urls.length
+            ) {
+              fail(
+                `offline bibliimg ${quality}: urlCount=${variant.urlCount} pero contiene ${variant.urls.length} URLs`,
+              );
+            }
+
+            const actualUrls =
+              new Set(variant.urls);
+
+            if (
+              actualUrls.size !==
+              variant.urls.length
+            ) {
+              fail(
+                `offline bibliimg ${quality}: contiene URLs duplicadas`,
+              );
+            }
+
+            compareSets(
+              `offline bibliimg ${quality}`,
+              expected.urls,
+              actualUrls,
+            );
+
+            if (
+              variant.totalBytes !==
+              expected.totalBytes
+            ) {
+              fail(
+                `offline bibliimg ${quality}: totalBytes=${variant.totalBytes}; esperado ${expected.totalBytes}`,
+              );
+            }
+
+            if (
+              variant.assets.length !==
+              expected.assets.length
+            ) {
+              fail(
+                `offline bibliimg ${quality}: assets=${variant.assets.length}; esperado ${expected.assets.length}`,
+              );
+            }
+
+            const expectedByKey =
+              new Map(
+                expected.assets.map(
+                  (asset) => [
+                    asset.key,
+                    asset,
+                  ],
+                ),
+              );
+
+            for (const asset of variant.assets) {
+              const wanted =
+                expectedByKey.get(asset.key);
+
+              if (!wanted) {
+                fail(
+                  `offline bibliimg ${quality}: asset inesperado ${asset.key}`,
+                );
+                continue;
+              }
+
+              for (const field of [
+                'slug',
+                'version',
+                'url',
+                'sha256',
+                'bytes',
+              ]) {
+                if (
+                  asset[field] !==
+                  wanted[field]
+                ) {
+                  fail(
+                    `offline bibliimg ${quality}: ${asset.key} difiere en ${field}`,
+                  );
+                }
+              }
+            }
+
+            for (const url of actualUrls) {
+              if (/^https:\/\//i.test(url)) {
+                try {
+                  const parsed =
+                    new URL(url);
+
+                  if (
+                    parsed.protocol !==
+                    'https:'
+                  ) {
+                    fail(
+                      `offline bibliimg ${quality}: URL no HTTPS ${url}`,
+                    );
+                  }
+                } catch {
+                  fail(
+                    `offline bibliimg ${quality}: URL inválida ${url}`,
+                  );
+                }
+              } else {
+                validatePublicTarget(
+                  url,
+                  `offline bibliimg ${quality}`,
+                );
+              }
+            }
+
+            offlineUrlCount +=
+              actualUrls.size;
+          }
+
+          continue;
+        }
+
+        if (!Array.isArray(pkg.urls)) {
+          fail(
+            `offline ${pkg.id}: urls debe ser un arreglo`,
+          );
+          continue;
+        }
         if (pkg.urlCount !== pkg.urls.length) {
           fail(`offline ${pkg.id}: urlCount=${pkg.urlCount} pero contiene ${pkg.urls.length} URLs`);
         }
@@ -452,9 +675,17 @@ try {
         }
       }
       for (const packageId of expectedPackages.keys()) {
-        if (!actualPackageIds.has(packageId)) fail(`offline: falta paquete ${packageId}`);
+        if (!actualPackageIds.has(packageId)) {
+          fail(`offline: falta paquete ${packageId}`);
+        }
       }
-      offlinePackageCount = offline.packages.length;
+
+      if (!actualPackageIds.has('bibliimg')) {
+        fail('offline: falta paquete bibliimg');
+      }
+
+      offlinePackageCount =
+        offline.packages.length;
     }
   }
 } finally {
