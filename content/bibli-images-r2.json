@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "source": "content/bibli-images-integrated.json",
-  "revision": "8338ed376011810d",
-  "entryCount": 106,
-  "assetCount": 212,
+  "revision": "64e7695a42a87bb6",
+  "entryCount": 114,
+  "assetCount": 228,
   "tiers": {
     "optimized": {
-      "assetCount": 106,
-      "totalBytes": 5924826
+      "assetCount": 114,
+      "totalBytes": 6424636
     },
     "high": {
-      "assetCount": 106,
-      "totalBytes": 26652646
+      "assetCount": 114,
+      "totalBytes": 28912350
     }
   },
   "assets": [
@@ -2556,6 +2556,198 @@
       "key": "editorial/personajes/jacobo-hijo-alfeo/v001/jacobo-hijo-alfeo--optimized.webp",
       "sha256": "931c80459efa51b9e22058752ba5df92c09e7a3691b18ea7e922283aba24fdad",
       "bytes": 54316,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jacobo-hijo-zebedeo",
+      "group": "personajes",
+      "canonicalName": "Jacobo (hijo de Zebedeo; apóstol)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jacobo-hijo-zebedeo/v001/jacobo-hijo-zebedeo--high.webp",
+      "sha256": "7ec12eb238578b5740c5de6264f06ba732705264ddc3446a4c38cde735753f55",
+      "bytes": 274126,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jacobo-hijo-zebedeo",
+      "group": "personajes",
+      "canonicalName": "Jacobo (hijo de Zebedeo; apóstol)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jacobo-hijo-zebedeo/v001/jacobo-hijo-zebedeo--optimized.webp",
+      "sha256": "3b9d6d2484f3bfe9527ece4a8c7d49b67fee21ebb8fc49cf488b1ef8040b5017",
+      "bytes": 59902,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jafet",
+      "group": "personajes",
+      "canonicalName": "Jafet",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jafet/v001/jafet--high.webp",
+      "sha256": "213f0114037b31ef5994e607a697958bd8354d2eb264316501970d48bbb6677e",
+      "bytes": 262290,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jafet",
+      "group": "personajes",
+      "canonicalName": "Jafet",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jafet/v001/jafet--optimized.webp",
+      "sha256": "a05c05444b528f31b51c014504adc41e56ea961643b3b2a5b25a36bcdf7fb59c",
+      "bytes": 58338,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jahaziel-hijo-zacarias-levita",
+      "group": "personajes",
+      "canonicalName": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jahaziel-hijo-zacarias-levita/v001/jahaziel-hijo-zacarias-levita--high.webp",
+      "sha256": "0dc3fd33913467323c2e146d5fd678243aef89ee43a8c6b2abe9b3f3a315f0ba",
+      "bytes": 295100,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jahaziel-hijo-zacarias-levita",
+      "group": "personajes",
+      "canonicalName": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jahaziel-hijo-zacarias-levita/v001/jahaziel-hijo-zacarias-levita--optimized.webp",
+      "sha256": "f8b9c9ed4c46a0cb6f3c669e2fe7649508f5bf8906a17bb4050bc2e3d42c39ad",
+      "bytes": 62550,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jairo-principal-sinagoga",
+      "group": "personajes",
+      "canonicalName": "Jairo (principal de la sinagoga)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jairo-principal-sinagoga/v001/jairo-principal-sinagoga--high.webp",
+      "sha256": "20138f739d338b5eedb53fd4bd09e71648aac97168c144bcdc5bf95c16dd5566",
+      "bytes": 277620,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jairo-principal-sinagoga",
+      "group": "personajes",
+      "canonicalName": "Jairo (principal de la sinagoga)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jairo-principal-sinagoga/v001/jairo-principal-sinagoga--optimized.webp",
+      "sha256": "6b06ca7740c28d915c007b5a56d43c8902a6853e502213ff60632282e63fe920",
+      "bytes": 60792,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jefte-galaadita",
+      "group": "personajes",
+      "canonicalName": "Jefté galaadita",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jefte-galaadita/v001/jefte-galaadita--high.webp",
+      "sha256": "a73eccb25accfca902b73e732f9ca891a698841fe57c338548b0b61d32dcdaf0",
+      "bytes": 296166,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jefte-galaadita",
+      "group": "personajes",
+      "canonicalName": "Jefté galaadita",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jefte-galaadita/v001/jefte-galaadita--optimized.webp",
+      "sha256": "6596fdf912684e8fbb83b8d68c2c6fe8eb20610447637b489bf3e56978cc7fe9",
+      "bytes": 66084,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jehu-casa-nimsi-rey-israel",
+      "group": "personajes",
+      "canonicalName": "Jehú (casa de Nimsi; rey de Israel)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jehu-casa-nimsi-rey-israel/v001/jehu-casa-nimsi-rey-israel--high.webp",
+      "sha256": "b359d36ffdb2e2bb875003317a9ab4979731d47dd0746dfa52e22cb53e0b6d3f",
+      "bytes": 272090,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jehu-casa-nimsi-rey-israel",
+      "group": "personajes",
+      "canonicalName": "Jehú (casa de Nimsi; rey de Israel)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jehu-casa-nimsi-rey-israel/v001/jehu-casa-nimsi-rey-israel--optimized.webp",
+      "sha256": "b1e50911a8bccd95dae8f7799b2c59f932b18fa508f32c785b93e3bb93314c4b",
+      "bytes": 66210,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jeremias-profeta",
+      "group": "personajes",
+      "canonicalName": "Jeremías (profeta)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jeremias-profeta/v001/jeremias-profeta--high.webp",
+      "sha256": "ec37f9cfa3388265ce273cc8c1b8b1c0486c7f2c799abbb8f229ef0af353dbec",
+      "bytes": 311784,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jeremias-profeta",
+      "group": "personajes",
+      "canonicalName": "Jeremías (profeta)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jeremias-profeta/v001/jeremias-profeta--optimized.webp",
+      "sha256": "4abe2f455ec5c1bd2a0f503b9e7e9cdf74308393a98280498a678ccff9784fd4",
+      "bytes": 67664,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jeroboam-i-hijo-nabat",
+      "group": "personajes",
+      "canonicalName": "Jeroboam I (hijo de Nabat; rey de Israel)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jeroboam-i-hijo-nabat/v001/jeroboam-i-hijo-nabat--high.webp",
+      "sha256": "e3c9462d53bd62d364c5e384ee0631bd8cbaac3f8cd8b49a743d056ec5dae04a",
+      "bytes": 270528,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jeroboam-i-hijo-nabat",
+      "group": "personajes",
+      "canonicalName": "Jeroboam I (hijo de Nabat; rey de Israel)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jeroboam-i-hijo-nabat/v001/jeroboam-i-hijo-nabat--optimized.webp",
+      "sha256": "45f6c81ee9f8188d92c0f9327526d5af3e75e414378d15af8f058d2b9dfd3772",
+      "bytes": 58270,
       "width": 512,
       "height": 768
     }

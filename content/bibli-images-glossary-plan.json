@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "sourceRoot": "bibli_images_OneDrive_Only",
   "generatedFrom": {
-    "approvedPackages": 106,
-    "glossaryTerms": 170
+    "approvedPackages": 114,
+    "glossaryTerms": 182
   },
   "policy": {
     "automaticPublication": false,
@@ -14,8 +14,8 @@
     "failClosedOnUnmappedCategory": true
   },
   "counts": {
-    "existing": 102,
-    "ready_to_create": 4,
+    "existing": 114,
+    "ready_to_create": 0,
     "blocked": 0
   },
   "entries": [
@@ -2605,7 +2605,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ismael-hijo-abraham/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ismael-hijo-abraham",
@@ -2614,10 +2614,10 @@
         "definition": "Primer hijo de Abraham, nacido de Agar la egipcia. Génesis relata que Dios oyó y sostuvo al muchacho, prometió hacer de él una gran nación, y que Ismael creció en el desierto, habitó en Parán y llegó a ser tirador de arco; más adelante se enumeran sus doce hijos y se indica que murió a los 137 años.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ismael-hijo-abraham"
       ]
     },
     {
@@ -2630,7 +2630,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/jacob-israel-patriarca/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-jacob-israel-patriarca",
@@ -2639,10 +2639,10 @@
         "definition": "Hijo de Isaac y Rebeca, hermano gemelo de Esaú y figura patriarcal central de Génesis. Después de su encuentro nocturno junto al Jaboc recibió el nombre Israel; sus hijos forman la base genealógica de las tribus de Israel, y Jacob descendió finalmente a Egipto, donde murió a los 147 años.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=jacob-israel-patriarca"
       ]
     },
     {
@@ -2655,7 +2655,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/jacobo-hermano-senor-jerusalen/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-jacobo-hermano-senor-jerusalen",
@@ -2664,10 +2664,10 @@
         "definition": "Jacobo es presentado en el Nuevo Testamento como uno de los hermanos de Jesús y, posteriormente, como una figura principal de la comunidad creyente de Jerusalén. Pablo lo llama “el hermano del Señor” y lo incluye entre las figuras consideradas “columnas”; Hechos lo muestra ocupando un papel de liderazgo en la deliberación de Jerusalén y recibiendo a Pablo junto con los ancianos.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=jacobo-hermano-senor-jerusalen"
       ]
     },
     {
@@ -2680,7 +2680,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/jacobo-hijo-alfeo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-jacobo-hijo-alfeo",
@@ -2689,10 +2689,210 @@
         "definition": "Uno de los doce apóstoles escogidos por Jesús. El Nuevo Testamento lo identifica de manera estable como Jacobo, hijo de Alfeo en las listas apostólicas de Mateo, Marcos y Lucas, y vuelve a mencionarlo entre los discípulos reunidos en Jerusalén después de la ascensión. No se conservan en el texto bíblico episodios individuales, oficio, edad o rasgos físicos propios de él.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=jacobo-hijo-alfeo"
+      ]
+    },
+    {
+      "sourceSlug": "jacobo-hijo-zebedeo",
+      "entityKey": "personajes-jacobo-hijo-zebedeo",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacobo-hijo-zebedeo/entry.yaml",
+      "canonicalName": "Jacobo (hijo de Zebedeo; apóstol)",
+      "sense": "uno de los Doce, hijo de Zebedeo y hermano de Juan",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jacobo-hijo-zebedeo/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jacobo-hijo-zebedeo",
+        "slug": "jacobo-hijo-zebedeo",
+        "term": "Jacobo (hijo de Zebedeo; apóstol)",
+        "definition": "Apóstol de Jesús, hijo de Zebedeo y hermano de Juan. Era pescador en Galilea y fue llamado mientras trabajaba con su padre y su hermano; aparece junto con Pedro y Juan en varios momentos especialmente cercanos al ministerio de Jesús, y Hechos registra que Herodes Agripa I lo hizo morir a espada.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jacobo-hijo-zebedeo"
+      ]
+    },
+    {
+      "sourceSlug": "jafet",
+      "entityKey": "personajes-jafet",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jafet/entry.yaml",
+      "canonicalName": "Jafet",
+      "sense": "hijo de Noé; hermano de Sem y Cam",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jafet/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jafet",
+        "slug": "jafet",
+        "term": "Jafet",
+        "definition": "Hijo de Noé y hermano de Sem y Cam. Sobrevivió al diluvio dentro del arca con su familia y, en la tabla de naciones de Génesis 10, aparece como antepasado de varios pueblos vinculados principalmente con regiones al norte y al oeste de Israel. Génesis 9:27 conserva además una bendición de Noé sobre él.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jafet"
+      ]
+    },
+    {
+      "sourceSlug": "jahaziel-hijo-zacarias-levita",
+      "entityKey": "personajes-jahaziel-hijo-zacarias-levita",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jahaziel-hijo-zacarias-levita/entry.yaml",
+      "canonicalName": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+      "sense": "hijo de Zacarías; levita de los hijos de Asaf en tiempos de Josafat",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jahaziel-hijo-zacarias-levita/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jahaziel-hijo-zacarias-levita",
+        "slug": "jahaziel-hijo-zacarias-levita",
+        "term": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+        "definition": "Levita descendiente de Asaf que, en medio de la asamblea convocada por el rey Josafat ante una amenaza militar, recibió el Espíritu de Jehová y proclamó al pueblo que no debía temer, porque la batalla pertenecía a Dios. Su intervención ocupa 2 Crónicas 20:14–17 y funciona como respuesta profética a la oración pública de Josafat.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jahaziel-hijo-zacarias-levita"
+      ]
+    },
+    {
+      "sourceSlug": "jairo-principal-sinagoga",
+      "entityKey": "personajes-jairo-principal-sinagoga",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jairo-principal-sinagoga/entry.yaml",
+      "canonicalName": "Jairo (principal de la sinagoga)",
+      "sense": "principal de la sinagoga; padre de la niña restaurada por Jesús",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jairo-principal-sinagoga/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jairo-principal-sinagoga",
+        "slug": "jairo-principal-sinagoga",
+        "term": "Jairo (principal de la sinagoga)",
+        "definition": "Jairo es un dirigente de sinagoga mencionado por nombre en Marcos y Lucas. Acude personalmente a Jesús, se postra ante él y le ruega que intervenga por su hija gravemente enferma; el relato culmina con la restauración de la niña. Marcos lo presenta como uno de los ἀρχισυνάγωγοι, mientras Lucas lo llama ἄρχων τῆς συναγωγῆς, dos formulaciones que lo sitúan en una función de liderazgo comunitario vinculada a la sinagoga.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jairo-principal-sinagoga"
+      ]
+    },
+    {
+      "sourceSlug": "jefte-galaadita",
+      "entityKey": "personajes-jefte-galaadita",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jefte-galaadita/entry.yaml",
+      "canonicalName": "Jefté galaadita",
+      "sense": "galaadita; juez y comandante contra los amonitas",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jefte-galaadita/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jefte-galaadita",
+        "slug": "jefte-galaadita",
+        "term": "Jefté galaadita",
+        "definition": "Jefté es un guerrero galaadita que, tras ser expulsado por sus medio hermanos y vivir en la tierra de Tob, fue llamado por los ancianos de Galaad para dirigir la guerra contra los amonitas. El pueblo lo hizo cabeza y jefe militar; después de la victoria, juzgó a Israel durante seis años.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jefte-galaadita"
+      ]
+    },
+    {
+      "sourceSlug": "jehu-casa-nimsi-rey-israel",
+      "entityKey": "personajes-jehu-hijo-nimsi-futuro-rey",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jehu-casa-nimsi-rey-israel/entry.yaml",
+      "canonicalName": "Jehú (casa de Nimsi; rey de Israel)",
+      "sense": "hijo de Josafat, nieto de Nimsi; comandante y rey del reino del norte de Israel",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jehu-casa-nimsi-rey-israel/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jehu-casa-nimsi-rey-israel",
+        "slug": "jehu-casa-nimsi-rey-israel",
+        "term": "Jehú (casa de Nimsi; rey de Israel)",
+        "definition": "Jehú, hijo de Josafat y nieto de Nimsi, fue comandante militar y luego rey del reino del norte de Israel. Fue ungido por mandato profético para derribar la casa de Acab; encabezó el golpe que terminó con Joram, Jezabel y la dinastía omrida, y eliminó el culto estatal a Baal, aunque 2 Reyes también lo critica por mantener los becerros de Bet-el y Dan.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jehu-casa-nimsi-rey-israel"
+      ]
+    },
+    {
+      "sourceSlug": "jeremias-profeta",
+      "entityKey": "personajes-jeremias-profeta",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jeremias-profeta/entry.yaml",
+      "canonicalName": "Jeremías (profeta)",
+      "sense": "profeta de Judá, hijo de Hilcías, de Anatot en territorio de Benjamín",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jeremias-profeta/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jeremias-profeta",
+        "slug": "jeremias-profeta",
+        "term": "Jeremías (profeta)",
+        "definition": "Jeremías, hijo de Hilcías, fue un profeta de Judá procedente de Anatot, en territorio de Benjamín. Su ministerio comenzó en el año decimotercero del rey Josías y continuó durante las últimas décadas del reino de Judá, atravesando los reinados de Joacim y Sedequías, el sitio y la caída de Jerusalén y sus consecuencias. Anunció juicio por la infidelidad del pueblo, llamó al arrepentimiento y proclamó también restauración y un nuevo pacto.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jeremias-profeta"
+      ]
+    },
+    {
+      "sourceSlug": "jeroboam-i-hijo-nabat",
+      "entityKey": "personajes-jeroboam-i-hijo-nabat",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jeroboam-i-hijo-nabat/entry.yaml",
+      "canonicalName": "Jeroboam I (hijo de Nabat; rey de Israel)",
+      "sense": "rey del reino del norte de Israel; hijo de Nabat",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jeroboam-i-hijo-nabat/",
+        "source": "existing-route"
+      },
+      "proposed": {
+        "id": "glo-jeroboam-i-hijo-nabat",
+        "slug": "jeroboam-i-hijo-nabat",
+        "term": "Jeroboam I (hijo de Nabat; rey de Israel)",
+        "definition": "Jeroboam I, hijo de Nabat y efraimita de Zereda, fue un funcionario de Salomón que llegó a ser el primer rey del reino del norte de Israel tras la ruptura con la casa de David. El relato de Reyes vincula su ascenso con la profecía de Ahías y presenta como rasgo decisivo de su reinado el establecimiento de santuarios reales en Bet-el y Dan con becerros de oro, práctica que después se convierte en el paradigma de “hacer pecar a Israel”.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=jeroboam-i-hijo-nabat"
       ]
     }
   ]

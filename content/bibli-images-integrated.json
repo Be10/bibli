@@ -10512,6 +10512,817 @@
       },
       "integrationStatus": "integrated",
       "sourcePath": "entries/01-personajes/jacobo-hijo-alfeo/entry.yaml"
+    },
+    "jacobo-hijo-zebedeo": {
+      "entityKey": "personajes-jacobo-hijo-zebedeo",
+      "canonicalName": "Jacobo (hijo de Zebedeo; apóstol)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jacobo-hijo-zebedeo",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jacobo (hijo de Zebedeo; apóstol)",
+          "definition": "Apóstol de Jesús, hijo de Zebedeo y hermano de Juan. Era pescador en Galilea y fue llamado mientras trabajaba con su padre y su hermano; aparece junto con Pedro y Juan en varios momentos especialmente cercanos al ministerio de Jesús, y Hechos registra que Herodes Agripa I lo hizo morir a espada.",
+          "historical_context": "Jacobo pertenece al ambiente judío de la Galilea del siglo I. Marcos 1:19–20 lo sitúa en una actividad pesquera familiar con Zebedeo, Juan, una barca, redes y jornaleros. La pesca galilea funcionaba dentro de redes familiares, comerciales y fiscales más amplias, por lo que no debe reducirse a una imagen romántica de pobreza extrema ni convertir a la familia de Zebedeo en una élite acomodada sin evidencia suficiente. La arqueología del lago conserva una embarcación fechada aproximadamente entre 100 a. C. y 100 d. C., útil como paralelo material del tipo de entorno pesquero del periodo, no como “la barca de Jacobo”. La Biblia no describe su rostro, edad exacta, estatura, cabello ni vestimenta; por eso la figura es una reconstrucción prudente de un varón judío galileo adulto. No se usan atributos artísticos posteriores como concha de peregrino, bordón, halo o indumentaria medieval.",
+          "original_language_note": "Griego Ἰάκωβος (Iákōbos), forma griega del nombre hebreo יַעֲקֹב (Yaʿaqov, Jacob). Es el mismo nombre subyacente que “Jacob”; Génesis 25:26 lo relaciona narrativamente con el acto de asir el talón, aunque la etimología histórica exacta del nombre no debe presentarse como completamente segura.",
+          "alt_text": "Figura aislada de cuerpo entero de Jacobo hijo de Zebedeo, representado como un varón judío galileo adulto del siglo I, con cabello oscuro, barba sencilla, túnica de fibra natural en tono crudo, manto sobrio de color terroso y sandalias de cuero. Está de pie con expresión serena y firme, sin armas, concha de peregrino, bordón, halo ni otros símbolos posteriores, sobre fondo completamente transparente."
+        },
+        "en-US": {
+          "display_name": "James (son of Zebedee; apostle)",
+          "definition": "An apostle of Jesus, son of Zebedee and brother of John. He was a Galilean fisherman called while working with his father and brother; he appears with Peter and John at several especially close moments in Jesus’ ministry, and Acts records that Herod Agrippa I had him killed with the sword.",
+          "historical_context": "James belongs to the Jewish setting of first-century Galilee. Mark 1:19–20 places him in a family fishing operation with Zebedee, John, a boat, nets, and hired workers. Galilean fishing operated within wider household, commercial, and taxation networks, so the family should neither be romanticized as destitute nor portrayed as wealthy elites without sufficient evidence. Archaeology from the lake preserves a boat dated roughly to 100 BCE–100 CE, useful as material context for the fishing world of the period but not as “James’s boat.” Scripture does not describe his face, exact age, height, hair, or clothing, so the figure remains a cautious reconstruction of an adult Galilean Jewish man. Later artistic attributes such as a pilgrim shell, staff, halo, or medieval dress are excluded.",
+          "original_language_note": "Greek Ἰάκωβος (Iakōbos), the Greek form of Hebrew יַעֲקֹב (Yaʿaqov, Jacob). It is the same underlying name as “Jacob”; Genesis 25:26 narratively associates the name with grasping the heel, although its exact historical etymology should not be stated as completely certain.",
+          "alt_text": "Isolated full-length figure of James son of Zebedee, represented as an adult Galilean Jewish man of the first century with dark hair, a simple beard, an undyed natural-fiber tunic, a restrained earth-tone mantle, and leather sandals. He stands with a calm, resolute expression, with no weapon, pilgrim shell, staff, halo, or other later symbols, on a fully transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἰάκωβος",
+          "transliteration": "Iákōbos",
+          "lemma": "Ἰάκωβος",
+          "meaning": {
+            "es-419": "forma griega del nombre hebreo Jacob; Génesis 25:26 lo relaciona narrativamente con asir el talón, aunque la etimología histórica exacta no es completamente segura",
+            "en-US": "Greek form of the Hebrew name Jacob; Genesis 25:26 narratively associates it with grasping the heel, although the exact historical etymology is not completely certain"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Mateo 4:21–22",
+            "Mateo 10:2",
+            "Mateo 17:1–8",
+            "Marcos 1:19–20",
+            "Marcos 3:17",
+            "Marcos 5:37",
+            "Marcos 10:35–41",
+            "Marcos 14:33",
+            "Lucas 5:10–11",
+            "Hechos 1:13",
+            "Hechos 12:1–2"
+          ],
+          "en-US": [
+            "Mateo 4:21–22",
+            "Mateo 10:2",
+            "Mateo 17:1–8",
+            "Marcos 1:19–20",
+            "Marcos 3:17",
+            "Marcos 5:37",
+            "Marcos 10:35–41",
+            "Marcos 14:33",
+            "Lucas 5:10–11",
+            "Hechos 1:13",
+            "Hechos 12:1–2"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Marcos 9:2",
+            "Marcos 13:3",
+            "Lucas 6:14",
+            "Lucas 8:51",
+            "Lucas 9:28",
+            "Lucas 9:54"
+          ],
+          "en-US": [
+            "Marcos 9:2",
+            "Marcos 13:3",
+            "Lucas 6:14",
+            "Lucas 8:51",
+            "Lucas 9:28",
+            "Lucas 9:54"
+          ]
+        },
+        "occurrencesSource": "catalog registry anchors plus controlling New Testament references",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "first century CE",
+        "region": "Galilee / Judea under Roman rule",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "efddaccd0edb3bf02a77b1f4d71ef36852fc8cd72d07b6056a06a7944957a6c9",
+        "optimizedPath": "/media/editorial/personajes/jacobo-hijo-zebedeo/v001/jacobo-hijo-zebedeo--optimized.webp",
+        "highPath": "/media/editorial/personajes/jacobo-hijo-zebedeo/v001/jacobo-hijo-zebedeo--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "3b9d6d2484f3bfe9527ece4a8c7d49b67fee21ebb8fc49cf488b1ef8040b5017",
+        "highChecksum": "7ec12eb238578b5740c5de6264f06ba732705264ddc3446a4c38cde735753f55"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T02:17:08Z",
+        "notes": "Approved by user after final visual, alpha, and bilingual-content QA. The isolated full-body figure has real alpha transparency and no scenic background, halo, pilgrim shell, staff, weapon, or other unsupported later apostolic attributes."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jacobo-hijo-zebedeo/entry.yaml"
+    },
+    "jafet": {
+      "entityKey": "personajes-jafet",
+      "canonicalName": "Jafet",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jafet",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jafet",
+          "definition": "Hijo de Noé y hermano de Sem y Cam. Sobrevivió al diluvio dentro del arca con su familia y, en la tabla de naciones de Génesis 10, aparece como antepasado de varios pueblos vinculados principalmente con regiones al norte y al oeste de Israel. Génesis 9:27 conserva además una bendición de Noé sobre él.",
+          "historical_context": "Jafet pertenece al marco primordial de Génesis, anterior a los patriarcas. El texto no proporciona una cronología histórica verificable, rasgos físicos ni indumentaria. Por ello, la imagen usa una figura masculina adulta de apariencia antigua y baja especificidad, con vestimenta tejida sencilla y sin atribuirle una identidad étnica derivada de pueblos posteriores. La cultura material levantina ofrece comparaciones generales para ropa y tejidos antiguos, pero no permite reconstruir el aspecto real de Jafet.",
+          "original_language_note": "Hebreo יֶפֶת (Yefet / Yepheth). Génesis 9:27 hace un juego de palabras entre su nombre y el verbo יַפְתְּ (yaft, “ensanche / haga espacioso”), pero este juego narrativo no debe presentarse como una etimología histórica demostrada.",
+          "alt_text": "Ilustración histórica cautelosa de Jafet como varón adulto de pie, con barba y vestimenta tejida sencilla de apariencia antigua, sin símbolos, armas ni elementos modernos, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Japheth",
+          "definition": "Son of Noah and brother of Shem and Ham. He survived the Flood inside the ark with his family and, in the Table of Nations in Genesis 10, appears as the ancestor of several peoples associated mainly with regions north and west of Israel. Genesis 9:27 also preserves Noah’s blessing over him.",
+          "historical_context": "Japheth belongs to the primeval framework of Genesis, before the patriarchal narratives. The text gives no historically verifiable chronology, physical description, or specific clothing. The illustration therefore uses a low-specificity ancient male presentation with simple woven garments, without assigning him an ethnicity inferred from later descendant peoples. Ancient Levantine material culture provides only broad comparative context and cannot establish Japheth’s actual appearance.",
+          "original_language_note": "Hebrew יֶפֶת (Yefet / Yepheth). Genesis 9:27 creates a wordplay between his name and the verb יַפְתְּ (yaft, “may [God] enlarge”), but this narrative wordplay should not be presented as a demonstrated historical etymology.",
+          "alt_text": "Cautious historical illustration of Japheth as an adult man standing with a beard and simple ancient-looking woven garments, without symbols, weapons, or modern elements, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יֶפֶת",
+          "transliteration": "Yefet / Yepheth",
+          "lemma": "יֶפֶת",
+          "meaning": {
+            "es-419": "Génesis 9:27 relaciona narrativamente el nombre con el verbo יַפְתְּ (“ensanche / haga espacioso”); no se presenta como etimología histórica demostrada.",
+            "en-US": "Genesis 9:27 narratively links the name with the verb יַפְתְּ (“may [God] enlarge”); this is not presented as a demonstrated historical etymology."
+          },
+          "certainty": "documented_wordplay"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Génesis 5:32",
+            "Génesis 6:10",
+            "Génesis 7:13",
+            "Génesis 9:18–27",
+            "Génesis 10:1–5"
+          ],
+          "en-US": [
+            "Génesis 5:32",
+            "Génesis 6:10",
+            "Génesis 7:13",
+            "Génesis 9:18–27",
+            "Génesis 10:1–5"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Crónicas 1:4–7"
+          ],
+          "en-US": [
+            "1 Crónicas 1:4–7"
+          ]
+        },
+        "occurrencesSource": "catalog registry anchors plus controlling Genesis references",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "primeval narrative framework of Genesis; no securely datable historical period asserted",
+        "region": "biblical primeval world; no precise archaeological localization asserted",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "de13d24eb4484dc5f022e51b70277f986523fab66e392dd44e08ce5e83140b77",
+        "optimizedPath": "/media/editorial/personajes/jafet/v001/jafet--optimized.webp",
+        "highPath": "/media/editorial/personajes/jafet/v001/jafet--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "a05c05444b528f31b51c014504adc41e56ea961643b3b2a5b25a36bcdf7fb59c",
+        "highChecksum": "213f0114037b31ef5994e607a697958bd8354d2eb264316501970d48bbb6677e"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T02:40:27Z",
+        "notes": "Approved by user after bilingual preview and final visual QA. Exact PNG verified as 1024×1536 RGBA with real alpha transparency; no scenic background, props, weapons, symbols, halo, or modern elements."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jafet/entry.yaml"
+    },
+    "jahaziel-hijo-zacarias-levita": {
+      "entityKey": "personajes-jahaziel-hijo-zacarias-levita",
+      "canonicalName": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jahaziel-hijo-zacarias-levita",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jahaziel (hijo de Zacarías; levita en tiempos de Josafat)",
+          "definition": "Levita descendiente de Asaf que, en medio de la asamblea convocada por el rey Josafat ante una amenaza militar, recibió el Espíritu de Jehová y proclamó al pueblo que no debía temer, porque la batalla pertenecía a Dios. Su intervención ocupa 2 Crónicas 20:14–17 y funciona como respuesta profética a la oración pública de Josafat.",
+          "historical_context": "El relato lo sitúa en Judá, durante el reinado de Josafat, dentro de una reunión pública en Jerusalén. Su pertenencia a los hijos de Asaf lo vincula con una línea levítica asociada en Crónicas al servicio musical del templo; sin embargo, 2 Crónicas 20 no dice que Jahaziel estuviera cantando, tocando un instrumento ni vistiendo atuendo litúrgico en ese momento. Por ello, la ilustración no le asigna arpa, címbalos, trompeta ni vestiduras sacerdotales. Como referencia comparativa —posterior, no contemporánea exacta— los relieves asirios de Laquis muestran habitantes de Judá con túnicas y prendas exteriores sencillas; sirven solo como límite material general, no como retrato exacto de Jahaziel.",
+          "original_language_note": "Hebreo יַחֲזִיאֵל (Yaḥăzîʾēl / Yachaziel). Brown–Driver–Briggs registra el sentido aproximado “El ve / Dios ve” y distingue a este Jahaziel como el levita de los hijos de Asaf de 2 Crónicas 20:14, sin fusionarlo con otros hombres del mismo nombre.",
+          "alt_text": "Ilustración histórica cautelosa de Jahaziel, levita descendiente de Asaf, como un varón adulto de Judá con túnica y manto sencillos, de pie en postura sobria con una mano abierta en gesto discreto de proclamación, sin instrumentos, insignias sacerdotales ni halo, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jahaziel (son of Zechariah; Levite in Jehoshaphat’s time)",
+          "definition": "A Levite descended from Asaph who, during the assembly called by King Jehoshaphat in the face of a military threat, received the Spirit of the Lord and proclaimed that the people should not fear because the battle belonged to God. His speech in 2 Chronicles 20:14–17 serves as the prophetic answer to Jehoshaphat’s public prayer.",
+          "historical_context": "The narrative places him in Judah during Jehoshaphat’s reign, within a public assembly in Jerusalem. His descent from Asaph connects him with a Levitical line associated elsewhere in Chronicles with temple music; however, 2 Chronicles 20 does not say that Jahaziel was singing, playing an instrument, or wearing liturgical garments at that moment. The illustration therefore avoids harps, cymbals, trumpets, and priestly vestments. As a later comparative source rather than exact contemporary evidence, the Assyrian Lachish reliefs show Judeans in simple tunics and outer garments; this provides only a broad material boundary for the reconstruction.",
+          "original_language_note": "Hebrew יַחֲזִיאֵל (Yaḥăzîʾēl / Yachaziel). Brown–Driver–Briggs gives the approximate sense “El sees / God sees” and specifically distinguishes this Jahaziel as the Levite from the sons of Asaph in 2 Chronicles 20:14 rather than merging him with other men of the same name.",
+          "alt_text": "Cautious historical illustration of Jahaziel, a Levite descended from Asaph, as an adult Judean man standing in a simple tunic and mantle with one open hand in a restrained speaking gesture, without musical instruments, priestly insignia, or halo, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יַחֲזִיאֵל",
+          "transliteration": "Yaḥăzîʾēl / Yachaziel",
+          "lemma": "יַחֲזִיאֵל",
+          "meaning": {
+            "es-419": "Sentido aproximado: “Dios ve / El ve”.",
+            "en-US": "Approximate sense: “God sees / El sees”."
+          },
+          "certainty": "documented_lexical_gloss"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Crónicas 20:14–17"
+          ],
+          "en-US": [
+            "2 Crónicas 20:14–17"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Crónicas 5:12"
+          ],
+          "en-US": [
+            "2 Crónicas 5:12"
+          ]
+        },
+        "occurrencesSource": "catalog registry identity plus controlling passage in 2 Chronicles 20:14–17",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "reinado de Josafat, reino de Judá",
+        "region": "Jerusalén / Judá",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "4232286ba713c5f06a30198ac9e97e88a3a355394b82c25102bc8e6affe3d3f9",
+        "optimizedPath": "/media/editorial/personajes/jahaziel-hijo-zacarias-levita/v001/jahaziel-hijo-zacarias-levita--optimized.webp",
+        "highPath": "/media/editorial/personajes/jahaziel-hijo-zacarias-levita/v001/jahaziel-hijo-zacarias-levita--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "f8b9c9ed4c46a0cb6f3c669e2fe7649508f5bf8906a17bb4050bc2e3d42c39ad",
+        "highChecksum": "0dc3fd33913467323c2e146d5fd678243aef89ee43a8c6b2abe9b3f3a315f0ba"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T02:56:50Z",
+        "notes": "Approved by user after bilingual preview and final QA. Exact PNG verified as 1024×1536 RGBA with real alpha transparency; no scenic background, text, props, musical instruments, priestly insignia, halo, or modern elements."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jahaziel-hijo-zacarias-levita/entry.yaml"
+    },
+    "jairo-principal-sinagoga": {
+      "entityKey": "personajes-jairo-principal-sinagoga",
+      "canonicalName": "Jairo (principal de la sinagoga)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jairo-principal-sinagoga",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jairo (principal de la sinagoga)",
+          "definition": "Jairo es un dirigente de sinagoga mencionado por nombre en Marcos y Lucas. Acude personalmente a Jesús, se postra ante él y le ruega que intervenga por su hija gravemente enferma; el relato culmina con la restauración de la niña. Marcos lo presenta como uno de los ἀρχισυνάγωγοι, mientras Lucas lo llama ἄρχων τῆς συναγωγῆς, dos formulaciones que lo sitúan en una función de liderazgo comunitario vinculada a la sinagoga.",
+          "historical_context": "Jairo pertenece al judaísmo galileo del siglo I. Las sinagogas de esta época funcionaban como espacios de reunión, lectura y enseñanza, y la evidencia literaria y epigráfica confirma la existencia de dirigentes sinagogales; el alcance exacto de sus funciones podía variar. La arqueología de Magdala demuestra además la presencia de una sinagoga del siglo I en Galilea, con bancos de piedra y un espacio comunitario organizado. Para su vestimenta se usan únicamente elementos generales bien atestiguados en el judaísmo de época romana: túnica y manto tejidos, predominantemente de lana o lino, y sandalias de cuero. No se añaden filacterias visibles, talit moderno, tocado sacerdotal, rollo, insignia, joyería de estatus ni símbolos inventados.",
+          "original_language_note": "El griego del Nuevo Testamento da Ἰάϊρος (Iáïros), forma griega de un nombre hebreo relacionado con יָאִיר (Yāʾîr / Yaʾir). La tradición léxica vincula el nombre con la idea de “iluminar” o “hacer resplandecer”; el Nuevo Testamento, sin embargo, no explica el nombre ni convierte su significado en un rasgo del personaje.",
+          "alt_text": "Ilustración histórica de Jairo como varón judío adulto del siglo I, de pie con expresión seria y preocupada, vestido con túnica y manto tejidos y sandalias de cuero, sin insignias religiosas ni objetos, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jairus (synagogue leader)",
+          "definition": "Jairus is a synagogue leader named in Mark and Luke. He personally approaches Jesus, falls before him, and pleads for intervention on behalf of his gravely ill daughter; the narrative culminates in the girl’s restoration. Mark calls him one of the ἀρχισυνάγωγοι, while Luke describes him as an ἄρχων τῆς συναγωγῆς, both expressions placing him in a leadership role connected with the synagogue.",
+          "historical_context": "Jairus belongs to first-century Galilean Judaism. Synagogues of the period functioned as places of assembly, reading, and instruction, and literary and epigraphic evidence confirms synagogue leadership offices, although the exact scope of such offices could vary. Archaeology at Magdala also confirms a first-century synagogue in Galilee with stone benches and an organized communal space. His clothing therefore uses only broadly attested Roman-period Jewish dress: woven tunic and mantle, mainly wool or linen, with leather sandals. No visible phylacteries, modern prayer shawl, priestly headdress, scroll, badge of office, status jewelry, or invented religious symbols are added.",
+          "original_language_note": "The New Testament Greek gives Ἰάϊρος (Iairos), the Greek form of a Hebrew name related to יָאִיר (Yāʾîr / Yaʾir). Lexical tradition connects the name with the idea of “giving light” or “making bright,” but the New Testament itself does not explain the name or use its meaning as a characterization of Jairus.",
+          "alt_text": "Historical illustration of Jairus as an adult first-century Jewish man standing with a serious, concerned expression, wearing a woven tunic, mantle, and leather sandals, without religious insignia or objects, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἰάϊρος",
+          "transliteration": "Iáïros / Iairos",
+          "lemma": "Ἰάϊρος",
+          "meaning": {
+            "es-419": "Forma griega del nombre Jair/Jairo.",
+            "en-US": "Greek form of the name Jair/Jairus."
+          },
+          "certainty": "documented"
+        },
+        {
+          "language": "hebrew",
+          "script": "יָאִיר",
+          "transliteration": "Yāʾîr / Yaʾir",
+          "lemma": "יָאִיר",
+          "meaning": {
+            "es-419": "Sentido léxico aproximado: “él ilumina / el que da luz”.",
+            "en-US": "Approximate lexical sense: “he enlightens / one giving light”."
+          },
+          "certainty": "documented_lexical_gloss"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Marcos 5:21–43",
+            "Lucas 8:40–56"
+          ],
+          "en-US": [
+            "Marcos 5:21–43",
+            "Lucas 8:40–56"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Mateo 9:18–26"
+          ],
+          "en-US": [
+            "Mateo 9:18–26"
+          ]
+        },
+        "occurrencesSource": "Greek NT occurrences of Ἰάϊρος in Mark 5:22 and Luke 8:41",
+        "occurrencesCount": 2
+      },
+      "historical": {
+        "period": "siglo I d. C.; ministerio de Jesús",
+        "region": "Galilea",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "05b426f2916f6480dd2bd453cdcd1670a3b34079245999de1f7782a696a1848b",
+        "optimizedPath": "/media/editorial/personajes/jairo-principal-sinagoga/v001/jairo-principal-sinagoga--optimized.webp",
+        "highPath": "/media/editorial/personajes/jairo-principal-sinagoga/v001/jairo-principal-sinagoga--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "6b06ca7740c28d915c007b5a56d43c8902a6853e502213ff60632282e63fe920",
+        "highChecksum": "20138f739d338b5eedb53fd4bd09e71648aac97168c144bcdc5bf95c16dd5566"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T03:05:26Z",
+        "notes": "Approved by user after bilingual preview and final QA. Exact PNG verified as 1024×1536 RGBA with real alpha transparency; one isolated figure, no text, scenic background, halo, priestly headdress, scroll, status jewelry, or invented religious insignia."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jairo-principal-sinagoga/entry.yaml"
+    },
+    "jefte-galaadita": {
+      "entityKey": "personajes-jefte-galaadita",
+      "canonicalName": "Jefté galaadita",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jefte-galaadita",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jefté galaadita",
+          "definition": "Jefté es un guerrero galaadita que, tras ser expulsado por sus medio hermanos y vivir en la tierra de Tob, fue llamado por los ancianos de Galaad para dirigir la guerra contra los amonitas. El pueblo lo hizo cabeza y jefe militar; después de la victoria, juzgó a Israel durante seis años.",
+          "historical_context": "El relato se sitúa en Galaad, al este del Jordán, dentro del período narrativo de los jueces. Jefté es descrito como varón esforzado y valeroso, pero el texto no especifica su edad, rostro, armamento concreto ni indumentaria. La imagen usa una reconstrucción masculina sobria del Levante/Transjordania con túnica tejida, manto, cinturón textil y sandalias, sin corona, armadura real, insignias ni atributos posteriores. Las comparaciones arqueológicas de la Edad del Hierro se emplean solo como apoyo general de cultura material, no como retrato de Jefté.",
+          "original_language_note": "El nombre hebreo יִפְתָּח (Yip̄tāḥ / Yiphtach) está relacionado con la raíz פתח, “abrir”. El sentido léxico suele expresarse como “él abre” o, probablemente, “[Dios] abre”; el relato bíblico no convierte ese significado en un rasgo visual del personaje.",
+          "alt_text": "Ilustración histórica de Jefté galaadita como un varón adulto de la Transjordania antigua, de pie y en actitud firme, con túnica, manto, cinturón tejido y sandalias sencillas, sin corona ni arma específica, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jephthah the Gileadite",
+          "definition": "Jephthah is a Gileadite warrior who, after being driven away by his half brothers and living in the land of Tob, was recalled by the elders of Gilead to command the war against the Ammonites. The people made him their head and military commander; after victory he judged Israel for six years.",
+          "historical_context": "The narrative is set in Gilead east of the Jordan during the period portrayed by Judges. Jephthah is explicitly presented as a mighty warrior, but Scripture does not specify his age, face, exact weaponry, or clothing. The image therefore uses a restrained ancient Levantine/Transjordanian reconstruction with a woven tunic, mantle, textile belt, and sandals, with no crown, royal armor, insignia, or later traditional attributes. Iron Age material culture is used only as broad comparative evidence, not as a portrait of Jephthah.",
+          "original_language_note": "The Hebrew name יִפְתָּח (Yip̄tāḥ / Yiphtach) is related to the root פתח, “to open.” Its lexical sense is commonly expressed as “he opens” or probably “[God] opens”; the biblical narrative does not turn that meaning into a visual characteristic of the person.",
+          "alt_text": "Historical illustration of Jephthah the Gileadite as an adult man from ancient Transjordan, standing firmly in a simple tunic, mantle, woven belt, and sandals, with no crown or specific weapon, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יִפְתָּח",
+          "transliteration": "Yip̄tāḥ / Yiphtach",
+          "lemma": "יִפְתָּח",
+          "meaning": {
+            "es-419": "Nombre relacionado con la raíz hebrea פתח, “abrir”; sentido aproximado “él abre” o probablemente “[Dios] abre”.",
+            "en-US": "Name related to the Hebrew root פתח, “to open”; approximate sense “he opens” or probably “[God] opens”."
+          },
+          "certainty": "documented_lexical_gloss"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Jueces 10:17–12:7",
+            "Jueces 11:1–11",
+            "Jueces 11:29–33",
+            "Jueces 12:7"
+          ],
+          "en-US": [
+            "Jueces 10:17–12:7",
+            "Jueces 11:1–11",
+            "Jueces 11:29–33",
+            "Jueces 12:7"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Samuel 12:11",
+            "Hebreos 11:32"
+          ],
+          "en-US": [
+            "1 Samuel 12:11",
+            "Hebreos 11:32"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "período narrativo de los jueces; reconstrucción material comparativa de la Edad del Hierro",
+        "region": "Galaad / Transjordania, al este del Jordán",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "f213f95314f23280caac44641d62c7c67f0e5ebc5aeb75a79dd216a3a0404f68",
+        "optimizedPath": "/media/editorial/personajes/jefte-galaadita/v001/jefte-galaadita--optimized.webp",
+        "highPath": "/media/editorial/personajes/jefte-galaadita/v001/jefte-galaadita--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "6596fdf912684e8fbb83b8d68c2c6fe8eb20610447637b489bf3e56978cc7fe9",
+        "highChecksum": "a73eccb25accfca902b73e732f9ca891a698841fe57c338548b0b61d32dcdaf0"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T03:19:34Z",
+        "notes": "Approved by user after bilingual preview and final QA. Exact PNG verified as 1024×1536 RGBA with real alpha transparency and a clean isolated figure; no scenic background, text, halo, crown, specific weapon, royal armor, or invented insignia."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jefte-galaadita/entry.yaml"
+    },
+    "jehu-casa-nimsi-rey-israel": {
+      "entityKey": "personajes-jehu-hijo-nimsi-futuro-rey",
+      "canonicalName": "Jehú (casa de Nimsi; rey de Israel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jehu-casa-nimsi-rey-israel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jehú (casa de Nimsi; rey de Israel)",
+          "definition": "Jehú, hijo de Josafat y nieto de Nimsi, fue comandante militar y luego rey del reino del norte de Israel. Fue ungido por mandato profético para derribar la casa de Acab; encabezó el golpe que terminó con Joram, Jezabel y la dinastía omrida, y eliminó el culto estatal a Baal, aunque 2 Reyes también lo critica por mantener los becerros de Bet-el y Dan.",
+          "historical_context": "Jehú gobernó Israel en el siglo IX a. C., en un período de fuerte presión aramea y expansión neoasiria. El Obelisco Negro de Salmanasar III, hallado en Nimrud y fechado hacia 825 a. C., registra tributo de “Jehú, de la casa de Omri”; sus relieves ofrecen evidencia contemporánea útil sobre vestimenta y presentación de delegaciones israelitas, pero no deben tratarse como un retrato facial seguro de Jehú. El registro puede representar al propio rey o a un representante.",
+          "original_language_note": "Hebreo יֵהוּא (Yēhû / Yehú), nombre teofórico tradicionalmente entendido como “YHWH es él” o “el SEÑOR es él”.",
+          "alt_text": "Reconstrucción editorial de Jehú como gobernante y antiguo comandante israelita del siglo IX a. C., de pie en postura firme, con túnica clara, manto rojizo, cinturón tejido, sandalias, carcaj y un arco de madera con la cuerda completa y visible; figura completa aislada sobre fondo transparente, sin corona ni escenografía."
+        },
+        "en-US": {
+          "display_name": "Jehu (house of Nimshi; king of Israel)",
+          "definition": "Jehu, son of Jehoshaphat and grandson of Nimshi, was a military commander who became king of the northern kingdom of Israel. He was anointed under prophetic commission to overthrow Ahab’s house; he led the coup that ended Joram, Jezebel, and the Omride dynasty, and he eradicated the state-sponsored cult of Baal, although 2 Kings also criticizes him for retaining the calf shrines at Bethel and Dan.",
+          "historical_context": "Jehu ruled Israel in the ninth century BCE amid Aramean pressure and expanding Neo-Assyrian power. The Black Obelisk of Shalmaneser III, excavated at Nimrud and dated to about 825 BCE, records tribute from “Jehu, of the house of Omri.” Its reliefs provide contemporary evidence useful for Iron Age Israelite dress and presentation, but they should not be treated as a secure facial portrait of Jehu; the kneeling figure may be the king himself or a representative.",
+          "original_language_note": "Hebrew יֵהוּא (Yēhû / Yehu), a theophoric name traditionally understood as “YHWH is he” or “the LORD is he.”",
+          "alt_text": "Editorial reconstruction of Jehu as a ninth-century BCE Israelite ruler and former military commander, standing firmly in a light tunic, reddish mantle, woven belt, sandals, quiver, and holding a wooden bow with its full string clearly visible; full figure isolated on a transparent background, without a crown or scenery."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יֵהוּא",
+          "transliteration": "Yēhû / Yehu",
+          "lemma": "יֵהוּא",
+          "meaning": {
+            "es-419": "Nombre teofórico tradicionalmente entendido como “YHWH es él” o “el SEÑOR es él”.",
+            "en-US": "A theophoric name traditionally understood as “YHWH is he” or “the LORD is he.”"
+          },
+          "certainty": "documented_lexical_gloss"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Reyes 9:1–13",
+            "2 Reyes 9:14–37",
+            "2 Reyes 10:1–31",
+            "2 Reyes 10:32–36"
+          ],
+          "en-US": [
+            "2 Reyes 9:1–13",
+            "2 Reyes 9:14–37",
+            "2 Reyes 10:1–31",
+            "2 Reyes 10:32–36"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Reyes 19:16–17",
+            "2 Crónicas 22:7–9",
+            "Oseas 1:4",
+            "2 Reyes 15:12"
+          ],
+          "en-US": [
+            "1 Reyes 19:16–17",
+            "2 Crónicas 22:7–9",
+            "Oseas 1:4",
+            "2 Reyes 15:12"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo IX a. C.; monarquía del reino del norte de Israel",
+        "region": "Israel (reino del norte), con marco levantino y neoasirio",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "ddfa1153041b4ca5fc54619e9c134f2bdd431c81081e12d5ef87abd05ead53d8",
+        "optimizedPath": "/media/editorial/personajes/jehu-casa-nimsi-rey-israel/v001/jehu-casa-nimsi-rey-israel--optimized.webp",
+        "highPath": "/media/editorial/personajes/jehu-casa-nimsi-rey-israel/v001/jehu-casa-nimsi-rey-israel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "b1e50911a8bccd95dae8f7799b2c59f932b18fa508f32c785b93e3bb93314c4b",
+        "highChecksum": "b359d36ffdb2e2bb875003317a9ab4979731d47dd0746dfa52e22cb53e0b6d3f"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T04:13:06Z",
+        "notes": "Approved by user after regeneration to correct the bowstring and remove non-transparent artifacts around the bow. Exact PNG verified as 1024×1536 RGBA with real alpha transparency; full bowstring is visible and the isolated figure has no scenic background."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jehu-casa-nimsi-rey-israel/entry.yaml"
+    },
+    "jeremias-profeta": {
+      "entityKey": "personajes-jeremias-profeta",
+      "canonicalName": "Jeremías (profeta)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jeremias-profeta",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jeremías (profeta)",
+          "definition": "Jeremías, hijo de Hilcías, fue un profeta de Judá procedente de Anatot, en territorio de Benjamín. Su ministerio comenzó en el año decimotercero del rey Josías y continuó durante las últimas décadas del reino de Judá, atravesando los reinados de Joacim y Sedequías, el sitio y la caída de Jerusalén y sus consecuencias. Anunció juicio por la infidelidad del pueblo, llamó al arrepentimiento y proclamó también restauración y un nuevo pacto.",
+          "historical_context": "Jeremías pertenecía a una familia sacerdotal de Anatot, pero el texto bíblico no afirma que ejerciera como sacerdote, por lo que no se le representa con vestiduras sacerdotales. Su actividad se sitúa en la crisis política y militar que llevó a Judá desde los últimos años de la monarquía hasta la conquista babilónica de Jerusalén. Los ostraca de Laquis, escritos en hebreo sobre cerámica en ese mismo horizonte histórico, confirman materialmente prácticas de escritura y administración de la Judá tardía; los relieves asirios de Laquis, algo anteriores, aportan comparaciones cautelosas sobre indumentaria judeana, no un retrato del profeta. El bastón visible en la reconstrucción se trata solo como accesorio plausible de uso cotidiano y no como atributo bíblico documentado de Jeremías.",
+          "original_language_note": "Hebreo יִרְמְיָהוּ / יִרְמְיָה (Yirməyāhû / Yirməyāh). La etimología exacta es discutida; Bibli no presenta una traducción del nombre como segura.",
+          "alt_text": "Reconstrucción editorial de Jeremías como un varón adulto de Judá a fines del siglo VII o inicios del VI a. C., de pie en postura sobria, con túnica y manto tejidos, cinturón sencillo, sandalias y un bastón de madera; sin vestiduras sacerdotales ni halo, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jeremiah (prophet)",
+          "definition": "Jeremiah, son of Hilkiah, was a prophet of Judah from Anathoth in the territory of Benjamin. His ministry began in the thirteenth year of King Josiah and continued through Judah’s final decades, including the reigns of Jehoiakim and Zedekiah, the siege and fall of Jerusalem, and their aftermath. He proclaimed judgment for covenant unfaithfulness, called the people to repentance, and also announced restoration and a new covenant.",
+          "historical_context": "Jeremiah came from a priestly family in Anathoth, but the biblical text does not state that he served as a priest, so he is not shown in priestly vestments. His activity belongs to the political and military crisis that carried Judah from the last decades of the monarchy into the Babylonian conquest of Jerusalem. The Lachish ostraca, written in Hebrew on pottery in this same historical horizon, materially attest late Judahite writing and administration; the somewhat earlier Assyrian Lachish reliefs provide cautious comparisons for Judahite dress, not a portrait of Jeremiah. The staff visible in the reconstruction is treated only as a plausible everyday accessory, not as a biblically documented attribute of Jeremiah.",
+          "original_language_note": "Hebrew יִרְמְיָהוּ / יִרְמְיָה (Yirməyāhû / Yirməyāh). The precise etymology is disputed; Bibli does not present one translation of the name as certain.",
+          "alt_text": "Editorial reconstruction of Jeremiah as an adult Judahite man in the late seventh or early sixth century BCE, standing in a restrained pose and wearing a woven tunic, mantle, simple belt, sandals, and holding a wooden staff; no priestly vestments or halo, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יִרְמְיָהוּ / יִרְמְיָה",
+          "transliteration": "Yirməyāhû / Yirməyāh",
+          "lemma": "יִרְמְיָהוּ / יִרְמְיָה",
+          "meaning": {
+            "es-419": "Etimología discutida; se han propuesto sentidos relacionados con “YHWH exalta/levanta” y otras derivaciones.",
+            "en-US": "Disputed etymology; senses related to “YHWH exalts/raises” and other derivations have been proposed."
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Jeremías 1:1–10",
+            "Jeremías 7:1–15",
+            "Jeremías 20:7–18",
+            "Jeremías 26:1–24",
+            "Jeremías 31:31–34",
+            "Jeremías 36:1–32",
+            "Jeremías 37:11–21",
+            "Jeremías 38:1–28",
+            "Jeremías 39:1–14",
+            "Jeremías 40:1–6",
+            "Jeremías 43:1–7"
+          ],
+          "en-US": [
+            "Jeremías 1:1–10",
+            "Jeremías 7:1–15",
+            "Jeremías 20:7–18",
+            "Jeremías 26:1–24",
+            "Jeremías 31:31–34",
+            "Jeremías 36:1–32",
+            "Jeremías 37:11–21",
+            "Jeremías 38:1–28",
+            "Jeremías 39:1–14",
+            "Jeremías 40:1–6",
+            "Jeremías 43:1–7"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Crónicas 35:25",
+            "2 Crónicas 36:12, 21–22",
+            "Esdras 1:1",
+            "Daniel 9:2"
+          ],
+          "en-US": [
+            "2 Crónicas 35:25",
+            "2 Crónicas 36:12, 21–22",
+            "Esdras 1:1",
+            "Daniel 9:2"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "fines del siglo VII a. C. e inicios del VI a. C.; últimos años del reino de Judá y conquista babilónica",
+        "region": "Judá, especialmente Anatot y Jerusalén",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "10d245e897c4830d3bbeaa3e70e3abbf8be085bcef26172d7e059c110bff7810",
+        "optimizedPath": "/media/editorial/personajes/jeremias-profeta/v001/jeremias-profeta--optimized.webp",
+        "highPath": "/media/editorial/personajes/jeremias-profeta/v001/jeremias-profeta--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "4abe2f455ec5c1bd2a0f503b9e7e9cdf74308393a98280498a678ccff9784fd4",
+        "highChecksum": "ec37f9cfa3388265ce273cc8c1b8b1c0486c7f2c799abbb8f229ef0af353dbec"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T04:31:25Z",
+        "notes": "Approved by user. Exact PNG verified as 1024×1536 RGBA with real alpha transparency. Alt text normalized to describe the visible wooden staff; the staff is recorded as a plausible everyday accessory, not a biblically documented attribute."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jeremias-profeta/entry.yaml"
+    },
+    "jeroboam-i-hijo-nabat": {
+      "entityKey": "personajes-jeroboam-i-hijo-nabat",
+      "canonicalName": "Jeroboam I (hijo de Nabat; rey de Israel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jeroboam-i-hijo-nabat",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jeroboam I (hijo de Nabat; rey de Israel)",
+          "definition": "Jeroboam I, hijo de Nabat y efraimita de Zereda, fue un funcionario de Salomón que llegó a ser el primer rey del reino del norte de Israel tras la ruptura con la casa de David. El relato de Reyes vincula su ascenso con la profecía de Ahías y presenta como rasgo decisivo de su reinado el establecimiento de santuarios reales en Bet-el y Dan con becerros de oro, práctica que después se convierte en el paradigma de “hacer pecar a Israel”.",
+          "historical_context": "Su reinado pertenece al horizonte del siglo X a. C., aunque la cronología absoluta y la reconstrucción histórica de la división monárquica son debatidas. La imagen no afirma ningún retrato auténtico ni insignia real específica: usa una reconstrucción sobria de un varón levantino de la Edad del Hierro y evita convertir comparaciones materiales posteriores en evidencia directa.",
+          "original_language_note": "Hebreo יָרָבְעָם (Yārāḇʿām / Yarob'am). La etimología es discutida: Brown–Driver–Briggs recoge propuestas como “el pueblo aumenta” y, alternativamente, una derivación relacionada con “el pueblo contiende”; Bibli no fija una traducción única como segura.",
+          "alt_text": "Reconstrucción editorial de Jeroboam I como gobernante israelita adulto del siglo X a. C., de cuerpo completo y postura firme, con túnica tejida, manto sencillo, cinturón y sandalias de apariencia levantina antigua; sin corona, ídolos ni escenografía, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jeroboam I (son of Nebat; king of Israel)",
+          "definition": "Jeroboam I, son of Nebat and an Ephraimite from Zeredah, was an official under Solomon who became the first king of the northern kingdom of Israel after the break with the house of David. Kings connects his rise with Ahijah’s prophecy and treats his royal sanctuaries at Bethel and Dan, with their golden calves, as the defining policy that later becomes the paradigm of causing Israel to sin.",
+          "historical_context": "His reign belongs to the tenth-century BCE horizon, although absolute dating and the historical reconstruction of the divided monarchy remain debated. The illustration does not claim an authentic portrait or a specific royal insignia; it uses a restrained Iron Age Levantine male reconstruction and does not treat later comparanda as direct evidence for Jeroboam himself.",
+          "original_language_note": "Hebrew יָרָבְעָם (Yārāḇʿām / Yarob'am). Its etymology is disputed: Brown–Driver–Briggs records proposals such as “the people increases” and an alternative derivation associated with “the people contends”; Bibli does not present either gloss as certain.",
+          "alt_text": "Editorial reconstruction of Jeroboam I as an adult tenth-century BCE Israelite ruler, shown full-length in a firm stance, wearing a woven tunic, simple mantle, belt, and ancient Levantine-style sandals; no crown, idols, or scenery, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יָרָבְעָם",
+          "transliteration": "Yārāḇʿām / Yarob'am",
+          "lemma": "יָרָבְעָם",
+          "meaning": {
+            "es-419": "Etimología discutida; se han propuesto sentidos como «el pueblo aumenta» o una relación con «el pueblo contiende».",
+            "en-US": "Disputed etymology; proposals include “the people increases” or a connection with “the people contends.”"
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Reyes 11:26-40",
+            "1 Reyes 12:1-33",
+            "1 Reyes 13:1-10",
+            "1 Reyes 14:1-20"
+          ],
+          "en-US": [
+            "1 Kings 11:26-40",
+            "1 Kings 12:1-33",
+            "1 Kings 13:1-10",
+            "1 Kings 14:1-20"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Reyes 15:25-30",
+            "2 Crónicas 10:1-11:4",
+            "2 Crónicas 13:1-20"
+          ],
+          "en-US": [
+            "1 Kings 15:25-30",
+            "2 Chronicles 10:1-11:4",
+            "2 Chronicles 13:1-20"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo X a. C. / tenth century BCE",
+        "region": "Israel; Levante meridional / Israel; southern Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "ec79d5d7c69fc50e049274f1c542e10d87656202e1abaf69349b64da2f508e70",
+        "optimizedPath": "/media/editorial/personajes/jeroboam-i-hijo-nabat/v001/jeroboam-i-hijo-nabat--optimized.webp",
+        "highPath": "/media/editorial/personajes/jeroboam-i-hijo-nabat/v001/jeroboam-i-hijo-nabat--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "45f6c81ee9f8188d92c0f9327526d5af3e75e414378d15af8f058d2b9dfd3772",
+        "highChecksum": "e3c9462d53bd62d364c5e384ee0631bd8cbaac3f8cd8b49a743d056ec5dae04a"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T04:37:58Z",
+        "notes": "Aprobado por el usuario; imagen y paquete bilingüe aceptados atómicamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jeroboam-i-hijo-nabat/entry.yaml"
     }
   }
 }
