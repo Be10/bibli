@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const base = '/bibli';
 
 test('Explicit glossary links are reciprocal between glossary and lesson', async ({ page }) => {
-  await page.goto(`${base}/glosario/promesa/`);
+  await page.goto(`${base}/glosario/conceptos/promesa/`);
 
   const relationSection = page.locator('[data-explicit-connections="lesson-glossary"]');
   await expect(relationSection).toBeVisible();
@@ -17,7 +17,7 @@ test('Explicit glossary links are reciprocal between glossary and lesson', async
   await relatedLessons.first().click();
   await expect(page).toHaveURL(/\/bibli\/lecciones\/.+\/$/);
 
-  const reciprocalGlossaryLink = page.locator('[data-explicit-connection="lesson-glossary"][href="/bibli/glosario/promesa/"]');
+  const reciprocalGlossaryLink = page.locator('[data-explicit-connection="lesson-glossary"][href="/bibli/glosario/conceptos/promesa/"]');
   await expect(reciprocalGlossaryLink.first()).toBeAttached();
 });
 
@@ -84,7 +84,7 @@ test('Visual resource relations stay navigable while the image is still in prepa
 });
 
 test('Derived person-place links expose event provenance without masquerading as direct relations', async ({ page }) => {
-  const personHref = `${base}/personajes/abraham/`;
+  const personHref = `${base}/glosario/personajes/abraham/`;
   const placeHref = `${base}/lugares/canaan/`;
 
   await page.goto(personHref);
@@ -111,7 +111,7 @@ test('Derived person-place links expose event provenance without masquerading as
 });
 
 test('Derived person-place evidence links to the exact events that explicitly support both endpoints', async ({ page }) => {
-  const personHref = `${base}/personajes/abraham/`;
+  const personHref = `${base}/glosario/personajes/abraham/`;
   const placeHref = `${base}/lugares/canaan/`;
   const expectedEvents = [
     `${base}/eventos/llamado-de-abraham/`,

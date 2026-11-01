@@ -1,4 +1,5 @@
 import { sitePath } from "./site-paths";
+import { getGlossaryCanonicalPath, glossaryCanonicalPath, requireGlossaryCategory } from "./glossary-routes";
 import {
   getBibleBookPath,
   getBibleRootPath,
@@ -444,6 +445,12 @@ export function buildSearchIndex(
 
   const people: SearchIndexItem[] = getAllPeople()
     .filter((person) => person.status !== "Borrador")
+    .filter(
+      (person) =>
+        !getGlossaryCanonicalPath(
+          person.slug
+        )
+    )
     .map((person) =>
       makeItem(language, "Personaje", {
         title: person.name,
@@ -498,17 +505,31 @@ export function buildSearchIndex(
 
   const glossary: SearchIndexItem[] = getAllGlossaryTerms()
     .filter((term) => term.status !== "Borrador")
-    .map((term) =>
-      makeItem(language, "Glosario", {
+    .map((term) => {
+      const category =
+        requireGlossaryCategory(
+          term.slug
+        );
+
+      return makeItem(
+        language,
+        category === "personajes"
+          ? "Personaje"
+          : "Glosario",
+        {
         title: term.term,
-        url: sitePath(`/glosario/${term.slug}/`),
+        url: sitePath(
+          glossaryCanonicalPath(
+            term.slug
+          )
+        ),
         summary: term.definition ?? "Término del glosario.",
         searchText: joinSearchText(term.term, term.definition),
         bookOrder: 999,
         chapterNumber: 999,
         verseNumber: 999,
-      })
-    );
+      });
+    });
 
   return [
     ...sectionItems,

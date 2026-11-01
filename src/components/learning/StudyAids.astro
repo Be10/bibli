@@ -1,5 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
+import { getGlossaryCanonicalPath, glossaryCanonicalPath } from "../../lib/glossary-routes";
 import Icon from "../Icon.astro";
 import LessonMap from "./LessonMap.astro";
 import BibliImgViewer from "../BibliImgViewer.astro";
@@ -131,7 +132,7 @@ const peopleAids = people.map((item) => {
               </button>
             )}
             <div class="aid-entity-copy">
-              <a href={sitePath(`/glosario/${term.slug}/`)} data-explicit-connection="lesson-glossary"><strong>{term.title}</strong></a>
+              <a href={sitePath(glossaryCanonicalPath(term.slug))} data-explicit-connection="lesson-glossary"><strong>{term.title}</strong></a>
               {term.definition && <p>{term.definition}</p>}
             </div>
           </article>
@@ -171,7 +172,7 @@ const peopleAids = people.map((item) => {
               </button>
             )}
             <div class="aid-entity-copy">
-              <a href={sitePath(`/personajes/${person.slug}/`)} data-explicit-connection="lesson-people"><strong>{person.title}</strong></a>
+              <a href={sitePath(getGlossaryCanonicalPath(person.slug) ?? `/personajes/${person.slug}/`)} data-explicit-connection="lesson-people"><strong>{person.title}</strong></a>
             </div>
           </article>
         ))}

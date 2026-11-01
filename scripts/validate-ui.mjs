@@ -1103,7 +1103,7 @@ const discoveryContracts = [
   ["Libro bíblico ES", path.join(root, "src", "pages", "es", "biblia", "[versionId]", "[bookCode]", "index.astro"), 'data-detail-kind="bible-book"'],
   ["Bible book EN", path.join(root, "src", "pages", "en", "bible", "[versionId]", "[bookCode]", "index.astro"), 'data-detail-kind="bible-book"'],
   ["Glosario", path.join(root, "src", "pages", "glosario", "index.astro"), 'data-catalog-kind="glossary"'],
-  ["Detalle glosario", path.join(root, "src", "pages", "glosario", "[slug].astro"), 'data-detail-kind="glossary"'],
+  ["Detalle glosario", path.join(root, "src", "pages", "glosario", "[category]", "[slug].astro"), 'data-detail-kind="glossary"'],
 ];
 for (const [surfaceName, surfacePath, contract] of discoveryContracts) {
   if (!fs.existsSync(surfacePath)) {

@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "categories": {
+    "personajes": {
+      "label": "Personajes",
+      "itemLabel": "Personaje"
+    },
+    "colectivos": {
+      "label": "Pueblos y colectivos",
+      "itemLabel": "Colectivo"
+    },
+    "lugares": {
+      "label": "Lugares",
+      "itemLabel": "Lugar"
+    },
+    "objetos": {
+      "label": "Objetos",
+      "itemLabel": "Objeto"
+    },
+    "estructuras": {
+      "label": "Estructuras",
+      "itemLabel": "Estructura"
+    },
+    "escritura": {
+      "label": "Escritura y textos",
+      "itemLabel": "Texto"
+    },
+    "practicas": {
+      "label": "Prácticas y rituales",
+      "itemLabel": "Práctica"
+    },
+    "eventos": {
+      "label": "Eventos y escenas",
+      "itemLabel": "Evento"
+    },
+    "roles": {
+      "label": "Roles y oficios",
+      "itemLabel": "Rol"
+    },
+    "titulos": {
+      "label": "Títulos bíblicos",
+      "itemLabel": "Título"
+    },
+    "conceptos": {
+      "label": "Conceptos",
+      "itemLabel": "Concepto"
+    },
+    "flora": {
+      "label": "Flora",
+      "itemLabel": "Flora"
+    },
+    "fauna": {
+      "label": "Fauna",
+      "itemLabel": "Fauna"
+    },
+    "criaturas": {
+      "label": "Criaturas",
+      "itemLabel": "Criatura"
+    },
+    "seres-celestiales": {
+      "label": "Seres celestiales",
+      "itemLabel": "Ser celestial"
+    },
+    "vestimenta": {
+      "label": "Vestimenta",
+      "itemLabel": "Vestimenta"
+    },
+    "monedas-medidas": {
+      "label": "Monedas y medidas",
+      "itemLabel": "Moneda o medida"
+    },
+    "herramientas-oficios": {
+      "label": "Herramientas y oficios",
+      "itemLabel": "Herramienta u oficio"
+    },
+    "alimentos": {
+      "label": "Alimentos y bebidas",
+      "itemLabel": "Alimento o bebida"
+    },
+    "instrumentos": {
+      "label": "Instrumentos",
+      "itemLabel": "Instrumento"
+    },
+    "armas": {
+      "label": "Armas",
+      "itemLabel": "Arma"
+    },
+    "transporte": {
+      "label": "Transporte",
+      "itemLabel": "Transporte"
+    },
+    "naturaleza": {
+      "label": "Naturaleza",
+      "itemLabel": "Fenómeno natural"
+    }
+  },
+  "routes": {
+    "aaron-sumo-sacerdote": "personajes",
+    "abdias-mayordomo-acab": "personajes",
+    "abdias-profeta-libro": "personajes",
+    "abel": "personajes",
+    "abiam-abias-rey-juda": "personajes",
+    "abimelec-hijo-gedeon": "personajes",
+    "abisag-sunamita": "personajes",
+    "abraham": "personajes",
+    "absalon-hijo-david": "personajes",
+    "acab-rey-israel": "personajes",
+    "acaz-rey-juda": "personajes",
+    "adan": "personajes",
+    "adonias-hijo-david": "personajes",
+    "agar": "personajes",
+    "ahitofel-gilonita": "personajes",
+    "aholiab-artesano-del-tabernaculo": "personajes",
+    "ahias-silonita-profeta": "personajes",
+    "amasias-rey-juda": "personajes",
+    "amasias-sacerdote-betel-amos7": "personajes",
+    "amnon-hijo-david": "personajes",
+    "aman-hijo-hamedata": "personajes",
+    "amos-profeta-tecoa": "personajes",
+    "ana-madre-samuel": "personajes",
+    "ana-profetisa-hija-fanuel": "personajes",
+    "andres-apostol": "personajes",
+    "david": "personajes",
+    "josue": "personajes",
+    "jose": "personajes",
+    "moises": "personajes",
+    "babel": "lugares",
+    "canaan": "lugares",
+    "egipto": "lugares",
+    "tierra-prometida": "lugares",
+    "doce-tribus": "colectivos",
+    "iglesia": "colectivos",
+    "israel": "colectivos",
+    "naciones": "colectivos",
+    "patriarcas": "colectivos",
+    "remanente": "colectivos",
+    "faraon": "roles",
+    "jueces": "roles",
+    "profetas": "roles",
+    "rey": "roles",
+    "sumo-sacerdote": "roles",
+    "cristo": "titulos",
+    "hijo-de-david": "titulos",
+    "mesias": "titulos",
+    "siervo-sufriente": "titulos",
+    "biblia": "escritura",
+    "diez-mandamientos": "escritura",
+    "tabernaculo": "estructuras",
+    "templo": "estructuras",
+    "cruz": "objetos",
+    "adoracion": "practicas",
+    "circuncision": "practicas",
+    "pascua": "practicas",
+    "sacrificio": "practicas",
+    "caida": "eventos",
+    "ciclo-de-los-jueces": "eventos",
+    "dispersion": "eventos",
+    "encarnacion": "eventos",
+    "exilio": "eventos",
+    "exodo": "eventos",
+    "gran-comision": "eventos",
+    "pacto-en-sinai": "eventos",
+    "pentecostes": "eventos",
+    "apostasia": "conceptos",
+    "bendicion": "conceptos",
+    "descanso": "conceptos",
+    "descendencia": "conceptos",
+    "evangelio": "conceptos",
+    "expiacion": "conceptos",
+    "fe": "conceptos",
+    "fidelidad-de-dios": "conceptos",
+    "juicio": "conceptos",
+    "ley": "conceptos",
+    "misericordia": "conceptos",
+    "nueva-creacion": "conceptos",
+    "nuevo-pacto": "conceptos",
+    "orgullo": "conceptos",
+    "pacto": "conceptos",
+    "pacto-davidico": "conceptos",
+    "pecado": "conceptos",
+    "perdon": "conceptos",
+    "presencia-de-dios": "conceptos",
+    "primogenitura": "conceptos",
+    "promesa": "conceptos",
+    "providencia": "conceptos",
+    "redencion": "conceptos",
+    "reino": "conceptos",
+    "reino-de-dios": "conceptos",
+    "resurreccion": "conceptos",
+    "santidad": "conceptos"
+  }
+}

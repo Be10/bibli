@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const base = '/bibli';
 
 test('Approved BibliImg package enriches the Abraham glossary entry without replacing explicit relations', async ({ page }) => {
-  await page.goto(`${base}/glosario/abraham/`);
+  await page.goto(`${base}/glosario/personajes/abraham/`);
 
   const figure = page.locator('[data-bibli-img-entry="personajes-abraham"]');
   await expect(figure).toBeVisible();
@@ -98,7 +98,7 @@ test('Approved BibliImg package enriches the Abraham glossary entry without repl
 });
 
 test('Glossary entries without an integrated BibliImg package keep the existing fallback surface', async ({ page }) => {
-  await page.goto(`${base}/glosario/promesa/`);
+  await page.goto(`${base}/glosario/conceptos/promesa/`);
 
   await expect(page.locator('[data-bibli-img-entry]')).toHaveCount(0);
   await expect(page.locator('[data-bibli-img-content]')).toHaveCount(0);

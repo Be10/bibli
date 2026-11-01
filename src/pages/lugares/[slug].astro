@@ -1,4 +1,5 @@
 ---
+import { getGlossaryCanonicalPath } from "../../lib/glossary-routes";
 import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
@@ -230,7 +231,7 @@ const searchUrl = `${sitePath("/buscar/")}?q=${encodeURIComponent(place.name)}`;
             <article class="place-person-card">
               <span>Derivado de eventos</span>
               <a
-                href={sitePath(`/personajes/${person.slug}/`)}
+                href={sitePath(getGlossaryCanonicalPath(person.slug) ?? `/personajes/${person.slug}/`)}
                 class="place-person-primary"
                 data-derived-connection="person-places-via-events"
                 data-derived-via="event-people,event-places"

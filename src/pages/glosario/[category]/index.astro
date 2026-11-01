@@ -1,0 +1,293 @@
+---
+import { sitePath } from "../../../lib/site-paths";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Icon from "../../../components/Icon.astro";
+import {
+  getGlossaryCategoryMeta,
+  glossaryCanonicalPath,
+  requireGlossaryCategory,
+  type GlossaryCategory,
+} from "../../../lib/glossary-routes";
+import {
+  getAllGlossaryTerms,
+  type GlossaryTerm,
+} from "../../../lib/queries";
+
+type Props = {
+  category: GlossaryCategory;
+  terms: GlossaryTerm[];
+};
+
+export function getStaticPaths() {
+  const terms = getAllGlossaryTerms()
+    .filter(
+      (term) =>
+        term.status !== "Borrador"
+    );
+
+  const byCategory =
+    new Map<
+      GlossaryCategory,
+      GlossaryTerm[]
+    >();
+
+  for (const term of terms) {
+    const category =
+      requireGlossaryCategory(
+        term.slug
+      );
+
+    const bucket =
+      byCategory.get(category) ?? [];
+
+    bucket.push(term);
+    byCategory.set(
+      category,
+      bucket
+    );
+  }
+
+  return [...byCategory.entries()]
+    .map(
+      ([
+        category,
+        categoryTerms,
+      ]) => ({
+        params: {
+          category,
+        },
+        props: {
+          category,
+          terms: categoryTerms,
+        },
+      })
+    );
+}
+
+const {
+  category,
+  terms,
+} = Astro.props as Props;
+
+const meta =
+  getGlossaryCategoryMeta(
+    category
+  );
+---
+
+<BaseLayout
+  title={`${meta.label} · Glosario bíblico`}
+  description={`Explora ${meta.label.toLocaleLowerCase("es-ES")} dentro del glosario canónico de Bibli.`}
+>
+  <main
+    class="page glossary-category-page"
+    data-catalog-root
+    data-catalog-kind="glossary-category"
+  >
+    <div class="breadcrumb">
+      <a href={sitePath("/")}>
+        Inicio
+      </a> →
+      <a href={sitePath("/glosario/")}>
+        Glosario
+      </a> →
+      {meta.label}
+    </div>
+
+    <section
+      class="hero glossary-category-hero"
+    >
+      <div>
+        <p class="eyebrow">
+          Glosario bíblico
+        </p>
+
+        <h1>{meta.label}</h1>
+
+        <p class="subtitle">
+          Fichas canónicas clasificadas
+          editorialmente dentro de Bibli.
+        </p>
+      </div>
+
+      <aside
+        class="glossary-category-summary"
+        aria-label={`Resumen de ${meta.label}`}
+      >
+        <span>
+          Entradas publicadas
+        </span>
+
+        <strong>
+          {terms.length}
+        </strong>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">
+            Directorio
+          </p>
+          <h2>{meta.label}</h2>
+        </div>
+
+        <span class="section-count">
+          {terms.length}
+        </span>
+      </div>
+
+      <div
+        class="glossary-category-grid"
+      >
+        {terms.map((term) => (
+          <a
+            href={sitePath(
+              glossaryCanonicalPath(
+                term.slug
+              )
+            )}
+            class="glossary-category-card"
+            data-catalog-item
+            data-catalog-search={`${term.term} ${term.definition ?? ""}`}
+          >
+            <span
+              class="glossary-category-icon"
+            >
+              <Icon
+                name="book"
+                size={18}
+              />
+            </span>
+
+            <div>
+              <span>
+                {meta.itemLabel}
+              </span>
+
+              <h2>{term.term}</h2>
+
+              <p>
+                {term.definition ??
+                  "Definición pendiente."}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .glossary-category-hero {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(220px, 300px);
+    gap: 28px;
+    align-items: end;
+  }
+
+  .glossary-category-summary {
+    display: grid;
+    gap: 10px;
+    padding: 24px;
+    border: 1px solid
+      var(--border-color);
+    border-radius: 22px;
+    background:
+      var(--surface-elevated);
+    box-shadow:
+      var(--shadow-sm);
+  }
+
+  .glossary-category-summary span,
+  .glossary-category-card span {
+    color: var(--accent);
+    font-size: .74rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .glossary-category-summary strong {
+    color: var(--heading-color);
+    font-size: 2.8rem;
+    line-height: 1;
+  }
+
+  .glossary-category-grid {
+    display: grid;
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+    gap: 14px;
+  }
+
+  .glossary-category-card {
+    display: grid;
+    grid-template-columns:
+      auto minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px;
+    border: 1px solid
+      var(--border-color);
+    border-radius: 18px;
+    background:
+      var(--surface-elevated);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .glossary-category-card:hover {
+    border-color:
+      var(--border-strong);
+    box-shadow:
+      var(--shadow-sm);
+  }
+
+  .glossary-category-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background:
+      var(--accent-soft);
+  }
+
+  .glossary-category-card h2 {
+    margin: .15rem 0 .35rem;
+    color: var(--heading-color);
+    font-size: 1rem;
+  }
+
+  .glossary-category-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .86rem;
+    line-height: 1.5;
+  }
+
+  @media(max-width: 960px) {
+    .glossary-category-grid {
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+    }
+  }
+
+  @media(max-width: 700px) {
+    .glossary-category-hero,
+    .glossary-category-grid {
+      grid-template-columns:
+        1fr;
+    }
+  }
+</style>

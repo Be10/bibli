@@ -3,6 +3,7 @@ import { sitePath } from "../../lib/site-paths";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
 import { getAllGlossaryTerms } from "../../lib/queries";
+import { getGlossaryCategoryMetaBySlug, glossaryCanonicalPath } from "../../lib/glossary-routes";
 
 const terms = getAllGlossaryTerms().filter((term) => term.status !== "Borrador");
 const alphabet = Array.from("ABCDEFGHIJKLMNÑOPQRSTUVWXYZ");
@@ -70,13 +71,13 @@ terms.forEach((term) => {
           {terms.map((term) => (
             <a
               id={firstSlugByInitial.get(getInitial(term.term)) === term.slug ? `glossary-${getInitial(term.term)}` : undefined}
-              href={sitePath(`/glosario/${term.slug}/`)}
+              href={sitePath(glossaryCanonicalPath(term.slug))}
               class="glossary-card"
               data-catalog-item
               data-catalog-search={`${term.term} ${term.definition ?? ""}`}
             >
               <span class="glossary-icon"><Icon name="book" size={18} /></span>
-              <span class="glossary-meta">Término</span>
+              <span class="glossary-meta">{getGlossaryCategoryMetaBySlug(term.slug).itemLabel}</span>
               <h3>{term.term}</h3>
               <p>{term.definition ?? "Definición pendiente."}</p>
               <small>Ver definición →</small>

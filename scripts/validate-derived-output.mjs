@@ -69,6 +69,38 @@ function readJson(file, label) {
   }
 }
 
+const glossaryRouting =
+  readJson(
+    path.join(
+      root,
+      'content',
+      'glossary-route-map.json'
+    ),
+    'routing canónico del glosario'
+  );
+
+const glossaryRoutes =
+  glossaryRouting?.routes ?? {};
+
+function canonicalGlossarySiteUrl(slug) {
+  const category =
+    glossaryRoutes[slug];
+
+  if (!category) {
+    fail(
+      `routing canónico: falta categoría para ${slug}`
+    );
+
+    return siteUrl(
+      `/glosario/${slug}/`
+    );
+  }
+
+  return siteUrl(
+    `/glosario/${category}/${slug}/`
+  );
+}
+
 if (!fs.existsSync(dist) && !useBuildSnapshot) {
   console.error('Validación de salidas derivadas: FAIL');
   console.error('- falta dist/ y no existe un snapshot reciente de site:audit. Ejecuta primero npm run build.');
@@ -314,10 +346,48 @@ try {
       ['Pasaje', new Set(publishedSlugs('passages').map((row) => siteUrl(`/pasajes/${row.slug}/`)))],
       ['Evento', new Set(publishedSlugs('events').map((row) => siteUrl(`/eventos/${row.slug}/`)))],
       ['Tema', new Set(publishedSlugs('topics').map((row) => siteUrl(`/temas/${row.slug}/`)))],
-      ['Personaje', new Set(publishedSlugs('people').map((row) => siteUrl(`/personajes/${row.slug}/`)))],
+      ['Personaje', new Set([
+        ...publishedSlugs('people')
+          .filter(
+            (row) =>
+              !glossaryRoutes[row.slug]
+          )
+          .map(
+            (row) =>
+              siteUrl(
+                `/personajes/${row.slug}/`
+              )
+          ),
+
+        ...publishedSlugs('glossary_terms')
+          .filter(
+            (row) =>
+              glossaryRoutes[row.slug] ===
+              'personajes'
+          )
+          .map(
+            (row) =>
+              canonicalGlossarySiteUrl(
+                row.slug
+              )
+          ),
+      ])],
       ['Lugar', new Set(publishedSlugs('places').map((row) => siteUrl(`/lugares/${row.slug}/`)))],
       ['Recurso', new Set(publishedSlugs('visual_resources').map((row) => siteUrl(`/recursos/${row.slug}/`)))],
-      ['Glosario', new Set(publishedSlugs('glossary_terms').map((row) => siteUrl(`/glosario/${row.slug}/`)))],
+      ['Glosario', new Set(
+        publishedSlugs('glossary_terms')
+          .filter(
+            (row) =>
+              glossaryRoutes[row.slug] !==
+              'personajes'
+          )
+          .map(
+            (row) =>
+              canonicalGlossarySiteUrl(
+                row.slug
+              )
+          )
+      )],
       ['Versículo', verseUrls(language, versionId)],
     ]);
   }

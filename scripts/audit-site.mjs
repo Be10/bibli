@@ -14,6 +14,24 @@ const buildSnapshotDir = path.join(os.tmpdir(), `bibli-build-audit-${projectKey}
 const buildSnapshotPath = path.join(buildSnapshotDir, 'snapshot.json');
 const snapshotArtifactRels = ['buscar/datos.json', 'en/search/data.json', 'offline-packages.json'];
 
+const glossaryRoutingPath =
+  path.join(
+    root,
+    'content',
+    'glossary-route-map.json'
+  );
+
+const glossaryRouting =
+  JSON.parse(
+    fs.readFileSync(
+      glossaryRoutingPath,
+      'utf8'
+    )
+  );
+
+const glossaryRoutes =
+  glossaryRouting.routes ?? {};
+
 try { fs.rmSync(buildSnapshotDir, { recursive: true, force: true }); } catch {}
 
 const walk = (dir) => {
@@ -109,7 +127,6 @@ if (!fs.existsSync(dbPath)) {
       { table: 'events', prefix: '/eventos', label: 'evento' },
       { table: 'people', prefix: '/personajes', label: 'personaje' },
       { table: 'places', prefix: '/lugares', label: 'lugar' },
-      { table: 'glossary_terms', prefix: '/glosario', label: 'término' },
       { table: 'visual_resources', prefix: '/recursos', label: 'recurso' },
     ];
 
@@ -121,6 +138,64 @@ if (!fs.existsSync(dbPath)) {
         if (!routeToFile.has(expectedRoute)) {
           errors.push(`contenido: ${collection.label} ${entry.id} no generó ${expectedRoute}`);
         }
+      }
+    }
+
+    const glossaryEntries =
+      db.prepare(`
+        SELECT id, slug
+        FROM glossary_terms
+        WHERE status <> 'Borrador'
+        ORDER BY id
+      `).all();
+
+    const glossaryCategories =
+      new Set();
+
+    for (const entry of glossaryEntries) {
+      const category =
+        glossaryRoutes[entry.slug];
+
+      if (!category) {
+        errors.push(
+          `contenido: término ${entry.id} no tiene categoría canónica`
+        );
+        continue;
+      }
+
+      glossaryCategories.add(category);
+
+      const canonicalRoute =
+        `/glosario/${category}/${entry.slug}/`;
+
+      const aliasRoute =
+        `/glosario/${entry.slug}/`;
+
+      editorialRoutesChecked += 2;
+
+      if (!routeToFile.has(canonicalRoute)) {
+        errors.push(
+          `contenido: término ${entry.id} no generó ${canonicalRoute}`
+        );
+      }
+
+      if (!routeToFile.has(aliasRoute)) {
+        errors.push(
+          `contenido: término ${entry.id} no generó alias ${aliasRoute}`
+        );
+      }
+    }
+
+    for (const category of glossaryCategories) {
+      const categoryRoute =
+        `/glosario/${category}/`;
+
+      editorialRoutesChecked += 1;
+
+      if (!routeToFile.has(categoryRoute)) {
+        errors.push(
+          `contenido: falta índice de glosario ${categoryRoute}`
+        );
       }
     }
 
@@ -197,6 +272,14 @@ for (const file of htmlFiles) {
   const rel = relative(file);
   const route = routeForHtml(file);
   const html = fs.readFileSync(file, 'utf8');
+
+  const isStaticRedirect =
+    /<meta\b[^>]*http-equiv=["']refresh["']/i
+      .test(html);
+
+  if (isStaticRedirect) {
+    continue;
+  }
 
   const htmlTag = html.match(/<html\b[^>]*>/i)?.[0] ?? '';
   const htmlAttrs = attrs(htmlTag);

@@ -1,5 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
+import { getGlossaryCanonicalPath } from "../../lib/glossary-routes";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   getAllPeople,
@@ -36,6 +37,19 @@ export function getStaticPaths() {
 }
 
 const { person, events, lessons, places } = Astro.props as Props;
+
+const canonicalGlossaryPath =
+  getGlossaryCanonicalPath(
+    person.slug
+  );
+
+if (canonicalGlossaryPath) {
+  return Astro.redirect(
+    sitePath(
+      canonicalGlossaryPath
+    )
+  );
+}
 
 const summaryLabel = person.summary ?? "Resumen pendiente.";
 const firstMappablePlace = places.find(

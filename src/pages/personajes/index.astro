@@ -1,5 +1,6 @@
 ---
 import { sitePath } from "../../lib/site-paths";
+import { getGlossaryCanonicalPath } from "../../lib/glossary-routes";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllPeople, type Person } from "../../lib/queries";
 
@@ -138,7 +139,7 @@ function getPersonInitial(person: Person) {
 
             <div class="people-directory-grid">
               {group.people.map((person) => (
-                <a href={sitePath(`/personajes/${person.slug}/`)} class="person-directory-card" data-catalog-item data-catalog-search={[person.name, person.summary].filter(Boolean).join(" ")}>
+                <a href={sitePath(getGlossaryCanonicalPath(person.slug) ?? `/personajes/${person.slug}/`)} class="person-directory-card" data-catalog-item data-catalog-search={[person.name, person.summary].filter(Boolean).join(" ")}>
                   <div class="person-directory-avatar" aria-hidden="true">
                     {getPersonInitial(person)}
                   </div>
