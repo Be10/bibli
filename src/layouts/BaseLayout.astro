@@ -40,6 +40,7 @@ const ui = {
     shortName: "Bibli",
     defaultDescription: "Recursos para escudriñar y comprender las Escrituras.",
     searchOpen: "Abrir búsqueda",
+    searchAction: "Buscar",
     searchClose: "Cerrar búsqueda",
     searchIcon: "Icono de búsqueda",
     searchLabel: "Búsqueda global",
@@ -58,6 +59,7 @@ const ui = {
     menuOpen: "Abrir menú",
     menuLabel: "Menú principal",
     mainRoute: "Ruta principal",
+    study: "Estudiar",
     readBible: "Leer la Biblia",
     resources: "Recursos visuales",
     explore: "Explorar",
@@ -94,6 +96,7 @@ const ui = {
     shortName: "Bibli",
     defaultDescription: "Resources for studying and understanding the Scriptures.",
     searchOpen: "Open search",
+    searchAction: "Search",
     searchClose: "Close search",
     searchIcon: "Search icon",
     searchLabel: "Global search",
@@ -112,6 +115,7 @@ const ui = {
     menuOpen: "Open menu",
     menuLabel: "Main menu",
     mainRoute: "Main route",
+    study: "Study",
     readBible: "Read the Bible",
     resources: "Visual resources",
     explore: "Explore",
@@ -184,17 +188,10 @@ const menuItems =
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary, icon: "download" as const },
       ]
     : [
-        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli, icon: "bookmark" as const },
-        {
-          href: sitePath("/rutas/"),
-          label: activeUi.mainRoute,
-          icon: "route" as const,
-        },
         { href: bibleRootUrl, label: activeUi.readBible, icon: "book" as const },
-        { href: sitePath("/descargar/"), label: activeUi.offlineLibrary, icon: "download" as const },
+        { href: sitePath("/rutas/"), label: activeUi.study, icon: "route" as const },
         { href: sitePath("/explorar/"), label: activeUi.explore, icon: "compass" as const },
-        { href: sitePath("/recursos/"), label: activeUi.resources, icon: "image" as const },
-        { href: sitePath("/acerca/"), label: activeUi.about, icon: "info" as const },
+        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli, icon: "bookmark" as const },
       ];
 
 const footerItems =
@@ -205,11 +202,12 @@ const footerItems =
         { href: sitePath("/en/download/"), label: activeUi.offlineLibrary },
       ]
     : [
-        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli },
         { href: bibleRootUrl, label: activeUi.readBible },
-        { href: sitePath("/descargar/"), label: activeUi.offlineLibrary },
-        { href: sitePath("/rutas/"), label: activeUi.mainRoute },
+        { href: sitePath("/rutas/"), label: activeUi.study },
         { href: sitePath("/explorar/"), label: activeUi.explore },
+        { href: sitePath("/mi-bibli/"), label: activeUi.myBibli },
+        { href: sitePath("/recursos/"), label: activeUi.resources },
+        { href: sitePath("/descargar/"), label: activeUi.offlineLibrary },
         { href: sitePath("/acerca/"), label: activeUi.about },
         { href: sitePath("/legal/"), label: activeUi.legal },
       ];
@@ -671,6 +669,19 @@ const languageSwitchLabel =
       </a>
 
       <div class="header-actions">
+        <button
+          type="button"
+          class="top-search-trigger"
+          data-top-search-trigger
+          aria-label={activeUi.searchOpen}
+          title={activeUi.searchOpen}
+          aria-controls="bibli-global-search"
+          aria-expanded="false"
+        >
+          <Icon name="search" size={17} />
+          <span>{activeUi.searchAction}</span>
+        </button>
+
         <a
           class="language-switch"
           href={languageTarget.href}
@@ -914,7 +925,11 @@ const languageSwitchLabel =
     const SERVICE_WORKER_UPDATE_INTERVAL = 60 * 60 * 1000;
 
     const searchShell = document.querySelector("[data-global-search-shell]");
-    const getSearchTriggers = () => [...document.querySelectorAll("[data-context-search], [data-dock-action=\"search\"]")];
+    const getSearchTriggers = () => [
+      ...document.querySelectorAll(
+        "[data-top-search-trigger], [data-context-search], [data-dock-action=\"search\"]",
+      ),
+    ];
     let lastSearchTrigger = null;
     const searchForm = document.querySelector("[data-global-search-form]");
     const searchInput = document.querySelector("[data-global-search-input]");
@@ -4375,4 +4390,184 @@ border-color: var(--border-color);
     }
   }
   /* /BIBLI_UI_AUDIT_2026_10 */
+
+  /* =======================================================
+     Header R1C · primary search affordance
+     ======================================================= */
+
+  .top-search-trigger {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    padding: 0 .9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--surface-elevated);
+    color: var(--text-color);
+    font: inherit;
+    font-size: .86rem;
+    font-weight: 720;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .top-search-trigger .bibli-icon {
+    flex: 0 0 auto;
+    color: var(--accent);
+  }
+
+  .top-search-trigger:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--heading-color);
+  }
+
+  .top-search-trigger:active {
+    transform: translateY(1px);
+  }
+
+  .top-search-trigger[aria-expanded="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--heading-color);
+  }
+
+  .top-search-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 760px) {
+    .top-search-trigger {
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
+      padding: 0;
+    }
+
+    .top-search-trigger > span {
+      display: none;
+    }
+  }
+
+
+  /* =======================================================
+     Menu R1D · navigation hierarchy
+     ======================================================= */
+
+  .global-menu {
+    width: min(320px, calc(100vw - 32px));
+    padding: .7rem;
+  }
+
+  .global-menu .menu-links {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .32rem;
+    margin: 0 0 .8rem;
+    padding: 0 0 .8rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .global-menu .menu-links::before {
+    content: "Navegar";
+    display: block;
+    padding: .2rem .4rem .38rem;
+    color: var(--text-muted);
+    font-size: .69rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  html[lang="en"] .global-menu .menu-links::before {
+    content: "Navigate";
+  }
+
+  .global-menu .menu-links a {
+    position: relative;
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    gap: .72rem;
+    padding: .55rem .68rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-color);
+    font-weight: 720;
+    line-height: 1.25;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .global-menu .menu-links a .bibli-icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    color: var(--accent) !important;
+  }
+
+  .global-menu .menu-links a:hover,
+  .global-menu .menu-links a:focus-visible {
+    background: var(--surface-soft);
+    border-color: var(--border-color);
+    color: var(--heading-color);
+  }
+
+  .global-menu .menu-links a:hover {
+    transform: translateX(2px);
+  }
+
+  .global-menu .menu-links a.is-current {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--heading-color);
+  }
+
+  .global-menu .menu-links a.is-current::after {
+    width: 5px;
+    height: 5px;
+    right: .68rem;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+
+  .global-menu .theme-options,
+  .global-menu .accent-options {
+    margin-top: .35rem;
+  }
+
+  .global-menu .theme-options button {
+    min-height: 44px;
+  }
+
+  .global-menu .accent-options button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  @media (max-width: 760px) {
+    .global-menu {
+      width: min(300px, calc(100vw - 32px));
+      padding: .6rem;
+    }
+
+    .global-menu .menu-links a {
+      min-height: 48px;
+    }
+  }
+
 </style>
