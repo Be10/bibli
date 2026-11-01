@@ -261,6 +261,7 @@ function getExploreCount(item: ExploreItem) {
 
 <script>
   import {
+    getBibleReferenceTarget,
     SEARCH_FILTER_ORDER,
     decodeSearchIndexPayload,
     getAvailableSearchFilters,
@@ -539,6 +540,35 @@ function getExploreCount(item: ExploreItem) {
     if (event.key === "Escape" && input instanceof HTMLInputElement && input.value) {
       event.preventDefault();
       clearSearch();
+      return;
+    }
+
+    if (event.key === "Enter" && input instanceof HTMLInputElement) {
+      event.preventDefault();
+
+      const query = input.value.trim();
+
+      if (!query) {
+        return;
+      }
+
+      window.clearTimeout(searchDebounceTimer);
+
+      void (async () => {
+        const loadedItems = await loadSearchItems();
+
+        if (!searchLoadFailed) {
+          const bibleTarget = getBibleReferenceTarget(loadedItems, query);
+
+          if (bibleTarget) {
+            window.location.assign(bibleTarget);
+            return;
+          }
+        }
+
+        void renderResults(query);
+      })();
+
       return;
     }
 

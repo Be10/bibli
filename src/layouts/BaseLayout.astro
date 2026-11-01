@@ -897,6 +897,7 @@ const languageSwitchLabel =
     <BibleDesignSystem />
     <script>
   import {
+    getBibleReferenceTarget,
     SEARCH_FILTER_ORDER,
     decodeSearchIndexPayload,
     getAvailableSearchFilters,
@@ -1886,7 +1887,7 @@ const languageSwitchLabel =
       event.stopPropagation();
     });
 
-    searchForm?.addEventListener("submit", (event) => {
+    searchForm?.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const query = searchInput?.value?.trim() ?? "";
@@ -1896,7 +1897,20 @@ const languageSwitchLabel =
         return;
       }
 
-      renderSearchResults(query);
+      window.clearTimeout(globalSearchDebounceTimer);
+
+      const items = await loadSearchItems();
+
+      if (!searchLoadFailed) {
+        const bibleTarget = getBibleReferenceTarget(items, query);
+
+        if (bibleTarget) {
+          window.location.assign(bibleTarget);
+          return;
+        }
+      }
+
+      void renderSearchResults(query);
     });
 
     document.addEventListener("click", (event) => {

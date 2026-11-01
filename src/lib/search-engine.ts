@@ -75,9 +75,12 @@ export function decodeSearchIndexPayload(payload: unknown): SearchIndexItem[] {
 }
 
 type BibleReferenceQuery = {
+  rawBookName: string;
   bookName: string;
+  bookOrder: number | null;
   chapterNumber: number;
   verseNumber: number | null;
+  endVerseNumber: number | null;
 };
 
 export const SEARCH_FILTER_ORDER = [
@@ -392,6 +395,80 @@ const BIBLE_BOOK_ALIASES: Record<string, string> = {
   apocalipsis: "apocalipsis",
 };
 
+const BIBLE_CANONICAL_BOOKS = [
+  "genesis",
+  "exodo",
+  "levitico",
+  "numeros",
+  "deuteronomio",
+  "josue",
+  "jueces",
+  "rut",
+  "1 samuel",
+  "2 samuel",
+  "1 reyes",
+  "2 reyes",
+  "1 cronicas",
+  "2 cronicas",
+  "esdras",
+  "nehemias",
+  "ester",
+  "job",
+  "salmos",
+  "proverbios",
+  "eclesiastes",
+  "cantares",
+  "isaias",
+  "jeremias",
+  "lamentaciones",
+  "ezequiel",
+  "daniel",
+  "oseas",
+  "joel",
+  "amos",
+  "abdias",
+  "jonas",
+  "miqueas",
+  "nahum",
+  "habacuc",
+  "sofonias",
+  "hageo",
+  "zacarias",
+  "malaquias",
+  "mateo",
+  "marcos",
+  "lucas",
+  "juan",
+  "hechos",
+  "romanos",
+  "1 corintios",
+  "2 corintios",
+  "galatas",
+  "efesios",
+  "filipenses",
+  "colosenses",
+  "1 tesalonicenses",
+  "2 tesalonicenses",
+  "1 timoteo",
+  "2 timoteo",
+  "tito",
+  "filemon",
+  "hebreos",
+  "santiago",
+  "1 pedro",
+  "2 pedro",
+  "1 juan",
+  "2 juan",
+  "3 juan",
+  "judas",
+  "apocalipsis",
+] as const;
+
+function getCanonicalBibleBookOrder(bookName: string) {
+  const index = (BIBLE_CANONICAL_BOOKS as readonly string[]).indexOf(bookName);
+  return index >= 0 ? index + 1 : null;
+}
+
 const normalizedItemCache = new WeakMap<
   SearchIndexItem,
   {
@@ -467,13 +544,21 @@ function hasAllWords(value: string, words: string[]) {
 function parseBibleReferenceQuery(rawQuery: string): BibleReferenceQuery | null {
   const query = normalizeReferenceText(rawQuery);
 
-  const referenceMatch = query.match(/^(.+?)\s+(\d{1,3})(?::|\s+)?(\d{1,3})?$/);
+  const referenceMatch = query.match(
+    /^(.+?)\s+(\d{1,3})(?:(?::|\s+)(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?)?$/
+  );
 
   if (!referenceMatch) {
     return null;
   }
 
-  const [, rawBookName, rawChapterNumber, rawVerseNumber] = referenceMatch;
+  const [
+    ,
+    rawBookName,
+    rawChapterNumber,
+    rawVerseNumber,
+    rawEndVerseNumber,
+  ] = referenceMatch;
 
   const compactBookName = rawBookName.replace(/\s+/g, "");
   const bookName =
@@ -481,21 +566,37 @@ function parseBibleReferenceQuery(rawQuery: string): BibleReferenceQuery | null 
     BIBLE_BOOK_ALIASES[compactBookName] ??
     rawBookName;
 
+  const bookOrder = getCanonicalBibleBookOrder(bookName);
   const chapterNumber = Number(rawChapterNumber);
   const verseNumber = rawVerseNumber ? Number(rawVerseNumber) : null;
+  const endVerseNumber = rawEndVerseNumber ? Number(rawEndVerseNumber) : null;
 
   if (!bookName || !Number.isFinite(chapterNumber)) {
     return null;
   }
 
-  if (chapterNumber <= 0 || (verseNumber !== null && verseNumber <= 0)) {
+  if (
+    chapterNumber <= 0 ||
+    (verseNumber !== null && verseNumber <= 0) ||
+    (endVerseNumber !== null && endVerseNumber <= 0)
+  ) {
+    return null;
+  }
+
+  if (
+    endVerseNumber !== null &&
+    (verseNumber === null || endVerseNumber < verseNumber)
+  ) {
     return null;
   }
 
   return {
+    rawBookName,
     bookName,
+    bookOrder,
     chapterNumber,
     verseNumber,
+    endVerseNumber,
   };
 }
 
@@ -508,10 +609,20 @@ function getBibleReferenceScore(
     return 0;
   }
 
-  const expectedTitleStart = `${bibleReference.bookName} `;
+  if (bibleReference.bookOrder !== null) {
+    if (item.bookOrder !== bibleReference.bookOrder) {
+      return 0;
+    }
+  } else {
+    const rawTitleStart = `${bibleReference.rawBookName} `;
+    const canonicalTitleStart = `${bibleReference.bookName} `;
 
-  if (!normalizedTitle.startsWith(expectedTitleStart)) {
-    return 0;
+    if (
+      !normalizedTitle.startsWith(rawTitleStart) &&
+      !normalizedTitle.startsWith(canonicalTitleStart)
+    ) {
+      return 0;
+    }
   }
 
   if (item.chapterNumber !== bibleReference.chapterNumber) {
@@ -530,6 +641,76 @@ function getBibleReferenceScore(
   }
 
   return 14000 - Math.min(item.verseNumber, 200);
+}
+
+function resolveBibleReferenceBookOrder(
+  items: SearchIndexItem[],
+  reference: BibleReferenceQuery
+) {
+  if (reference.bookOrder !== null) {
+    return reference.bookOrder;
+  }
+
+  const exactBook = items.find(
+    (item) =>
+      item.type === "Libro" &&
+      normalizeReferenceText(item.title) === reference.rawBookName
+  );
+
+  return exactBook?.bookOrder ?? null;
+}
+
+export function getBibleReferenceTarget(
+  items: SearchIndexItem[],
+  rawQuery: string
+): string | null {
+  const reference = parseBibleReferenceQuery(rawQuery);
+
+  if (!reference) {
+    return null;
+  }
+
+  const bookOrder = resolveBibleReferenceBookOrder(items, reference);
+
+  if (bookOrder === null) {
+    return null;
+  }
+
+  const chapterVerses = items
+    .filter(
+      (item) =>
+        item.type === "Versículo" &&
+        item.bookOrder === bookOrder &&
+        item.chapterNumber === reference.chapterNumber
+    )
+    .sort((a, b) => a.verseNumber - b.verseNumber);
+
+  if (chapterVerses.length === 0) {
+    return null;
+  }
+
+  if (reference.verseNumber === null) {
+    return chapterVerses[0].url.replace(/#v\d+$/i, "");
+  }
+
+  const startVerse = chapterVerses.find(
+    (item) => item.verseNumber === reference.verseNumber
+  );
+
+  if (!startVerse) {
+    return null;
+  }
+
+  if (
+    reference.endVerseNumber !== null &&
+    !chapterVerses.some(
+      (item) => item.verseNumber === reference.endVerseNumber
+    )
+  ) {
+    return null;
+  }
+
+  return startVerse.url;
 }
 
 export function scoreSearchItem(item: SearchIndexItem, rawQuery: string) {
