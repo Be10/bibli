@@ -110,25 +110,27 @@ test(
   }
 );
 
-test(
-  "Person without canonical glossary entity keeps legacy page",
-  async ({ page }) => {
-    await page.goto(
-      `${base}/personajes/eva/`
-    );
+test("Newly published person URL redirects to canonical glossary entity", async ({ page }) => {
+  const base = "/bibli";
 
-    await expect(page).toHaveURL(
-      /\/bibli\/personajes\/eva\/$/
-    );
+  await page.goto(
+    `${base}/personajes/eva/`
+  );
 
-    await expect(
-      page.getByRole(
-        "heading",
-        {
-          level: 1,
-          name: "Eva",
-        }
-      )
-    ).toBeVisible();
-  }
-);
+  await expect(page).toHaveURL(
+    new RegExp(
+      `${base}/glosario/personajes/eva/?$`
+    )
+  );
+
+  await expect(
+    page.getByRole(
+      "heading",
+      {
+        level: 1,
+        name: "Eva",
+        exact: true,
+      }
+    )
+  ).toBeVisible();
+});

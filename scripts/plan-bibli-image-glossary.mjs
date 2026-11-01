@@ -8,6 +8,8 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const dbPath = path.join(repoRoot, "data", "bibli.sqlite");
 const mappingPath = path.join(repoRoot, "content", "bibli-images-integration-map.json");
+const routingPath = path.join(repoRoot, "content", "glossary-route-map.json");
+const routePolicyPath = path.join(repoRoot, "content", "bibli-images-glossary-route-policy.json");
 const outputPath = path.join(repoRoot, "content", "bibli-images-glossary-plan.json");
 const sourceFolderName = "bibli_images_OneDrive_Only";
 const repoOneDriveRoot = path.resolve(repoRoot, "..", "..", "..");
@@ -166,7 +168,134 @@ const sourceRoot = resolveSourceRoot();
 const mapping = readJson(mappingPath, { schemaVersion: 1, overrides: {} });
 assert(mapping.schemaVersion === 1, "bibli-images-integration-map.json: schemaVersion debe ser 1");
 assert(mapping.overrides && typeof mapping.overrides === "object", "bibli-images-integration-map.json: overrides debe ser objeto");
-assert(fs.existsSync(dbPath), `No existe SQLite: ${dbPath}`);
+
+const routing = readJson(routingPath, null);
+
+assert(
+  routing?.schemaVersion === 1,
+  "glossary-route-map.json: schemaVersion debe ser 1"
+);
+
+assert(
+  routing.categories &&
+  typeof routing.categories === "object" &&
+  !Array.isArray(routing.categories),
+  "glossary-route-map.json: categories debe ser objeto"
+);
+
+assert(
+  routing.routes &&
+  typeof routing.routes === "object" &&
+  !Array.isArray(routing.routes),
+  "glossary-route-map.json: routes debe ser objeto"
+);
+
+const routePolicy =
+  readJson(
+    routePolicyPath,
+    {
+      schemaVersion: 1,
+      groupDefaults: {},
+      overrides: {}
+    }
+  );
+
+assert(
+  routePolicy.schemaVersion === 1,
+  "bibli-images-glossary-route-policy.json: schemaVersion debe ser 1"
+);
+
+assert(
+  routePolicy.groupDefaults &&
+  typeof routePolicy.groupDefaults === "object" &&
+  !Array.isArray(routePolicy.groupDefaults),
+  "bibli-images-glossary-route-policy.json: groupDefaults debe ser objeto"
+);
+
+assert(
+  routePolicy.overrides &&
+  typeof routePolicy.overrides === "object" &&
+  !Array.isArray(routePolicy.overrides),
+  "bibli-images-glossary-route-policy.json: overrides debe ser objeto"
+);
+
+const publicCategories =
+  new Set(
+    Object.keys(
+      routing.categories
+    )
+  );
+
+function assertPublicCategory(
+  category,
+  label
+) {
+  assert(
+    typeof category === "string" &&
+    publicCategories.has(category),
+    `${label}: categoria publica invalida: ${category}`
+  );
+
+  return category;
+}
+
+function resolvePublicRouting({
+  sourceSlug,
+  group,
+  proposedSlug
+}) {
+  const existingCategory =
+    routing.routes[proposedSlug];
+
+  if (existingCategory) {
+    return {
+      category:
+        assertPublicCategory(
+          existingCategory,
+          `${sourceSlug} route existente`
+        ),
+      source: "existing-route"
+    };
+  }
+
+  const override =
+    routePolicy.overrides[sourceSlug];
+
+  if (override) {
+    return {
+      category:
+        assertPublicCategory(
+          override,
+          `${sourceSlug} override`
+        ),
+      source: "override"
+    };
+  }
+
+  const groupDefault =
+    routePolicy.groupDefaults[group];
+
+  if (groupDefault) {
+    return {
+      category:
+        assertPublicCategory(
+          groupDefault,
+          `grupo ${group}`
+        ),
+      source: "group-default"
+    };
+  }
+
+  return {
+    category: null,
+    source: "unresolved"
+  };
+}
+
+assert(
+  fs.existsSync(dbPath),
+  `No existe SQLite: ${dbPath}`
+);
 
 const db = new Database(dbPath, { readonly: true });
 const glossaryRows = db.prepare("SELECT id, term, slug, definition, status FROM glossary_terms ORDER BY slug").all();
@@ -207,7 +336,18 @@ for (const item of packages) {
   const proposedTerm = doc.content["es-419"].display_name.trim();
   const proposedDefinition = doc.content["es-419"].definition.trim();
   const proposedId = `glo-${proposedSlug}`;
-  const termKey = normalizeIdentity(proposedTerm);
+
+  const publicRouting =
+    resolvePublicRouting({
+      sourceSlug: item.sourceSlug,
+      group: doc.group,
+      proposedSlug
+    });
+
+  const termKey =
+    normalizeIdentity(
+      proposedTerm
+    );
   const existingBySlug = glossaryBySlug.get(proposedSlug) ?? null;
   const existingTermCollisions = (glossaryByNormalizedTerm.get(termKey) ?? []).filter((row) => row.slug !== proposedSlug);
   const slugOwners = proposedSlugOwners.get(proposedSlug) ?? [];
@@ -220,9 +360,17 @@ for (const item of packages) {
 
   const reasons = [];
   let action;
-  if (existingBySlug) {
+  if (!publicRouting.category) {
+    action = "blocked";
+
+    reasons.push(
+      `Falta categoria publica para group=${doc.group}; agrega groupDefaults u overrides en bibli-images-glossary-route-policy.json`
+    );
+  } else if (existingBySlug) {
     action = "existing";
-    reasons.push(`Ya existe glossary_terms.slug=${proposedSlug}`);
+    reasons.push(
+      `Ya existe glossary_terms.slug=${proposedSlug}`
+    );
   } else if (slugOwners.length > 1) {
     action = "blocked";
     reasons.push(`Más de un paquete propone el slug ${proposedSlug}: ${slugOwners.join(", ")}`);
@@ -251,6 +399,20 @@ for (const item of packages) {
     sourcePath: item.sourcePath,
     canonicalName: doc.canonical_name,
     sense: doc.sense ?? null,
+
+    routing: {
+      category:
+        publicRouting.category,
+
+      path:
+        publicRouting.category
+          ? `/glosario/${publicRouting.category}/${proposedSlug}/`
+          : null,
+
+      source:
+        publicRouting.source
+    },
+
     proposed: {
       id: proposedId,
       slug: proposedSlug,
@@ -283,6 +445,8 @@ const plan = {
     preserveQualifiedCanonicalNames: true,
     sharedAliasesDoNotCollapseIdentity: true,
     sqliteMutation: false,
+    automaticCanonicalRouting: true,
+    failClosedOnUnmappedCategory: true,
   },
   counts: {
     existing: counts.existing ?? 0,
@@ -311,6 +475,18 @@ console.log(`Approved escaneados: ${packages.length}`);
 console.log(`Glosario actual: ${glossaryRows.length} términos`);
 console.log(`Existentes: ${plan.counts.existing} · listos para crear: ${plan.counts.ready_to_create} · bloqueados: ${plan.counts.blocked}`);
 const guarded = entries.filter((entry) => entry.sharedAliases.length);
-console.log(`Con alias compartidos protegidos: ${guarded.length}`);
+const unrouted =
+  entries.filter(
+    (entry) =>
+      !entry.routing.category
+  );
+
+console.log(
+  `Sin categoria publica: ${unrouted.length}`
+);
+
+console.log(
+  `Con alias compartidos protegidos: ${guarded.length}`
+);
 if (guarded.length) console.log(`  ${guarded.map((entry) => entry.sourceSlug).join(", ")}`);
 console.log("SQLite editorial: sin modificaciones");

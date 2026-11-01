@@ -9,6 +9,7 @@ const dbPath = path.join(repoRoot, "data", "bibli.sqlite");
 const planPath = path.join(repoRoot, "content", "bibli-images-glossary-plan.json");
 const manifestPath = path.join(repoRoot, "content", "bibli-images-glossary-published.json");
 const sqlPath = path.join(repoRoot, "data", "bibliimg-glossary.sql");
+const routingPath = path.join(repoRoot, "content", "glossary-route-map.json");
 
 function parseArgs(argv) {
   const options = { mode: "preview" };
@@ -151,11 +152,86 @@ function samePublishedFields(a, b) {
     a.status === b.status;
 }
 
+function routingFromPlan(
+  entry,
+  routing
+) {
+  const category =
+    entry?.routing?.category;
+
+  const routePath =
+    entry?.routing?.path;
+
+  assert(
+    typeof category === "string" &&
+    category.trim(),
+    `${entry?.sourceSlug ?? "entrada"}: falta routing.category`
+  );
+
+  assert(
+    Object.prototype.hasOwnProperty.call(
+      routing.categories,
+      category
+    ),
+    `${entry.sourceSlug}: categoria publica no definida: ${category}`
+  );
+
+  assert(
+    routePath ===
+      `/glosario/${category}/${entry.proposed.slug}/`,
+    `${entry.sourceSlug}: routing.path no corresponde a slug/categoria`
+  );
+
+  return {
+    category,
+    path: routePath
+  };
+}
+
+function sortObjectKeys(value) {
+  return Object.fromEntries(
+    Object.entries(value).sort(
+      ([a], [b]) =>
+        a.localeCompare(
+          b,
+          "es"
+        )
+    )
+  );
+}
+
 assert(fs.existsSync(planPath), `No existe el plan: ${planPath}`);
 assert(fs.existsSync(dbPath), `No existe SQLite: ${dbPath}`);
 
-const plan = readJson(planPath);
-assert(plan?.schemaVersion === 1, "bibli-images-glossary-plan.json: schemaVersion debe ser 1");
+const plan =
+  readJson(planPath);
+
+assert(
+  plan?.schemaVersion === 1,
+  "bibli-images-glossary-plan.json: schemaVersion debe ser 1"
+);
+
+const routing =
+  readJson(routingPath);
+
+assert(
+  routing?.schemaVersion === 1,
+  "glossary-route-map.json: schemaVersion debe ser 1"
+);
+
+assert(
+  routing.categories &&
+  typeof routing.categories === "object" &&
+  !Array.isArray(routing.categories),
+  "glossary-route-map.json: categories debe ser objeto"
+);
+
+assert(
+  routing.routes &&
+  typeof routing.routes === "object" &&
+  !Array.isArray(routing.routes),
+  "glossary-route-map.json: routes debe ser objeto"
+);
 assert(Array.isArray(plan.entries), "bibli-images-glossary-plan.json: entries debe ser array");
 const blocked = plan.entries.filter((entry) => entry.action === "blocked");
 assert(blocked.length === 0, `El plan contiene ${blocked.length} entrada(s) blocked; resuélvelas antes de publicar`);
@@ -167,13 +243,62 @@ const planBySource = new Map(plan.entries.map((entry) => [entry.sourceSlug, entr
 for (const [sourceSlug, published] of Object.entries(manifest.entries)) {
   const currentPlan = planBySource.get(sourceSlug);
   assert(currentPlan, `${sourceSlug}: publicado por BibliImg pero ya no aparece en el plan approved`);
-  const currentCanonical = canonicalFromPlan(currentPlan);
-  assert(samePublishedFields(published, currentCanonical),
-    `${sourceSlug}: el paquete/plan cambió respecto de lo publicado; requiere revisión editorial explícita`);
+  const currentCanonical =
+    canonicalFromPlan(
+      currentPlan
+    );
+
+  const currentRouting =
+    routingFromPlan(
+      currentPlan,
+      routing
+    );
+
+  assert(
+    samePublishedFields(
+      published,
+      currentCanonical
+    ),
+    `${sourceSlug}: el paquete/plan cambió respecto de lo publicado; requiere revisión editorial explícita`
+  );
+
+  assert(
+    routing.routes[
+      published.slug
+    ] ===
+      currentRouting.category,
+    `${sourceSlug}: ruta canónica publicada inconsistente para ${published.slug}`
+  );
 }
 
-const ready = plan.entries.filter((entry) => entry.action === "ready_to_create").map(canonicalFromPlan);
-const desiredEntries = { ...manifest.entries };
+const readyPlanEntries =
+  plan.entries.filter(
+    (entry) =>
+      entry.action ===
+      "ready_to_create"
+  );
+
+const ready =
+  readyPlanEntries.map(
+    canonicalFromPlan
+  );
+
+const routeBySource =
+  new Map(
+    readyPlanEntries.map(
+      (entry) => [
+        entry.sourceSlug,
+        routingFromPlan(
+          entry,
+          routing
+        )
+      ]
+    )
+  );
+
+const desiredEntries = {
+  ...manifest.entries
+};
 const newEntries = [];
 for (const candidate of ready) {
   const previous = desiredEntries[candidate.sourceSlug];
@@ -189,9 +314,54 @@ const desiredManifest = {
   schemaVersion: 1,
   entries: Object.fromEntries(Object.entries(desiredEntries).sort(([a], [b]) => a.localeCompare(b, "es"))),
 };
-validateManifest(desiredManifest);
+validateManifest(
+  desiredManifest
+);
 
-const db = new Database(dbPath);
+const desiredRoutes = {
+  ...routing.routes
+};
+
+for (const candidate of newEntries) {
+  const route =
+    routeBySource.get(
+      candidate.sourceSlug
+    );
+
+  assert(
+    route,
+    `${candidate.sourceSlug}: falta ruta canonica resuelta`
+  );
+
+  const previousCategory =
+    desiredRoutes[
+      candidate.slug
+    ];
+
+  assert(
+    !previousCategory ||
+    previousCategory ===
+      route.category,
+    `${candidate.sourceSlug}: conflicto de ruta para ${candidate.slug}: ${previousCategory} vs ${route.category}`
+  );
+
+  desiredRoutes[
+    candidate.slug
+  ] =
+    route.category;
+}
+
+const desiredRouting = {
+  ...routing,
+
+  routes:
+    sortObjectKeys(
+      desiredRoutes
+    )
+};
+
+const db =
+  new Database(dbPath);
 const allGlossary = db.prepare("SELECT id, term, slug, definition, status FROM glossary_terms ORDER BY slug").all();
 const byId = new Map(allGlossary.map((row) => [row.id, row]));
 const bySlug = new Map(allGlossary.map((row) => [row.slug, row]));
@@ -231,8 +401,24 @@ if (options.mode === "preview") {
   console.log(`Plan ready_to_create: ${ready.length}`);
   console.log(`Ya publicados por BibliImg: ${Object.keys(manifest.entries).length}`);
   console.log(`Nuevos a publicar: ${newEntries.length}`);
-  if (newEntries.length) console.log(`  ${newEntries.map((entry) => entry.sourceSlug).join(", ")}`);
-  console.log("SQLite editorial: sin modificaciones");
+  if (newEntries.length) {
+    for (
+      const entry
+      of newEntries
+    ) {
+      console.log(
+        `  ${entry.sourceSlug} -> ${routeBySource.get(entry.sourceSlug).path}`
+      );
+    }
+  }
+
+  console.log(
+    "SQLite editorial: sin modificaciones"
+  );
+
+  console.log(
+    "Routing canonico: preview, sin modificaciones"
+  );
   process.exit(0);
 }
 
@@ -248,10 +434,38 @@ if (options.mode === "check") {
   process.exit(0);
 }
 
-const previousManifestExisted = fs.existsSync(manifestPath);
-const previousSqlExisted = fs.existsSync(sqlPath);
-const previousManifestText = previousManifestExisted ? fs.readFileSync(manifestPath, "utf8") : "";
-const previousSqlText = previousSqlExisted ? fs.readFileSync(sqlPath, "utf8") : "";
+const previousManifestExisted =
+  fs.existsSync(manifestPath);
+
+const previousSqlExisted =
+  fs.existsSync(sqlPath);
+
+const previousRoutingExisted =
+  fs.existsSync(routingPath);
+
+const previousManifestText =
+  previousManifestExisted
+    ? fs.readFileSync(
+        manifestPath,
+        "utf8"
+      )
+    : "";
+
+const previousSqlText =
+  previousSqlExisted
+    ? fs.readFileSync(
+        sqlPath,
+        "utf8"
+      )
+    : "";
+
+const previousRoutingText =
+  previousRoutingExisted
+    ? fs.readFileSync(
+        routingPath,
+        "utf8"
+      )
+    : "";
 const beforeCount = allGlossary.length;
 
 const insert = db.prepare(`
@@ -264,14 +478,45 @@ try {
     for (const entry of newEntries) {
       insert.run({ id: entry.id, term: entry.term, slug: entry.slug, definition: entry.definition, status: entry.status });
     }
-    writeText(manifestPath, stableJson(desiredManifest));
-    writeText(sqlPath, desiredSql);
+    writeText(
+      manifestPath,
+      stableJson(
+        desiredManifest
+      )
+    );
+
+    writeText(
+      sqlPath,
+      desiredSql
+    );
+
+    writeText(
+      routingPath,
+      stableJson(
+        desiredRouting
+      )
+    );
   });
   publish();
 } catch (error) {
   try {
-    restoreText(manifestPath, previousManifestExisted, previousManifestText);
-    restoreText(sqlPath, previousSqlExisted, previousSqlText);
+    restoreText(
+      manifestPath,
+      previousManifestExisted,
+      previousManifestText
+    );
+
+    restoreText(
+      sqlPath,
+      previousSqlExisted,
+      previousSqlText
+    );
+
+    restoreText(
+      routingPath,
+      previousRoutingExisted,
+      previousRoutingText
+    );
   } catch (restoreError) {
     console.error(`ADVERTENCIA: no se pudo restaurar un archivo canónico: ${restoreError.message}`);
   }
@@ -287,6 +532,15 @@ console.log(`Nuevos términos publicados: ${newEntries.length}`);
 console.log(`Publicados por BibliImg acumulados: ${Object.keys(desiredManifest.entries).length}`);
 console.log(`glossary_terms: ${beforeCount} -> ${afterCount}`);
 console.log("Canónicos actualizados:");
-console.log("  content/bibli-images-glossary-published.json");
-console.log("  data/bibliimg-glossary.sql");
+console.log(
+  "  content/bibli-images-glossary-published.json"
+);
+
+console.log(
+  "  content/glossary-route-map.json"
+);
+
+console.log(
+  "  data/bibliimg-glossary.sql"
+);
 if (newEntries.length === 0) console.log("Sin cambios editoriales nuevos.");
