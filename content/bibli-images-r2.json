@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "source": "content/bibli-images-integrated.json",
-  "revision": "64e7695a42a87bb6",
-  "entryCount": 114,
-  "assetCount": 228,
+  "revision": "d1f04da562290b11",
+  "entryCount": 120,
+  "assetCount": 240,
   "tiers": {
     "optimized": {
-      "assetCount": 114,
-      "totalBytes": 6424636
+      "assetCount": 120,
+      "totalBytes": 6757818
     },
     "high": {
-      "assetCount": 114,
-      "totalBytes": 28912350
+      "assetCount": 120,
+      "totalBytes": 30460448
     }
   },
   "assets": [
@@ -2748,6 +2748,150 @@
       "key": "editorial/personajes/jeroboam-i-hijo-nabat/v001/jeroboam-i-hijo-nabat--optimized.webp",
       "sha256": "45f6c81ee9f8188d92c0f9327526d5af3e75e414378d15af8f058d2b9dfd3772",
       "bytes": 58270,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jeroboam-ii-rey-israel",
+      "group": "personajes",
+      "canonicalName": "Jeroboam II (rey de Israel)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jeroboam-ii-rey-israel/v001/jeroboam-ii-rey-israel--high.webp",
+      "sha256": "7e53535c3affdce2ca87e7a6d5c1da04dce78b776de56209589d1ac08326b36f",
+      "bytes": 239766,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jeroboam-ii-rey-israel",
+      "group": "personajes",
+      "canonicalName": "Jeroboam II (rey de Israel)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jeroboam-ii-rey-israel/v001/jeroboam-ii-rey-israel--optimized.webp",
+      "sha256": "c7f90d51b37555880d30d71fa3c6b93e7b2686601d4c5f3ba33047d10b12ae47",
+      "bytes": 53634,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jesus-presentacion-terrenal",
+      "group": "personajes",
+      "canonicalName": "Jesús (presentación terrenal)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jesus-presentacion-terrenal/v001/jesus-presentacion-terrenal--high.webp",
+      "sha256": "1ed30aaa220f340383688d1aa8b3e0d90cc2096db4655d40d71525ffcc6b9bb3",
+      "bytes": 243462,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jesus-presentacion-terrenal",
+      "group": "personajes",
+      "canonicalName": "Jesús (presentación terrenal)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jesus-presentacion-terrenal/v001/jesus-presentacion-terrenal--optimized.webp",
+      "sha256": "9a97efae08e8df5795def5b73421dd666a9c59cc6e8ea37ebdae0bf24c590606",
+      "bytes": 51950,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jetro-sacerdote-de-madian-suegro-de-moises",
+      "group": "personajes",
+      "canonicalName": "Jetro (sacerdote de Madián; suegro de Moisés)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jetro-sacerdote-de-madian-suegro-de-moises/v001/jetro-sacerdote-de-madian-suegro-de-moises--high.webp",
+      "sha256": "f2c608e6025aba907069675dad7e0998afdd17c0cc4d3f969401f61de1671ffe",
+      "bytes": 265574,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jetro-sacerdote-de-madian-suegro-de-moises",
+      "group": "personajes",
+      "canonicalName": "Jetro (sacerdote de Madián; suegro de Moisés)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jetro-sacerdote-de-madian-suegro-de-moises/v001/jetro-sacerdote-de-madian-suegro-de-moises--optimized.webp",
+      "sha256": "4928c64843fb307c13f0aafeb3bc1e4df2916824fd81b6785746d1e9838918d2",
+      "bytes": 54600,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "jezabel-reina-israel",
+      "group": "personajes",
+      "canonicalName": "Jezabel (esposa de Acab)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/jezabel-reina-israel/v001/jezabel-reina-israel--high.webp",
+      "sha256": "7cae3bd5ccc4fe3b18e00de855f6737aa0ba0d039dd625522934610d25270b65",
+      "bytes": 280914,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "jezabel-reina-israel",
+      "group": "personajes",
+      "canonicalName": "Jezabel (esposa de Acab)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/jezabel-reina-israel/v001/jezabel-reina-israel--optimized.webp",
+      "sha256": "e6bc66bd1008d7c2206b3cc8b2a273a840ce40f6f11eac01d3a1e97fc1d4b471",
+      "bytes": 59986,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "joab-hijo-sarvia",
+      "group": "personajes",
+      "canonicalName": "Joab (hijo de Sarvia)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/joab-hijo-sarvia/v001/joab-hijo-sarvia--high.webp",
+      "sha256": "2acbd3875ce23816a0addc814090340c6ca8c838a3c955620f0b0d973661f7a6",
+      "bytes": 237454,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "joab-hijo-sarvia",
+      "group": "personajes",
+      "canonicalName": "Joab (hijo de Sarvia)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/joab-hijo-sarvia/v001/joab-hijo-sarvia--optimized.webp",
+      "sha256": "b26bd13ed4bf74dba3da2528b649a3202c896e3d66d1cc455b259a53ebb896dc",
+      "bytes": 52460,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "joacim-eliaquim-hijo-josias",
+      "group": "personajes",
+      "canonicalName": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/joacim-eliaquim-hijo-josias/v001/joacim-eliaquim-hijo-josias--high.webp",
+      "sha256": "ad1ae531fd9a687aaa42d7b0ebc8f0bdd3215fa12f7adf67e2d9f2f28b2c4a91",
+      "bytes": 280928,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "joacim-eliaquim-hijo-josias",
+      "group": "personajes",
+      "canonicalName": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/joacim-eliaquim-hijo-josias/v001/joacim-eliaquim-hijo-josias--optimized.webp",
+      "sha256": "dd5a49d33572e65deafa93e292200332ec74a28d247be92ce610fcff18a997fb",
+      "bytes": 60552,
       "width": 512,
       "height": 768
     }

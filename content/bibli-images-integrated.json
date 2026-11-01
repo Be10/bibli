@@ -11323,6 +11323,646 @@
       },
       "integrationStatus": "integrated",
       "sourcePath": "entries/01-personajes/jeroboam-i-hijo-nabat/entry.yaml"
+    },
+    "jeroboam-ii-rey-israel": {
+      "entityKey": "personajes-jeroboam-ii-rey-israel",
+      "canonicalName": "Jeroboam II (rey de Israel)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jeroboam-ii-rey-israel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jeroboam II (rey de Israel)",
+          "definition": "Jeroboam II, hijo de Joás, fue rey del reino del norte de Israel con sede en Samaria. 2 Reyes le atribuye un reinado de cuarenta y un años, la restauración de los límites de Israel desde la entrada de Hamat hasta el mar del Arabá y victorias militares, pero también lo evalúa negativamente por continuar los pecados asociados con Jeroboam hijo de Nabat.",
+          "historical_context": "Su reinado pertenece a la primera mitad del siglo VIII a. C., una etapa de fortalecimiento y prosperidad del reino del norte antes de la posterior presión asiria. Oseas y Amós sitúan parte de su actividad profética en sus días; Amós refleja además tensiones religiosas y sociales bajo la monarquía de Samaria. Los ostraca de Samaria, registros administrativos de vino y aceite del siglo VIII a. C., pueden corresponder a los días de Joás y Jeroboam II o específicamente a Jeroboam II y muestran una administración palaciega desarrollada.",
+          "original_language_note": "Hebreo יָרָבְעָם (Yārāḇʿām / Yarov'am). La etimología no es segura: Brown–Driver–Briggs conserva propuestas como “el pueblo aumenta” y “el pueblo contiende”; por ello Bibli no fija una traducción única como significado cierto.",
+          "alt_text": "Reconstrucción editorial de Jeroboam II como rey israelita adulto del siglo VIII a. C., de cuerpo completo, con los brazos cruzados y postura sobria; viste túnica tejida clara, manto oscuro con franjas, faja y sandalias de apariencia levantina de la Edad del Hierro II. Figura aislada sobre fondo transparente, sin corona, símbolos religiosos, armas ni escenografía."
+        },
+        "en-US": {
+          "display_name": "Jeroboam II (king of Israel)",
+          "definition": "Jeroboam II, son of Jehoash, was king of the northern kingdom of Israel with his royal seat at Samaria. Second Kings credits him with a forty-one-year reign, restoration of Israel’s borders from Lebo-hamath to the Sea of the Arabah, and military achievements, while also judging him negatively for continuing the sins associated with Jeroboam son of Nebat.",
+          "historical_context": "His reign belongs to the first half of the eighth century BCE, a period of renewed strength and prosperity in the northern kingdom before later Assyrian domination. Hosea and Amos locate prophetic activity in his reign, and Amos reflects religious and social tensions under the monarchy at Samaria. The eighth-century Samaria ostraca—administrative records involving wine and oil—may belong to the reigns of Jehoash and Jeroboam II or to Jeroboam II alone, providing material evidence for an organized royal administration.",
+          "original_language_note": "Hebrew יָרָבְעָם (Yārāḇʿām / Yarov'am). Its etymology is uncertain: Brown–Driver–Briggs preserves alternatives such as “the people increases” and “the people contends,” so Bibli does not present either as a certain meaning.",
+          "alt_text": "Editorial reconstruction of Jeroboam II as an adult eighth-century BCE Israelite king, shown full-length with arms crossed in a restrained pose; he wears a light woven tunic, a dark striped mantle, sash, and Iron Age II Levantine-style sandals. The figure is isolated on a transparent background, without a crown, religious symbols, weapons, or scenery."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יָרָבְעָם",
+          "transliteration": "Yārāḇʿām / Yarov'am",
+          "lemma": "יָרָבְעָם",
+          "meaning": {
+            "es-419": "Etimología incierta/discutida; se han propuesto sentidos como «el pueblo aumenta» o «el pueblo contiende».",
+            "en-US": "Uncertain/disputed etymology; proposals include “the people increases” or “the people contends.”"
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Reyes 14:23-29",
+            "Amós 1:1",
+            "Amós 7:9-17",
+            "Oseas 1:1"
+          ],
+          "en-US": [
+            "2 Kings 14:23-29",
+            "Amos 1:1",
+            "Amos 7:9-17",
+            "Hosea 1:1"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Reyes 13:13",
+            "2 Reyes 14:16",
+            "2 Reyes 15:1, 8",
+            "1 Crónicas 5:17"
+          ],
+          "en-US": [
+            "2 Kings 13:13",
+            "2 Kings 14:16",
+            "2 Kings 15:1, 8",
+            "1 Chronicles 5:17"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "primera mitad del siglo VIII a. C. / first half of the eighth century BCE",
+        "region": "reino del norte de Israel; Samaria / northern kingdom of Israel; Samaria",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "cee118215eeebe07dec331851782292b498345c6592c9a7f1e87f48da9a88d14",
+        "optimizedPath": "/media/editorial/personajes/jeroboam-ii-rey-israel/v001/jeroboam-ii-rey-israel--optimized.webp",
+        "highPath": "/media/editorial/personajes/jeroboam-ii-rey-israel/v001/jeroboam-ii-rey-israel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "c7f90d51b37555880d30d71fa3c6b93e7b2686601d4c5f3ba33047d10b12ae47",
+        "highChecksum": "7e53535c3affdce2ca87e7a6d5c1da04dce78b776de56209589d1ac08326b36f"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T04:55:34Z",
+        "notes": "Aprobado por el usuario; imagen regenerada para diferenciarla de Jeroboam I y reducir elementos extra; imagen y paquete bilingüe aceptados atómicamente."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jeroboam-ii-rey-israel/entry.yaml"
+    },
+    "jesus-presentacion-terrenal": {
+      "entityKey": "personajes-jesus-presentacion-terrenal",
+      "canonicalName": "Jesús (presentación terrenal)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jesus-presentacion-terrenal",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jesús (presentación terrenal)",
+          "definition": "Jesús de Nazaret es la figura central de los Evangelios y del Nuevo Testamento. Esta entrada representa su apariencia humana ordinaria durante su vida y ministerio terrenal, no la Transfiguración ni su presentación glorificada de Apocalipsis; por eso debe mostrarse como un varón judío del siglo I, sin halo, aura ni luminosidad sobrenatural añadida.",
+          "historical_context": "Jesús debe situarse visualmente dentro del judaísmo galileo del siglo I d. C., bajo dominio romano, no como una figura europea posterior. Los Evangelios no proporcionan una descripción física precisa de su rostro o cuerpo; sí contienen datos incidentales sobre su vestimenta. La investigación histórica de Joan E. Taylor señala un atuendo masculino judío sencillo: túnica, manto exterior y sandalias, y advierte que la imagen occidental de cabello largo, piel clara y vestiduras ceremoniales procede de tradiciones artísticas posteriores, no de evidencia histórica. El contexto académico de Galilea del siglo I la caracteriza como una región profundamente judía.",
+          "original_language_note": "El Nuevo Testamento usa el griego Ἰησοῦς (Iēsoûs), que representa el nombre hebreo/arameo יֵשׁוּעַ (Yēšūaʿ / Yeshúa), relacionado con יְהוֹשֻׁעַ (Yehôšuaʿ / Josué), con el sentido tradicional de “YHWH salva” o “YHWH es salvación”. Mateo 1:21 relaciona explícitamente el nombre con la misión de salvar.",
+          "alt_text": "Reconstrucción editorial de Jesús durante su ministerio terrenal como varón judío galileo adulto del siglo I, de cuerpo completo y postura natural, con cabello oscuro y barba sobria, túnica sencilla de longitud aproximada hasta las rodillas, manto tejido con borde discreto y sandalias antiguas; sin corona, halo, aura, resplandor ni escenografía, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jesus (earthly presentation)",
+          "definition": "Jesus of Nazareth is the central figure of the Gospels and the New Testament. This entry represents his ordinary human appearance during his earthly life and ministry, not the Transfiguration or the glorified presentation in Revelation; he should therefore appear as a first-century Jewish man without an added halo, aura, or supernatural radiance.",
+          "historical_context": "Jesus should be visualized within first-century Galilean Judaism under Roman rule, not through later European artistic conventions. The Gospels give no precise description of his face or physique, but they do preserve incidental clothing details. Joan E. Taylor’s historical work supports a simple Jewish male ensemble of tunic, outer mantle, and sandals and cautions against treating the familiar long-haired, light-skinned devotional image as historical evidence. Academic treatments of early first-century Galilee likewise emphasize its strongly Jewish setting.",
+          "original_language_note": "The New Testament uses the Greek Ἰησοῦς (Iēsoûs), representing Hebrew/Aramaic יֵשׁוּעַ (Yēšūaʿ / Yeshua), related to יְהוֹשֻׁעַ (Yehôšuaʿ / Joshua), traditionally understood as “YHWH saves” or “YHWH is salvation.” Matthew 1:21 explicitly connects the name with the mission of saving.",
+          "alt_text": "Editorial reconstruction of Jesus during his earthly ministry as an adult first-century Galilean Jewish man, shown full-length in a natural stance, with dark hair and a restrained beard, a simple roughly knee-length tunic, woven outer mantle with a discreet fringe, and ancient sandals; no crown, halo, aura, glow, or scenery, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἰησοῦς",
+          "transliteration": "Iēsoûs",
+          "lemma": "Ἰησοῦς",
+          "meaning": {
+            "es-419": "Forma griega del nombre Yeshúa/Josué; tradicionalmente entendido como «YHWH salva» o «YHWH es salvación».",
+            "en-US": "Greek form of the name Yeshua/Joshua; traditionally understood as “YHWH saves” or “YHWH is salvation.”"
+          },
+          "certainty": "documented"
+        },
+        {
+          "language": "hebrew_aramaic",
+          "script": "יֵשׁוּעַ",
+          "transliteration": "Yēšūaʿ / Yeshua",
+          "lemma": "יֵשׁוּעַ",
+          "meaning": {
+            "es-419": "Nombre relacionado con יְהוֹשֻׁעַ (Yehôšuaʿ / Josué), con el sentido tradicional de «YHWH salva».",
+            "en-US": "Name related to יְהוֹשֻׁעַ (Yehôšuaʿ / Joshua), traditionally understood as “YHWH saves.”"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Mateo 1:21",
+            "Lucas 4:16-30",
+            "Marcos 6:1-6, 6:56",
+            "Juan 19:23-24"
+          ],
+          "en-US": [
+            "Matthew 1:21",
+            "Luke 4:16-30",
+            "Mark 6:1-6, 6:56",
+            "John 19:23-24"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Lucas 2:39-52",
+            "Mateo 3:11",
+            "Marcos 1:7, 6:9",
+            "Juan 1:27",
+            "Mateo 9:20",
+            "Marcos 5:27-28"
+          ],
+          "en-US": [
+            "Luke 2:39-52",
+            "Matthew 3:11",
+            "Mark 1:7, 6:9",
+            "John 1:27",
+            "Matthew 9:20",
+            "Mark 5:27-28"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo I d. C. / first century CE",
+        "region": "Galilea y Judea bajo dominio romano / Galilee and Judea under Roman rule",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "1d511ab278fd42ee9cbfeb2b5bce1238b2f33c50493990c528bf1076407129e1",
+        "optimizedPath": "/media/editorial/personajes/jesus-presentacion-terrenal/v001/jesus-presentacion-terrenal--optimized.webp",
+        "highPath": "/media/editorial/personajes/jesus-presentacion-terrenal/v001/jesus-presentacion-terrenal--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "9a97efae08e8df5795def5b73421dd666a9c59cc6e8ea37ebdae0bf24c590606",
+        "highChecksum": "1ed30aaa220f340383688d1aa8b3e0d90cc2096db4655d40d71525ffcc6b9bb3"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T05:03:59Z",
+        "notes": "Aprobado por el usuario; imagen y paquete bilingüe aceptados atómicamente. Esta imagen fija la identidad visual base para Jesús transfigurado y Cristo glorificado (Apocalipsis 1), salvo cambios exigidos por los pasajes controladores."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jesus-presentacion-terrenal/entry.yaml"
+    },
+    "jetro-sacerdote-de-madian-suegro-de-moises": {
+      "entityKey": "personajes-jetro-sacerdote-de-madian-suegro-de-moises",
+      "canonicalName": "Jetro (sacerdote de Madián; suegro de Moisés)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jetro-sacerdote-de-madian-suegro-de-moises",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jetro (sacerdote de Madián; suegro de Moisés)",
+          "definition": "Jetro es presentado en Éxodo como sacerdote de Madián y suegro de Moisés. Moisés pastoreó sus ovejas antes de regresar a Egipto; después del éxodo, Jetro visitó a Moisés, bendijo a Jehová por la liberación de Israel, presentó holocaustos y sacrificios para Dios y aconsejó a Moisés que delegara responsabilidades judiciales en hombres capaces.",
+          "historical_context": "La Biblia no describe la ropa sacerdotal de Jetro ni le asigna insignias, corona o atributos rituales específicos. La investigación arqueológica de Madián y del noroeste de Arabia documenta comunidades conectadas con el Arabá y el sur del Levante durante el segundo milenio a. C.; la llamada Qurayyah Painted Ware, antes denominada “cerámica madianita”, evidencia esos contactos, pero no permite identificar a Jetro ni reconstruir su vestimenta exacta. Por eso la imagen usa un atuendo masculino sobrio y genérico del entorno norarábigo/levantino antiguo, sin inventar vestiduras sacerdotales. El texto bíblico también conserva una complejidad de nombres: Éxodo 2 llama Reuel al padre de Séfora, mientras Éxodo 3 y 18 llaman Jetro al suegro de Moisés; Números y Jueces añaden la tradición de Hobab. Esta entrada no fuerza todas esas designaciones a una única identidad más allá de lo que el texto permite; representa específicamente al Jetro de Éxodo 3 y 18.",
+          "original_language_note": "Hebreo יִתְרוֹ (Yitrô / Yitro). El nombre se relaciona tradicionalmente con la raíz יתר (ytr), asociada con excedencia, abundancia o excelencia; una glosa tradicional es “su excelencia”, pero Bibli mantiene el matiz etimológico como prudente, no como significado absolutamente seguro.",
+          "alt_text": "Reconstrucción editorial de Jetro como varón maduro de Madián, de cuerpo completo y postura serena, con túnica tejida sencilla, manto sobrio, cinturón y sandalias de apariencia antigua; cabello y barba parcialmente encanecidos. Figura aislada sobre fondo transparente, sin corona, símbolos religiosos, bastón ceremonial, altar ni escenografía."
+        },
+        "en-US": {
+          "display_name": "Jethro (priest of Midian; Moses’ father-in-law)",
+          "definition": "Jethro is presented in Exodus as the priest of Midian and Moses’ father-in-law. Moses tended his flock before returning to Egypt; after the exodus, Jethro visited Moses, blessed the LORD for Israel’s deliverance, brought burnt offerings and sacrifices to God, and advised Moses to delegate judicial responsibility to capable men.",
+          "historical_context": "Scripture does not describe Jethro’s priestly clothing or assign him specific insignia, a crown, or distinctive ritual attributes. Archaeological research on Midian and northwestern Arabia documents communities connected with the Arabah and southern Levant during the second millennium BCE; Qurayyah Painted Ware, formerly called “Midianite pottery,” demonstrates such contacts but cannot identify Jethro personally or reconstruct his exact dress. The image therefore uses restrained, generic ancient north Arabian/Levantine male clothing without invented priestly vestments. The biblical texts also preserve a naming complexity: Exodus 2 calls Zipporah’s father Reuel, whereas Exodus 3 and 18 call Moses’ father-in-law Jethro; Numbers and Judges add the Hobab tradition. This entry does not force all those designations into one identity beyond what the texts warrant; it specifically represents the Jethro of Exodus 3 and 18.",
+          "original_language_note": "Hebrew יִתְרוֹ (Yitrô / Yitro). The name is traditionally connected with the root יתר (ytr), associated with excess, abundance, or excellence; “his excellence” is a traditional gloss, but Bibli keeps the etymological nuance cautious rather than presenting it as absolutely certain.",
+          "alt_text": "Editorial reconstruction of Jethro as a mature Midianite man, shown full-length in a calm stance, wearing a simple woven tunic, restrained mantle, belt, and ancient-style sandals, with partially graying hair and beard. The figure is isolated on a transparent background, without a crown, religious symbols, ceremonial staff, altar, or scenery."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יִתְרוֹ",
+          "transliteration": "Yitrô / Yitro",
+          "lemma": "יִתְרוֹ",
+          "meaning": {
+            "es-419": "Relacionado tradicionalmente con la raíz יתר, asociada con excedencia, abundancia o excelencia; «su excelencia» es una glosa tradicional, no una certeza absoluta.",
+            "en-US": "Traditionally connected with the root יתר, associated with excess, abundance, or excellence; “his excellence” is a traditional gloss, not an absolute certainty."
+          },
+          "certainty": "plausible"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Éxodo 3:1",
+            "Éxodo 4:18",
+            "Éxodo 18:1-27"
+          ],
+          "en-US": [
+            "Exodus 3:1",
+            "Exodus 4:18",
+            "Exodus 18:1-27"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Éxodo 2:16-21",
+            "Números 10:29-32",
+            "Jueces 4:11"
+          ],
+          "en-US": [
+            "Exodus 2:16-21",
+            "Numbers 10:29-32",
+            "Judges 4:11"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "segundo milenio a. C.; cronología absoluta de Jetro no fijada / second millennium BCE; Jethro's absolute chronology not fixed",
+        "region": "Madián y noroeste de Arabia; conexiones con el Arabá y sur del Levante / Midian and northwestern Arabia; connections with the Arabah and southern Levant",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "5d16b224a7142e5083a98a847e1d0854c6a60e13f9254caee4944466102e69e6",
+        "optimizedPath": "/media/editorial/personajes/jetro-sacerdote-de-madian-suegro-de-moises/v001/jetro-sacerdote-de-madian-suegro-de-moises--optimized.webp",
+        "highPath": "/media/editorial/personajes/jetro-sacerdote-de-madian-suegro-de-moises/v001/jetro-sacerdote-de-madian-suegro-de-moises--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "4928c64843fb307c13f0aafeb3bc1e4df2916824fd81b6785746d1e9838918d2",
+        "highChecksum": "f2c608e6025aba907069675dad7e0998afdd17c0cc4d3f969401f61de1671ffe"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T05:15:09Z",
+        "notes": "Aprobado por el usuario; imagen y paquete bilingüe aceptados atómicamente tras QA de transparencia real, proporción 2:3 y silueta completa."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jetro-sacerdote-de-madian-suegro-de-moises/entry.yaml"
+    },
+    "jezabel-reina-israel": {
+      "entityKey": "personajes-jezabel-reina-israel",
+      "canonicalName": "Jezabel (esposa de Acab)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "jezabel-reina-israel",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Jezabel (esposa de Acab)",
+          "definition": "Jezabel fue hija de Et-baal, rey de los sidonios, y esposa de Acab, rey de Israel. El relato de Reyes la presenta como una figura decisiva en la promoción del culto a Baal, en la persecución de profetas de Jehová y en el complot que terminó con la muerte de Nabot para que Acab tomara su viña.",
+          "historical_context": "Jezabel pertenece al horizonte político del reino del norte en el siglo IX a. C. y procede de la élite sidonia/fenicia. La Biblia no describe su rostro ni su vestimenta habitual. En 2 Reyes 9:30 sí se especifica que, al saber de la llegada de Jehú, se aplicó cosmético en los ojos y arregló/adornó su cabeza. La reconstrucción visual usa esos datos documentados y completa lo demás con paralelos fenicios y levantinos de la Edad del Hierro, reduciendo la certeza: la banda dorada, la joyería, los colores del vestido y el diseño textil son plausibles, no atributos personales conocidos de Jezabel. El llamado “sello de Jezabel” no se usa como evidencia personal porque su identificación con la reina bíblica es discutida.",
+          "original_language_note": "Hebreo אִיזֶבֶל (ʾÎzeḇel / Izebel). El nombre es probablemente de trasfondo fenicio, pero su etimología exacta es discutida; Bibli no presenta una glosa única como significado establecido.",
+          "alt_text": "Reconstrucción editorial de Jezabel como mujer adulta de la élite fenicia del siglo IX a. C., de cuerpo completo y postura firme, con vestido largo tejido en tonos púrpura y rojizos, manto, banda ornamental dorada en el cabello, joyería de inspiración regional y cosmético oscuro alrededor de los ojos. La banda y la joyería son reconstrucciones plausibles, no rasgos descritos por la Biblia. Figura aislada sobre fondo transparente, sin ídolos, símbolos de Baal, ventana ni escenografía."
+        },
+        "en-US": {
+          "display_name": "Jezebel (wife of Ahab)",
+          "definition": "Jezebel was the daughter of Ethbaal, king of the Sidonians, and the wife of Ahab, king of Israel. Kings portrays her as a major force in promoting Baal worship, persecuting prophets of the LORD, and arranging the plot that led to Naboth’s death so Ahab could take possession of his vineyard.",
+          "historical_context": "Jezebel belongs to the ninth-century BCE political setting of the northern kingdom and came from the Sidonian/Phoenician elite. Scripture does not describe her face or ordinary clothing. Second Kings 9:30 does specifically state that, when she heard Jehu had arrived, she applied eye cosmetic and arranged/adorned her head. The visual reconstruction uses those documented details and fills the remaining gaps with Iron Age Phoenician and Levantine parallels while keeping certainty limited: the gold headband, jewelry, garment colors, and textile design are plausible reconstructions, not known personal attributes of Jezebel. The so-called “Jezebel seal” is not used as personal evidence because its identification with the biblical queen is disputed.",
+          "original_language_note": "Hebrew אִיזֶבֶל (ʾÎzeḇel / Izebel). The name is probably Phoenician in background, but its exact etymology is disputed; Bibli does not present a single gloss as an established meaning.",
+          "alt_text": "Editorial reconstruction of Jezebel as an adult woman of the ninth-century BCE Phoenician elite, shown full-length in a firm stance, wearing a long woven dress in purple and reddish tones, a mantle, a gold ornamental headband, regionally inspired jewelry, and dark eye cosmetic. The headband and jewelry are plausible reconstructions rather than features described by Scripture. The figure is isolated on a transparent background, without idols, Baal symbols, a window, or scenery."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אִיזֶבֶל",
+          "transliteration": "ʾÎzeḇel / Izebel",
+          "lemma": "אִיזֶבֶל",
+          "meaning": {
+            "es-419": "Etimología discutida; se han propuesto explicaciones relacionadas con la raíz semítica zbl, pero Bibli no fija un significado único como seguro.",
+            "en-US": "The etymology is disputed; proposals have connected the name with the Semitic root zbl, but Bibli does not present one meaning as certain."
+          },
+          "certainty": "disputed"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Reyes 16:31",
+            "1 Reyes 18:4,13,19",
+            "1 Reyes 19:1-2",
+            "1 Reyes 21:1-25",
+            "2 Reyes 9:7,10,22,30-37"
+          ],
+          "en-US": [
+            "1 Kings 16:31",
+            "1 Kings 18:4,13,19",
+            "1 Kings 19:1-2",
+            "1 Kings 21:1-25",
+            "2 Kings 9:7,10,22,30-37"
+          ]
+        },
+        "additional": {
+          "es-419": [],
+          "en-US": []
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo IX a. C. / ninth century BCE",
+        "region": "Sidón/Fenicia y reino del norte de Israel / Sidon-Phoenicia and the northern kingdom of Israel",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "affdf30c5703ee18330916df77b89d59ec0fe09d9157d63f40d0f7ed7247feb9",
+        "optimizedPath": "/media/editorial/personajes/jezabel-reina-israel/v001/jezabel-reina-israel--optimized.webp",
+        "highPath": "/media/editorial/personajes/jezabel-reina-israel/v001/jezabel-reina-israel--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "e6bc66bd1008d7c2206b3cc8b2a273a840ce40f6f11eac01d3a1e97fc1d4b471",
+        "highChecksum": "7cae3bd5ccc4fe3b18e00de855f6737aa0ba0d039dd625522934610d25270b65"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T05:36:25Z",
+        "notes": "Aprobado por el usuario; imagen y paquete bilingüe aceptados atómicamente tras QA de transparencia real, proporción 2:3 y correspondencia editorial. La banda dorada, joyería, colores y diseño textil se registran como reconstrucción plausible, no como rasgos bíblicamente documentados."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/jezabel-reina-israel/entry.yaml"
+    },
+    "joab-hijo-sarvia": {
+      "entityKey": "personajes-joab-hijo-sarvia",
+      "canonicalName": "Joab (hijo de Sarvia)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "joab-hijo-sarvia",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Joab (hijo de Sarvia)",
+          "definition": "Joab fue hijo de Sarvia, hermano de Abisai y Asael, y comandante del ejército de David. Fue una figura militar y política decisiva durante el reinado de David: dirigió campañas, intervino en crisis internas y mantuvo gran influencia, pero el relato también registra actos de violencia por los que finalmente fue juzgado; después de apoyar a Adonías, murió por orden de Salomón.",
+          "historical_context": "El horizonte narrativo es la monarquía temprana de Israel, convencionalmente asociada al siglo X a. C.; la reconstrucción arqueológica de esa etapa sigue siendo debatida, por lo que la imagen evita una uniformología demasiado precisa. El propio texto aporta un dato visual firme: Joab llevaba ropa ceñida, un cinto y una espada corta o daga envainada a la cintura. Hallazgos de comienzos de la Edad del Hierro II en Judá confirman el uso de armas metálicas, incluidos dagas y otros filos, pero no permiten reconstruir un uniforme personal de Joab.",
+          "original_language_note": "Hebreo יוֹאָב (Yôʾāḇ / Yo’av), tradicionalmente entendido como “YHWH es padre”.",
+          "alt_text": "Reconstrucción editorial de Joab como varón israelita adulto y veterano, de cuerpo completo, con cabello oscuro rizado y barba, túnica tejida beige con ribetes rojizos, manto rojizo a rayas, faja oscura, sandalias y una espada corta envainada a la cintura; postura firme de comandante, sin corona, halo, armadura espectacular, escenario ni violencia visible, aislado sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Joab (son of Zeruiah)",
+          "definition": "Joab was the son of Zeruiah, brother of Abishai and Asahel, and commander of David’s army. He was a decisive military and political figure during David’s reign, leading campaigns and intervening in internal crises, while the narrative also records violent acts for which he was ultimately held accountable; after supporting Adonijah, he was executed under Solomon’s order.",
+          "historical_context": "The narrative horizon is Israel’s early monarchy, conventionally associated with the tenth century BCE; archaeological reconstruction of this period remains debated, so the image avoids overly specific military costume claims. The biblical text itself supplies one firm visual anchor: Joab wore girded clothing with a belt and a sheathed short sword or dagger at his waist. Early Iron Age II finds from Judah attest metal weaponry, including daggers and other blades, but do not establish Joab’s personal uniform.",
+          "original_language_note": "Hebrew יוֹאָב (Yôʾāḇ / Yo’av), traditionally understood as “YHWH is father.”",
+          "alt_text": "Editorial reconstruction of Joab as an adult veteran Israelite man shown full-body, with dark curly hair and a beard, wearing a beige woven tunic with reddish trim, a striped reddish mantle, a dark sash, sandals, and a sheathed short sword at the waist; firm commander’s stance, with no crown, halo, elaborate armor, scenery, or visible violence, isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יוֹאָב",
+          "transliteration": "Yôʾāḇ / Yo’av",
+          "lemma": "יוֹאָב",
+          "meaning": {
+            "es-419": "Tradicionalmente entendido como “YHWH es padre”.",
+            "en-US": "Traditionally understood as “YHWH is father.”"
+          },
+          "certainty": "traditional"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "1 Crónicas 2:16",
+            "2 Samuel 8:16",
+            "2 Samuel 10:7-14",
+            "2 Samuel 18:5-15",
+            "2 Samuel 20:8-23",
+            "1 Reyes 1:7",
+            "1 Reyes 2:5-6,28-34"
+          ],
+          "en-US": [
+            "1 Chronicles 2:16",
+            "2 Samuel 8:16",
+            "2 Samuel 10:7-14",
+            "2 Samuel 18:5-15",
+            "2 Samuel 20:8-23",
+            "1 Kings 1:7",
+            "1 Kings 2:5-6,28-34"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "2 Samuel 2-3",
+            "2 Samuel 11:6-25",
+            "2 Samuel 12:26-28",
+            "2 Samuel 14:1-24",
+            "2 Samuel 19:1-8",
+            "2 Samuel 24:1-9",
+            "1 Crónicas 11:6-8",
+            "1 Crónicas 18:15"
+          ],
+          "en-US": [
+            "2 Samuel 2-3",
+            "2 Samuel 11:6-25",
+            "2 Samuel 12:26-28",
+            "2 Samuel 14:1-24",
+            "2 Samuel 19:1-8",
+            "2 Samuel 24:1-9",
+            "1 Chronicles 11:6-8",
+            "1 Chronicles 18:15"
+          ]
+        },
+        "occurrencesSource": null,
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo X a. C. / tenth century BCE",
+        "region": "Israel y Judá / Israel and Judah",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "cadf2cb8664d8e316bab6f6dfd9290a89027f0ed041675aaf0ae573536ec0659",
+        "optimizedPath": "/media/editorial/personajes/joab-hijo-sarvia/v001/joab-hijo-sarvia--optimized.webp",
+        "highPath": "/media/editorial/personajes/joab-hijo-sarvia/v001/joab-hijo-sarvia--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "b26bd13ed4bf74dba3da2528b649a3202c896e3d66d1cc455b259a53ebb896dc",
+        "highChecksum": "2acbd3875ce23816a0addc814090340c6ca8c838a3c955620f0b0d973661f7a6"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T05:44:38Z",
+        "notes": "Aprobado por el usuario; imagen y paquete bilingüe aceptados atómicamente tras QA de transparencia real, proporción 2:3 y correspondencia editorial. La vestimenta, colores, rasgos faciales y forma exacta del arma se registran como reconstrucción plausible; la presencia de un arma envainada a la cintura está controlada por 2 Samuel 20:8."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/joab-hijo-sarvia/entry.yaml"
+    },
+    "joacim-eliaquim-hijo-josias": {
+      "entityKey": "personajes-joacim-eliaquim-hijo-josias",
+      "canonicalName": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "joacim-eliaquim-hijo-josias",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+          "definition": "Joacim, originalmente llamado Eliaquim, fue hijo del rey Josías y gobernó Judá durante once años. El faraón Necao lo colocó en el trono y cambió su nombre a Joacim; su reinado quedó marcado primero por la subordinación a Egipto y luego por el dominio babilónico de Nabucodonosor, frente al cual terminó rebelándose. Los libros de Reyes, Crónicas y Jeremías lo presentan negativamente, y Jeremías 36 relata que cortó y quemó el rollo profético leído ante él.",
+          "historical_context": "Su reinado pertenece al final del siglo VII a. C., cuando Judá quedó atrapada entre las potencias egipcia y neobabilónica. Tras la derrota egipcia en Carquemis en 605 a. C., Babilonia pasó a dominar la región; fuentes históricas externas sitúan esta transición imperial inmediatamente antes de la caída de Jerusalén de 597 a. C. bajo Joaquín.",
+          "original_language_note": "Hebreo אֶלְיָקִים (ʾElyāqîm, Eliaquim), ‘Dios establece / levanta’, y יְהוֹיָקִים (Yəhôyāqîm, Joacim), ‘YHWH establece / levanta’. 2 Reyes 23:34 y 2 Crónicas 36:4 identifican expresamente el cambio de nombre realizado por Necao.",
+          "alt_text": "Reconstrucción editorial de Joacim, rey de Judá a fines del siglo VII a. C., como varón adulto de unos treinta años, de pie, con túnica larga tejida, manto sobrio de calidad cortesana, cinturón sencillo y sandalias; figura completa aislada sobre fondo transparente, sin corona inventada, cetro, rollo, arquitectura ni símbolos religiosos."
+        },
+        "en-US": {
+          "display_name": "Jehoiakim / Eliakim (son of Josiah; king of Judah)",
+          "definition": "Jehoiakim, originally named Eliakim, was a son of King Josiah and ruled Judah for eleven years. Pharaoh Necho placed him on the throne and changed his name to Jehoiakim; his reign was shaped first by Egyptian overlordship and then by Babylonian domination under Nebuchadnezzar, against whom he eventually rebelled. Kings, Chronicles, and Jeremiah portray his reign negatively, and Jeremiah 36 records that he cut up and burned the prophetic scroll read before him.",
+          "historical_context": "His reign belongs to the end of the seventh century BCE, when Judah was caught between Egyptian and Neo-Babylonian power. After Egypt’s defeat at Carchemish in 605 BCE, Babylon became dominant in the region; external historical sources place this imperial transition immediately before Jerusalem’s capture in 597 BCE under Jehoiachin.",
+          "original_language_note": "Hebrew אֶלְיָקִים (ʾElyāqîm, Eliakim), ‘God establishes / raises up,’ and יְהוֹיָקִים (Yəhôyāqîm, Jehoiakim), ‘YHWH establishes / raises up.’ Second Kings 23:34 and Second Chronicles 36:4 explicitly identify the renaming by Necho.",
+          "alt_text": "Editorial reconstruction of Jehoiakim, king of Judah in the late seventh century BCE, as an adult man in his early thirties standing in a restrained pose, wearing a long woven tunic, a sober high-status mantle, a simple belt, and sandals; full figure isolated on a transparent background, without an invented crown, scepter, scroll, architecture, or religious symbols."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "אֶלְיָקִים",
+          "transliteration": "ʾElyāqîm",
+          "lemma": "אֶלְיָקִים",
+          "meaning": {
+            "es-419": "Dios establece / levanta",
+            "en-US": "God establishes / raises up"
+          },
+          "certainty": "documented"
+        },
+        {
+          "language": "hebrew",
+          "script": "יְהוֹיָקִים",
+          "transliteration": "Yəhôyāqîm",
+          "lemma": "יְהוֹיָקִים",
+          "meaning": {
+            "es-419": "YHWH establece / levanta",
+            "en-US": "YHWH establishes / raises up"
+          },
+          "certainty": "documented"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Reyes 23:34–24:7",
+            "2 Crónicas 36:4–8",
+            "Jeremías 22:13–19",
+            "Jeremías 26:1–24",
+            "Jeremías 36:1–32"
+          ],
+          "en-US": [
+            "2 Reyes 23:34–24:7",
+            "2 Crónicas 36:4–8",
+            "Jeremías 22:13–19",
+            "Jeremías 26:1–24",
+            "Jeremías 36:1–32"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Crónicas 3:15–16",
+            "Jeremías 1:3",
+            "Jeremías 24:1",
+            "Jeremías 25:1",
+            "Jeremías 27:1",
+            "Jeremías 35:1",
+            "Jeremías 45:1",
+            "Jeremías 46:2",
+            "Daniel 1:1–2"
+          ],
+          "en-US": [
+            "1 Crónicas 3:15–16",
+            "Jeremías 1:3",
+            "Jeremías 24:1",
+            "Jeremías 25:1",
+            "Jeremías 27:1",
+            "Jeremías 35:1",
+            "Jeremías 45:1",
+            "Jeremías 46:2",
+            "Daniel 1:1–2"
+          ]
+        },
+        "occurrencesSource": "Bibli catalog / Bible-first editorial audit",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "finales del siglo VII a. C.",
+        "region": "Judá / Jerusalén",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "dd3b00e8fc42caa2094b9aa40778a0fc336a3845cfa53627d8e3e92028cb9745",
+        "optimizedPath": "/media/editorial/personajes/joacim-eliaquim-hijo-josias/v001/joacim-eliaquim-hijo-josias--optimized.webp",
+        "highPath": "/media/editorial/personajes/joacim-eliaquim-hijo-josias/v001/joacim-eliaquim-hijo-josias--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "dd5a49d33572e65deafa93e292200332ec74a28d247be92ce610fcff18a997fb",
+        "highChecksum": "ad1ae531fd9a687aaa42d7b0ebc8f0bdd3215fa12f7adf67e2d9f2f28b2c4a91"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T05:58:19Z",
+        "notes": "Aprobación atómica de imagen + es-419 + en-US. Master archivado usando los bytes exactos generados, sin re-encoding."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/joacim-eliaquim-hijo-josias/entry.yaml"
     }
   }
 }

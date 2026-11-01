@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "sourceRoot": "bibli_images_OneDrive_Only",
   "generatedFrom": {
-    "approvedPackages": 114,
+    "approvedPackages": 120,
     "glossaryTerms": 182
   },
   "policy": {
@@ -15,7 +15,7 @@
   },
   "counts": {
     "existing": 114,
-    "ready_to_create": 0,
+    "ready_to_create": 6,
     "blocked": 0
   },
   "entries": [
@@ -2893,6 +2893,156 @@
       "sharedAliases": [],
       "reasons": [
         "Ya existe glossary_terms.slug=jeroboam-i-hijo-nabat"
+      ]
+    },
+    {
+      "sourceSlug": "jeroboam-ii-rey-israel",
+      "entityKey": "personajes-jeroboam-ii-rey-israel",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jeroboam-ii-rey-israel/entry.yaml",
+      "canonicalName": "Jeroboam II (rey de Israel)",
+      "sense": "rey del reino del norte de Israel; hijo de Joás",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jeroboam-ii-rey-israel/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jeroboam-ii-rey-israel",
+        "slug": "jeroboam-ii-rey-israel",
+        "term": "Jeroboam II (rey de Israel)",
+        "definition": "Jeroboam II, hijo de Joás, fue rey del reino del norte de Israel con sede en Samaria. 2 Reyes le atribuye un reinado de cuarenta y un años, la restauración de los límites de Israel desde la entrada de Hamat hasta el mar del Arabá y victorias militares, pero también lo evalúa negativamente por continuar los pecados asociados con Jeroboam hijo de Nabat.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jesus-presentacion-terrenal",
+      "entityKey": "personajes-jesus-presentacion-terrenal",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jesus-presentacion-terrenal/entry.yaml",
+      "canonicalName": "Jesús (presentación terrenal)",
+      "sense": "presentación humana ordinaria durante la vida y ministerio terrenal",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jesus-presentacion-terrenal/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jesus-presentacion-terrenal",
+        "slug": "jesus-presentacion-terrenal",
+        "term": "Jesús (presentación terrenal)",
+        "definition": "Jesús de Nazaret es la figura central de los Evangelios y del Nuevo Testamento. Esta entrada representa su apariencia humana ordinaria durante su vida y ministerio terrenal, no la Transfiguración ni su presentación glorificada de Apocalipsis; por eso debe mostrarse como un varón judío del siglo I, sin halo, aura ni luminosidad sobrenatural añadida.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jetro-sacerdote-de-madian-suegro-de-moises",
+      "entityKey": "personajes-jetro-sacerdote-de-madian-suegro-de-moises",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jetro-sacerdote-de-madian-suegro-de-moises/entry.yaml",
+      "canonicalName": "Jetro (sacerdote de Madián; suegro de Moisés)",
+      "sense": "sacerdote de Madián; suegro de Moisés en Éxodo 3 y 18",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jetro-sacerdote-de-madian-suegro-de-moises/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jetro-sacerdote-de-madian-suegro-de-moises",
+        "slug": "jetro-sacerdote-de-madian-suegro-de-moises",
+        "term": "Jetro (sacerdote de Madián; suegro de Moisés)",
+        "definition": "Jetro es presentado en Éxodo como sacerdote de Madián y suegro de Moisés. Moisés pastoreó sus ovejas antes de regresar a Egipto; después del éxodo, Jetro visitó a Moisés, bendijo a Jehová por la liberación de Israel, presentó holocaustos y sacrificios para Dios y aconsejó a Moisés que delegara responsabilidades judiciales en hombres capaces.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jezabel-reina-israel",
+      "entityKey": "personajes-jezabel-reina-israel",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jezabel-reina-israel/entry.yaml",
+      "canonicalName": "Jezabel (esposa de Acab)",
+      "sense": "esposa de Acab; hija de Et-baal, rey de los sidonios, en 1–2 Reyes",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jezabel-reina-israel/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jezabel-reina-israel",
+        "slug": "jezabel-reina-israel",
+        "term": "Jezabel (esposa de Acab)",
+        "definition": "Jezabel fue hija de Et-baal, rey de los sidonios, y esposa de Acab, rey de Israel. El relato de Reyes la presenta como una figura decisiva en la promoción del culto a Baal, en la persecución de profetas de Jehová y en el complot que terminó con la muerte de Nabot para que Acab tomara su viña.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "joab-hijo-sarvia",
+      "entityKey": "personajes-joab-hijo-sarvia",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/joab-hijo-sarvia/entry.yaml",
+      "canonicalName": "Joab (hijo de Sarvia)",
+      "sense": "hijo de Sarvia; hermano de Abisai y Asael; comandante del ejército de David",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/joab-hijo-sarvia/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-joab-hijo-sarvia",
+        "slug": "joab-hijo-sarvia",
+        "term": "Joab (hijo de Sarvia)",
+        "definition": "Joab fue hijo de Sarvia, hermano de Abisai y Asael, y comandante del ejército de David. Fue una figura militar y política decisiva durante el reinado de David: dirigió campañas, intervino en crisis internas y mantuvo gran influencia, pero el relato también registra actos de violencia por los que finalmente fue juzgado; después de apoyar a Adonías, murió por orden de Salomón.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "joacim-eliaquim-hijo-josias",
+      "entityKey": "personajes-joacim-eliaquim-hijo-josias",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/joacim-eliaquim-hijo-josias/entry.yaml",
+      "canonicalName": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+      "sense": "hijo de Josías; rey de Judá",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/joacim-eliaquim-hijo-josias/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-joacim-eliaquim-hijo-josias",
+        "slug": "joacim-eliaquim-hijo-josias",
+        "term": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
+        "definition": "Joacim, originalmente llamado Eliaquim, fue hijo del rey Josías y gobernó Judá durante once años. El faraón Necao lo colocó en el trono y cambió su nombre a Joacim; su reinado quedó marcado primero por la subordinación a Egipto y luego por el dominio babilónico de Nabucodonosor, frente al cual terminó rebelándose. Los libros de Reyes, Crónicas y Jeremías lo presentan negativamente, y Jeremías 36 relata que cortó y quemó el rollo profético leído ante él.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
       ]
     }
   ]
