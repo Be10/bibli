@@ -11963,6 +11963,210 @@
       },
       "integrationStatus": "integrated",
       "sourcePath": "entries/01-personajes/joacim-eliaquim-hijo-josias/entry.yaml"
+    },
+    "joana-esposa-chuza": {
+      "entityKey": "personajes-joana-esposa-chuza",
+      "canonicalName": "Joana (esposa de Chuza; seguidora de Jesús)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "joana-esposa-chuza",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Joana (esposa de Chuza; seguidora de Jesús)",
+          "definition": "Joana fue una seguidora de Jesús identificada por Lucas como esposa de Chuza, administrador de Herodes. Junto con María Magdalena, Susana y otras mujeres, acompañó a Jesús y a los Doce y contribuyó al sostenimiento del ministerio con sus propios recursos. Lucas vuelve a nombrarla entre las mujeres que anunciaron a los apóstoles lo ocurrido en la tumba vacía.",
+          "historical_context": "Lucas la vincula con la administración de Herodes mediante su esposo Chuza, pero no describe su rango social exacto, edad, apariencia ni vestimenta. El hecho de que Joana contribuya de sus propios recursos permite representarla como una mujer con cierta capacidad económica, pero no autoriza convertirla en una aristócrata de corte ni dotarla de joyas o lujo ostentoso. La Biblia no especifica sus prendas; la reconstrucción usa una túnica larga sencilla, manto sobrio y sandalias, coherentes de forma general con el mundo mediterráneo y judeano del siglo I, sin presentar esos detalles como su vestuario exacto.",
+          "original_language_note": "Griego Ἰωάννα (Iōanna), nombre femenino relacionado con Ἰωάννης (Iōannēs). Tradicionalmente se entiende como “YHWH es misericordioso / ha mostrado gracia”. El Nuevo Testamento conserva el nombre de Joana en Lucas 8:3 y 24:10.",
+          "alt_text": "Reconstrucción editorial de Joana, seguidora de Jesús y esposa de Chuza, como mujer judía adulta del siglo I, de cuerpo completo y postura serena, vestida con túnica larga tejida de tono claro, manto sobrio rojizo y sandalias antiguas. Lleva el cabello oscuro recogido de forma discreta, sin joyería ostentosa ni símbolos religiosos; figura aislada sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Joanna (wife of Chuza; follower of Jesus)",
+          "definition": "Joanna was a follower of Jesus identified by Luke as the wife of Chuza, an administrator of Herod. Together with Mary Magdalene, Susanna, and other women, she accompanied Jesus and the Twelve and helped support the ministry from her own resources. Luke names her again among the women who reported the empty-tomb events to the apostles.",
+          "historical_context": "Luke connects Joanna with Herod’s administration through her husband Chuza, but does not specify her exact social rank, age, appearance, or clothing. Her ability to contribute from her own resources suggests some economic means, but it does not justify portraying her as a court aristocrat or loading the image with jewelry and luxury. Scripture does not describe her garments; the reconstruction uses a restrained long tunic, simple mantle, and sandals broadly consistent with the first-century Mediterranean and Judean world without presenting those details as her exact wardrobe.",
+          "original_language_note": "Greek Ἰωάννα (Iōanna), a feminine name related to Ἰωάννης (Iōannēs). It is traditionally understood as “YHWH is gracious / has shown grace.” The New Testament preserves Joanna’s name in Luke 8:3 and 24:10.",
+          "alt_text": "Editorial reconstruction of Joanna, follower of Jesus and wife of Chuza, as an adult first-century Jewish woman shown full-length in a calm stance, wearing a light-colored long woven tunic, restrained reddish mantle, and ancient-style sandals. Her dark hair is discreetly tied back, with no ostentatious jewelry or religious symbols; the figure is isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "greek",
+          "script": "Ἰωάννα",
+          "transliteration": "Iōanna",
+          "lemma": "Ἰωάννα",
+          "meaning": {
+            "es-419": "YHWH es misericordioso / ha mostrado gracia",
+            "en-US": "YHWH is gracious / has shown grace"
+          },
+          "certainty": "traditional_etymology"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "Lucas 8:1–3",
+            "Lucas 24:1–10"
+          ],
+          "en-US": [
+            "Lucas 8:1–3",
+            "Lucas 24:1–10"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "Lucas 23:49",
+            "Lucas 23:55–56"
+          ],
+          "en-US": [
+            "Lucas 23:49",
+            "Lucas 23:55–56"
+          ]
+        },
+        "occurrencesSource": "Bibli catalog / Bible-first editorial audit",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "siglo I d. C.",
+        "region": "Galilea / Judea bajo dominio romano",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "c4f4685497f59d8af731b473f1b1b712d16522a5e108fec0297f0f264cf4ca96",
+        "optimizedPath": "/media/editorial/personajes/joana-esposa-chuza/v001/joana-esposa-chuza--optimized.webp",
+        "highPath": "/media/editorial/personajes/joana-esposa-chuza/v001/joana-esposa-chuza--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "8208414c05b103e72746a87c1a60c0917edabb94a50a2a2b54ebbed8902741a1",
+        "highChecksum": "fcb904238827921bcbfdda84b4db282a53dfaec99e8f78234a32bc5a20a97d3d"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T06:35:31Z",
+        "notes": "Aprobación atómica de imagen + es-419 + en-US. Master archivado usando los bytes exactos generados, sin re-encoding."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/joana-esposa-chuza/entry.yaml"
+    },
+    "joaquin-rey-juda": {
+      "entityKey": "personajes-joaquin-rey-juda",
+      "canonicalName": "Joaquín (rey de Judá)",
+      "group": "personajes",
+      "sourceStatus": "approved",
+      "glossarySlug": "joaquin-rey-juda",
+      "localization": {
+        "default_locale": "es-419",
+        "required_locales": [
+          "es-419",
+          "en-US"
+        ]
+      },
+      "locales": {
+        "es-419": {
+          "display_name": "Joaquín (rey de Judá)",
+          "definition": "Joaquín, hijo y sucesor de Joacim, fue rey de Judá durante un reinado muy breve antes de ser llevado a Babilonia por Nabucodonosor II junto con miembros de la casa real y parte de la élite de Jerusalén. Décadas después, Evil-merodac lo sacó de prisión, le concedió una posición honorable y una asignación regular en la corte.",
+          "historical_context": "Joaquín pertenece a la crisis final del reino de Judá alrededor de 598–597 a. C. Fuentes administrativas babilónicas posteriores a su deportación mencionan a Joaquín como “rey de Judá” y también a sus hijos, corroborando que conservó ese título en el exilio. El cierre de 2 Reyes relata que, en el año treinta y siete de su destierro, fue liberado y recibió un lugar distinguido en la corte babilónica. Existe una discrepancia textual relevante sobre su edad al acceder al trono: 2 Reyes 24:8 transmite 18 años, mientras que el texto hebreo tradicional de 2 Crónicas 36:9 transmite 8 años; Bibli no fuerza visualmente una resolución de esa diferencia. Por ello, la ilustración lo representa como adulto durante su etapa babilónica posterior. Su apariencia personal no se conserva; la túnica, el manto, el cinturón, las sandalias, los colores y los detalles textiles son reconstrucciones plausibles basadas en paralelos regionales y no su vestuario conocido.",
+          "original_language_note": "Hebreo יְהוֹיָכִין (Yəhôyāḵîn / Yehoyakhin), nombre teofórico con el sentido aproximado de “YHWH establece” o “YHWH establecerá”. El mismo personaje aparece también bajo formas como Jeconías y Conías en distintos pasajes.",
+          "alt_text": "Reconstrucción editorial de Joaquín, rey de Judá, como varón adulto de mediana edad durante su etapa babilónica posterior, mostrado de cuerpo completo en postura sobria. Lleva una túnica larga tejida de tono claro con ribetes discretos, cinturón envolvente, manto rojizo con franjas y flecos, y sandalias; no porta corona, cetro, armas ni símbolos reales. La figura está aislada sobre fondo transparente."
+        },
+        "en-US": {
+          "display_name": "Jehoiachin (king of Judah)",
+          "definition": "Jehoiachin, son and successor of Jehoiakim, was king of Judah for a very brief reign before Nebuchadnezzar II took him to Babylon together with members of the royal household and part of Jerusalem’s elite. Decades later, Evil-merodach released him from prison, granted him an honored position, and provided him with a regular court allowance.",
+          "historical_context": "Jehoiachin belongs to the final crisis of the kingdom of Judah around 598–597 BCE. Babylonian administrative sources from after his deportation mention Jehoiachin as “king of Judah” and also refer to his sons, corroborating that he retained the royal title in exile. The conclusion of 2 Kings states that in the thirty-seventh year of his exile he was released and given an honored position at the Babylonian court. There is an important textual discrepancy concerning his age at accession: 2 Kings 24:8 gives 18 years, while the traditional Hebrew text of 2 Chronicles 36:9 gives 8; Bibli does not visually force a resolution of that difference. The illustration therefore depicts him as an adult during his later Babylonian period. His personal appearance is unknown; the tunic, mantle, belt, sandals, colors, and textile details are plausible reconstructions based on regional parallels rather than known personal clothing.",
+          "original_language_note": "Hebrew יְהוֹיָכִין (Yəhôyāḵîn / Yehoyakhin), a theophoric name meaning approximately “YHWH establishes” or “YHWH will establish.” The same person also appears under forms such as Jeconiah and Coniah in different passages.",
+          "alt_text": "Editorial reconstruction of Jehoiachin, king of Judah, as a middle-aged adult man during his later Babylonian period, shown full-length in a restrained stance. He wears a light-colored long woven tunic with restrained trim, a wrapped belt, a reddish mantle with stripes and fringe, and sandals; he carries no crown, scepter, weapons, or royal symbols. The figure is isolated on a transparent background."
+        }
+      },
+      "originalTerms": [
+        {
+          "language": "hebrew",
+          "script": "יְהוֹיָכִין",
+          "transliteration": "Yəhôyāḵîn / Yehoyakhin",
+          "lemma": "יְהוֹיָכִין",
+          "meaning": {
+            "es-419": "YHWH establece / YHWH establecerá",
+            "en-US": "YHWH establishes / YHWH will establish"
+          },
+          "certainty": "approximate_etymology"
+        }
+      ],
+      "biblicalReferences": {
+        "primary": {
+          "es-419": [
+            "2 Reyes 24:6–17",
+            "2 Reyes 25:27–30",
+            "2 Crónicas 36:8–10",
+            "Jeremías 22:24–30",
+            "Jeremías 52:31–34"
+          ],
+          "en-US": [
+            "2 Reyes 24:6–17",
+            "2 Reyes 25:27–30",
+            "2 Crónicas 36:8–10",
+            "Jeremías 22:24–30",
+            "Jeremías 52:31–34"
+          ]
+        },
+        "additional": {
+          "es-419": [
+            "1 Crónicas 3:16–17",
+            "Jeremías 24:1",
+            "Jeremías 27:20",
+            "Jeremías 28:4",
+            "Jeremías 29:2",
+            "Jeremías 37:1",
+            "Ezequiel 1:2",
+            "Ester 2:6",
+            "Mateo 1:11–12"
+          ],
+          "en-US": [
+            "1 Crónicas 3:16–17",
+            "Jeremías 24:1",
+            "Jeremías 27:20",
+            "Jeremías 28:4",
+            "Jeremías 29:2",
+            "Jeremías 37:1",
+            "Ezequiel 1:2",
+            "Ester 2:6",
+            "Mateo 1:11–12"
+          ]
+        },
+        "occurrencesSource": "Bibli catalog / Bible-first editorial audit",
+        "occurrencesCount": null
+      },
+      "historical": {
+        "period": "finales del siglo VII–siglo VI a. C.",
+        "region": "Judá / Babilonia",
+        "certainty": "plausible_reconstruction"
+      },
+      "visual": {
+        "version": 1,
+        "aspectRatio": "2:3",
+        "hasAlpha": true,
+        "masterChecksum": "7943536786d0b827339293dfb165d732e1a175e834bda2744f279ce3a46fd41c",
+        "optimizedPath": "/media/editorial/personajes/joaquin-rey-juda/v001/joaquin-rey-juda--optimized.webp",
+        "highPath": "/media/editorial/personajes/joaquin-rey-juda/v001/joaquin-rey-juda--high.webp",
+        "optimizedWidth": 512,
+        "optimizedHeight": 768,
+        "highWidth": 960,
+        "highHeight": 1440,
+        "optimizedChecksum": "28b0deebc090f1938d2714426b0629d791de2036b725c1be1cdf1a8c5c8c87df",
+        "highChecksum": "06f72c0ffbdc1c30dc08cde5ae44209e518da457c61fb11ff8f7791595d81fd4"
+      },
+      "approval": {
+        "approved_at": "2026-11-01T06:46:59Z",
+        "notes": "Aprobación atómica de imagen + es-419 + en-US. Master archivado usando los bytes exactos generados, sin re-encoding. Alt normalizado para describir fielmente el PNG aprobado."
+      },
+      "integrationStatus": "integrated",
+      "sourcePath": "entries/01-personajes/joaquin-rey-juda/entry.yaml"
     }
   }
 }

@@ -1686,6 +1686,34 @@
       "term": "Joacim / Eliaquim (hijo de Josías; rey de Judá)",
       "definition": "Joacim, originalmente llamado Eliaquim, fue hijo del rey Josías y gobernó Judá durante once años. El faraón Necao lo colocó en el trono y cambió su nombre a Joacim; su reinado quedó marcado primero por la subordinación a Egipto y luego por el dominio babilónico de Nabucodonosor, frente al cual terminó rebelándose. Los libros de Reyes, Crónicas y Jeremías lo presentan negativamente, y Jeremías 36 relata que cortó y quemó el rollo profético leído ante él.",
       "status": "Publicado básico"
+    },
+    "joana-esposa-chuza": {
+      "sourceSlug": "joana-esposa-chuza",
+      "entityKey": "personajes-joana-esposa-chuza",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/joana-esposa-chuza/entry.yaml",
+      "canonicalName": "Joana (esposa de Chuza; seguidora de Jesús)",
+      "sense": "esposa de Chuza; seguidora de Jesús",
+      "sharedAliases": [],
+      "id": "glo-joana-esposa-chuza",
+      "slug": "joana-esposa-chuza",
+      "term": "Joana (esposa de Chuza; seguidora de Jesús)",
+      "definition": "Joana fue una seguidora de Jesús identificada por Lucas como esposa de Chuza, administrador de Herodes. Junto con María Magdalena, Susana y otras mujeres, acompañó a Jesús y a los Doce y contribuyó al sostenimiento del ministerio con sus propios recursos. Lucas vuelve a nombrarla entre las mujeres que anunciaron a los apóstoles lo ocurrido en la tumba vacía.",
+      "status": "Publicado básico"
+    },
+    "joaquin-rey-juda": {
+      "sourceSlug": "joaquin-rey-juda",
+      "entityKey": "personajes-joaquin-rey-juda",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/joaquin-rey-juda/entry.yaml",
+      "canonicalName": "Joaquín (rey de Judá)",
+      "sense": "rey de Judá; hijo de Joacim; exiliado en Babilonia",
+      "sharedAliases": [],
+      "id": "glo-joaquin-rey-juda",
+      "slug": "joaquin-rey-juda",
+      "term": "Joaquín (rey de Judá)",
+      "definition": "Joaquín, hijo y sucesor de Joacim, fue rey de Judá durante un reinado muy breve antes de ser llevado a Babilonia por Nabucodonosor II junto con miembros de la casa real y parte de la élite de Jerusalén. Décadas después, Evil-merodac lo sacó de prisión, le concedió una posición honorable y una asignación regular en la corte.",
+      "status": "Publicado básico"
     }
   }
 }

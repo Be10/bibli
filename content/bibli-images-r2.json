@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "source": "content/bibli-images-integrated.json",
-  "revision": "d1f04da562290b11",
-  "entryCount": 120,
-  "assetCount": 240,
+  "revision": "b47f2111212cc90c",
+  "entryCount": 122,
+  "assetCount": 244,
   "tiers": {
     "optimized": {
-      "assetCount": 120,
-      "totalBytes": 6757818
+      "assetCount": 122,
+      "totalBytes": 6855238
     },
     "high": {
-      "assetCount": 120,
-      "totalBytes": 30460448
+      "assetCount": 122,
+      "totalBytes": 30945076
     }
   },
   "assets": [
@@ -2892,6 +2892,54 @@
       "key": "editorial/personajes/joacim-eliaquim-hijo-josias/v001/joacim-eliaquim-hijo-josias--optimized.webp",
       "sha256": "dd5a49d33572e65deafa93e292200332ec74a28d247be92ce610fcff18a997fb",
       "bytes": 60552,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "joana-esposa-chuza",
+      "group": "personajes",
+      "canonicalName": "Joana (esposa de Chuza; seguidora de Jesús)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/joana-esposa-chuza/v001/joana-esposa-chuza--high.webp",
+      "sha256": "fcb904238827921bcbfdda84b4db282a53dfaec99e8f78234a32bc5a20a97d3d",
+      "bytes": 229112,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "joana-esposa-chuza",
+      "group": "personajes",
+      "canonicalName": "Joana (esposa de Chuza; seguidora de Jesús)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/joana-esposa-chuza/v001/joana-esposa-chuza--optimized.webp",
+      "sha256": "8208414c05b103e72746a87c1a60c0917edabb94a50a2a2b54ebbed8902741a1",
+      "bytes": 44400,
+      "width": 512,
+      "height": 768
+    },
+    {
+      "slug": "joaquin-rey-juda",
+      "group": "personajes",
+      "canonicalName": "Joaquín (rey de Judá)",
+      "version": 1,
+      "tier": "high",
+      "key": "editorial/personajes/joaquin-rey-juda/v001/joaquin-rey-juda--high.webp",
+      "sha256": "06f72c0ffbdc1c30dc08cde5ae44209e518da457c61fb11ff8f7791595d81fd4",
+      "bytes": 255516,
+      "width": 960,
+      "height": 1440
+    },
+    {
+      "slug": "joaquin-rey-juda",
+      "group": "personajes",
+      "canonicalName": "Joaquín (rey de Judá)",
+      "version": 1,
+      "tier": "optimized",
+      "key": "editorial/personajes/joaquin-rey-juda/v001/joaquin-rey-juda--optimized.webp",
+      "sha256": "28b0deebc090f1938d2714426b0629d791de2036b725c1be1cdf1a8c5c8c87df",
+      "bytes": 53020,
       "width": 512,
       "height": 768
     }
