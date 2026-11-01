@@ -36,11 +36,32 @@ try { fs.rmSync(buildSnapshotDir, { recursive: true, force: true }); } catch {}
 
 const walk = (dir) => {
   const out = [];
+
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walk(full));
-    else if (entry.isFile()) out.push(full);
+
+    let stat;
+
+    try {
+      // Use statSync instead of relying only on Dirent type flags.
+      // OneDrive/Windows may expose accessible directories through
+      // filesystem reparse metadata that Dirent does not classify
+      // consistently as directories.
+      stat = fs.statSync(full);
+    } catch (error) {
+      errors.push(
+        `filesystem: no se pudo inspeccionar ${path.relative(root, full)} (${error.message})`,
+      );
+      continue;
+    }
+
+    if (stat.isDirectory()) {
+      out.push(...walk(full));
+    } else if (stat.isFile()) {
+      out.push(full);
+    }
   }
+
   return out;
 };
 
