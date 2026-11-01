@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "sourceRoot": "bibli_images_OneDrive_Only",
   "generatedFrom": {
-    "approvedPackages": 102,
-    "glossaryTerms": 93
+    "approvedPackages": 106,
+    "glossaryTerms": 170
   },
   "policy": {
     "automaticPublication": false,
@@ -14,8 +14,8 @@
     "failClosedOnUnmappedCategory": true
   },
   "counts": {
-    "existing": 25,
-    "ready_to_create": 77,
+    "existing": 102,
+    "ready_to_create": 4,
     "blocked": 0
   },
   "entries": [
@@ -664,7 +664,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/aod-hijo-gera/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-aod-hijo-gera",
@@ -673,10 +673,10 @@
         "definition": "Aod fue un benjaminita, hijo de Gera, levantado por Dios como libertador frente al dominio de Eglón, rey de Moab. El relato de Jueces 3 lo presenta como zurdo: llevó el tributo a Eglón, ocultó bajo su ropa una espada corta de dos filos sobre el muslo derecho, mató al rey y después reunió a Israel para derrotar a los moabitas.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=aod-hijo-gera"
       ]
     },
     {
@@ -689,7 +689,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/apolos-hechos18/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-apolos-hechos18",
@@ -698,10 +698,10 @@
         "definition": "Judío natural de Alejandría que llegó a Éfeso siendo un hombre elocuente y competente en las Escrituras. Enseñaba con fervor acerca de Jesús, aunque conocía solamente el bautismo de Juan; Priscila y Aquila le explicaron con mayor precisión el camino de Dios. Después pasó a Acaya, donde ayudó a los creyentes y defendió públicamente, a partir de las Escrituras, que Jesús es el Cristo. Más tarde Pablo lo presenta como colaborador en la obra de Dios, especialmente en relación con Corinto.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=apolos-hechos18"
       ]
     },
     {
@@ -714,7 +714,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/aquila-hechos18/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-aquila-hechos18",
@@ -723,10 +723,10 @@
         "definition": "Aquila fue un judío originario del Ponto, esposo de Priscila/Prisca y colaborador de Pablo. Hechos lo sitúa en Corinto después de haber llegado desde Italia por la orden de Claudio contra los judíos de Roma; compartió oficio y trabajo con Pablo, viajó con él hacia Éfeso y, junto con Priscila, instruyó con mayor precisión a Apolos. Pablo posteriormente los llama colaboradores suyos y menciona una iglesia reunida en su casa.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=aquila-hechos18"
       ]
     },
     {
@@ -739,7 +739,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/arauna-ornan-jebuseo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-arauna-ornan-jebuseo",
@@ -748,10 +748,10 @@
         "definition": "Jebuseo propietario de la era que David compró en Jerusalén para levantar un altar durante el episodio de la plaga. Samuel lo llama Arauna y Crónicas Ornán; Crónicas vincula posteriormente esa misma era con el lugar preparado para el templo de Salomón.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=arauna-ornan-jebuseo"
       ]
     },
     {
@@ -764,7 +764,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/artajerjes-rey-persia-esdras/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-artajerjes-rey-persia-esdras",
@@ -773,10 +773,10 @@
         "definition": "Rey del Imperio persa mencionado en Esdras y Nehemías. En Esdras aparece en correspondencia oficial relacionada con Jerusalén y como el monarca que autoriza la misión de Esdras; en Nehemías es el rey a quien sirve Nehemías como copero y de quien recibe autorización para ir a Jerusalén y gobernar Judá.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=artajerjes-rey-persia-esdras"
       ]
     },
     {
@@ -789,7 +789,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/asa-rey-juda/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-asa-rey-juda",
@@ -798,10 +798,10 @@
         "definition": "Asa fue hijo y sucesor de Abías y rey de Judá durante cuarenta y un años en Jerusalén. El relato bíblico lo evalúa en términos generalmente positivos por sus reformas religiosas y su fidelidad, aunque también registra una etapa final problemática: buscó apoyo del rey de Siria contra Baasa, encarceló al vidente Hanani y terminó su reinado con una grave enfermedad en los pies.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=asa-rey-juda"
       ]
     },
     {
@@ -814,7 +814,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/asuero-rey-ester/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-asuero-rey-ester",
@@ -823,10 +823,10 @@
         "definition": "Asuero gobierna un vasto imperio desde Susa y es la autoridad real central del relato de Ester. Organiza los banquetes de apertura, depone a Vasti, recibe después a Ester como reina, eleva a Amán y le entrega su anillo de sello, y más tarde autoriza a Ester y Mardoqueo a actuar para proteger a los judíos.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=asuero-rey-ester"
       ]
     },
     {
@@ -839,7 +839,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/atalia-reina-juda/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-atalia-reina-juda",
@@ -848,10 +848,10 @@
         "definition": "Atalía fue esposa de Joram, madre del rey Ocozías y gobernante de Judá después de la muerte de su hijo. Según 2 Reyes 11 y 2 Crónicas 22–23, intentó eliminar a la descendencia real, pero Joás fue ocultado; seis años después fue proclamado rey mediante la acción encabezada por el sacerdote Joiada, y Atalía perdió el poder y murió fuera del recinto del templo.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=atalia-reina-juda"
       ]
     },
     {
@@ -864,7 +864,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/azarias-hijo-oded-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-azarias-hijo-oded-profeta",
@@ -873,10 +873,10 @@
         "definition": "Profeta de Judá presentado en 2 Crónicas 15. El Espíritu de Dios vino sobre Azarías; salió al encuentro del rey Asa y exhortó a Asa, Judá y Benjamín a buscar a YHWH y mantenerse firmes. Su mensaje precede e impulsa la continuación de la reforma religiosa de Asa y la renovación del altar.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=azarias-hijo-oded-profeta"
       ]
     },
     {
@@ -889,7 +889,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/azarias-sumo-sacerdote-uzias/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-azarias-sumo-sacerdote-uzias",
@@ -898,10 +898,10 @@
         "definition": "Sumo sacerdote de Judá que, acompañado por ochenta sacerdotes, se enfrentó al rey Uzías cuando este entró al santuario para quemar incienso. Azarías declaró que esa función correspondía a los sacerdotes descendientes de Aarón; después, al aparecer la afección en la frente de Uzías, Azarías y los demás sacerdotes lo hicieron salir del templo.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=azarias-sumo-sacerdote-uzias"
       ]
     },
     {
@@ -914,7 +914,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/azarias-uzias-rey-juda/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-azarias-uzias-rey-juda",
@@ -923,10 +923,10 @@
         "definition": "Hijo de Amasías y rey de Judá. Comenzó a reinar a los dieciséis años y el texto bíblico atribuye a su largo reinado fortificación, expansión militar, organización del ejército y una fuerte actividad agrícola. Reyes lo llama principalmente Azarías, mientras Crónicas y los libros proféticos usan ampliamente Uzías para la misma identidad real.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=azarias-uzias-rey-juda"
       ]
     },
     {
@@ -939,7 +939,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/baasa-rey-israel/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-baasa-rey-israel",
@@ -948,10 +948,10 @@
         "definition": "Baasa, hijo de Ahías y de la casa de Isacar, tomó el trono del reino del norte al matar al rey Nadab durante el sitio de Gibetón. Después eliminó la casa de Jeroboam, gobernó Israel desde Tirsa durante veinticuatro años y mantuvo conflicto con Asa de Judá. El profeta Jehú hijo de Hanani anunció juicio contra su casa; Baasa murió y fue sepultado en Tirsa, y su hijo Ela lo sucedió.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=baasa-rey-israel"
       ]
     },
     {
@@ -964,7 +964,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/barrabas-preso-mateo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-barrabas-preso-mateo",
@@ -973,10 +973,10 @@
         "definition": "Preso conocido que fue liberado por Pilato en lugar de Jesús durante la pasión. Mateo lo presenta como un «preso famoso»; Marcos y Lucas lo relacionan con una revuelta en la que hubo homicidio, y Juan lo llama lēstēs, término que puede referirse a ladrón, bandido o insurgente violento según el contexto.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=barrabas-preso-mateo"
       ]
     },
     {
@@ -989,7 +989,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/bartimeo-hijo-timeo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-bartimeo-hijo-timeo",
@@ -998,10 +998,10 @@
         "definition": "Mendigo ciego nombrado por Marcos que estaba sentado junto al camino cuando Jesús salía de Jericó. Al oír que pasaba Jesús, clamó a él como “Hijo de David”; cuando fue llamado, dejó su manto, se acercó a Jesús, recibió la vista y luego lo siguió por el camino. Marcos es el único Evangelio canónico que lo identifica por nombre.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=bartimeo-hijo-timeo"
       ]
     },
     {
@@ -1014,7 +1014,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/bartolome-apostol/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-bartolome-apostol",
@@ -1023,10 +1023,10 @@
         "definition": "Uno de los Doce apóstoles escogidos por Jesús. El Nuevo Testamento lo nombra en las listas apostólicas de Mateo, Marcos y Lucas, y nuevamente entre los discípulos reunidos después de la ascensión en Hechos. Los textos canónicos no narran acciones individuales de Bartolomé ni describen su apariencia.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=bartolome-apostol"
       ]
     },
     {
@@ -1039,7 +1039,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/belsasar-rey-caldeos-daniel/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-belsasar-rey-caldeos-daniel",
@@ -1048,10 +1048,10 @@
         "definition": "Gobernante presentado en Daniel como “rey de los caldeos”, protagonista del banquete de Daniel 5. Durante la fiesta mandó usar los vasos tomados del templo de Jerusalén; después apareció la escritura en la pared, Daniel interpretó el juicio anunciado y Belsasar murió aquella misma noche. Daniel 7:1 y 8:1 también datan visiones en su primer y tercer año de gobierno.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=belsasar-rey-caldeos-daniel"
       ]
     },
     {
@@ -1064,7 +1064,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/benadad-rey-siria-1reyes20/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-benadad-rey-siria-1reyes20",
@@ -1073,13 +1073,13 @@
         "definition": "Rey de Siria que, acompañado por una coalición de treinta y dos reyes, sitió Samaria durante el reinado de Acab. Tras exigir riquezas y miembros de la casa real, fue derrotado por Israel; al año siguiente volvió a combatir en Afec, sufrió una segunda derrota y finalmente obtuvo de Acab un pacto que incluía la devolución de ciudades y concesiones comerciales en Damasco.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [
         "Ben-adad",
         "Ben-Hadad"
       ],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario",
+        "Ya existe glossary_terms.slug=benadad-rey-siria-1reyes20",
         "Alias compartido; conservar nombre canónico calificado: Ben-adad, Ben-Hadad"
       ]
     },
@@ -1093,7 +1093,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/benadad-rey-siria-2reyes6-8/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-benadad-rey-siria-2reyes6-8",
@@ -1102,13 +1102,13 @@
         "definition": "Rey de Siria que reunió su ejército y sitió Samaria, provocando una grave hambruna. Más adelante, estando enfermo en Damasco, envió a Hazael con presentes para consultar por medio de Eliseo si sanaría; poco después murió y Hazael reinó en su lugar.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [
         "Ben-adad",
         "Ben-Hadad"
       ],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario",
+        "Ya existe glossary_terms.slug=benadad-rey-siria-2reyes6-8",
         "Alias compartido; conservar nombre canónico calificado: Ben-adad, Ben-Hadad"
       ]
     },
@@ -1122,7 +1122,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/benaia-hijo-joiada/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-benaia-hijo-joiada",
@@ -1131,10 +1131,10 @@
         "definition": "Benaía hijo de Joiada, de Cabseel, fue uno de los guerreros más destacados de David. El relato le atribuye grandes proezas, incluida la muerte de un león en un foso durante una nevada y la derrota de un egipcio armado con lanza; David lo puso al frente de su guardia personal. Durante la sucesión apoyó a Salomón y, bajo su reinado, terminó ocupando el mando del ejército en lugar de Joab.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=benaia-hijo-joiada"
       ]
     },
     {
@@ -1147,7 +1147,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/bernabe-hechos/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-bernabe-hechos",
@@ -1156,10 +1156,10 @@
         "definition": "José, levita originario de Chipre, recibió de los apóstoles el sobrenombre Bernabé. Hechos lo presenta entregando el producto de una propiedad a la comunidad, respaldando a Saulo ante los discípulos de Jerusalén, sirviendo en Antioquía y participando con Pablo en la misión; después de su desacuerdo sobre Juan Marcos, Bernabé partió con Marcos hacia Chipre.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=bernabe-hechos"
       ]
     },
     {
@@ -1172,7 +1172,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/betsabe-hija-eliam/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-betsabe-hija-eliam",
@@ -1181,10 +1181,10 @@
         "definition": "Betsabé fue hija de Eliam, esposa de Urías heteo y, después de la muerte de Urías, esposa de David. Fue madre de Salomón y tuvo un papel activo en la sucesión real: habló ante David en favor del cumplimiento de su promesa respecto de Salomón y, ya durante el reinado de su hijo, aparece recibiendo un lugar de especial honor como madre del rey.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=betsabe-hija-eliam"
       ]
     },
     {
@@ -1197,7 +1197,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/bezaleel-artesano-del-tabernaculo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-bezaleel-artesano-del-tabernaculo",
@@ -1206,10 +1206,10 @@
         "definition": "Bezaleel, hijo de Uri y nieto de Hur, de la tribu de Judá, fue llamado por Dios para dirigir y ejecutar trabajos del tabernáculo. Éxodo lo presenta dotado de sabiduría, inteligencia, conocimiento y habilidad para diseñar y trabajar metales, piedras, madera y textiles, junto con Aholiab y otros artesanos capacitados.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=bezaleel-artesano-del-tabernaculo"
       ]
     },
     {
@@ -1222,7 +1222,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/bildad-suhita-job/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-bildad-suhita-job",
@@ -1231,10 +1231,10 @@
         "definition": "Bildad es uno de los tres amigos de Job que acuden para condolerse de él y consolarlo. Interviene con tres discursos —Job 8, 18 y 25— en los que defiende con fuerza la justicia de Dios y relaciona el destino del malvado con el juicio divino; al final del libro queda incluido entre los amigos reprendidos por Dios y cumple la instrucción dada junto con Elifaz y Zofar.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=bildad-suhita-job"
       ]
     },
     {
@@ -1247,7 +1247,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/booz-belen/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-booz-belen",
@@ -1256,10 +1256,10 @@
         "definition": "Booz fue un hombre destacado y propietario de tierras en Belén, pariente de la familia de Elimelec. En el relato de Rut protege a Rut durante la siega, actúa como pariente-redentor después de que el pariente más cercano renuncia a ese derecho, se casa con Rut y llega a ser padre de Obed, abuelo de Isaí y bisabuelo de David. Rut 4 presenta la transacción ante los ancianos en la puerta de la ciudad y vincula explícitamente a Booz con la línea de David.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=booz-belen"
       ]
     },
     {
@@ -1272,7 +1272,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/caifas-sumo-sacerdote/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-caifas-sumo-sacerdote",
@@ -1281,10 +1281,10 @@
         "definition": "Caifás fue el sumo sacerdote judío durante una parte central del ministerio de Jesús y durante su pasión. Los Evangelios lo sitúan entre los principales dirigentes que deliberaron sobre Jesús; Juan lo presenta proponiendo que convenía que un hombre muriera por el pueblo, y Mateo señala que Jesús fue llevado ante él después de su arresto. Hechos todavía lo menciona entre el círculo sumosacerdotal cuando Pedro y Juan fueron interrogados.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=caifas-sumo-sacerdote"
       ]
     },
     {
@@ -1297,7 +1297,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/cain/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-cain",
@@ -1306,10 +1306,10 @@
         "definition": "Caín fue hijo de Adán y Eva y hermano de Abel. Génesis lo presenta como labrador de la tierra; llevó a Dios una ofrenda del fruto del suelo y, después, mató a Abel en el campo. Como consecuencia recibió juicio, quedó asociado con una vida de fugitivo y errante, recibió de Dios una señal protectora cuya forma no se describe y habitó en la tierra de Nod, al oriente de Edén.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=cain"
       ]
     },
     {
@@ -1322,7 +1322,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/cam-hijo-de-noe/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-cam-hijo-de-noe",
@@ -1331,10 +1331,10 @@
         "definition": "Cam fue uno de los tres hijos de Noé que entraron en el arca y sobrevivieron al diluvio con sus familias. Génesis lo presenta además como padre de Cus, Mizraim, Fut y Canaán, y lo incluye entre los antepasados de los pueblos enumerados en la Tabla de las Naciones.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=cam-hijo-de-noe"
       ]
     },
     {
@@ -1347,7 +1347,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/carcelero-filipos-hechos16/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-carcelero-filipos-hechos16",
@@ -1356,10 +1356,10 @@
         "definition": "Funcionario anónimo encargado de la cárcel de Filipos cuando Pablo y Silas fueron encarcelados. Tras el terremoto nocturno, al comprobar que los presos no habían escapado, escuchó el mensaje de Pablo y Silas, atendió sus heridas y fue bautizado junto con los de su casa. Hechos también lo muestra transmitiendo después la orden de liberación enviada por los magistrados.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=carcelero-filipos-hechos16"
       ]
     },
     {
@@ -1372,7 +1372,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ciego-nacimiento-juan9/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ciego-nacimiento-juan9",
@@ -1381,10 +1381,10 @@
         "definition": "Varón anónimo presentado en Juan 9 como ciego desde su nacimiento. Jesús hizo barro, lo puso sobre sus ojos y le indicó lavarse en el estanque de Siloé; el hombre volvió viendo. Después fue interrogado por vecinos y autoridades religiosas, defendió públicamente lo que Jesús había hecho y, tras ser expulsado, volvió a encontrarse con Jesús y expresó fe en él.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ciego-nacimiento-juan9"
       ]
     },
     {
@@ -1397,7 +1397,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ciro-rey-persia/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ciro-rey-persia",
@@ -1406,10 +1406,10 @@
         "definition": "Ciro II, conocido históricamente como Ciro el Grande, fue el fundador del Imperio aqueménida y el rey persa que conquistó Babilonia en 539 a. C. En la Biblia ocupa un lugar excepcional: 2 Crónicas y Esdras lo presentan autorizando la reconstrucción del templo de Jerusalén y el regreso de quienes quisieran participar, mientras Isaías lo llama pastor de YHWH y su “ungido”, instrumento mediante el cual Dios ejecuta su propósito histórico. Históricamente, Ciro gobernó un imperio expansivo desde mediados del siglo VI a. C. y murió hacia 530 a. C.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ciro-rey-persia"
       ]
     },
     {
@@ -1422,7 +1422,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/cleofas-emaus/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-cleofas-emaus",
@@ -1431,10 +1431,10 @@
         "definition": "Cleofas fue uno de los dos discípulos que viajaban de Jerusalén a Emaús el día de la resurrección de Jesús. Lucas lo nombra explícitamente cuando responde al desconocido que se une a ellos en el camino; más tarde, ambos discípulos reconocen a Jesús al partir el pan y regresan a Jerusalén para contar lo sucedido.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=cleofas-emaus"
       ]
     },
     {
@@ -1447,7 +1447,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/cornelio-centurion-hechos10/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-cornelio-centurion-hechos10",
@@ -1456,10 +1456,10 @@
         "definition": "Cornelio fue un centurión residente en Cesarea, perteneciente a la unidad que Hechos llama la «compañía Italiana». Hechos 10 lo presenta como gentil piadoso y temeroso de Dios, dedicado a la oración y a dar limosnas; tras recibir una visión, mandó llamar a Pedro. Durante la visita de Pedro, el Espíritu Santo descendió sobre Cornelio y quienes lo escuchaban, un episodio decisivo en la incorporación de gentiles a la comunidad cristiana.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=cornelio-centurion-hechos10"
       ]
     },
     {
@@ -1472,7 +1472,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/dalila/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-dalila",
@@ -1481,10 +1481,10 @@
         "definition": "Dalila es la mujer del valle de Sorec a quien Sansón amó. Los gobernantes filisteos le ofrecieron una gran recompensa para descubrir el origen de la fuerza de Sansón; después de insistir repetidamente, Sansón le reveló lo relacionado con su consagración y su cabello, y Dalila coordinó su entrega a los filisteos. El texto bíblico no la llama prostituta ni afirma que fuera filistea.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=dalila"
       ]
     },
     {
@@ -1497,7 +1497,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/daniel-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-daniel-profeta",
@@ -1506,10 +1506,10 @@
         "definition": "Daniel es el personaje central del libro de Daniel. El relato lo presenta como un joven judío llevado a Babilonia, formado para el servicio de la corte y dotado por Dios de sabiduría y capacidad para comprender sueños y visiones. Más adelante aparece como alto funcionario bajo dominio medo-persa, fiel a la oración aun bajo amenaza de muerte, y como receptor de las visiones proféticas de Daniel 7–12. Mateo 24:15 lo denomina explícitamente “el profeta Daniel”.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=daniel-profeta"
       ]
     },
     {
@@ -1522,7 +1522,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/david-rey-israel/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-david-rey-israel",
@@ -1531,10 +1531,10 @@
         "definition": "David, hijo de Isaí de Belén, fue ungido por Samuel mientras Saúl aún reinaba. Tras servir en la corte y el ejército de Saúl, llegó a reinar primero sobre Judá en Hebrón y después sobre todo Israel desde Jerusalén; 2 Samuel lo presenta como fundador de una dinastía real a la que Dios promete continuidad. El relato bíblico también conserva sin idealización sus graves pecados en el episodio de Betsabé y Urías y la reprensión posterior de Natán.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=david-rey-israel"
       ]
     },
     {
@@ -1547,7 +1547,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/debora-profetisa-jueza/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-debora-profetisa-jueza",
@@ -1556,10 +1556,10 @@
         "definition": "Débora fue una profetisa que gobernaba/juzgaba a Israel durante el período narrado en Jueces. La RVR1960 la presenta como “mujer de Lapidot”, sentada bajo la palmera de Débora entre Ramá y Bet-el, donde los israelitas acudían a ella a juicio. Ella transmitió a Barac la orden divina de enfrentar a Sísara, lo acompañó en la campaña y después cantó con él la victoria narrada en Jueces 5.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=debora-profetisa-jueza"
       ]
     },
     {
@@ -1572,7 +1572,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eli-sacerdote-juez/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eli-sacerdote-juez",
@@ -1581,10 +1581,10 @@
         "definition": "Elí fue sacerdote en Silo y juez de Israel durante la etapa final del período de los jueces. Recibió al joven Samuel en el servicio del santuario, reconoció que Jehová lo estaba llamando y le indicó cómo responder. Su historia también queda marcada por la corrupción de sus hijos Ofni y Finees y por el juicio anunciado contra su casa.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eli-sacerdote-juez"
       ]
     },
     {
@@ -1597,7 +1597,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/elias-tisbita/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-elias-tisbita",
@@ -1606,10 +1606,10 @@
         "definition": "Elías fue un profeta de Israel que aparece durante el reinado de Acab. Confrontó el culto a Baal, anunció la sequía, actuó en el monte Carmelo y posteriormente participó en la transición profética que culminó con Eliseo. El relato bíblico lo presenta como «el tisbita» y lo asocia con Galaad, aunque la localización exacta de Tisbe no puede establecerse con seguridad.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=elias-tisbita"
       ]
     },
     {
@@ -1622,7 +1622,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/elifaz-temanita-job/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-elifaz-temanita-job",
@@ -1631,10 +1631,10 @@
         "definition": "Elifaz temanita fue uno de los tres amigos de Job que acudieron a acompañarlo en su sufrimiento. Tras guardar silencio con él durante siete días, fue el primero en hablar y desarrolló una explicación del sufrimiento basada en la retribución moral; al final del libro, Jehová reprende a Elifaz y a sus compañeros por no haber hablado correctamente acerca de Él como Job. Sus discursos principales aparecen en Job 4–5, 15 y 22.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=elifaz-temanita-job"
       ]
     },
     {
@@ -1647,7 +1647,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/elisabet-madre-juan-bautista/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-elisabet-madre-juan-bautista",
@@ -1656,10 +1656,10 @@
         "definition": "Elisabet fue esposa del sacerdote Zacarías y madre de Juan el Bautista. Lucas la presenta como descendiente de Aarón, justa delante de Dios y de edad avanzada; después de años sin hijos concibió a Juan, recibió a María durante su embarazo y reconoció con gozo la significación de la visita.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=elisabet-madre-juan-bautista"
       ]
     },
     {
@@ -1672,7 +1672,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eliseo-hijo-safat/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eliseo-hijo-safat",
@@ -1681,10 +1681,10 @@
         "definition": "Eliseo fue profeta de Israel y sucesor de Elías. Hijo de Safat, fue llamado mientras araba, dejó su actividad agrícola para servir a Elías y, tras la partida de este, fue reconocido por los hijos de los profetas como su sucesor. Su ministerio, narrado principalmente en 2 Reyes, incluye oráculos a reyes, auxilio a comunidades proféticas y diversos milagros vinculados a la provisión, sanidad y restauración.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eliseo-hijo-safat"
       ]
     },
     {
@@ -1697,7 +1697,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eliu-hijo-baraquel-job/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eliu-hijo-baraquel-job",
@@ -1706,10 +1706,10 @@
         "definition": "Eliú es el hijo de Baraquel, identificado como buzita y de la familia de Ram. En Job 32–37 toma la palabra después de Job, Elifaz, Bildad y Zofar; había esperado porque ellos eran mayores que él, pero interviene al considerar insuficientes sus respuestas y al querer defender la justicia de Dios.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eliu-hijo-baraquel-job"
       ]
     },
     {
@@ -1722,7 +1722,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/enoc-descendiente-de-set-hijo-de-jared/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-enoc-descendiente-de-set-hijo-de-jared",
@@ -1731,10 +1731,10 @@
         "definition": "Enoc fue hijo de Jared, padre de Matusalén y miembro de la línea de Set. Génesis destaca que caminó con Dios y que, tras 365 años de vida, desapareció porque Dios se lo llevó; Hebreos interpreta este hecho como un traslado por fe para no ver muerte. Judas lo identifica además como “séptimo desde Adán”.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=enoc-descendiente-de-set-hijo-de-jared"
       ]
     },
     {
@@ -1747,7 +1747,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/epafras-colaborador-procedente-de-colosas/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-epafras-colaborador-procedente-de-colosas",
@@ -1756,10 +1756,10 @@
         "definition": "Epafras fue colaborador de Pablo y ministro de Cristo vinculado a la comunidad de Colosas. Los colosenses habían recibido de él enseñanza sobre el evangelio; Pablo lo presenta como consiervo amado y fiel ministro, y más adelante como uno de ellos, intensamente dedicado a orar por Colosas y preocupado también por los creyentes de Laodicea e Hierápolis. Filemón 23 lo identifica como compañero de prisión de Pablo en Cristo Jesús.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=epafras-colaborador-procedente-de-colosas"
       ]
     },
     {
@@ -1772,7 +1772,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/epafrodito-colaborador-mensajero-filipenses/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-epafrodito-colaborador-mensajero-filipenses",
@@ -1781,10 +1781,10 @@
         "definition": "Epafrodito fue un creyente vinculado a la iglesia de Filipos y colaborador de Pablo. Pablo lo llama hermano, colaborador y compañero de milicia, además de mensajero de los filipenses y servidor de sus necesidades; también indica que Epafrodito llevó a Pablo la ayuda enviada por esa comunidad. Durante esa misión enfermó gravemente y estuvo cerca de morir, pero se recuperó y Pablo decidió enviarlo de regreso, pidiendo que fuera recibido con gozo y honor.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=epafrodito-colaborador-mensajero-filipenses"
       ]
     },
     {
@@ -1797,7 +1797,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/esau/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-esau",
@@ -1806,10 +1806,10 @@
         "definition": "Esaú fue el hijo mayor de Isaac y Rebeca y hermano gemelo de Jacob. Génesis lo presenta como cazador hábil y hombre del campo; vendió su primogenitura a Jacob, perdió la bendición paterna mediante el engaño de Jacob y Rebeca y más tarde se reconcilió con su hermano. Génesis 36 lo identifica también con Edom y como antepasado de los edomitas.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=esau"
       ]
     },
     {
@@ -1822,7 +1822,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/esdras-sacerdote-escriba/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-esdras-sacerdote-escriba",
@@ -1831,10 +1831,10 @@
         "definition": "Esdras fue un sacerdote descendiente de Aarón y un escriba experto en la Ley de Moisés. Subió de Babilonia a Jerusalén durante el reinado de Artajerjes; el texto destaca que dispuso su corazón para estudiar, cumplir y enseñar la Ley, y posteriormente aparece leyendo públicamente el libro de la Ley ante el pueblo.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=esdras-sacerdote-escriba"
       ]
     },
     {
@@ -1847,7 +1847,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/esteban-testigo-martir-hechos/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-esteban-testigo-martir-hechos",
@@ -1856,10 +1856,10 @@
         "definition": "Esteban fue un discípulo de la iglesia de Jerusalén, uno de los Siete escogidos para atender una necesidad comunitaria. Hechos lo presenta como un varón de buen testimonio, lleno de fe, del Espíritu Santo, de gracia y de poder; realizó prodigios y señales, defendió públicamente su testimonio ante el concilio y murió apedreado mientras invocaba a Jesús y pedía perdón por sus agresores.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=esteban-testigo-martir-hechos"
       ]
     },
     {
@@ -1872,7 +1872,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ester-hadasa-reina/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ester-hadasa-reina",
@@ -1881,10 +1881,10 @@
         "definition": "Ester, cuyo nombre hebreo era Hadasa, fue una joven judía huérfana criada por Mardoqueo en Susa. Fue llevada a la casa real, llegó a ser reina en lugar de Vasti y, más adelante, arriesgó su vida al presentarse ante el rey para interceder por su pueblo frente al decreto impulsado por Amán. Ester 2 establece su identidad, su incorporación a la corte y su coronación; Ester 4–8 desarrolla su intervención decisiva.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ester-hadasa-reina"
       ]
     },
     {
@@ -1897,7 +1897,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eunuco-etiope-hechos8/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eunuco-etiope-hechos8",
@@ -1906,10 +1906,10 @@
         "definition": "Hombre etíope —en el sentido antiguo del territorio al sur de Egipto— descrito en Hechos como eunuco y alto funcionario de Candace, encargado de todo su tesoro. Había viajado a Jerusalén para adorar y, mientras regresaba leyendo al profeta Isaías, Felipe le explicó el pasaje acerca de Jesús; después pidió ser bautizado y siguió su camino con gozo.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eunuco-etiope-hechos8"
       ]
     },
     {
@@ -1922,7 +1922,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eutico-hechos20/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eutico-hechos20",
@@ -1931,10 +1931,10 @@
         "definition": "Eutico fue un joven de Troas presente en una reunión de los discípulos durante la visita de Pablo. Mientras Pablo hablaba hasta avanzada la noche, Eutico se quedó profundamente dormido sentado en una ventana, cayó desde el tercer piso y fue recogido muerto; después de que Pablo descendiera y lo abrazara, el joven fue llevado vivo, causando gran consuelo a la comunidad. Hechos no aporta más datos biográficos sobre él.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eutico-hechos20"
       ]
     },
     {
@@ -1947,7 +1947,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/eva/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-eva",
@@ -1956,10 +1956,10 @@
         "definition": "Eva es la primera mujer presentada en Génesis. Dios la forma a partir del hombre como su correspondiente compañera; después de la transgresión, Adán la llama Eva porque sería “madre de todos los vivientes”. Génesis también la presenta como madre de Caín, Abel y Set.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=eva"
       ]
     },
     {
@@ -1972,7 +1972,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ezequias-rey-juda/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ezequias-rey-juda",
@@ -1981,10 +1981,10 @@
         "definition": "Ezequías, hijo de Acaz, fue rey de Judá y gobernó veintinueve años en Jerusalén. El relato bíblico lo destaca por su confianza en Jehová, sus reformas religiosas, la restauración del culto del templo, su respuesta a la invasión asiria de Senaquerib y su enfermedad seguida de recuperación. Su reinado también quedó asociado a importantes obras defensivas e hidráulicas en Jerusalén.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ezequias-rey-juda"
       ]
     },
     {
@@ -1997,7 +1997,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/ezequiel-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-ezequiel-profeta",
@@ -2006,10 +2006,10 @@
         "definition": "Ezequiel fue sacerdote y profeta, hijo de Buzi, que recibió su llamado profético mientras vivía entre los desterrados de Judá junto al río Quebar, en tierra de los caldeos. Su ministerio acompañó a la comunidad exiliada antes y después de la caída de Jerusalén, mediante visiones, mensajes proféticos y actos simbólicos que anunciaban juicio, responsabilidad y restauración.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=ezequiel-profeta"
       ]
     },
     {
@@ -2022,7 +2022,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/faraon-del-exodo-exodo-5-14/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-faraon-del-exodo-exodo-5-14",
@@ -2031,10 +2031,10 @@
         "definition": "Rey de Egipto que, en Éxodo 5–14, se niega repetidamente a dejar salir a Israel, aumenta la carga de trabajo, enfrenta las señales y plagas anunciadas por Moisés y Aarón, finalmente permite la salida y después moviliza sus carros y ejército para perseguir al pueblo. El texto bíblico no proporciona su nombre personal, por lo que Bibli no lo identifica con Ramsés II, Amenhotep II ni con ningún otro faraón concreto.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=faraon-del-exodo-exodo-5-14"
       ]
     },
     {
@@ -2047,7 +2047,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/faraon-necao/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-faraon-necao",
@@ -2056,10 +2056,10 @@
         "definition": "Necao II fue faraón de Egipto de la dinastía XXVI o saíta, contemporáneo del rey Josías de Judá. En el relato bíblico marchó hacia el Éufrates/Carquemis, se enfrentó con Josías en Meguido, después depuso a Joacaz, puso a Eliaquim —renombrado Joacim— como rey de Judá y llevó a Joacaz a Egipto; Jeremías también sitúa al ejército de Necao en Carquemis frente a Nabucodonosor.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=faraon-necao"
       ]
     },
     {
@@ -2072,7 +2072,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/febe-romanos16/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-febe-romanos16",
@@ -2081,10 +2081,10 @@
         "definition": "Febe es una creyente de la comunidad cristiana de Cencrea a quien Pablo recomienda a los cristianos de Roma. Romanos 16:1–2 la llama ‘hermana’, la describe con el término griego διάκονος (diákonos) de la iglesia en Cencrea y afirma que fue προστάτις (prostátis) de muchos, incluido Pablo. El alcance técnico exacto de diákonos —servidora/ministra o un oficio eclesial ya definido— es discutido, por lo que Bibli conserva esa cautela.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=febe-romanos16"
       ]
     },
     {
@@ -2097,7 +2097,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/felipe-apostol/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-felipe-apostol",
@@ -2106,13 +2106,13 @@
         "definition": "Felipe fue uno de los doce apóstoles escogidos por Jesús. El Evangelio de Juan lo identifica como natural de Betsaida, la misma ciudad de Andrés y Pedro; también lo presenta llamando a Natanael, dialogando con Jesús antes de la alimentación de la multitud, sirviendo de intermediario cuando unos griegos quisieron ver a Jesús y pidiendo que les mostrara al Padre. Los listados apostólicos y Hechos 1 lo distinguen claramente como miembro de los Doce.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [
         "Felipe",
         "Philip"
       ],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario",
+        "Ya existe glossary_terms.slug=felipe-apostol",
         "Alias compartido; conservar nombre canónico calificado: Felipe, Philip"
       ]
     },
@@ -2126,7 +2126,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/felipe-evangelista-hechos/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-felipe-evangelista-hechos",
@@ -2135,13 +2135,13 @@
         "definition": "Felipe fue uno de los siete hombres escogidos por la comunidad de Jerusalén para atender una necesidad vinculada con la distribución diaria. Más adelante proclamó a Cristo en Samaria, anunció el evangelio al funcionario etíope y, años después, Hechos lo identifica explícitamente como “Felipe el evangelista, que era uno de los siete” y lo sitúa en Cesarea. Hechos también menciona que tenía cuatro hijas que profetizaban.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [
         "Felipe",
         "Philip"
       ],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario",
+        "Ya existe glossary_terms.slug=felipe-evangelista-hechos",
         "Alias compartido; conservar nombre canónico calificado: Felipe, Philip"
       ]
     },
@@ -2155,7 +2155,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/gedalias-hijo-ahicam-gobernador/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-gedalias-hijo-ahicam-gobernador",
@@ -2164,10 +2164,10 @@
         "definition": "Gedalías, hijo de Ahicam y nieto de Safán, fue puesto por Nabucodonosor sobre la población que permaneció en Judá después de la caída de Jerusalén. Establecido en Mizpa, exhortó a los sobrevivientes a permanecer en la tierra y servir al rey de Babilonia; posteriormente fue asesinado por Ismael hijo de Netanías.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=gedalias-hijo-ahicam-gobernador"
       ]
     },
     {
@@ -2180,7 +2180,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/giezi-criado-eliseo/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-giezi-criado-eliseo",
@@ -2189,10 +2189,10 @@
         "definition": "Giezi fue criado y asistente del profeta Eliseo. Participa en el relato de la sunamita, recibe encargos directos de Eliseo y, después de la curación de Naamán, engaña al sirio para obtener plata y vestidos; Eliseo descubre el engaño y Giezi queda afectado por la tsaraat de Naamán. También aparece conversando con el rey acerca de las obras de Eliseo.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=giezi-criado-eliseo"
       ]
     },
     {
@@ -2205,7 +2205,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/habacuc-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-habacuc-profeta",
@@ -2214,10 +2214,10 @@
         "definition": "Habacuc es el profeta que da nombre al libro de Habacuc. El texto lo identifica explícitamente como profeta y presenta su mensaje como un diálogo sobre la violencia, la injusticia, el juicio mediante los caldeos y la confianza perseverante en Dios; fuera de su propio libro, la Biblia canónica no aporta datos biográficos seguros sobre él.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=habacuc-profeta"
       ]
     },
     {
@@ -2230,7 +2230,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hageo-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hageo-profeta",
@@ -2239,10 +2239,10 @@
         "definition": "Hageo fue un profeta de Juda en el periodo posterior al exilio. En el segundo ano del rey persa Dario I transmitio mensajes dirigidos, entre otros, a Zorobabel y al sumo sacerdote Josue, exhortando al pueblo a reanudar la reconstruccion del templo; Esdras lo presenta junto con Zacarias alentando esa obra. Su actividad profetica registrada se situa en 520 a. C.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hageo-profeta"
       ]
     },
     {
@@ -2255,7 +2255,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hazael-rey-siria/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hazael-rey-siria",
@@ -2264,10 +2264,10 @@
         "definition": "Hazael fue un funcionario de Ben-adad que llegó a ser rey de Siria/Aram-Damasco. Eliseo anunció que gobernaría Siria; después de la muerte de Ben-adad, Hazael ocupó el trono y se convirtió en un adversario militar de Israel, extendiendo su dominio sobre territorios al este del Jordán y presionando también a Judá.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hazael-rey-siria"
       ]
     },
     {
@@ -2280,7 +2280,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/herodes-agripa-i-hechos12/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-herodes-agripa-i-hechos12",
@@ -2289,10 +2289,10 @@
         "definition": "Herodes Agripa I fue el rey herodiano que aparece en Hechos 12 persiguiendo a miembros de la iglesia: mandó matar a Jacobo, hermano de Juan, encarceló a Pedro y, más tarde, murió en Cesarea después de aceptar una aclamación que lo trataba como divino. El «rey Herodes» de este capítulo se identifica históricamente con Agripa I.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=herodes-agripa-i-hechos12"
       ]
     },
     {
@@ -2305,7 +2305,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/herodes-agripa-ii-hechos25-26/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-herodes-agripa-ii-hechos25-26",
@@ -2314,10 +2314,10 @@
         "definition": "Herodes Agripa II fue un rey cliente de Roma de la dinastía herodiana, hijo de Herodes Agripa I. En Hechos 25–26 visita Cesarea junto con Berenice, escucha la defensa de Pablo ante Porcio Festo y, después de la audiencia, concluye con los demás que Pablo no había hecho nada digno de muerte ni de prisión. El relato también presupone que Agripa conocía bien las costumbres y controversias judías.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=herodes-agripa-ii-hechos25-26"
       ]
     },
     {
@@ -2330,7 +2330,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/herodes-antipas-tetrarca/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-herodes-antipas-tetrarca",
@@ -2339,10 +2339,10 @@
         "definition": "Herodes Antipas fue el gobernante herodiano que ejerció como tetrarca de Galilea durante el ministerio de Juan el Bautista y de Jesús. Los Evangelios lo vinculan con el encarcelamiento y la ejecución de Juan, y Lucas lo presenta interrogando y escarneciendo a Jesús antes de devolverlo a Pilato. Mateo y Lucas lo identifican expresamente como tetrarca.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=herodes-antipas-tetrarca"
       ]
     },
     {
@@ -2355,7 +2355,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/herodes-el-grande/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-herodes-el-grande",
@@ -2364,10 +2364,10 @@
         "definition": "Herodes el Grande fue el rey de Judea bajo tutela romana durante el período en que sitúan los Evangelios el nacimiento de Jesús. En Mateo 2 recibe a los magos en Jerusalén, se inquieta ante el anuncio del nacimiento del «rey de los judíos», intenta localizar al niño y después ordena la muerte de los niños de Belén y sus alrededores; Lucas 1:5 también sitúa el nacimiento de Juan el Bautista «en los días de Herodes, rey de Judea».",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=herodes-el-grande"
       ]
     },
     {
@@ -2380,7 +2380,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/herodias/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-herodias",
@@ -2389,10 +2389,10 @@
         "definition": "Herodías es la mujer vinculada en los Evangelios con Herodes Antipas y con el conflicto que llevó al encarcelamiento y muerte de Juan el Bautista. Mateo y Marcos la presentan como esposa de Felipe, hermano de Herodes, y luego vinculada maritalmente con Herodes; Marcos añade que Herodías quería matar a Juan, mientras Mateo muestra que instruyó a su hija para pedir la cabeza de Juan después del baile en el cumpleaños de Herodes. Lucas también señala que Juan reprendía a Herodes por causa de Herodías.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=herodias"
       ]
     },
     {
@@ -2405,7 +2405,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hilcias-sumo-sacerdote-josias/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hilcias-sumo-sacerdote-josias",
@@ -2414,10 +2414,10 @@
         "definition": "Hilcías fue el sumo sacerdote de Judá durante el reinado de Josías. Mientras se reparaba la casa de Jehová, halló el libro de la ley, lo entregó al escriba Safán y después formó parte de la delegación enviada por el rey para consultar a Jehová por medio de la profetisa Hulda; también aparece participando en la reforma del templo y en la celebración de la Pascua.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hilcias-sumo-sacerdote-josias"
       ]
     },
     {
@@ -2430,7 +2430,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hiram-artesano-bronce-tiro/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hiram-artesano-bronce-tiro",
@@ -2439,10 +2439,10 @@
         "definition": "Hiram fue un maestro artesano procedente de Tiro a quien Salomón incorporó a los trabajos del templo. 1 Reyes lo presenta especialmente como experto en bronce, dotado de sabiduría, inteligencia y conocimiento para ese oficio; realizó, entre otras obras, los grandes elementos y utensilios de bronce asociados al templo, incluidos pilares, capiteles, basas, fuentes, el “Mar” y diversos recipientes.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hiram-artesano-bronce-tiro"
       ]
     },
     {
@@ -2455,7 +2455,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hiram-rey-tiro-david/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hiram-rey-tiro-david",
@@ -2464,10 +2464,10 @@
         "definition": "Hiram fue rey de Tiro y aliado de David y Salomón. Envió a David madera de cedro, carpinteros y canteros para su casa; después mantuvo relaciones diplomáticas y comerciales con Salomón, suministrando madera del Líbano, trabajadores especializados y marineros para proyectos vinculados al Templo y a la navegación. Debe distinguirse expresamente de Hiram/Huram-abi, el artesano tirio.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hiram-rey-tiro-david"
       ]
     },
     {
@@ -2480,7 +2480,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/hulda-profetisa/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-hulda-profetisa",
@@ -2489,10 +2489,10 @@
         "definition": "Hulda fue una profetisa de Judá en tiempos del rey Josías. Después del hallazgo del libro de la ley en el templo, el sacerdote Hilcías y otros enviados del rey acudieron a consultarla; Hulda transmitió un oráculo de juicio sobre Jerusalén y Judá, junto con una palabra específica para Josías debido a su humillación ante Dios.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=hulda-profetisa"
       ]
     },
     {
@@ -2505,7 +2505,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/husai-arquita/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-husai-arquita",
@@ -2514,10 +2514,10 @@
         "definition": "Husai fue un aliado y confidente de David. Durante la rebelión de Absalón, David lo envió de regreso a Jerusalén para frustrar el consejo de Ahitofel; Husai se presentó ante Absalón, consiguió que prevaleciera su propio consejo y luego transmitió información a David mediante los sacerdotes Sadoc y Abiatar. 1 Crónicas lo recuerda como “amigo” del rey junto al consejero Ahitofel.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=husai-arquita"
       ]
     },
     {
@@ -2530,7 +2530,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/is-boset-es-baal-hijo-saul/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-is-boset-es-baal-hijo-saul",
@@ -2539,10 +2539,10 @@
         "definition": "Hijo de Saúl a quien Abner estableció como rey sobre Israel en Mahanaim después de la muerte de Saúl, mientras David reinaba sobre Judá. El texto indica que tenía cuarenta años al comenzar a reinar y que su reinado duró dos años; tras la ruptura con Abner quedó políticamente debilitado y finalmente fue asesinado por Recab y Baana.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=is-boset-es-baal-hijo-saul"
       ]
     },
     {
@@ -2555,7 +2555,7 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/isaac/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-isaac",
@@ -2564,10 +2564,10 @@
         "definition": "Hijo de Abraham y Sara, nacido conforme a la promesa divina. Fue esposo de Rebeca y padre de Esaú y Jacob; en Génesis, las promesas del pacto dadas a Abraham son reafirmadas a Isaac.",
         "status": "Publicado básico"
       },
-      "action": "ready_to_create",
+      "action": "existing",
       "sharedAliases": [],
       "reasons": [
-        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+        "Ya existe glossary_terms.slug=isaac"
       ]
     },
     {
@@ -2580,13 +2580,113 @@
       "routing": {
         "category": "personajes",
         "path": "/glosario/personajes/isaias-profeta/",
-        "source": "group-default"
+        "source": "existing-route"
       },
       "proposed": {
         "id": "glo-isaias-profeta",
         "slug": "isaias-profeta",
         "term": "Isaías (profeta)",
         "definition": "Profeta de Judá e hijo de Amoz cuya actividad se sitúa en Jerusalén durante los reinados de Uzías, Jotam, Acaz y Ezequías. Sus oráculos confrontan el pecado y la injusticia de Judá, anuncian juicio y esperanza, y lo muestran interviniendo también en momentos políticos decisivos, especialmente ante la amenaza asiria.",
+        "status": "Publicado básico"
+      },
+      "action": "existing",
+      "sharedAliases": [],
+      "reasons": [
+        "Ya existe glossary_terms.slug=isaias-profeta"
+      ]
+    },
+    {
+      "sourceSlug": "ismael-hijo-abraham",
+      "entityKey": "personajes-ismael-hijo-de-abraham",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/ismael-hijo-abraham/entry.yaml",
+      "canonicalName": "Ismael (hijo de Abraham)",
+      "sense": "primer hijo de Abraham, nacido de Agar la egipcia; arquero que habitó en el desierto de Parán",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/ismael-hijo-abraham/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-ismael-hijo-abraham",
+        "slug": "ismael-hijo-abraham",
+        "term": "Ismael (hijo de Abraham)",
+        "definition": "Primer hijo de Abraham, nacido de Agar la egipcia. Génesis relata que Dios oyó y sostuvo al muchacho, prometió hacer de él una gran nación, y que Ismael creció en el desierto, habitó en Parán y llegó a ser tirador de arco; más adelante se enumeran sus doce hijos y se indica que murió a los 137 años.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jacob-israel-patriarca",
+      "entityKey": "personajes-jacob-israel-patriarca",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacob-israel-patriarca/entry.yaml",
+      "canonicalName": "Jacob (Israel, patriarca)",
+      "sense": "hijo de Isaac y Rebeca; hermano gemelo de Esaú; patriarca llamado Israel",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jacob-israel-patriarca/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jacob-israel-patriarca",
+        "slug": "jacob-israel-patriarca",
+        "term": "Jacob (Israel, patriarca)",
+        "definition": "Hijo de Isaac y Rebeca, hermano gemelo de Esaú y figura patriarcal central de Génesis. Después de su encuentro nocturno junto al Jaboc recibió el nombre Israel; sus hijos forman la base genealógica de las tribus de Israel, y Jacob descendió finalmente a Egipto, donde murió a los 147 años.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jacobo-hermano-senor-jerusalen",
+      "entityKey": "personajes-jacobo-hermano-senor-jerusalen",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacobo-hermano-senor-jerusalen/entry.yaml",
+      "canonicalName": "Jacobo (hermano del Señor; líder en Jerusalén)",
+      "sense": "hermano de Jesús y líder de la comunidad creyente de Jerusalén",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jacobo-hermano-senor-jerusalen/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jacobo-hermano-senor-jerusalen",
+        "slug": "jacobo-hermano-senor-jerusalen",
+        "term": "Jacobo (hermano del Señor; líder en Jerusalén)",
+        "definition": "Jacobo es presentado en el Nuevo Testamento como uno de los hermanos de Jesús y, posteriormente, como una figura principal de la comunidad creyente de Jerusalén. Pablo lo llama “el hermano del Señor” y lo incluye entre las figuras consideradas “columnas”; Hechos lo muestra ocupando un papel de liderazgo en la deliberación de Jerusalén y recibiendo a Pablo junto con los ancianos.",
+        "status": "Publicado básico"
+      },
+      "action": "ready_to_create",
+      "sharedAliases": [],
+      "reasons": [
+        "Paquete approved, identidad calificada y sin colisiones en Glosario"
+      ]
+    },
+    {
+      "sourceSlug": "jacobo-hijo-alfeo",
+      "entityKey": "personajes-jacobo-hijo-alfeo",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacobo-hijo-alfeo/entry.yaml",
+      "canonicalName": "Jacobo (hijo de Alfeo; apóstol)",
+      "sense": "uno de los Doce, identificado como hijo de Alfeo",
+      "routing": {
+        "category": "personajes",
+        "path": "/glosario/personajes/jacobo-hijo-alfeo/",
+        "source": "group-default"
+      },
+      "proposed": {
+        "id": "glo-jacobo-hijo-alfeo",
+        "slug": "jacobo-hijo-alfeo",
+        "term": "Jacobo (hijo de Alfeo; apóstol)",
+        "definition": "Uno de los doce apóstoles escogidos por Jesús. El Nuevo Testamento lo identifica de manera estable como Jacobo, hijo de Alfeo en las listas apostólicas de Mateo, Marcos y Lucas, y vuelve a mencionarlo entre los discípulos reunidos en Jerusalén después de la ascensión. No se conservan en el texto bíblico episodios individuales, oficio, edad o rasgos físicos propios de él.",
         "status": "Publicado básico"
       },
       "action": "ready_to_create",

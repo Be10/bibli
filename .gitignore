@@ -42,3 +42,6 @@ data/import/kjv-source/
 test-results/
 playwright-report/
 blob-report/
+
+# BibliImg generated R2 derivatives
+/public/media/editorial/

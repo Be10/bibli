@@ -7,15 +7,15 @@ test('Approved BibliImg package enriches the Abraham glossary entry without repl
 
   const figure = page.locator('[data-bibli-img-entry="personajes-abraham"]');
   await expect(figure).toBeVisible();
-  await expect(figure).toHaveAttribute('data-bibli-img-version', '1');
+  await expect(figure).toHaveAttribute('data-bibli-img-version', '2');
   await expect(figure).toHaveAttribute('data-bibli-img-status', 'approved');
   await expect(figure).toHaveAttribute('data-bibli-img-certainty', 'plausible_reconstruction');
 
   const image = figure.locator('img');
   const mediaBase = process.env.PUBLIC_BIBLI_MEDIA_BASE_URL?.replace(/\\\/$/, '');
   const expectedImageSrc = mediaBase
-    ? `${mediaBase}/editorial/personajes/abraham/v001/abraham--optimized.webp`
-    : `${base}/media/editorial/personajes/abraham/v001/abraham--optimized.webp`;
+    ? `${mediaBase}/editorial/personajes/abraham/v002/abraham--optimized.webp`
+    : `${base}/media/editorial/personajes/abraham/v002/abraham--optimized.webp`;
 
   await expect(image).toHaveAttribute('src', expectedImageSrc);
   await expect(image).toHaveAttribute('srcset', /abraham--optimized\.webp 512w, .*abraham--high\.webp 960w/);
@@ -41,8 +41,8 @@ test('Approved BibliImg package enriches the Abraham glossary entry without repl
     viewer.locator('[data-bibli-img-dialog-image]');
 
   const expectedHighSrc = mediaBase
-    ? `${mediaBase}/editorial/personajes/abraham/v001/abraham--high.webp`
-    : `${base}/media/editorial/personajes/abraham/v001/abraham--high.webp`;
+    ? `${mediaBase}/editorial/personajes/abraham/v002/abraham--high.webp`
+    : `${base}/media/editorial/personajes/abraham/v002/abraham--high.webp`;
 
   await expect(viewerTrigger).toHaveAttribute(
     'aria-label',

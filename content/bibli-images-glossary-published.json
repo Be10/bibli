@@ -1434,6 +1434,62 @@
       "term": "Isaías (profeta)",
       "definition": "Profeta de Judá e hijo de Amoz cuya actividad se sitúa en Jerusalén durante los reinados de Uzías, Jotam, Acaz y Ezequías. Sus oráculos confrontan el pecado y la injusticia de Judá, anuncian juicio y esperanza, y lo muestran interviniendo también en momentos políticos decisivos, especialmente ante la amenaza asiria.",
       "status": "Publicado básico"
+    },
+    "ismael-hijo-abraham": {
+      "sourceSlug": "ismael-hijo-abraham",
+      "entityKey": "personajes-ismael-hijo-de-abraham",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/ismael-hijo-abraham/entry.yaml",
+      "canonicalName": "Ismael (hijo de Abraham)",
+      "sense": "primer hijo de Abraham, nacido de Agar la egipcia; arquero que habitó en el desierto de Parán",
+      "sharedAliases": [],
+      "id": "glo-ismael-hijo-abraham",
+      "slug": "ismael-hijo-abraham",
+      "term": "Ismael (hijo de Abraham)",
+      "definition": "Primer hijo de Abraham, nacido de Agar la egipcia. Génesis relata que Dios oyó y sostuvo al muchacho, prometió hacer de él una gran nación, y que Ismael creció en el desierto, habitó en Parán y llegó a ser tirador de arco; más adelante se enumeran sus doce hijos y se indica que murió a los 137 años.",
+      "status": "Publicado básico"
+    },
+    "jacob-israel-patriarca": {
+      "sourceSlug": "jacob-israel-patriarca",
+      "entityKey": "personajes-jacob-israel-patriarca",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacob-israel-patriarca/entry.yaml",
+      "canonicalName": "Jacob (Israel, patriarca)",
+      "sense": "hijo de Isaac y Rebeca; hermano gemelo de Esaú; patriarca llamado Israel",
+      "sharedAliases": [],
+      "id": "glo-jacob-israel-patriarca",
+      "slug": "jacob-israel-patriarca",
+      "term": "Jacob (Israel, patriarca)",
+      "definition": "Hijo de Isaac y Rebeca, hermano gemelo de Esaú y figura patriarcal central de Génesis. Después de su encuentro nocturno junto al Jaboc recibió el nombre Israel; sus hijos forman la base genealógica de las tribus de Israel, y Jacob descendió finalmente a Egipto, donde murió a los 147 años.",
+      "status": "Publicado básico"
+    },
+    "jacobo-hermano-senor-jerusalen": {
+      "sourceSlug": "jacobo-hermano-senor-jerusalen",
+      "entityKey": "personajes-jacobo-hermano-senor-jerusalen",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacobo-hermano-senor-jerusalen/entry.yaml",
+      "canonicalName": "Jacobo (hermano del Señor; líder en Jerusalén)",
+      "sense": "hermano de Jesús y líder de la comunidad creyente de Jerusalén",
+      "sharedAliases": [],
+      "id": "glo-jacobo-hermano-senor-jerusalen",
+      "slug": "jacobo-hermano-senor-jerusalen",
+      "term": "Jacobo (hermano del Señor; líder en Jerusalén)",
+      "definition": "Jacobo es presentado en el Nuevo Testamento como uno de los hermanos de Jesús y, posteriormente, como una figura principal de la comunidad creyente de Jerusalén. Pablo lo llama “el hermano del Señor” y lo incluye entre las figuras consideradas “columnas”; Hechos lo muestra ocupando un papel de liderazgo en la deliberación de Jerusalén y recibiendo a Pablo junto con los ancianos.",
+      "status": "Publicado básico"
+    },
+    "jacobo-hijo-alfeo": {
+      "sourceSlug": "jacobo-hijo-alfeo",
+      "entityKey": "personajes-jacobo-hijo-alfeo",
+      "group": "personajes",
+      "sourcePath": "entries/01-personajes/jacobo-hijo-alfeo/entry.yaml",
+      "canonicalName": "Jacobo (hijo de Alfeo; apóstol)",
+      "sense": "uno de los Doce, identificado como hijo de Alfeo",
+      "sharedAliases": [],
+      "id": "glo-jacobo-hijo-alfeo",
+      "slug": "jacobo-hijo-alfeo",
+      "term": "Jacobo (hijo de Alfeo; apóstol)",
+      "definition": "Uno de los doce apóstoles escogidos por Jesús. El Nuevo Testamento lo identifica de manera estable como Jacobo, hijo de Alfeo en las listas apostólicas de Mateo, Marcos y Lucas, y vuelve a mencionarlo entre los discípulos reunidos en Jerusalén después de la ascensión. No se conservan en el texto bíblico episodios individuales, oficio, edad o rasgos físicos propios de él.",
+      "status": "Publicado básico"
     }
   }
 }

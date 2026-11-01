@@ -463,6 +463,15 @@ for (const subject of subjects) {
   const derivatives = await ensureDerivatives({ doc, subject, masterPath, existingEntry });
   if (derivatives.state === "needs-sync") {
     stats.needsSync += 1;
+
+    // En modo --check los derivados locales pueden no existir
+    // porque el corpus de producción vive en R2. Mantener la
+    // entrada integrada previa evita interpretarla como eliminación.
+    if (existingEntry) {
+      desiredEntries[glossarySlug] =
+        existingEntry;
+    }
+
     continue;
   }
   stats[derivatives.state] += 1;
