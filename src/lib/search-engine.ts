@@ -521,6 +521,17 @@ function getEntityTitleBoost(type: string) {
   return ENTITY_TITLE_BOOST[type] ?? 0;
 }
 
+function getExactTitleBoost(type: string) {
+  // When a canonical topic page and a glossary entry share the same title,
+  // prefer the richer topic surface without changing the broader ranking
+  // used by prefix, summary, or full-text matches.
+  if (type === "Tema") {
+    return 120;
+  }
+
+  return getEntityTitleBoost(type);
+}
+
 function getSearchWords(query: string) {
   return query.split(/\s+/).filter(Boolean);
 }
@@ -734,21 +745,23 @@ export function scoreSearchItem(item: SearchIndexItem, rawQuery: string) {
   let score = 0;
 
   /*
-    Prioridad máxima para frases exactas en versículos.
-    Ejemplo:
-    “en el principio” debe mostrar primero:
-    - Génesis 1:1
-    - Juan 1:1
-    antes que versículos que solo contienen “principio”.
+    Una coincidencia exacta de título expresa una intención nominal fuerte.
+    Debe superar una frase bíblica coincidente, sin desplazar referencias
+    directas, que ya salen antes con una puntuación de 17000.
+
+    Ejemplos:
+    - “Espíritu Santo” -> Tema “Espíritu Santo”
+    - “Reino de Dios” -> Tema “Reino de Dios”
+    - “en el principio” -> Génesis 1:1, porque no existe un título exacto
   */
-  if (
+  if (title === query) {
+    score = 15000 + getExactTitleBoost(item.type);
+  } else if (
     item.type === "Versículo" &&
     phraseSearch &&
     (hasExactPhrase(summary, query) || hasExactPhrase(searchText, query))
   ) {
     score = 13000;
-  } else if (title === query) {
-    score = 10000 + getEntityTitleBoost(item.type);
   } else if (title.startsWith(query)) {
     score = 8500 + getEntityTitleBoost(item.type);
   } else if (title.includes(query)) {
