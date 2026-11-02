@@ -901,7 +901,7 @@ const languageSwitchLabel =
     SEARCH_FILTER_ORDER,
     decodeSearchIndexPayload,
     getAvailableSearchFilters,
-    getDisplaySearchResults,
+    getSearchPreviewResults,
     getSearchCounts,
     getSearchResults,
     normalizeSearchText,
@@ -1598,10 +1598,11 @@ const languageSwitchLabel =
           button.setAttribute("aria-pressed", String(isActive));
         });
 
-      const filteredResults = getDisplaySearchResults(
+      const previewLimit = activeSearchType === ALL_SEARCH_TYPE ? 12 : 24;
+      const filteredResults = getSearchPreviewResults(
         results,
         activeSearchType,
-        80
+        previewLimit
       );
 
       searchResults.innerHTML = filteredResults.map(renderResultCard).join("");

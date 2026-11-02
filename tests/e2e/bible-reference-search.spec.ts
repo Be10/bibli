@@ -105,3 +105,38 @@ test("Global search navigates direct references and invalid references fall back
 
   await expect(advancedInput).toHaveValue("Juan 999:999");
 });
+
+
+test("Global search preview stays concise and diverse", async ({ page }) => {
+  await page.goto(`${base}/`);
+
+  const searchResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes("/buscar/datos.json") && response.ok()
+  );
+
+  await page
+    .locator('[data-context-search], [data-dock-action="search"]')
+    .first()
+    .click();
+
+  const input = page.locator("[data-global-search-input]");
+  await input.fill("jesus");
+  await searchResponse;
+
+  const results = page.locator("a.global-search-result");
+
+  await expect
+    .poll(async () => results.count(), { timeout: 15_000 })
+    .toBeGreaterThan(0);
+
+  const resultCount = await results.count();
+  expect(resultCount).toBeLessThanOrEqual(12);
+
+  const typeLabels = await results.locator("span").allTextContents();
+  expect(new Set(typeLabels).size).toBeGreaterThan(1);
+
+  const allResults = page.locator("[data-global-search-all]");
+  await expect(allResults).toBeVisible();
+  await expect(allResults).toHaveAttribute("href", /[?&]q=jesus(?:&|$)/);
+});

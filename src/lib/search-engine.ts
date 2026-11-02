@@ -849,6 +849,48 @@ export function getFilteredSearchResults(
   return results.filter((item) => item.type === activeType);
 }
 
+export function getSearchPreviewResults(
+  results: SearchResultItem[],
+  activeType: string,
+  limit = 12
+) {
+  const filteredResults = getFilteredSearchResults(results, activeType);
+
+  if (activeType !== "Todos" || filteredResults.length <= limit) {
+    return filteredResults.slice(0, limit);
+  }
+
+  const selected: SearchResultItem[] = [];
+  const selectedUrls = new Set<string>();
+  const typeCounts = new Map<string, number>();
+
+  for (const item of filteredResults) {
+    const typeLimit = item.type === "Versículo" ? 4 : 2;
+    const typeCount = typeCounts.get(item.type) ?? 0;
+
+    if (typeCount >= typeLimit) continue;
+
+    selected.push(item);
+    selectedUrls.add(item.url);
+    typeCounts.set(item.type, typeCount + 1);
+
+    if (selected.length >= limit) break;
+  }
+
+  if (selected.length < limit) {
+    for (const item of filteredResults) {
+      if (selectedUrls.has(item.url)) continue;
+
+      selected.push(item);
+      selectedUrls.add(item.url);
+
+      if (selected.length >= limit) break;
+    }
+  }
+
+  return selected;
+}
+
 export function getDisplaySearchResults(
   results: SearchResultItem[],
   activeType: string,
