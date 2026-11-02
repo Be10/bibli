@@ -50,3 +50,22 @@ test("Exact Bible phrases keep verse priority when no exact entity title exists"
     "Versículo"
   );
 });
+
+test("Natural punctuation does not change search intent", async ({ page }) => {
+  const scenarios = [
+    { query: "“Espíritu Santo”", title: "Espíritu Santo", type: "Tema" },
+    { query: "Reino de Dios?", title: "Reino de Dios", type: "Tema" },
+    { query: "en el principio,", title: "Génesis 1:1", type: "Versículo" },
+    { query: "Juan 3:16.", title: "Juan 3:16", type: "Versículo" },
+  ];
+
+  for (const scenario of scenarios) {
+    const results = await runSpanishSearch(page, scenario.query);
+    const first = results.first();
+
+    await expect(first.locator("h3")).toHaveText(scenario.title);
+    await expect(first.locator(".search-result-type")).toHaveText(
+      scenario.type
+    );
+  }
+});

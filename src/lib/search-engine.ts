@@ -484,6 +484,10 @@ export function normalizeSearchText(value: unknown) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
+    // Ignore natural prose punctuation while preserving Bible-reference syntax
+    // such as Juan 3:16 and Genesis 1:1-3 / 1:1–3.
+    .replace(/["“”'‘’¿?¡!.,;()[\]{}]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
