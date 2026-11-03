@@ -75,9 +75,12 @@ export function decodeSearchIndexPayload(payload: unknown): SearchIndexItem[] {
 }
 
 type BibleReferenceQuery = {
+  rawBookName: string;
   bookName: string;
+  bookOrder: number | null;
   chapterNumber: number;
   verseNumber: number | null;
+  endVerseNumber: number | null;
 };
 
 export const SEARCH_FILTER_ORDER = [
@@ -392,6 +395,80 @@ const BIBLE_BOOK_ALIASES: Record<string, string> = {
   apocalipsis: "apocalipsis",
 };
 
+const BIBLE_CANONICAL_BOOKS = [
+  "genesis",
+  "exodo",
+  "levitico",
+  "numeros",
+  "deuteronomio",
+  "josue",
+  "jueces",
+  "rut",
+  "1 samuel",
+  "2 samuel",
+  "1 reyes",
+  "2 reyes",
+  "1 cronicas",
+  "2 cronicas",
+  "esdras",
+  "nehemias",
+  "ester",
+  "job",
+  "salmos",
+  "proverbios",
+  "eclesiastes",
+  "cantares",
+  "isaias",
+  "jeremias",
+  "lamentaciones",
+  "ezequiel",
+  "daniel",
+  "oseas",
+  "joel",
+  "amos",
+  "abdias",
+  "jonas",
+  "miqueas",
+  "nahum",
+  "habacuc",
+  "sofonias",
+  "hageo",
+  "zacarias",
+  "malaquias",
+  "mateo",
+  "marcos",
+  "lucas",
+  "juan",
+  "hechos",
+  "romanos",
+  "1 corintios",
+  "2 corintios",
+  "galatas",
+  "efesios",
+  "filipenses",
+  "colosenses",
+  "1 tesalonicenses",
+  "2 tesalonicenses",
+  "1 timoteo",
+  "2 timoteo",
+  "tito",
+  "filemon",
+  "hebreos",
+  "santiago",
+  "1 pedro",
+  "2 pedro",
+  "1 juan",
+  "2 juan",
+  "3 juan",
+  "judas",
+  "apocalipsis",
+] as const;
+
+function getCanonicalBibleBookOrder(bookName: string) {
+  const index = (BIBLE_CANONICAL_BOOKS as readonly string[]).indexOf(bookName);
+  return index >= 0 ? index + 1 : null;
+}
+
 const normalizedItemCache = new WeakMap<
   SearchIndexItem,
   {
@@ -407,6 +484,10 @@ export function normalizeSearchText(value: unknown) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
+    // Ignore natural prose punctuation while preserving Bible-reference syntax
+    // such as Juan 3:16 and Genesis 1:1-3 / 1:1–3.
+    .replace(/["“”'‘’¿?¡!.,;()[\]{}]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -444,6 +525,17 @@ function getEntityTitleBoost(type: string) {
   return ENTITY_TITLE_BOOST[type] ?? 0;
 }
 
+function getExactTitleBoost(type: string) {
+  // When a canonical topic page and a glossary entry share the same title,
+  // prefer the richer topic surface without changing the broader ranking
+  // used by prefix, summary, or full-text matches.
+  if (type === "Tema") {
+    return 120;
+  }
+
+  return getEntityTitleBoost(type);
+}
+
 function getSearchWords(query: string) {
   return query.split(/\s+/).filter(Boolean);
 }
@@ -467,13 +559,25 @@ function hasAllWords(value: string, words: string[]) {
 function parseBibleReferenceQuery(rawQuery: string): BibleReferenceQuery | null {
   const query = normalizeReferenceText(rawQuery);
 
-  const referenceMatch = query.match(/^(.+?)\s+(\d{1,3})(?::|\s+)?(\d{1,3})?$/);
+  const spacedReferenceMatch = query.match(
+    /^(.+?)\s+(\d{1,3})(?:(?::|\s+)(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?)?$/
+  );
+  const compactReferenceMatch = query.match(
+    /^(.+?[^\d\s])(\d{1,3})(?::(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?)?$/
+  );
+  const referenceMatch = spacedReferenceMatch ?? compactReferenceMatch;
 
   if (!referenceMatch) {
     return null;
   }
 
-  const [, rawBookName, rawChapterNumber, rawVerseNumber] = referenceMatch;
+  const [
+    ,
+    rawBookName,
+    rawChapterNumber,
+    rawVerseNumber,
+    rawEndVerseNumber,
+  ] = referenceMatch;
 
   const compactBookName = rawBookName.replace(/\s+/g, "");
   const bookName =
@@ -481,21 +585,37 @@ function parseBibleReferenceQuery(rawQuery: string): BibleReferenceQuery | null 
     BIBLE_BOOK_ALIASES[compactBookName] ??
     rawBookName;
 
+  const bookOrder = getCanonicalBibleBookOrder(bookName);
   const chapterNumber = Number(rawChapterNumber);
   const verseNumber = rawVerseNumber ? Number(rawVerseNumber) : null;
+  const endVerseNumber = rawEndVerseNumber ? Number(rawEndVerseNumber) : null;
 
   if (!bookName || !Number.isFinite(chapterNumber)) {
     return null;
   }
 
-  if (chapterNumber <= 0 || (verseNumber !== null && verseNumber <= 0)) {
+  if (
+    chapterNumber <= 0 ||
+    (verseNumber !== null && verseNumber <= 0) ||
+    (endVerseNumber !== null && endVerseNumber <= 0)
+  ) {
+    return null;
+  }
+
+  if (
+    endVerseNumber !== null &&
+    (verseNumber === null || endVerseNumber < verseNumber)
+  ) {
     return null;
   }
 
   return {
+    rawBookName,
     bookName,
+    bookOrder,
     chapterNumber,
     verseNumber,
+    endVerseNumber,
   };
 }
 
@@ -508,10 +628,20 @@ function getBibleReferenceScore(
     return 0;
   }
 
-  const expectedTitleStart = `${bibleReference.bookName} `;
+  if (bibleReference.bookOrder !== null) {
+    if (item.bookOrder !== bibleReference.bookOrder) {
+      return 0;
+    }
+  } else {
+    const rawTitleStart = `${bibleReference.rawBookName} `;
+    const canonicalTitleStart = `${bibleReference.bookName} `;
 
-  if (!normalizedTitle.startsWith(expectedTitleStart)) {
-    return 0;
+    if (
+      !normalizedTitle.startsWith(rawTitleStart) &&
+      !normalizedTitle.startsWith(canonicalTitleStart)
+    ) {
+      return 0;
+    }
   }
 
   if (item.chapterNumber !== bibleReference.chapterNumber) {
@@ -530,6 +660,76 @@ function getBibleReferenceScore(
   }
 
   return 14000 - Math.min(item.verseNumber, 200);
+}
+
+function resolveBibleReferenceBookOrder(
+  items: SearchIndexItem[],
+  reference: BibleReferenceQuery
+) {
+  if (reference.bookOrder !== null) {
+    return reference.bookOrder;
+  }
+
+  const exactBook = items.find(
+    (item) =>
+      item.type === "Libro" &&
+      normalizeReferenceText(item.title) === reference.rawBookName
+  );
+
+  return exactBook?.bookOrder ?? null;
+}
+
+export function getBibleReferenceTarget(
+  items: SearchIndexItem[],
+  rawQuery: string
+): string | null {
+  const reference = parseBibleReferenceQuery(rawQuery);
+
+  if (!reference) {
+    return null;
+  }
+
+  const bookOrder = resolveBibleReferenceBookOrder(items, reference);
+
+  if (bookOrder === null) {
+    return null;
+  }
+
+  const chapterVerses = items
+    .filter(
+      (item) =>
+        item.type === "Versículo" &&
+        item.bookOrder === bookOrder &&
+        item.chapterNumber === reference.chapterNumber
+    )
+    .sort((a, b) => a.verseNumber - b.verseNumber);
+
+  if (chapterVerses.length === 0) {
+    return null;
+  }
+
+  if (reference.verseNumber === null) {
+    return chapterVerses[0].url.replace(/#v\d+$/i, "");
+  }
+
+  const startVerse = chapterVerses.find(
+    (item) => item.verseNumber === reference.verseNumber
+  );
+
+  if (!startVerse) {
+    return null;
+  }
+
+  if (
+    reference.endVerseNumber !== null &&
+    !chapterVerses.some(
+      (item) => item.verseNumber === reference.endVerseNumber
+    )
+  ) {
+    return null;
+  }
+
+  return startVerse.url;
 }
 
 export function scoreSearchItem(item: SearchIndexItem, rawQuery: string) {
@@ -553,21 +753,23 @@ export function scoreSearchItem(item: SearchIndexItem, rawQuery: string) {
   let score = 0;
 
   /*
-    Prioridad máxima para frases exactas en versículos.
-    Ejemplo:
-    “en el principio” debe mostrar primero:
-    - Génesis 1:1
-    - Juan 1:1
-    antes que versículos que solo contienen “principio”.
+    Una coincidencia exacta de título expresa una intención nominal fuerte.
+    Debe superar una frase bíblica coincidente, sin desplazar referencias
+    directas, que ya salen antes con una puntuación de 17000.
+
+    Ejemplos:
+    - “Espíritu Santo” -> Tema “Espíritu Santo”
+    - “Reino de Dios” -> Tema “Reino de Dios”
+    - “en el principio” -> Génesis 1:1, porque no existe un título exacto
   */
-  if (
+  if (title === query) {
+    score = 15000 + getExactTitleBoost(item.type);
+  } else if (
     item.type === "Versículo" &&
     phraseSearch &&
     (hasExactPhrase(summary, query) || hasExactPhrase(searchText, query))
   ) {
     score = 13000;
-  } else if (title === query) {
-    score = 10000 + getEntityTitleBoost(item.type);
   } else if (title.startsWith(query)) {
     score = 8500 + getEntityTitleBoost(item.type);
   } else if (title.includes(query)) {
@@ -666,6 +868,48 @@ export function getFilteredSearchResults(
   }
 
   return results.filter((item) => item.type === activeType);
+}
+
+export function getSearchPreviewResults(
+  results: SearchResultItem[],
+  activeType: string,
+  limit = 12
+) {
+  const filteredResults = getFilteredSearchResults(results, activeType);
+
+  if (activeType !== "Todos" || filteredResults.length <= limit) {
+    return filteredResults.slice(0, limit);
+  }
+
+  const selected: SearchResultItem[] = [];
+  const selectedUrls = new Set<string>();
+  const typeCounts = new Map<string, number>();
+
+  for (const item of filteredResults) {
+    const typeLimit = item.type === "Versículo" ? 4 : 2;
+    const typeCount = typeCounts.get(item.type) ?? 0;
+
+    if (typeCount >= typeLimit) continue;
+
+    selected.push(item);
+    selectedUrls.add(item.url);
+    typeCounts.set(item.type, typeCount + 1);
+
+    if (selected.length >= limit) break;
+  }
+
+  if (selected.length < limit) {
+    for (const item of filteredResults) {
+      if (selectedUrls.has(item.url)) continue;
+
+      selected.push(item);
+      selectedUrls.add(item.url);
+
+      if (selected.length >= limit) break;
+    }
+  }
+
+  return selected;
 }
 
 export function getDisplaySearchResults(

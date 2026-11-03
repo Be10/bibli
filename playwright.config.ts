@@ -19,26 +19,30 @@ function windowsBrowserChannel() {
 
 const browserChannel = process.env.BIBLI_E2E_CHANNEL || windowsBrowserChannel();
 const channelUse = browserChannel ? { channel: browserChannel } : {};
+const configuredPort = Number.parseInt(process.env.BIBLI_E2E_PORT || '', 10);
+const serverPort = Number.isFinite(configuredPort) && configuredPort > 0 ? configuredPort : 4321;
+const serverOrigin = `http://127.0.0.1:${serverPort}`;
+const localWorkers = Math.max(1, Number.parseInt(process.env.BIBLI_E2E_WORKERS || '2', 10) || 2);
 
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
-  workers: 2,
+  workers: process.env.CI ? 2 : localWorkers,
   reporter: process.env.CI ? [['line'], ['html', { open: 'never', outputFolder: 'playwright-report' }]] : 'list',
   timeout: 30_000,
   expect: { timeout: 7_500 },
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL: serverOrigin,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: process.env.CI ? 'retain-on-failure' : 'off',
     reducedMotion: 'reduce',
   },
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4321',
-    url: 'http://127.0.0.1:4321/bibli/',
+    command: `npm run preview -- --host 127.0.0.1 --port ${serverPort}`,
+    url: `${serverOrigin}/bibli/`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

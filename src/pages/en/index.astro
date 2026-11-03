@@ -4,10 +4,7 @@ import Icon from "../../components/Icon.astro";
 import HomeStudyVisual from "../../components/HomeStudyVisual.astro";
 import PersonalContinue from "../../components/PersonalContinue.astro";
 import { sitePath } from "../../lib/site-paths";
-import { getAllBooksByLanguage, getBibleVersionsByLanguage } from "../../lib/queries";
 
-const versions = getBibleVersionsByLanguage("en");
-const books = getAllBooksByLanguage("en").filter((book) => book.status !== "Borrador");
 ---
 
 <BaseLayout
@@ -29,11 +26,6 @@ const books = getAllBooksByLanguage("en").filter((book) => book.status !== "Borr
       </div>
 
       <HomeStudyVisual lang="en" />
-    </section>
-
-    <section class="en-home-stats" aria-label="English Bible content">
-      <article><span><Icon name="book" size={18} /></span><strong>{books.length}</strong><small>books</small></article>
-      <article><span><Icon name="bible" size={18} /></span><strong>{versions.length}</strong><small>{versions.length === 1 ? "Bible version" : "Bible versions"}</small></article>
     </section>
 
     <PersonalContinue lang="en" />
@@ -64,7 +56,6 @@ const books = getAllBooksByLanguage("en").filter((book) => book.status !== "Borr
   .en-home-copy{position:relative;z-index:1;max-width:720px}.en-home-kicker{display:inline-flex;align-items:center;gap:.45rem;color:var(--accent);font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
   .en-home-copy h1{max-width:760px;margin:.75rem 0 1rem;color:var(--heading-color);font-size:clamp(2.55rem,5vw,4.3rem);line-height:.98;letter-spacing:-.06em;text-wrap:balance}.en-home-copy>p{max-width:650px;margin:0;color:var(--text-muted);font-size:clamp(1rem,1.8vw,1.16rem);line-height:1.7}
   .en-home-actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.3rem}.en-home-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;padding:0 1rem;border-radius:12px;text-decoration:none;font-weight:750}.en-home-button.primary{background:var(--accent);color:var(--accent-contrast);box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 20%,transparent)}.en-home-button.secondary{border:1px solid var(--border-color);background:var(--surface);color:var(--heading-color)}
-  .en-home-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}.en-home-stats article{display:flex;align-items:center;gap:.65rem;min-height:70px;padding:.85rem 1rem;border:1px solid var(--border-color);border-radius:16px;background:var(--surface)}.en-home-stats article>span{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--accent-soft);color:var(--accent)}.en-home-stats strong{color:var(--heading-color);font-size:1.35rem}.en-home-stats small{color:var(--text-muted);font-size:.88rem}
   .en-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}.en-home-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.9rem;padding:1.15rem;border:1px solid var(--border-color);border-radius:16px;background:var(--surface);color:var(--text-color);text-decoration:none;box-shadow:0 8px 24px rgba(15,23,42,.025)}.en-home-card:hover{border-color:var(--accent-border);background:color-mix(in srgb,var(--accent-soft) 18%,var(--surface))}.en-home-card-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--accent-soft);color:var(--accent)}.en-home-card h2{margin:0;color:var(--heading-color);font-size:1rem}.en-home-card p{margin:.3rem 0 0;color:var(--text-muted);font-size:.82rem;line-height:1.55}
   .en-home-note{display:flex;align-items:flex-start;gap:.65rem;margin-top:1rem;padding:1rem 1.1rem;border:1px solid var(--border-color);border-radius:16px;background:var(--surface-soft);color:var(--text-muted)}.en-home-note>.bibli-icon{flex:0 0 auto;color:var(--accent);margin-top:.12rem}.en-home-note p{margin:0;font-size:.84rem;line-height:1.6}.en-home-note strong{color:var(--heading-color)}
   @media(max-width:800px){.en-home-hero{grid-template-columns:1fr;min-height:0}.en-home-copy h1{font-size:clamp(2.35rem,12vw,3.5rem)}.en-home-grid{grid-template-columns:1fr}}

@@ -75,6 +75,7 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
 <script>
   import {
+    getBibleReferenceTarget,
     SEARCH_FILTER_ORDER,
     decodeSearchIndexPayload,
     getAvailableSearchFilters,
@@ -130,7 +131,11 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
   const initialParams = new URLSearchParams(window.location.search);
   const initialQuery = initialParams.get("q") ?? "";
-  let activeSearchType = ALL_TYPE;
+  const initialType = initialParams.get("type") ?? "";
+  let activeSearchType =
+    initialQuery && SEARCH_FILTER_ORDER.includes(initialType)
+      ? initialType
+      : ALL_TYPE;
   let currentResults = [];
   let searchDebounceTimer;
 
@@ -167,11 +172,22 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
   function updateUrl(value) {
     const url = new URL(window.location.href);
+    const hasQuery = Boolean(normalizeSearchText(value));
 
-    if (normalizeSearchText(value)) {
+    if (hasQuery) {
       url.searchParams.set("q", value);
     } else {
       url.searchParams.delete("q");
+    }
+
+    if (
+      hasQuery &&
+      activeSearchType !== ALL_TYPE &&
+      SEARCH_FILTER_ORDER.includes(activeSearchType)
+    ) {
+      url.searchParams.set("type", activeSearchType);
+    } else {
+      url.searchParams.delete("type");
     }
 
     window.history.replaceState({}, "", url);
@@ -185,6 +201,7 @@ const searchDataUrl = sitePath("/en/search/data.json");
     if (!filtersElement) return;
 
     const counts = getSearchCounts(results);
+    const previousActiveSearchType = activeSearchType;
 
     if (
       activeSearchType !== ALL_TYPE &&
@@ -195,6 +212,10 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
     if (activeSearchType !== ALL_TYPE && !counts[activeSearchType]) {
       activeSearchType = ALL_TYPE;
+    }
+
+    if (activeSearchType !== previousActiveSearchType) {
+      updateUrl(input?.value ?? "");
     }
 
     const filters = getAvailableSearchFilters(results);
@@ -215,6 +236,7 @@ const searchDataUrl = sitePath("/en/search/data.json");
       button.addEventListener("click", () => {
         activeSearchType =
           button.getAttribute("data-search-filter") ?? ALL_TYPE;
+        updateUrl(input?.value ?? "");
         renderFilteredResults();
       });
     });
@@ -330,6 +352,35 @@ const searchDataUrl = sitePath("/en/search/data.json");
       clearSearch();
       return;
     }
+    if (event.key === "Enter" && input instanceof HTMLInputElement) {
+      event.preventDefault();
+
+      const query = input.value.trim();
+
+      if (!query) {
+        return;
+      }
+
+      window.clearTimeout(searchDebounceTimer);
+
+      void (async () => {
+        const loadedItems = await loadSearchItems();
+
+        if (!searchLoadFailed) {
+          const bibleTarget = getBibleReferenceTarget(loadedItems, query);
+
+          if (bibleTarget) {
+            window.location.assign(bibleTarget);
+            return;
+          }
+        }
+
+        void renderResults(query);
+      })();
+
+      return;
+    }
+
     if (event.key !== "ArrowDown") return;
     const links = getResultLinks();
     if (links.length === 0) return;

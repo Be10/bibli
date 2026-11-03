@@ -261,6 +261,7 @@ function getExploreCount(item: ExploreItem) {
 
 <script>
   import {
+    getBibleReferenceTarget,
     SEARCH_FILTER_ORDER,
     decodeSearchIndexPayload,
     getAvailableSearchFilters,
@@ -315,8 +316,12 @@ function getExploreCount(item: ExploreItem) {
 
   const initialParams = new URLSearchParams(window.location.search);
   const initialQuery = initialParams.get("q") ?? "";
+  const initialType = initialParams.get("type") ?? "";
 
-  let activeSearchType = "Todos";
+  let activeSearchType =
+    initialQuery && SEARCH_FILTER_ORDER.includes(initialType)
+      ? initialType
+      : "Todos";
   let currentResults = [];
 
   function normalizeText(value) {
@@ -363,11 +368,22 @@ function getExploreCount(item: ExploreItem) {
 
   function updateUrl(value) {
     const url = new URL(window.location.href);
+    const hasQuery = Boolean(normalizeText(value));
 
-    if (normalizeText(value)) {
+    if (hasQuery) {
       url.searchParams.set("q", value);
     } else {
       url.searchParams.delete("q");
+    }
+
+    if (
+      hasQuery &&
+      activeSearchType !== "Todos" &&
+      SEARCH_FILTER_ORDER.includes(activeSearchType)
+    ) {
+      url.searchParams.set("type", activeSearchType);
+    } else {
+      url.searchParams.delete("type");
     }
 
     window.history.replaceState({}, "", url);
@@ -381,6 +397,7 @@ function getExploreCount(item: ExploreItem) {
     if (!filtersElement) return;
 
     const counts = getSearchCounts(results);
+    const previousActiveSearchType = activeSearchType;
 
     if (
       activeSearchType !== "Todos" &&
@@ -391,6 +408,10 @@ function getExploreCount(item: ExploreItem) {
 
     if (activeSearchType !== "Todos" && !counts[activeSearchType]) {
       activeSearchType = "Todos";
+    }
+
+    if (activeSearchType !== previousActiveSearchType) {
+      updateUrl(input?.value ?? "");
     }
 
     const filters = getAvailableSearchFilters(results);
@@ -415,6 +436,7 @@ function getExploreCount(item: ExploreItem) {
         button.addEventListener("click", () => {
           activeSearchType =
             button.getAttribute("data-search-filter") ?? "Todos";
+          updateUrl(input?.value ?? "");
 
           renderFilteredResults();
         });
@@ -539,6 +561,35 @@ function getExploreCount(item: ExploreItem) {
     if (event.key === "Escape" && input instanceof HTMLInputElement && input.value) {
       event.preventDefault();
       clearSearch();
+      return;
+    }
+
+    if (event.key === "Enter" && input instanceof HTMLInputElement) {
+      event.preventDefault();
+
+      const query = input.value.trim();
+
+      if (!query) {
+        return;
+      }
+
+      window.clearTimeout(searchDebounceTimer);
+
+      void (async () => {
+        const loadedItems = await loadSearchItems();
+
+        if (!searchLoadFailed) {
+          const bibleTarget = getBibleReferenceTarget(loadedItems, query);
+
+          if (bibleTarget) {
+            window.location.assign(bibleTarget);
+            return;
+          }
+        }
+
+        void renderResults(query);
+      })();
+
       return;
     }
 
