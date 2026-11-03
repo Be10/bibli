@@ -131,7 +131,11 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
   const initialParams = new URLSearchParams(window.location.search);
   const initialQuery = initialParams.get("q") ?? "";
-  let activeSearchType = ALL_TYPE;
+  const initialType = initialParams.get("type") ?? "";
+  let activeSearchType =
+    initialQuery && SEARCH_FILTER_ORDER.includes(initialType)
+      ? initialType
+      : ALL_TYPE;
   let currentResults = [];
   let searchDebounceTimer;
 
@@ -168,11 +172,22 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
   function updateUrl(value) {
     const url = new URL(window.location.href);
+    const hasQuery = Boolean(normalizeSearchText(value));
 
-    if (normalizeSearchText(value)) {
+    if (hasQuery) {
       url.searchParams.set("q", value);
     } else {
       url.searchParams.delete("q");
+    }
+
+    if (
+      hasQuery &&
+      activeSearchType !== ALL_TYPE &&
+      SEARCH_FILTER_ORDER.includes(activeSearchType)
+    ) {
+      url.searchParams.set("type", activeSearchType);
+    } else {
+      url.searchParams.delete("type");
     }
 
     window.history.replaceState({}, "", url);
@@ -186,6 +201,7 @@ const searchDataUrl = sitePath("/en/search/data.json");
     if (!filtersElement) return;
 
     const counts = getSearchCounts(results);
+    const previousActiveSearchType = activeSearchType;
 
     if (
       activeSearchType !== ALL_TYPE &&
@@ -196,6 +212,10 @@ const searchDataUrl = sitePath("/en/search/data.json");
 
     if (activeSearchType !== ALL_TYPE && !counts[activeSearchType]) {
       activeSearchType = ALL_TYPE;
+    }
+
+    if (activeSearchType !== previousActiveSearchType) {
+      updateUrl(input?.value ?? "");
     }
 
     const filters = getAvailableSearchFilters(results);
@@ -216,6 +236,7 @@ const searchDataUrl = sitePath("/en/search/data.json");
       button.addEventListener("click", () => {
         activeSearchType =
           button.getAttribute("data-search-filter") ?? ALL_TYPE;
+        updateUrl(input?.value ?? "");
         renderFilteredResults();
       });
     });

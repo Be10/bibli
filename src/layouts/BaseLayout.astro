@@ -1455,6 +1455,12 @@ const languageSwitchLabel =
       if (normalizedQuery) url.searchParams.set("q", query);
       else url.searchParams.delete("q");
 
+      if (normalizedQuery && activeSearchType !== ALL_SEARCH_TYPE) {
+        url.searchParams.set("type", activeSearchType);
+      } else {
+        url.searchParams.delete("type");
+      }
+
       // The advanced page is intentionally reachable only through this explicit action.
       searchAllLink.textContent = `${searchAdvancedLabel} →`;
       searchAllLink.href = `${url.pathname}${url.search}`;
@@ -1586,9 +1592,8 @@ const languageSwitchLabel =
         return;
       }
 
-      updateAllResultsLink(rawQuery, true);
-
       renderFilters(results);
+      updateAllResultsLink(rawQuery, true);
 
       searchFilters
         .querySelectorAll("[data-global-search-filter]")
