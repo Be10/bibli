@@ -12,6 +12,7 @@ import {
   walkFiles,
 } from "./study-markdown-utils.mjs";
 import { loadEditorialConfig, resolveEditorialModule } from "./study-editorial-config.mjs";
+import { compileStructuredLesson, ensureLearningSchema } from "./study-learning-model.mjs";
 
 function readJson(filePath, fallback = null) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -92,29 +93,38 @@ export function indexStudies(db, options = {}) {
   const editorialConfig = loadEditorialConfig(rootDir);
   const enrichments = readJson(enrichmentsPath, { lessons: {} });
 
+  // R1A migration path: existing tracked SQLite files predate the structured
+  // learning tables. Keep imports forward-compatible without requiring db:reset.
+  ensureLearningSchema(db);
+
   const markdownFiles = walkFiles(studiesRoot, (filePath) => filePath.toLowerCase().endsWith(".md"));
   if (markdownFiles.length === 0) throw new Error("content/studies no contiene lecciones Markdown");
 
   const documents = markdownFiles.map((filePath) => {
     const relativePath = toPosixPath(path.relative(studiesRoot, filePath));
-    const parsed = parseStudyDocument(fs.readFileSync(filePath, "utf8"), relativePath);
+    const sourceText = fs.readFileSync(filePath, "utf8");
+    const parsed = parseStudyDocument(sourceText, relativePath);
     const fm = parsed.frontmatter;
     if (fm.artifact_type !== "bible_study_lesson" || fm.mode !== "official" || fm.content_type !== "lesson") {
       throw new Error(`${relativePath}: artefacto no importable`);
     }
     if (parsed.h1.length !== 1) throw new Error(`${relativePath}: se esperaba un único H1`);
-    return { filePath, relativePath, parsed, fm, title: parsed.h1[0] };
+    return { filePath, relativePath, sourceText, parsed, fm, title: parsed.h1[0] };
   });
 
   const effectiveRoutes = editorialConfig.routes;
   const routeById = new Map(effectiveRoutes.map((route) => [route.id, route]));
   const knownBooks = new Set(db.prepare("SELECT id FROM books").all().map((row) => row.id));
 
+  let learningModelCount = 0;
+  let learningBlockCount = 0;
+
   const tx = db.transaction(() => {
     for (const table of [
       "lesson_visual_resources", "lesson_glossary", "lesson_places", "lesson_people",
       "lesson_passages", "lesson_books", "lesson_events", "lesson_topics",
-      "route_lessons", "route_modules", "routes", "study_lessons",
+      "route_lessons", "route_modules", "routes",
+      "lesson_learning_blocks", "lesson_learning_models", "study_lessons",
     ]) {
       db.prepare(`DELETE FROM ${table}`).run();
     }
@@ -187,9 +197,27 @@ export function indexStudies(db, options = {}) {
         (lesson_id, passage_id, relation_type, position, link_source)
       VALUES (?, ?, 'principal', 1, 'canonical')
     `);
+    const insertLearningModel = db.prepare(`
+      INSERT INTO lesson_learning_models
+        (lesson_id, locale, model_version, id_strategy, title, primary_reference, translation,
+         source_content_version, source_path, source_sha256, block_count)
+      VALUES
+        (@lesson_id, @locale, @model_version, @id_strategy, @title, @primary_reference, @translation,
+         @source_content_version, @source_path, @source_sha256, @block_count)
+    `);
+    const insertLearningBlock = db.prepare(`
+      INSERT INTO lesson_learning_blocks
+        (lesson_id, locale, block_id, block_key, position, block_type, semantic_role, heading,
+         content_markdown, content_text, tts_role, bible_reference, bible_translation,
+         source_kind, source_position)
+      VALUES
+        (@lesson_id, @locale, @block_id, @block_key, @position, @block_type, @semantic_role, @heading,
+         @content_markdown, @content_text, @tts_role, @bible_reference, @bible_translation,
+         @source_kind, @source_position)
+    `);
 
     for (const document of documents.sort((a, b) => a.fm.route_lesson_number - b.fm.route_lesson_number)) {
-      const { fm, parsed, relativePath, title } = document;
+      const { fm, parsed, relativePath, sourceText, title } = document;
       const route = routeById.get(fm.route_id);
       if (!route) throw new Error(`${relativePath}: route_id desconocido ${fm.route_id}`);
       if (normalizeText(route.title) !== normalizeText(fm.route_name)) {
@@ -221,6 +249,23 @@ export function indexStudies(db, options = {}) {
       );
       insertRouteLesson.run(route.id, module.id, fm.lesson_id, fm.route_lesson_number);
       insertBookLink.run(fm.lesson_id, bookId);
+
+      const learningModel = compileStructuredLesson({
+        lessonId: fm.lesson_id,
+        locale: route.language ?? "es",
+        title,
+        primaryReference: fm.primary_reference,
+        translation: fm.translation,
+        contentVersion: String(fm.content_version),
+        sourcePath: relativePath,
+        sourceText,
+        parsed,
+      });
+      const { blocks: learningBlocks, ...learningModelRow } = learningModel;
+      insertLearningModel.run(learningModelRow);
+      for (const block of learningBlocks) insertLearningBlock.run(block);
+      learningModelCount += 1;
+      learningBlockCount += learningBlocks.length;
 
       const passageKey = `${bookId}::${normalizeBibleReference(fm.primary_reference)}`;
       let passageId = passageByKey.get(passageKey);
@@ -284,5 +329,7 @@ export function indexStudies(db, options = {}) {
     lessons: documents.length,
     routes: effectiveRoutes.length,
     modules: effectiveRoutes.reduce((sum, route) => sum + (route.modules?.length || 0), 0),
+    learningModels: learningModelCount,
+    learningBlocks: learningBlockCount,
   };
 }

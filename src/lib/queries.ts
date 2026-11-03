@@ -70,6 +70,42 @@ export type LessonQuestion = {
   position: number;
 };
 
+export type LessonLearningModel = {
+  lesson_id: string;
+  locale: string;
+  model_version: string;
+  id_strategy: string;
+  title: string;
+  primary_reference: string;
+  translation: string;
+  source_content_version: string;
+  source_path: string;
+  source_sha256: string;
+  block_count: number;
+};
+
+export type LessonLearningBlock = {
+  lesson_id: string;
+  locale: string;
+  block_id: string;
+  block_key: string;
+  position: number;
+  block_type: string;
+  semantic_role: string;
+  heading: string | null;
+  content_markdown: string;
+  content_text: string;
+  tts_role: string;
+  bible_reference: string | null;
+  bible_translation: string | null;
+  source_kind: string;
+  source_position: number | null;
+};
+
+export type StructuredLesson = LessonLearningModel & {
+  blocks: LessonLearningBlock[];
+};
+
 export type RelatedItem = {
   title: string;
   slug: string;
@@ -165,6 +201,41 @@ export function getPointsByLessonId(_lessonId: string): LessonPoint[] {
 
 export function getQuestionsByLessonId(_lessonId: string): LessonQuestion[] {
   return [];
+}
+
+export function getLearningModelByLessonId(
+  lessonId: string,
+  locale = "es",
+): LessonLearningModel | undefined {
+  return db.prepare(`
+    SELECT *
+    FROM lesson_learning_models
+    WHERE lesson_id = ? AND locale = ?
+  `).get(lessonId, locale) as LessonLearningModel | undefined;
+}
+
+export function getLearningBlocksByLessonId(
+  lessonId: string,
+  locale = "es",
+): LessonLearningBlock[] {
+  return db.prepare(`
+    SELECT *
+    FROM lesson_learning_blocks
+    WHERE lesson_id = ? AND locale = ?
+    ORDER BY position ASC
+  `).all(lessonId, locale) as LessonLearningBlock[];
+}
+
+export function getStructuredLessonByLessonId(
+  lessonId: string,
+  locale = "es",
+): StructuredLesson | undefined {
+  const model = getLearningModelByLessonId(lessonId, locale);
+  if (!model) return undefined;
+  return {
+    ...model,
+    blocks: getLearningBlocksByLessonId(lessonId, locale),
+  };
 }
 
 export function getTopicsByLessonId(lessonId: string): RelatedItem[] {

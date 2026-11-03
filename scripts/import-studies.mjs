@@ -13,6 +13,8 @@ try {
   console.log(`Lecciones canónicas: ${result.lessons}`);
   console.log(`Rutas: ${result.routes}`);
   console.log(`Módulos: ${result.modules}`);
+  console.log(`Modelos educativos: ${result.learningModels}`);
+  console.log(`Bloques educativos: ${result.learningBlocks}`);
 } finally {
   db.close();
 }

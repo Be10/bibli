@@ -28,6 +28,8 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS route_lessons;
 DROP TABLE IF EXISTS route_modules;
+DROP TABLE IF EXISTS lesson_learning_blocks;
+DROP TABLE IF EXISTS lesson_learning_models;
 DROP TABLE IF EXISTS study_lessons;
 DROP TABLE IF EXISTS lessons;
 DROP TABLE IF EXISTS routes;
@@ -148,6 +150,46 @@ CREATE TABLE study_lessons (
   search_text TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL DEFAULT 'Publicado',
   FOREIGN KEY (book_id) REFERENCES books(id)
+);
+
+CREATE TABLE lesson_learning_models (
+  lesson_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  model_version TEXT NOT NULL,
+  id_strategy TEXT NOT NULL,
+  title TEXT NOT NULL,
+  primary_reference TEXT NOT NULL,
+  translation TEXT NOT NULL,
+  source_content_version TEXT NOT NULL,
+  source_path TEXT NOT NULL,
+  source_sha256 TEXT NOT NULL,
+  block_count INTEGER NOT NULL CHECK (block_count >= 2),
+  PRIMARY KEY (lesson_id, locale),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_learning_blocks (
+  lesson_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  block_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  block_type TEXT NOT NULL,
+  semantic_role TEXT NOT NULL,
+  heading TEXT,
+  content_markdown TEXT NOT NULL DEFAULT '',
+  content_text TEXT NOT NULL DEFAULT '',
+  tts_role TEXT NOT NULL,
+  bible_reference TEXT,
+  bible_translation TEXT,
+  source_kind TEXT NOT NULL,
+  source_position INTEGER,
+  PRIMARY KEY (lesson_id, locale, block_id),
+  UNIQUE (lesson_id, locale, block_key),
+  UNIQUE (lesson_id, locale, position),
+  FOREIGN KEY (lesson_id, locale)
+    REFERENCES lesson_learning_models(lesson_id, locale)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE route_lessons (
@@ -376,6 +418,9 @@ CREATE INDEX idx_route_lessons_route_position ON route_lessons(route_id, positio
 CREATE INDEX idx_route_lessons_lesson ON route_lessons(lesson_id);
 CREATE INDEX idx_study_lessons_book ON study_lessons(book_id);
 CREATE INDEX idx_study_lessons_reference ON study_lessons(primary_reference);
+CREATE INDEX idx_lesson_learning_models_locale ON lesson_learning_models(locale, lesson_id);
+CREATE INDEX idx_lesson_learning_blocks_lesson ON lesson_learning_blocks(lesson_id, locale, position);
+CREATE INDEX idx_lesson_learning_blocks_role ON lesson_learning_blocks(semantic_role, lesson_id, locale);
 CREATE INDEX idx_events_chronology ON events(chronological_order);
 CREATE INDEX idx_lesson_topics_lesson ON lesson_topics(lesson_id);
 CREATE INDEX idx_lesson_events_lesson ON lesson_events(lesson_id);

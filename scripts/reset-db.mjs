@@ -39,6 +39,8 @@ try {
   console.log(`Lugares: ${counts.places}`);
   console.log(`Glosario: ${counts.glossary_terms}`);
   console.log(`Indexación: ${studies.lessons} lecciones.`);
+  console.log(`Modelos educativos: ${studies.learningModels}`);
+  console.log(`Bloques educativos: ${studies.learningBlocks}`);
   console.log("IMPORTANTE: después de db:reset debes volver a importar RVR1960 y KJV.");
   console.log(`Archivo: ${dbPath}`);
 } finally {

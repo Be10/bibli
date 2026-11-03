@@ -643,3 +643,6 @@ Status: **Approved for implementation** (2026-11-03).
 The UI/UX patterns captured in Section 25 are not merely inspirational references. They are part of Bibli's intended product direction and should be considered for implementation, adapted to Bibli's own visual identity, bilingual requirements, accessibility rules, learning architecture, Scripture-centered purpose, and non-gamified design principles.
 
 Implementation should preserve the already agreed principles: optional classic and dynamic modes, route/module visual identity without color conflicts, rich but restrained lesson cards and blocks, meaningful visual media, contextual interactions, subtle motion, and learning-first behavior.
+
+## Documento complementario: ritmo diario y calendario adaptativo
+La planificación diaria, convivencia de múltiples rutas, exploración libre, presupuesto de actividades y recalculo de calendario se especifican en `docs/architecture/daily-learning-rhythm-v1.md`. Este documento complementario forma parte de los requisitos aprobados de experiencia de aprendizaje de Bibli.

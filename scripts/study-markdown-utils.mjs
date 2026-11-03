@@ -138,12 +138,18 @@ export function parseStudyDocument(text, fileLabel = "Markdown") {
   const readingLines = [...body.matchAll(/^\*\*📖 Lectura:\*\*\s*(.+)$/gm)].map((match) => match[1].trim());
 
   const sections = new Map();
+  const sectionEntries = [];
   for (let index = 0; index < h2Matches.length; index += 1) {
     const current = h2Matches[index];
     const next = h2Matches[index + 1];
     const content = body.slice(current.contentStart, next?.index ?? body.length).trim();
     if (!sections.has(current.title)) sections.set(current.title, []);
     sections.get(current.title).push(content);
+    sectionEntries.push({
+      title: current.title,
+      content,
+      position: index + 1,
+    });
   }
 
   return {
@@ -153,6 +159,7 @@ export function parseStudyDocument(text, fileLabel = "Markdown") {
     h2: h2Matches.map((entry) => entry.title),
     readingLines,
     sections,
+    sectionEntries,
   };
 }
 
