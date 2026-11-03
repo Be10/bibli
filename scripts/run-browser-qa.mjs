@@ -12,10 +12,10 @@ if (!fs.existsSync(cli)) {
 }
 
 const passthroughArgs = process.argv.slice(2);
+
 const result = spawnSync(process.execPath, [cli, "test", ...passthroughArgs], {
   cwd: root,
   stdio: "inherit",
-  env: process.env,
 });
 
 if (result.error) {

@@ -32,8 +32,11 @@
     "personal:validate": "node scripts/validate-personal-state.mjs",
     "qa:e2e:setup": "node scripts/setup-browser-qa.mjs",
     "qa:e2e": "node scripts/run-browser-qa.mjs",
+    "qa:search": "npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/bible-reference-search.spec.ts tests/e2e/search-ranking.spec.ts --project=desktop-chromium --workers=3",
+    "qa:fast": "npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/accessibility.spec.ts tests/e2e/bible-reference-search.spec.ts tests/e2e/personal.spec.ts tests/e2e/responsive.spec.ts tests/e2e/search-ranking.spec.ts tests/e2e/smoke.spec.ts --project=desktop-chromium --workers=3",
     "qa:all": "npm run build && npm run qa:e2e",
     "qa:ci": "node scripts/run-browser-qa.mjs",
+    "qa:certify": "npm run build && npm run qa:ci",
     "content:validate": "node scripts/validate-content.mjs",
     "derived:validate": "node scripts/validate-derived-output.mjs",
     "connections:validate": "node scripts/validate-connections.mjs",
@@ -47,7 +50,8 @@
     "bibliimg:publish:check": "node scripts/publish-bibli-image-glossary.mjs --check",
     "bibliimg:r2:plan": "node scripts/publish-bibli-images-r2.mjs --plan",
     "bibliimg:r2:publish": "node scripts/publish-bibli-images-r2.mjs --publish",
-    "bibliimg:r2:check": "node scripts/publish-bibli-images-r2.mjs --check"
+    "bibliimg:r2:check": "node scripts/publish-bibli-images-r2.mjs --check",
+    "qa:quick-build": "astro build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1161.0",

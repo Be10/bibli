@@ -11,39 +11,18 @@ async function expectPathAndHash(page: Page, expected: string) {
     .toBe(expected);
 }
 
-test("Spanish search resolves direct Bible references", async ({ page }) => {
-  const scenarios = [
-    {
-      query: "Juan 3:16",
-      expected: `${base}/es/biblia/rvr1960/jhn/3/#v16`,
-    },
-    {
-      query: "Jn 3:16",
-      expected: `${base}/es/biblia/rvr1960/jhn/3/#v16`,
-    },
-    {
-      query: "Jn3:16",
-      expected: `${base}/es/biblia/rvr1960/jhn/3/#v16`,
-    },
-    {
-      query: "Juan 3",
-      expected: `${base}/es/biblia/rvr1960/jhn/3/`,
-    },
-    {
-      query: "Génesis 1:1-3",
-      expected: `${base}/es/biblia/rvr1960/gen/1/#v1`,
-    },
-    {
-      query: "1 Corintios 13:4",
-      expected: `${base}/es/biblia/rvr1960/1co/13/#v4`,
-    },
-    {
-      query: "1Cor13:4",
-      expected: `${base}/es/biblia/rvr1960/1co/13/#v4`,
-    },
-  ];
+const spanishReferenceScenarios = [
+  { query: "Juan 3:16", expected: `${base}/es/biblia/rvr1960/jhn/3/#v16` },
+  { query: "Jn 3:16", expected: `${base}/es/biblia/rvr1960/jhn/3/#v16` },
+  { query: "Jn3:16", expected: `${base}/es/biblia/rvr1960/jhn/3/#v16` },
+  { query: "Juan 3", expected: `${base}/es/biblia/rvr1960/jhn/3/` },
+  { query: "Génesis 1:1-3", expected: `${base}/es/biblia/rvr1960/gen/1/#v1` },
+  { query: "1 Corintios 13:4", expected: `${base}/es/biblia/rvr1960/1co/13/#v4` },
+  { query: "1Cor13:4", expected: `${base}/es/biblia/rvr1960/1co/13/#v4` },
+];
 
-  for (const scenario of scenarios) {
+for (const scenario of spanishReferenceScenarios) {
+  test(`Spanish search resolves direct Bible reference: ${scenario.query}`, async ({ page }) => {
     await page.goto(`${base}/buscar/`);
 
     const input = page.locator("#search-input");
@@ -51,30 +30,18 @@ test("Spanish search resolves direct Bible references", async ({ page }) => {
     await input.press("Enter");
 
     await expectPathAndHash(page, scenario.expected);
-  }
-});
+  });
+}
 
-test("English search resolves direct KJV references", async ({ page }) => {
-  const scenarios = [
-    {
-      query: "John 3:16",
-      expected: `${base}/en/bible/kjv/jhn/3/#v16`,
-    },
-    {
-      query: "Jn 3:16",
-      expected: `${base}/en/bible/kjv/jhn/3/#v16`,
-    },
-    {
-      query: "John3:16",
-      expected: `${base}/en/bible/kjv/jhn/3/#v16`,
-    },
-    {
-      query: "1 Corinthians 13:4",
-      expected: `${base}/en/bible/kjv/1co/13/#v4`,
-    },
-  ];
+const englishReferenceScenarios = [
+  { query: "John 3:16", expected: `${base}/en/bible/kjv/jhn/3/#v16` },
+  { query: "Jn 3:16", expected: `${base}/en/bible/kjv/jhn/3/#v16` },
+  { query: "John3:16", expected: `${base}/en/bible/kjv/jhn/3/#v16` },
+  { query: "1 Corinthians 13:4", expected: `${base}/en/bible/kjv/1co/13/#v4` },
+];
 
-  for (const scenario of scenarios) {
+for (const scenario of englishReferenceScenarios) {
+  test(`English search resolves direct KJV reference: ${scenario.query}`, async ({ page }) => {
     await page.goto(`${base}/en/search/`);
 
     const input = page.locator("#search-input");
@@ -82,8 +49,8 @@ test("English search resolves direct KJV references", async ({ page }) => {
     await input.press("Enter");
 
     await expectPathAndHash(page, scenario.expected);
-  }
-});
+  });
+}
 
 test("Global search navigates direct references and invalid references fall back", async ({
   page,
