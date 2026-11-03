@@ -22,6 +22,10 @@ test("Spanish search resolves direct Bible references", async ({ page }) => {
       expected: `${base}/es/biblia/rvr1960/jhn/3/#v16`,
     },
     {
+      query: "Jn3:16",
+      expected: `${base}/es/biblia/rvr1960/jhn/3/#v16`,
+    },
+    {
       query: "Juan 3",
       expected: `${base}/es/biblia/rvr1960/jhn/3/`,
     },
@@ -31,6 +35,10 @@ test("Spanish search resolves direct Bible references", async ({ page }) => {
     },
     {
       query: "1 Corintios 13:4",
+      expected: `${base}/es/biblia/rvr1960/1co/13/#v4`,
+    },
+    {
+      query: "1Cor13:4",
       expected: `${base}/es/biblia/rvr1960/1co/13/#v4`,
     },
   ];
@@ -54,6 +62,10 @@ test("English search resolves direct KJV references", async ({ page }) => {
     },
     {
       query: "Jn 3:16",
+      expected: `${base}/en/bible/kjv/jhn/3/#v16`,
+    },
+    {
+      query: "John3:16",
       expected: `${base}/en/bible/kjv/jhn/3/#v16`,
     },
     {
@@ -85,7 +97,7 @@ test("Global search navigates direct references and invalid references fall back
 
   const globalInput = page.locator("[data-global-search-input]");
 
-  await globalInput.fill("Jn 3:16");
+  await globalInput.fill("Jn3:16");
   await globalInput.press("Enter");
 
   await expectPathAndHash(

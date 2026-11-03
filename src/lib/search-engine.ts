@@ -559,9 +559,13 @@ function hasAllWords(value: string, words: string[]) {
 function parseBibleReferenceQuery(rawQuery: string): BibleReferenceQuery | null {
   const query = normalizeReferenceText(rawQuery);
 
-  const referenceMatch = query.match(
+  const spacedReferenceMatch = query.match(
     /^(.+?)\s+(\d{1,3})(?:(?::|\s+)(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?)?$/
   );
+  const compactReferenceMatch = query.match(
+    /^(.+?[^\d\s])(\d{1,3})(?::(\d{1,3})(?:\s*[-–—]\s*(\d{1,3}))?)?$/
+  );
+  const referenceMatch = spacedReferenceMatch ?? compactReferenceMatch;
 
   if (!referenceMatch) {
     return null;
