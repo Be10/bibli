@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
 import HomeStudyVisual from "../../components/HomeStudyVisual.astro";
 import PersonalContinue from "../../components/PersonalContinue.astro";
+import StudyPresentationPreference from "../../components/learning/StudyPresentationPreference.astro";
 import { sitePath } from "../../lib/site-paths";
 
 ---
@@ -29,6 +30,8 @@ import { sitePath } from "../../lib/site-paths";
     </section>
 
     <PersonalContinue lang="en" />
+
+    <StudyPresentationPreference lang="en" />
 
     <section class="en-home-grid" aria-label="English areas">
       <a href={sitePath("/en/bible/")} class="en-home-card">

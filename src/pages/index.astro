@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Icon from "../components/Icon.astro";
 import HomeStudyVisual from "../components/HomeStudyVisual.astro";
 import PersonalContinue from "../components/PersonalContinue.astro";
+import StudyPresentationPreference from "../components/learning/StudyPresentationPreference.astro";
 import {
   getLessonsByRouteId,
   getRouteBySlug,
@@ -87,6 +88,8 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
     </section>
 
     <PersonalContinue lang="es" />
+
+    <StudyPresentationPreference lang="es" />
 
     <section class="home-discovery" aria-labelledby="home-discovery-title">
       <div class="home-section-heading">

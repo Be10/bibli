@@ -249,6 +249,13 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
           <button type="button" id="lesson-mode-tab-study" data-mode-button="study" role="tab" aria-selected="true" aria-controls="lesson-mode-panel-study" tabindex="0"><Icon name="graduation" size={17} /><span>Estudio</span></button>
           <button type="button" id="lesson-mode-tab-reading" data-mode-button="reading" role="tab" aria-selected="false" aria-controls="lesson-mode-panel-reading" tabindex="-1"><Icon name="book" size={17} /><span>Lectura</span></button>
         </div>
+        <div class="lesson-presentation-control" data-presentation-control>
+          <span class="lesson-presentation-control-label">Vista</span>
+          <div class="lesson-presentation-tabs" role="tablist" aria-label="Vista de la lección de estudio">
+            <button type="button" id="study-presentation-tab-classic" data-presentation-button="classic" role="tab" aria-selected="true" aria-controls="study-presentation-classic" tabindex="0">Clásica</button>
+            <button type="button" id="study-presentation-tab-dynamic" data-presentation-button="dynamic" role="tab" aria-selected="false" aria-controls="study-presentation-dynamic" tabindex="-1" disabled={!structuredLesson}>Dinámica</button>
+          </div>
+        </div>
       </div>
 
       {toc.length > 0 && (
@@ -324,17 +331,6 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 
       <div class="lesson-stage">
         <section id="lesson-mode-panel-study" data-mode-panel="study" role="tabpanel" aria-labelledby="lesson-mode-tab-study">
-          <div class="study-presentation-toolbar">
-            <div class="study-presentation-copy">
-              <span class="study-presentation-label">Presentación</span>
-              <span class="study-presentation-help">Misma lección, dos formas de estudiarla</span>
-            </div>
-            <div class="study-presentation-tabs" role="tablist" aria-label="Presentación de la lección">
-              <button type="button" id="study-presentation-tab-classic" data-presentation-button="classic" role="tab" aria-selected="true" aria-controls="study-presentation-classic" tabindex="0">Clásico</button>
-              <button type="button" id="study-presentation-tab-dynamic" data-presentation-button="dynamic" role="tab" aria-selected="false" aria-controls="study-presentation-dynamic" tabindex="-1" disabled={!structuredLesson}>Dinámico</button>
-            </div>
-          </div>
-
           <ClassicLessonRenderer id="study-presentation-classic" locale="es" labelledBy="study-presentation-tab-classic">
           <header class="study-header">
             <h1 data-tts-lesson-title>{title}</h1>
@@ -566,6 +562,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     const modeButtons = [...shell.querySelectorAll<HTMLButtonElement>("[data-mode-button]")];
     const presentationButtons = [...shell.querySelectorAll<HTMLButtonElement>("[data-presentation-button]")];
     const presentationPanels = [...shell.querySelectorAll<HTMLElement>("[data-study-presentation-panel]")];
+    const presentationControl = shell.querySelector<HTMLElement>("[data-presentation-control]");
     const aidsToggle = shell.querySelector<HTMLButtonElement>("[data-aids-toggle]");
     const aidsClose = shell.querySelector<HTMLButtonElement>("[data-aids-close]");
     const aidsBackdrop = shell.querySelector<HTMLButtonElement>("[data-aids-backdrop]");
@@ -649,10 +646,18 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       });
 
       const inStudyMode = document.documentElement.dataset.lessonMode !== "reading";
+      if (presentationControl) presentationControl.hidden = !inStudyMode;
       if (tocToggle) tocToggle.hidden = !inStudyMode || normalized === "dynamic";
+      if (aidsToggle) aidsToggle.hidden = !inStudyMode || normalized === "dynamic";
+      shell.querySelector<HTMLButtonElement>('[data-dock-action="aids"]')?.toggleAttribute("hidden", !inStudyMode || normalized === "dynamic");
       if (inStudyMode) {
-        if (normalized === "dynamic") setToc(false, false, false);
-        else setToc(tocMedia.matches ? false : true, false, false);
+        if (normalized === "dynamic") {
+          setToc(false, false, false);
+          setAids(false, false, false);
+        } else {
+          setToc(tocMedia.matches ? false : true, false, false);
+          setAids(aidsMedia.matches ? false : true, false, false);
+        }
       }
       if (persist) localStorage.setItem(PRESENTATION_KEY, normalized);
       document.dispatchEvent(new CustomEvent("bibli:study-presentation-change", { detail: { presentation: normalized } }));
@@ -668,7 +673,9 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         button.tabIndex = active ? 0 : -1;
       });
       dockModeButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.dockMode === normalized)));
-      if (aidsToggle) aidsToggle.hidden = normalized !== "study";
+      if (presentationControl) presentationControl.hidden = normalized !== "study";
+      if (aidsToggle) aidsToggle.hidden = normalized !== "study" || presentation === "dynamic";
+      shell.querySelector<HTMLButtonElement>('[data-dock-action="aids"]')?.toggleAttribute("hidden", normalized !== "study" || presentation === "dynamic");
       if (tocToggle) tocToggle.hidden = normalized !== "study" || presentation === "dynamic";
       if (normalized === "reading") {
         setAids(false, false, false);
@@ -998,19 +1005,23 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   .completion-summary { text-align: right; display: grid; gap: .05rem; color: var(--text-muted); font-size: .74rem; }
   .completion-summary strong { color: var(--heading-color); font-size: 1.2rem; }
 
-  .study-presentation-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin:0 0 1rem; padding:.65rem .75rem; border:1px solid var(--border-color); border-radius:14px; background:var(--surface-soft); }
-  .study-presentation-copy { display:grid; gap:.08rem; min-width:0; }
-  .study-presentation-label { color:var(--heading-color); font-size:.8rem; font-weight:800; }
-  .study-presentation-help { color:var(--text-muted); font-size:.7rem; }
-  .study-presentation-tabs { display:inline-flex; gap:.25rem; padding:.2rem; border:1px solid var(--border-color); border-radius:11px; background:var(--surface-elevated); }
-  .study-presentation-tabs button { min-height:36px; padding:.45rem .72rem; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:750; cursor:pointer; }
-  .study-presentation-tabs button[aria-selected="true"] { background:var(--surface); color:var(--heading-color); box-shadow:0 1px 5px rgba(0,0,0,.08); }
-  .study-presentation-tabs button:disabled { opacity:.45; cursor:not-allowed; }
+  .lesson-presentation-control { display:flex; align-items:center; gap:.38rem; padding-left:.55rem; border-left:1px solid var(--border-color); }
+  .lesson-presentation-control[hidden] { display:none !important; }
+  .lesson-presentation-control-label { color:var(--text-muted); font-size:.67rem; font-weight:820; letter-spacing:.055em; text-transform:uppercase; }
+  .lesson-presentation-tabs { display:inline-flex; gap:.18rem; padding:.18rem; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); }
+  .lesson-presentation-tabs button { min-height:36px; padding:.42rem .66rem; border:0; border-radius:7px; background:transparent; color:var(--text-muted); font:inherit; font-size:.72rem; font-weight:760; cursor:pointer; }
+  .lesson-presentation-tabs button[aria-selected="true"] { background:var(--surface); color:var(--heading-color); box-shadow:0 1px 5px rgba(0,0,0,.08); }
+  .lesson-presentation-tabs button:disabled { opacity:.42; cursor:not-allowed; }
   :global(html[data-study-presentation="dynamic"]) .current-section-status { display:none; }
-  @media (max-width:640px) {
-    .study-presentation-toolbar { align-items:flex-start; flex-direction:column; }
-    .study-presentation-tabs { width:100%; }
-    .study-presentation-tabs button { flex:1; min-height:44px; }
+  :global(html[data-study-presentation="dynamic"]) .lesson-toc-column,
+  :global(html[data-study-presentation="dynamic"]) .aids-column,
+  :global(html[data-study-presentation="dynamic"]) .toc-backdrop,
+  :global(html[data-study-presentation="dynamic"]) .aids-backdrop { display:none !important; }
+  :global(html[data-study-presentation="dynamic"]) .learning-grid { grid-template-columns:minmax(0,960px) !important; }
+  @media (max-width:760px) {
+    .lesson-presentation-control { padding-left:0; border-left:0; }
+    .lesson-presentation-control-label { display:none; }
+    .lesson-presentation-tabs button { min-height:44px; padding:.5rem .72rem; }
   }
 
   .mode-toolbar { position: sticky; top: .45rem; z-index: 30; display: flex; justify-content: space-between; gap: .75rem; align-items: center; padding: .45rem; border: 1px solid var(--border-color); border-radius: 14px; background: color-mix(in srgb, var(--surface-elevated) 92%, transparent); box-shadow: var(--shadow-sm); backdrop-filter: blur(18px); }

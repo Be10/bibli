@@ -1,0 +1,259 @@
+---
+interface Props {
+  lang?: "es" | "en";
+}
+
+const { lang = "es" } = Astro.props;
+const copy = lang === "en"
+  ? {
+      eyebrow: "Study preferences",
+      title: "Default lesson view",
+      description: "Choose how study lessons should open. You can still change the view from the lesson toolbar.",
+      group: "Default lesson view",
+      classic: "Classic",
+      classicDescription: "Continuous reading for calm, in-depth study.",
+      dynamic: "Dynamic",
+      dynamicDescription: "Block-by-block learning with a more guided rhythm.",
+      saved: "Preference saved",
+    }
+  : {
+      eyebrow: "Preferencias de estudio",
+      title: "Vista predeterminada de lecciones",
+      description: "Elige cómo quieres que se abran las lecciones de estudio. También podrás cambiar la vista desde la barra superior de la lección.",
+      group: "Vista predeterminada de lecciones",
+      classic: "Clásica",
+      classicDescription: "Lectura continua para un estudio sereno y profundo.",
+      dynamic: "Dinámica",
+      dynamicDescription: "Aprendizaje por bloques con un ritmo más guiado.",
+      saved: "Preferencia guardada",
+    };
+---
+
+<section class="study-presentation-preference" data-study-presentation-preference data-lang={lang} aria-labelledby={`study-presentation-preference-title-${lang}`}>
+  <div class="study-presentation-preference-copy">
+    <span class="study-presentation-preference-eyebrow">{copy.eyebrow}</span>
+    <h2 id={`study-presentation-preference-title-${lang}`}>{copy.title}</h2>
+    <p>{copy.description}</p>
+  </div>
+
+  <fieldset class="study-presentation-preference-options" data-study-presentation-preference-options>
+    <legend class="visually-hidden">{copy.group}</legend>
+
+    <label class="study-presentation-option" data-study-presentation-option="classic">
+      <input type="radio" name={`study-presentation-default-${lang}`} value="classic" data-study-presentation-choice="classic" />
+      <span class="study-presentation-option-icon" aria-hidden="true">Aa</span>
+      <span class="study-presentation-option-copy">
+        <strong>{copy.classic}</strong>
+        <small>{copy.classicDescription}</small>
+      </span>
+      <span class="study-presentation-option-check" aria-hidden="true">✓</span>
+    </label>
+
+    <label class="study-presentation-option" data-study-presentation-option="dynamic">
+      <input type="radio" name={`study-presentation-default-${lang}`} value="dynamic" data-study-presentation-choice="dynamic" />
+      <span class="study-presentation-option-icon is-dynamic" aria-hidden="true">01</span>
+      <span class="study-presentation-option-copy">
+        <strong>{copy.dynamic}</strong>
+        <small>{copy.dynamicDescription}</small>
+      </span>
+      <span class="study-presentation-option-check" aria-hidden="true">✓</span>
+    </label>
+  </fieldset>
+
+  <p class="study-presentation-preference-status" data-study-presentation-preference-status aria-live="polite"></p>
+</section>
+
+<script>
+  const STUDY_PRESENTATION_KEY = "bibli-study-presentation-v1";
+
+  document.querySelectorAll<HTMLElement>("[data-study-presentation-preference]").forEach((root) => {
+    const choices = [...root.querySelectorAll<HTMLInputElement>("[data-study-presentation-choice]")];
+    const status = root.querySelector<HTMLElement>("[data-study-presentation-preference-status]");
+    const savedCopy = root.dataset.lang === "en" ? "Preference saved" : "Preferencia guardada";
+
+    const normalize = (value: string | null) => value === "dynamic" ? "dynamic" : "classic";
+
+    const sync = (value: string | null, announce = false) => {
+      const normalized = normalize(value);
+      root.dataset.presentation = normalized;
+      choices.forEach((choice) => {
+        choice.checked = choice.value === normalized;
+        choice.closest<HTMLElement>("[data-study-presentation-option]")?.classList.toggle("is-active", choice.checked);
+      });
+      if (announce && status) {
+        status.textContent = savedCopy;
+        window.setTimeout(() => {
+          if (status.textContent === savedCopy) status.textContent = "";
+        }, 1800);
+      }
+    };
+
+    sync(localStorage.getItem(STUDY_PRESENTATION_KEY));
+
+    choices.forEach((choice) => {
+      choice.addEventListener("change", () => {
+        if (!choice.checked) return;
+        localStorage.setItem(STUDY_PRESENTATION_KEY, choice.value);
+        sync(choice.value, true);
+        document.dispatchEvent(new CustomEvent("bibli:study-presentation-preference-change", {
+          detail: { presentation: choice.value },
+        }));
+      });
+    });
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === STUDY_PRESENTATION_KEY) sync(event.newValue);
+    });
+
+    document.addEventListener("bibli:study-presentation-change", (event) => {
+      if (!(event instanceof CustomEvent)) return;
+      sync(event.detail?.presentation ?? null);
+    });
+  });
+</script>
+
+<style>
+  .study-presentation-preference {
+    display:grid;
+    grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);
+    gap:clamp(1rem,2.2vw,2rem);
+    align-items:center;
+    margin-top:1rem;
+    padding:1.1rem 1.2rem;
+    border:1px solid var(--border-color);
+    border-radius:18px;
+    background:var(--surface);
+    box-shadow:0 8px 24px rgba(15,23,42,.03);
+  }
+  .study-presentation-preference-copy { min-width:0; }
+  .study-presentation-preference-eyebrow {
+    display:inline-block;
+    color:var(--accent);
+    font-size:.7rem;
+    font-weight:820;
+    letter-spacing:.075em;
+    text-transform:uppercase;
+  }
+  .study-presentation-preference h2 {
+    margin:.3rem 0 .35rem;
+    color:var(--heading-color);
+    font-size:clamp(1.05rem,1.8vw,1.3rem);
+    letter-spacing:-.025em;
+  }
+  .study-presentation-preference p {
+    margin:0;
+    color:var(--text-muted);
+    font-size:.82rem;
+    line-height:1.55;
+  }
+  .study-presentation-preference-options {
+    min-width:0;
+    margin:0;
+    padding:0;
+    border:0;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:.65rem;
+  }
+  .study-presentation-option {
+    position:relative;
+    min-width:0;
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    gap:.7rem;
+    align-items:center;
+    min-height:86px;
+    padding:.8rem .85rem;
+    border:1px solid var(--border-color);
+    border-radius:14px;
+    background:var(--surface-soft);
+    cursor:pointer;
+    transition:border-color 150ms ease,background-color 150ms ease,transform 150ms ease,box-shadow 150ms ease;
+  }
+  .study-presentation-option:hover {
+    transform:translateY(-1px);
+    border-color:var(--accent-border);
+  }
+  .study-presentation-option.is-active {
+    border-color:color-mix(in srgb,var(--accent) 58%,var(--border-color));
+    background:color-mix(in srgb,var(--accent-soft) 45%,var(--surface));
+    box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 8%,transparent);
+  }
+  .study-presentation-option input {
+    position:absolute;
+    width:1px;
+    height:1px;
+    opacity:0;
+    pointer-events:none;
+  }
+  .study-presentation-option:has(input:focus-visible) {
+    outline:2px solid var(--focus-ring);
+    outline-offset:2px;
+  }
+  .study-presentation-option-icon {
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    background:var(--surface);
+    color:var(--heading-color);
+    border:1px solid var(--border-color);
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:800;
+    font-size:.9rem;
+  }
+  .study-presentation-option-icon.is-dynamic {
+    font-family:inherit;
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-color:transparent;
+    letter-spacing:-.08em;
+  }
+  .study-presentation-option-copy { display:grid; gap:.18rem; min-width:0; }
+  .study-presentation-option-copy strong { color:var(--heading-color); font-size:.86rem; }
+  .study-presentation-option-copy small { color:var(--text-muted); font-size:.7rem; line-height:1.4; }
+  .study-presentation-option-check {
+    width:22px;
+    height:22px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    font-size:.7rem;
+    font-weight:850;
+    opacity:0;
+    transform:scale(.8);
+    transition:opacity 150ms ease,transform 150ms ease;
+  }
+  .study-presentation-option.is-active .study-presentation-option-check { opacity:1; transform:scale(1); }
+  .study-presentation-preference-status {
+    grid-column:2;
+    min-height:1em;
+    margin-top:-.5rem !important;
+    font-size:.68rem !important;
+    color:var(--accent) !important;
+    text-align:right;
+  }
+  .visually-hidden {
+    position:absolute !important;
+    width:1px !important;
+    height:1px !important;
+    padding:0 !important;
+    margin:-1px !important;
+    overflow:hidden !important;
+    clip:rect(0,0,0,0) !important;
+    white-space:nowrap !important;
+    border:0 !important;
+  }
+  @media(max-width:820px) {
+    .study-presentation-preference { grid-template-columns:1fr; align-items:stretch; }
+    .study-presentation-preference-status { grid-column:1; }
+  }
+  @media(max-width:560px) {
+    .study-presentation-preference { padding:.95rem; border-radius:16px; }
+    .study-presentation-preference-options { grid-template-columns:1fr; }
+    .study-presentation-option { min-height:76px; }
+  }
+</style>
