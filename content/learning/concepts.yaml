@@ -1,0 +1,169 @@
+schema_version: '1.0.0'
+required_locales:
+  - es
+  - en
+
+concepts:
+  - concept_id: god-as-creator
+    status: active
+    labels:
+      es: Dios como Creador
+      en: God as Creator
+    descriptions:
+      es: Dios existe antes de todo lo creado y da origen, orden y propósito a la creación por su voluntad soberana.
+      en: God exists before all created things and gives creation its origin, order, and purpose by his sovereign will.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: core
+        blocks:
+          - block_key: exposition-01
+            relation_role: introduces
+          - block_key: exposition-02
+            relation_role: explains
+          - block_key: revelation-about-god
+            relation_role: summarizes
+          - block_key: summary
+            relation_role: summarizes
+
+  - concept_id: creation-order-and-purpose
+    status: active
+    labels:
+      es: Orden y propósito de la creación
+      en: Creation's Order and Purpose
+    descriptions:
+      es: La creación es presentada como una obra ordenada en la que Dios asigna lugar, función y propósito a lo creado.
+      en: Creation is presented as an ordered work in which God assigns place, function, and purpose to created things.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: core
+        blocks:
+          - block_key: context
+            relation_role: introduces
+          - block_key: exposition-01
+            relation_role: explains
+          - block_key: exposition-02
+            relation_role: explains
+          - block_key: summary
+            relation_role: summarizes
+
+  - concept_id: goodness-of-creation
+    status: active
+    labels:
+      es: Bondad de la creación
+      en: Goodness of Creation
+    descriptions:
+      es: El mundo creado por Dios es bueno y debe recibirse como don sin confundir la creación con el Creador.
+      en: The world created by God is good and should be received as a gift without confusing creation with the Creator.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: supporting
+        blocks:
+          - block_key: exposition-03
+            relation_role: explains
+          - block_key: revelation-about-god
+            relation_role: connects
+          - block_key: application
+            relation_role: applies
+
+  - concept_id: image-of-god
+    status: active
+    labels:
+      es: Imagen de Dios
+      en: Image of God
+    descriptions:
+      es: La humanidad, varón y mujer, recibe dignidad y vocación al ser creada para representar responsablemente el gobierno de Dios.
+      en: Humanity, male and female, receives dignity and vocation by being created to represent God's rule responsibly.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: core
+        blocks:
+          - block_key: exposition-04
+            relation_role: explains
+          - block_key: revelation-about-humanity
+            relation_role: summarizes
+          - block_key: christ-connection
+            relation_role: connects
+          - block_key: canonical-thread
+            relation_role: connects
+          - block_key: application
+            relation_role: applies
+          - block_key: summary
+            relation_role: summarizes
+
+  - concept_id: human-stewardship
+    status: active
+    labels:
+      es: Mayordomía humana de la creación
+      en: Human Stewardship of Creation
+    descriptions:
+      es: La autoridad humana sobre la creación es delegada por Dios y debe ejercerse con responsabilidad, cuidado y límites.
+      en: Human authority over creation is delegated by God and should be exercised with responsibility, care, and limits.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: supporting
+        blocks:
+          - block_key: exposition-04
+            relation_role: explains
+          - block_key: revelation-about-humanity
+            relation_role: connects
+          - block_key: application
+            relation_role: applies
+
+  - concept_id: seventh-day-rest
+    status: active
+    labels:
+      es: Reposo del séptimo día
+      en: Seventh-Day Rest
+    descriptions:
+      es: La culminación de Génesis 1:1–2:3 muestra la obra creadora completa de Dios y el séptimo día bendecido y santificado.
+      en: The culmination of Genesis 1:1–2:3 presents God's completed creative work and the blessed and sanctified seventh day.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: core
+        blocks:
+          - block_key: exposition-05
+            relation_role: explains
+          - block_key: revelation-about-god
+            relation_role: connects
+          - block_key: revelation-about-humanity
+            relation_role: connects
+          - block_key: application
+            relation_role: applies
+          - block_key: summary
+            relation_role: summarizes
+
+  - concept_id: christ-and-creation
+    status: active
+    labels:
+      es: Cristo y la creación
+      en: Christ and Creation
+    descriptions:
+      es: El Nuevo Testamento presenta al Hijo como aquel por medio de quien fueron hechas todas las cosas y como la imagen perfecta de Dios.
+      en: The New Testament presents the Son as the one through whom all things were made and as the perfect image of God.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: core
+        blocks:
+          - block_key: christ-connection
+            relation_role: explains
+          - block_key: summary
+            relation_role: summarizes
+
+  - concept_id: creation-and-new-creation
+    status: active
+    labels:
+      es: Creación y nueva creación
+      en: Creation and New Creation
+    descriptions:
+      es: La creación inicial abre un hilo canónico que culmina en la renovación de la creación y del pueblo de Dios en Cristo.
+      en: The initial creation opens a canonical thread that culminates in the renewal of creation and God's people in Christ.
+    occurrences:
+      - lesson_id: pentateuco-principal--genesis--01-01-02-03--l001
+        importance: supporting
+        blocks:
+          - block_key: christ-connection
+            relation_role: connects
+          - block_key: canonical-thread
+            relation_role: explains
+          - block_key: summary
+            relation_role: summarizes

@@ -106,6 +106,26 @@ export type StructuredLesson = LessonLearningModel & {
   blocks: LessonLearningBlock[];
 };
 
+export type LearningConcept = {
+  concept_id: string;
+  concept_version: string;
+  status: string;
+  source_kind: string;
+  locale: string;
+  label: string;
+  short_description: string;
+};
+
+export type LessonLearningConcept = LearningConcept & {
+  importance: "core" | "supporting";
+};
+
+export type BlockLearningConcept = LessonLearningConcept & {
+  block_id: string;
+  block_key: string;
+  relation_role: string;
+};
+
 export type RelatedItem = {
   title: string;
   slug: string;
@@ -236,6 +256,61 @@ export function getStructuredLessonByLessonId(
     ...model,
     blocks: getLearningBlocksByLessonId(lessonId, locale),
   };
+}
+
+export function getLearningConceptById(
+  conceptId: string,
+  locale = "es",
+): LearningConcept | undefined {
+  return db.prepare(`
+    SELECT
+      c.id AS concept_id, c.concept_version, c.status, c.source_kind,
+      l.locale, l.label, l.short_description
+    FROM learning_concepts c
+    JOIN learning_concept_localizations l ON l.concept_id = c.id
+    WHERE c.id = ? AND l.locale = ?
+  `).get(conceptId, locale) as LearningConcept | undefined;
+}
+
+export function getLearningConceptsByLessonId(
+  lessonId: string,
+  locale = "es",
+): LessonLearningConcept[] {
+  return db.prepare(`
+    SELECT
+      c.id AS concept_id, c.concept_version, c.status, c.source_kind,
+      l.locale, l.label, l.short_description, lc.importance
+    FROM lesson_learning_concepts lc
+    JOIN learning_concepts c ON c.id = lc.concept_id
+    JOIN learning_concept_localizations l
+      ON l.concept_id = c.id
+     AND l.locale = ?
+    WHERE lc.lesson_id = ?
+    ORDER BY CASE lc.importance WHEN 'core' THEN 0 ELSE 1 END, l.label ASC
+  `).all(locale, lessonId) as LessonLearningConcept[];
+}
+
+export function getLearningConceptsByBlockId(
+  lessonId: string,
+  blockId: string,
+  locale = "es",
+): BlockLearningConcept[] {
+  return db.prepare(`
+    SELECT
+      c.id AS concept_id, c.concept_version, c.status, c.source_kind,
+      l.locale, l.label, l.short_description,
+      lc.importance, bc.block_id, bc.block_key, bc.relation_role
+    FROM lesson_learning_block_concepts bc
+    JOIN lesson_learning_concepts lc
+      ON lc.lesson_id = bc.lesson_id
+     AND lc.concept_id = bc.concept_id
+    JOIN learning_concepts c ON c.id = bc.concept_id
+    JOIN learning_concept_localizations l
+      ON l.concept_id = c.id
+     AND l.locale = ?
+    WHERE bc.lesson_id = ? AND bc.block_id = ?
+    ORDER BY CASE lc.importance WHEN 'core' THEN 0 ELSE 1 END, l.label ASC
+  `).all(locale, lessonId, blockId) as BlockLearningConcept[];
 }
 
 export function getTopicsByLessonId(lessonId: string): RelatedItem[] {

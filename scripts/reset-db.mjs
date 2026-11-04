@@ -24,7 +24,7 @@ try {
   const studies = indexStudies(db, { rootDir });
 
   const counts = Object.fromEntries(
-    ["books", "routes", "route_modules", "study_lessons", "topics", "events", "people", "places", "glossary_terms"]
+    ["books", "routes", "route_modules", "study_lessons", "learning_concepts", "learning_concept_localizations", "topics", "events", "people", "places", "glossary_terms"]
       .map((table) => [table, db.prepare(`SELECT COUNT(*) AS count FROM ${table}`).get().count])
   );
 
@@ -33,14 +33,14 @@ try {
   console.log(`Rutas: ${counts.routes}`);
   console.log(`Módulos: ${counts.route_modules}`);
   console.log(`Lecciones canónicas: ${counts.study_lessons}`);
+  console.log(`Conceptos educativos: ${counts.learning_concepts}`);
+  console.log(`Localizaciones de conceptos: ${counts.learning_concept_localizations}`);
   console.log(`Temas: ${counts.topics}`);
   console.log(`Eventos: ${counts.events}`);
   console.log(`Personajes: ${counts.people}`);
   console.log(`Lugares: ${counts.places}`);
   console.log(`Glosario: ${counts.glossary_terms}`);
   console.log(`Indexación: ${studies.lessons} lecciones.`);
-  console.log(`Modelos educativos: ${studies.learningModels}`);
-  console.log(`Bloques educativos: ${studies.learningBlocks}`);
   console.log("IMPORTANTE: después de db:reset debes volver a importar RVR1960 y KJV.");
   console.log(`Archivo: ${dbPath}`);
 } finally {

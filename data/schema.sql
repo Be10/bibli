@@ -28,6 +28,10 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS route_lessons;
 DROP TABLE IF EXISTS route_modules;
+DROP TABLE IF EXISTS lesson_learning_block_concepts;
+DROP TABLE IF EXISTS lesson_learning_concepts;
+DROP TABLE IF EXISTS learning_concept_localizations;
+DROP TABLE IF EXISTS learning_concepts;
 DROP TABLE IF EXISTS lesson_learning_blocks;
 DROP TABLE IF EXISTS lesson_learning_models;
 DROP TABLE IF EXISTS study_lessons;
@@ -190,6 +194,44 @@ CREATE TABLE lesson_learning_blocks (
   FOREIGN KEY (lesson_id, locale)
     REFERENCES lesson_learning_models(lesson_id, locale)
     ON DELETE CASCADE
+);
+
+CREATE TABLE learning_concepts (
+  id TEXT PRIMARY KEY,
+  concept_version TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active',
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry'
+);
+
+CREATE TABLE learning_concept_localizations (
+  concept_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  label TEXT NOT NULL,
+  short_description TEXT NOT NULL DEFAULT '',
+  PRIMARY KEY (concept_id, locale),
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_learning_concepts (
+  lesson_id TEXT NOT NULL,
+  concept_id TEXT NOT NULL,
+  importance TEXT NOT NULL CHECK (importance IN ('core', 'supporting')),
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  PRIMARY KEY (lesson_id, concept_id),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE,
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_learning_block_concepts (
+  lesson_id TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  block_key TEXT NOT NULL,
+  concept_id TEXT NOT NULL,
+  relation_role TEXT NOT NULL,
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  PRIMARY KEY (lesson_id, block_id, concept_id),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE,
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
 );
 
 CREATE TABLE route_lessons (
@@ -421,6 +463,11 @@ CREATE INDEX idx_study_lessons_reference ON study_lessons(primary_reference);
 CREATE INDEX idx_lesson_learning_models_locale ON lesson_learning_models(locale, lesson_id);
 CREATE INDEX idx_lesson_learning_blocks_lesson ON lesson_learning_blocks(lesson_id, locale, position);
 CREATE INDEX idx_lesson_learning_blocks_role ON lesson_learning_blocks(semantic_role, lesson_id, locale);
+CREATE INDEX idx_learning_concept_localizations_locale ON learning_concept_localizations(locale, label);
+CREATE INDEX idx_lesson_learning_concepts_lesson ON lesson_learning_concepts(lesson_id, importance, concept_id);
+CREATE INDEX idx_lesson_learning_concepts_concept ON lesson_learning_concepts(concept_id, lesson_id);
+CREATE INDEX idx_lesson_learning_block_concepts_block ON lesson_learning_block_concepts(lesson_id, block_id, concept_id);
+CREATE INDEX idx_lesson_learning_block_concepts_concept ON lesson_learning_block_concepts(concept_id, lesson_id, block_id);
 CREATE INDEX idx_events_chronology ON events(chronological_order);
 CREATE INDEX idx_lesson_topics_lesson ON lesson_topics(lesson_id);
 CREATE INDEX idx_lesson_events_lesson ON lesson_events(lesson_id);

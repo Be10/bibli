@@ -13,6 +13,7 @@ import {
 } from "./study-markdown-utils.mjs";
 import { loadEditorialConfig, resolveEditorialModule } from "./study-editorial-config.mjs";
 import { compileStructuredLesson, ensureLearningSchema } from "./study-learning-model.mjs";
+import { ensureLearningConceptSchema, indexLearningConcepts } from "./study-learning-concepts.mjs";
 
 function readJson(filePath, fallback = null) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -96,6 +97,7 @@ export function indexStudies(db, options = {}) {
   // R1A migration path: existing tracked SQLite files predate the structured
   // learning tables. Keep imports forward-compatible without requiring db:reset.
   ensureLearningSchema(db);
+  ensureLearningConceptSchema(db);
 
   const markdownFiles = walkFiles(studiesRoot, (filePath) => filePath.toLowerCase().endsWith(".md"));
   if (markdownFiles.length === 0) throw new Error("content/studies no contiene lecciones Markdown");
@@ -123,6 +125,8 @@ export function indexStudies(db, options = {}) {
     for (const table of [
       "lesson_visual_resources", "lesson_glossary", "lesson_places", "lesson_people",
       "lesson_passages", "lesson_books", "lesson_events", "lesson_topics",
+      "lesson_learning_block_concepts", "lesson_learning_concepts",
+      "learning_concept_localizations", "learning_concepts",
       "route_lessons", "route_modules", "routes",
       "lesson_learning_blocks", "lesson_learning_models", "study_lessons",
     ]) {
@@ -311,6 +315,8 @@ export function indexStudies(db, options = {}) {
       }
     }
 
+    const learningConcepts = indexLearningConcepts(db, { rootDir, clear: false });
+
     for (const route of effectiveRoutes) {
       const row = db.prepare(`
         SELECT COUNT(*) AS lessons, COALESCE(SUM(study_lessons.estimated_minutes), 0) AS minutes
@@ -321,9 +327,11 @@ export function indexStudies(db, options = {}) {
       const hours = row.minutes >= 60 ? `${Math.round(row.minutes / 60)} h aprox.` : `${row.minutes} min aprox.`;
       db.prepare("UPDATE routes SET estimated_duration = ? WHERE id = ?").run(hours, route.id);
     }
+
+    return learningConcepts;
   });
 
-  tx();
+  const learningConcepts = tx();
 
   return {
     lessons: documents.length,
@@ -331,5 +339,9 @@ export function indexStudies(db, options = {}) {
     modules: effectiveRoutes.reduce((sum, route) => sum + (route.modules?.length || 0), 0),
     learningModels: learningModelCount,
     learningBlocks: learningBlockCount,
+    learningConcepts: learningConcepts.concepts,
+    learningConceptLocalizations: learningConcepts.localizations,
+    learningConceptLessonLinks: learningConcepts.lessonLinks,
+    learningConceptBlockLinks: learningConcepts.blockLinks,
   };
 }

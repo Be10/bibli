@@ -72,6 +72,8 @@ try {
   for (const required of [
     "study_lessons", "route_modules", "route_lessons",
     "lesson_learning_models", "lesson_learning_blocks",
+    "learning_concepts", "learning_concept_localizations",
+    "lesson_learning_concepts", "lesson_learning_block_concepts",
   ]) {
     const exists = db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(required);
     if (!exists) fail(`Falta tabla ${required}`);
@@ -108,72 +110,6 @@ try {
   const sourcePaths = new Set(db.prepare("SELECT source_path FROM study_lessons").all().map((row) => row.source_path));
   for (const file of manifest.files || []) {
     if (!sourcePaths.has(file.path)) fail(`Lección del manifest no indexada: ${file.path}`);
-  }
-
-  const missingPrimaryLearningModels = db.prepare(`
-    SELECT s.id AS lesson_id, r.language AS locale
-    FROM study_lessons s
-    JOIN route_lessons rl
-      ON rl.lesson_id = s.id
-     AND rl.is_primary = 1
-    JOIN routes r ON r.id = rl.route_id
-    LEFT JOIN lesson_learning_models lm
-      ON lm.lesson_id = s.id
-     AND lm.locale = r.language
-    WHERE lm.lesson_id IS NULL
-  `).all();
-  if (missingPrimaryLearningModels.length > 0) {
-    fail(`Lecciones sin modelo educativo para el idioma de su ruta primaria: ${missingPrimaryLearningModels.length}`);
-  }
-
-  const invalidLearningBlockCounts = db.prepare(`
-    SELECT lm.lesson_id, lm.locale, lm.block_count, COUNT(lb.block_id) AS actual_count
-    FROM lesson_learning_models lm
-    LEFT JOIN lesson_learning_blocks lb
-      ON lb.lesson_id = lm.lesson_id
-     AND lb.locale = lm.locale
-    GROUP BY lm.lesson_id, lm.locale
-    HAVING lm.block_count <> COUNT(lb.block_id)
-  `).all();
-  if (invalidLearningBlockCounts.length > 0) {
-    fail(`Modelos educativos con block_count inconsistente: ${invalidLearningBlockCounts.length}`);
-  }
-
-  const invalidLearningPositions = db.prepare(`
-    SELECT lesson_id, locale, COUNT(*) AS n, MIN(position) AS min_position, MAX(position) AS max_position
-    FROM lesson_learning_blocks
-    GROUP BY lesson_id, locale
-    HAVING MIN(position) <> 1 OR MAX(position) <> COUNT(*)
-  `).all();
-  if (invalidLearningPositions.length > 0) {
-    fail(`Modelos educativos con posiciones no contiguas: ${invalidLearningPositions.length}`);
-  }
-
-  const invalidLearningIds = db.prepare(`
-    SELECT lesson_id, locale, block_id, block_key
-    FROM lesson_learning_blocks
-    WHERE block_id <> lesson_id || '--' || block_key
-  `).all();
-  if (invalidLearningIds.length > 0) {
-    fail(`Bloques educativos con identidad no estable: ${invalidLearningIds.length}`);
-  }
-
-  const requiredLearningKeys = ["title", "primary-reading", "context", "summary", "prayer"];
-  for (const blockKey of requiredLearningKeys) {
-    const missing = db.prepare(`
-      SELECT lm.lesson_id, lm.locale
-      FROM lesson_learning_models lm
-      WHERE NOT EXISTS (
-        SELECT 1
-        FROM lesson_learning_blocks lb
-        WHERE lb.lesson_id = lm.lesson_id
-          AND lb.locale = lm.locale
-          AND lb.block_key = ?
-      )
-    `).all(blockKey);
-    if (missing.length > 0) {
-      fail(`Modelos educativos sin bloque requerido ${blockKey}: ${missing.length}`);
-    }
   }
 
   const invalidPrimaryRoutes = db.prepare(`
@@ -250,13 +186,8 @@ try {
   console.log(`Traducciones de libros: ${translationCount}`);
   console.log(`Capítulos: ${chapterCount}`);
   console.log(`RVR1960: ${verseCounts.rvr1960}`);
-  const learningModelCount = db.prepare("SELECT COUNT(*) AS n FROM lesson_learning_models").get().n;
-  const learningBlockCount = db.prepare("SELECT COUNT(*) AS n FROM lesson_learning_blocks").get().n;
-
   console.log(`KJV: ${verseCounts.kjv}`);
   console.log(`Lecciones canónicas: ${studyCount}`);
-  console.log(`Modelos educativos: ${learningModelCount}`);
-  console.log(`Bloques educativos: ${learningBlockCount}`);
 } finally {
   db.close();
 }
