@@ -223,10 +223,20 @@ export function getQuestionsByLessonId(_lessonId: string): LessonQuestion[] {
   return [];
 }
 
+function hasDatabaseTable(tableName: string): boolean {
+  return Boolean(db.prepare(`
+    SELECT 1
+    FROM sqlite_master
+    WHERE type = 'table' AND name = ?
+    LIMIT 1
+  `).get(tableName));
+}
+
 export function getLearningModelByLessonId(
   lessonId: string,
   locale = "es",
 ): LessonLearningModel | undefined {
+  if (!hasDatabaseTable("lesson_learning_models")) return undefined;
   return db.prepare(`
     SELECT *
     FROM lesson_learning_models
@@ -238,6 +248,7 @@ export function getLearningBlocksByLessonId(
   lessonId: string,
   locale = "es",
 ): LessonLearningBlock[] {
+  if (!hasDatabaseTable("lesson_learning_blocks")) return [];
   return db.prepare(`
     SELECT *
     FROM lesson_learning_blocks

@@ -4,19 +4,24 @@ La suite cubre regresiones funcionales, responsive y accesibilidad en Chromium d
 
 ## Estrategia de QA
 
-Bibli usa tres niveles deliberadamente separados:
+Bibli usa rutas rápidas especializadas y una certificación completa:
 
 1. `npm run qa:search`
    - Ejecuta un **quick build de Astro** sin los validadores `prebuild`/`postbuild` de npm.
    - Prueba búsqueda y ranking únicamente en `desktop-chromium`.
    - Se usa durante cambios pequeños del buscador.
 
-2. `npm run qa:fast`
+2. `npm run qa:learning`
+   - Valida e importa las lecciones para regenerar el modelo educativo derivado.
+   - Ejecuta `learning:validate`, un quick build y la regresión focalizada de presentación de lecciones + smoke en desktop.
+   - Se usa durante cambios del sistema de aprendizaje sin depender de un `bibli.sqlite` generado previamente.
+
+3. `npm run qa:fast`
    - Ejecuta el mismo quick build de producción y una regresión crítica en desktop.
    - Incluye accesibilidad, referencias bíblicas, estado personal, responsive, ranking y smoke.
    - Se usa periódicamente durante un bloque de desarrollo.
 
-3. `npm run qa:certify`
+4. `npm run qa:certify`
    - Ejecuta `npm run build`, incluidos todos los validadores de `prebuild` y `postbuild`.
    - Después ejecuta `qa:ci`, es decir, **toda** la suite E2E en desktop, tablet y mobile.
    - Es obligatorio al cerrar un bloque importante, antes de mergear o antes de publicar.
@@ -33,7 +38,7 @@ Las matrices de referencias bíblicas están divididas en tests independientes. 
 
 ## Workers
 
-- `qa:search` y `qa:fast`: 3 workers explícitos para acelerar iteración sin saturar el equipo.
+- `qa:search`, `qa:learning` y `qa:fast`: 3 workers explícitos para acelerar iteración sin saturar el equipo.
 - `qa:e2e`, `qa:ci` y `qa:certify`: 2 workers por defecto, priorizando estabilidad y reproducibilidad.
 - CI: 2 workers.
 - Se puede ajustar la suite completa localmente con `BIBLI_E2E_WORKERS=<n>`.
@@ -42,10 +47,10 @@ Las matrices de referencias bíblicas están divididas en tests independientes. 
 
 1. `npm install` (o `npm ci` en un checkout limpio)
 2. `npm run qa:e2e:setup` solo la primera vez o cuando cambie la versión fijada de Playwright
-3. Durante desarrollo, elegir `qa:search` o `qa:fast` según el alcance
+3. Durante desarrollo, elegir `qa:search`, `qa:learning` o `qa:fast` según el alcance
 4. Al cerrar el bloque, ejecutar `npm run qa:certify`
 
-`npm run qa:e2e` y `npm run qa:ci` levantan `astro preview` automáticamente sobre el `dist/` existente. Por esa razón deben usarse solo cuando `dist/` corresponde al código que se quiere validar; `qa:search`, `qa:fast` y `qa:certify` generan su propio build antes de probar.
+`npm run qa:e2e` y `npm run qa:ci` levantan `astro preview` automáticamente sobre el `dist/` existente. Por esa razón deben usarse solo cuando `dist/` corresponde al código que se quiere validar; `qa:search`, `qa:learning`, `qa:fast` y `qa:certify` generan su propio build antes de probar.
 
 En Windows local, Bibli usa Edge/Chrome instalado cuando está disponible y desactiva la grabación de vídeo para no depender del FFmpeg empaquetado de Playwright; trazas y screenshots de fallo permanecen activas. En CI se mantiene `video: retain-on-failure`.
 

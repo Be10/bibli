@@ -2,6 +2,8 @@
 import { getCollection, getEntry, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import StudyAids from "../../components/learning/StudyAids.astro";
+import ClassicLessonRenderer from "../../components/learning/ClassicLessonRenderer.astro";
+import DynamicLessonRenderer from "../../components/learning/DynamicLessonRenderer.astro";
 import Icon from "../../components/Icon.astro";
 import ReaderPreferences from "../../components/ReaderPreferences.astro";
 import { sitePath } from "../../lib/site-paths";
@@ -23,6 +25,7 @@ import {
   getRoutesByLessonId,
   getRouteModules,
   getStudyPlacesByLessonId,
+  getStructuredLessonByLessonId,
   getTopicsByLessonId,
   getVisualResourcesByLessonId,
   resolveBibleVersionId,
@@ -76,6 +79,7 @@ const events = getEventsByLessonId(lesson.id);
 const visualResources = getVisualResourcesByLessonId(lesson.id);
 const studyAidCount = relatedBooks.length + relatedPassages.length + glossary.length + people.length + places.length + topics.length + events.length + visualResources.filter((resource) => Boolean(resource.url)).length;
 const hasStudyAids = studyAidCount > 0;
+const structuredLesson = getStructuredLessonByLessonId(lesson.id, "es");
 
 const range = parseStudyReference(entry.data.primary_reference);
 const book = getBookById(`book-${entry.data.book_id}`);
@@ -102,7 +106,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 ---
 
 <BaseLayout title={title} description={intro || `Estudio de ${entry.data.primary_reference}`}>
-  <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-progress-storage-key={LEARNING_PROGRESS_STORAGE_KEY} data-has-aids={hasStudyAids ? "true" : "empty"}>
+  <main class="learning-page" data-detail-root data-detail-kind="lesson" data-learning-shell data-persisted-root data-lesson-id={lesson.id} data-route-id={route?.id ?? ""} data-total-lessons={routeLessons.length} data-route-lesson-ids={JSON.stringify(routeLessons.map((item) => item.id))} data-progress-storage-key={LEARNING_PROGRESS_STORAGE_KEY} data-has-aids={hasStudyAids ? "true" : "empty"} data-structured-learning-model={structuredLesson ? "available" : "unavailable"}>
     <script is:inline>
       (() => {
         const script = document.currentScript;
@@ -320,6 +324,18 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 
       <div class="lesson-stage">
         <section id="lesson-mode-panel-study" data-mode-panel="study" role="tabpanel" aria-labelledby="lesson-mode-tab-study">
+          <div class="study-presentation-toolbar">
+            <div class="study-presentation-copy">
+              <span class="study-presentation-label">Presentación</span>
+              <span class="study-presentation-help">Misma lección, dos formas de estudiarla</span>
+            </div>
+            <div class="study-presentation-tabs" role="tablist" aria-label="Presentación de la lección">
+              <button type="button" id="study-presentation-tab-classic" data-presentation-button="classic" role="tab" aria-selected="true" aria-controls="study-presentation-classic" tabindex="0">Clásico</button>
+              <button type="button" id="study-presentation-tab-dynamic" data-presentation-button="dynamic" role="tab" aria-selected="false" aria-controls="study-presentation-dynamic" tabindex="-1" disabled={!structuredLesson}>Dinámico</button>
+            </div>
+          </div>
+
+          <ClassicLessonRenderer id="study-presentation-classic" locale="es" labelledBy="study-presentation-tab-classic">
           <header class="study-header">
             <h1 data-tts-lesson-title>{title}</h1>
             <button type="button" class="study-reference" data-open-reading data-tts-lesson-reference aria-label={`Abrir la lectura bíblica: ${referenceLabel}, ${entry.data.translation}`}>
@@ -406,6 +422,15 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
               study.setAttribute("aria-busy", "false");
             })();
           </script>
+          </ClassicLessonRenderer>
+          {structuredLesson && (
+            <DynamicLessonRenderer
+              lesson={structuredLesson}
+              id="study-presentation-dynamic"
+              locale="es"
+              labelledBy="study-presentation-tab-dynamic"
+            />
+          )}
         </section>
 
         <section id="lesson-mode-panel-reading" data-mode-panel="reading" role="tabpanel" aria-labelledby="lesson-mode-tab-reading">
@@ -483,6 +508,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
 
   document.documentElement.dataset.lessonDock = "true";
   const MODE_KEY = "bibli-lesson-mode-v1";
+  const PRESENTATION_KEY = "bibli-study-presentation-v1";
 
   document.querySelectorAll<HTMLElement>("[data-learning-shell]").forEach((shell) => {
     const lessonId = shell.dataset.lessonId || "";
@@ -538,6 +564,8 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     window.addEventListener("pageshow", updateProgressUi);
 
     const modeButtons = [...shell.querySelectorAll<HTMLButtonElement>("[data-mode-button]")];
+    const presentationButtons = [...shell.querySelectorAll<HTMLButtonElement>("[data-presentation-button]")];
+    const presentationPanels = [...shell.querySelectorAll<HTMLElement>("[data-study-presentation-panel]")];
     const aidsToggle = shell.querySelector<HTMLButtonElement>("[data-aids-toggle]");
     const aidsClose = shell.querySelector<HTMLButtonElement>("[data-aids-close]");
     const aidsBackdrop = shell.querySelector<HTMLButtonElement>("[data-aids-backdrop]");
@@ -605,8 +633,34 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       syncLessonSheetState();
     }
 
+    function setPresentation(presentation: string, persist = true) {
+      const dynamicAvailable = presentationPanels.some((panel) => panel.dataset.studyPresentationPanel === "dynamic");
+      const normalized = presentation === "dynamic" && dynamicAvailable ? "dynamic" : "classic";
+      document.documentElement.dataset.studyPresentation = normalized;
+      presentationButtons.forEach((button) => {
+        const active = button.dataset.presentationButton === normalized;
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+      });
+      presentationPanels.forEach((panel) => {
+        const active = panel.dataset.studyPresentationPanel === normalized;
+        panel.hidden = !active;
+        panel.setAttribute("aria-hidden", String(!active));
+      });
+
+      const inStudyMode = document.documentElement.dataset.lessonMode !== "reading";
+      if (tocToggle) tocToggle.hidden = !inStudyMode || normalized === "dynamic";
+      if (inStudyMode) {
+        if (normalized === "dynamic") setToc(false, false, false);
+        else setToc(tocMedia.matches ? false : true, false, false);
+      }
+      if (persist) localStorage.setItem(PRESENTATION_KEY, normalized);
+      document.dispatchEvent(new CustomEvent("bibli:study-presentation-change", { detail: { presentation: normalized } }));
+    }
+
     function setMode(mode: string) {
       const normalized = mode === "reading" ? "reading" : "study";
+      const presentation = document.documentElement.dataset.studyPresentation === "dynamic" ? "dynamic" : "classic";
       document.documentElement.dataset.lessonMode = normalized;
       modeButtons.forEach((button) => {
         const active = button.dataset.modeButton === normalized;
@@ -615,7 +669,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       });
       dockModeButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.dockMode === normalized)));
       if (aidsToggle) aidsToggle.hidden = normalized !== "study";
-      if (tocToggle) tocToggle.hidden = normalized !== "study";
+      if (tocToggle) tocToggle.hidden = normalized !== "study" || presentation === "dynamic";
       if (normalized === "reading") {
         setAids(false, false, false);
         setToc(false, false, false);
@@ -623,7 +677,7 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
         // Restoring the desktop study sidebars is part of the mode transition, not
         // a request to dismiss transient tools such as the TTS player.
         setAids(aidsMedia.matches ? false : true, false, false);
-        setToc(tocMedia.matches ? false : true, false, false);
+        setToc(presentation === "dynamic" ? false : (tocMedia.matches ? false : true), false, false);
       }
       localStorage.setItem(MODE_KEY, normalized);
       document.dispatchEvent(new CustomEvent("bibli:lesson-mode-change", { detail: { mode: normalized } }));
@@ -651,6 +705,28 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
       }
       syncLessonSheetState();
     }
+
+    presentationButtons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        if (!button.disabled) setPresentation(button.dataset.presentationButton || "classic");
+      });
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        const enabledButtons = presentationButtons.filter((candidate) => !candidate.disabled);
+        const enabledIndex = enabledButtons.indexOf(button);
+        if (enabledIndex < 0 || enabledButtons.length < 2) return;
+        event.preventDefault();
+        let nextIndex = enabledIndex;
+        if (event.key === "Home") nextIndex = 0;
+        else if (event.key === "End") nextIndex = enabledButtons.length - 1;
+        else if (event.key === "ArrowRight") nextIndex = (enabledIndex + 1) % enabledButtons.length;
+        else if (event.key === "ArrowLeft") nextIndex = (enabledIndex - 1 + enabledButtons.length) % enabledButtons.length;
+        const nextButton = enabledButtons[nextIndex];
+        if (!nextButton) return;
+        setPresentation(nextButton.dataset.presentationButton || "classic");
+        nextButton.focus();
+      });
+    });
 
     modeButtons.forEach((button, index) => {
       button.addEventListener("click", () => setMode(button.dataset.modeButton || "study"));
@@ -783,8 +859,9 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
     });
 
     setMode(document.documentElement.dataset.lessonMode === "reading" ? "reading" : "study");
+    setPresentation(localStorage.getItem(PRESENTATION_KEY) === "dynamic" ? "dynamic" : "classic", false);
     tocMedia.addEventListener("change", (event) => {
-      if (document.documentElement.dataset.lessonMode === "study") setToc(event.matches ? false : true, false);
+      if (document.documentElement.dataset.lessonMode === "study" && document.documentElement.dataset.studyPresentation !== "dynamic") setToc(event.matches ? false : true, false);
     });
     aidsMedia.addEventListener("change", (event) => {
       if (document.documentElement.dataset.lessonMode === "study") setAids(event.matches ? false : true, false);
@@ -920,6 +997,21 @@ const moduleHref = currentModule ? `${routeHref}#${currentModule.slug}` : routeH
   .lesson-position strong { color: var(--text-color); }
   .completion-summary { text-align: right; display: grid; gap: .05rem; color: var(--text-muted); font-size: .74rem; }
   .completion-summary strong { color: var(--heading-color); font-size: 1.2rem; }
+
+  .study-presentation-toolbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin:0 0 1rem; padding:.65rem .75rem; border:1px solid var(--border-color); border-radius:14px; background:var(--surface-soft); }
+  .study-presentation-copy { display:grid; gap:.08rem; min-width:0; }
+  .study-presentation-label { color:var(--heading-color); font-size:.8rem; font-weight:800; }
+  .study-presentation-help { color:var(--text-muted); font-size:.7rem; }
+  .study-presentation-tabs { display:inline-flex; gap:.25rem; padding:.2rem; border:1px solid var(--border-color); border-radius:11px; background:var(--surface-elevated); }
+  .study-presentation-tabs button { min-height:36px; padding:.45rem .72rem; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font:inherit; font-size:.76rem; font-weight:750; cursor:pointer; }
+  .study-presentation-tabs button[aria-selected="true"] { background:var(--surface); color:var(--heading-color); box-shadow:0 1px 5px rgba(0,0,0,.08); }
+  .study-presentation-tabs button:disabled { opacity:.45; cursor:not-allowed; }
+  :global(html[data-study-presentation="dynamic"]) .current-section-status { display:none; }
+  @media (max-width:640px) {
+    .study-presentation-toolbar { align-items:flex-start; flex-direction:column; }
+    .study-presentation-tabs { width:100%; }
+    .study-presentation-tabs button { flex:1; min-height:44px; }
+  }
 
   .mode-toolbar { position: sticky; top: .45rem; z-index: 30; display: flex; justify-content: space-between; gap: .75rem; align-items: center; padding: .45rem; border: 1px solid var(--border-color); border-radius: 14px; background: color-mix(in srgb, var(--surface-elevated) 92%, transparent); box-shadow: var(--shadow-sm); backdrop-filter: blur(18px); }
   .toolbar-left { display: flex; align-items: center; gap: .45rem; min-width: 0; }

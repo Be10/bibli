@@ -1,0 +1,25 @@
+---
+interface Props {
+  id?: string;
+  locale?: "es" | "en";
+  labelledBy?: string;
+}
+
+const {
+  id = "study-presentation-classic",
+  locale = "es",
+  labelledBy = "study-presentation-tab-classic",
+} = Astro.props;
+---
+
+<div
+  id={id}
+  class="classic-lesson-renderer"
+  data-study-presentation-panel="classic"
+  data-lesson-renderer="classic"
+  data-locale={locale}
+  role="tabpanel"
+  aria-labelledby={labelledBy}
+>
+  <slot />
+</div>

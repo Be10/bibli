@@ -1,0 +1,243 @@
+---
+import type { StructuredLesson } from "../../lib/queries";
+
+interface Props {
+  lesson: StructuredLesson;
+  id?: string;
+  locale?: "es" | "en";
+  labelledBy?: string;
+}
+
+const {
+  lesson,
+  id = "study-presentation-dynamic",
+  locale = "es",
+  labelledBy = "study-presentation-tab-dynamic",
+} = Astro.props;
+
+const language = locale === "en" ? "en" : "es";
+const copy = {
+  es: {
+    eyebrow: "Aprendizaje dinámico",
+    block: "Bloque",
+    of: "de",
+    previous: "Anterior",
+    next: "Siguiente",
+    finish: "Último bloque",
+    progress: "Progreso dentro de la lección",
+    roles: {
+      title: "Inicio",
+      "primary-reading": "Lectura principal",
+      context: "Contexto",
+      exposition: "Explicación",
+      "revelation-about-god": "Qué revela acerca de Dios",
+      "revelation-about-humanity": "Qué revela acerca de nosotros",
+      "christ-connection": "Encontrando a Jesús",
+      "canonical-thread": "Hilo bíblico",
+      application: "Aplicación",
+      reflection: "Para meditar",
+      summary: "Resumen",
+      prayer: "Oración",
+    },
+  },
+  en: {
+    eyebrow: "Dynamic learning",
+    block: "Block",
+    of: "of",
+    previous: "Previous",
+    next: "Next",
+    finish: "Last block",
+    progress: "Progress within the lesson",
+    roles: {
+      title: "Start",
+      "primary-reading": "Primary reading",
+      context: "Context",
+      exposition: "Explanation",
+      "revelation-about-god": "What this reveals about God",
+      "revelation-about-humanity": "What this reveals about us",
+      "christ-connection": "Finding Jesus",
+      "canonical-thread": "Biblical thread",
+      application: "Application",
+      reflection: "Reflect",
+      summary: "Summary",
+      prayer: "Prayer",
+    },
+  },
+}[language];
+
+const blocks = lesson.blocks;
+const roleLabel = (role: string) => copy.roles[role as keyof typeof copy.roles] ?? (language === "en" ? "Study" : "Estudio");
+const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part) => part.trim()).filter(Boolean);
+---
+
+<section
+  id={id}
+  class="dynamic-lesson-renderer"
+  data-study-presentation-panel="dynamic"
+  data-lesson-renderer="dynamic"
+  data-dynamic-lesson
+  data-lesson-id={lesson.lesson_id}
+  data-locale={language}
+  data-block-count={blocks.length}
+  role="tabpanel"
+  aria-labelledby={labelledBy}
+  hidden
+>
+  <header class="dynamic-shell-heading">
+    <div>
+      <p class="dynamic-eyebrow">{copy.eyebrow}</p>
+      <h2>{lesson.title}</h2>
+    </div>
+    <div class="dynamic-counter" aria-live="polite" aria-atomic="true">
+      <span data-dynamic-current>1</span>
+      <span aria-hidden="true">/</span>
+      <span data-dynamic-total>{blocks.length}</span>
+    </div>
+  </header>
+
+  <div
+    class="dynamic-progress"
+    role="progressbar"
+    aria-label={copy.progress}
+    aria-valuemin="1"
+    aria-valuemax={blocks.length}
+    aria-valuenow="1"
+    data-dynamic-progress
+  >
+    <span data-dynamic-progress-bar style={`width:${blocks.length ? 100 / blocks.length : 100}%`}></span>
+  </div>
+
+  <div class="dynamic-block-stack" data-dynamic-block-stack>
+    {blocks.map((block, index) => (
+      <article
+        class:list={["dynamic-block", `is-${block.block_type}`, `role-${block.semantic_role}`]}
+        data-dynamic-block
+        data-block-id={block.block_id}
+        data-block-key={block.block_key}
+        data-semantic-role={block.semantic_role}
+        data-block-position={block.position}
+        aria-hidden={index === 0 ? "false" : "true"}
+        hidden={index !== 0}
+      >
+        <header class="dynamic-block-header">
+          <span class="dynamic-role">{roleLabel(block.semantic_role)}</span>
+          <span class="dynamic-block-number">{copy.block} {block.position} {copy.of} {blocks.length}</span>
+        </header>
+
+        {block.heading && block.semantic_role !== "title" && <h3>{block.heading.replace(/^[^\p{L}\p{N}]+/u, "").trim()}</h3>}
+        {block.semantic_role === "title" ? (
+          <h3 class="dynamic-title">{block.content_text}</h3>
+        ) : block.semantic_role === "primary-reading" ? (
+          <div class="dynamic-scripture-reference">
+            <strong>{block.bible_reference ?? lesson.primary_reference}</strong>
+            <span>{block.bible_translation ?? lesson.translation}</span>
+          </div>
+        ) : (
+          <div class="dynamic-copy">
+            {textParts(block.content_text).map((part) => <p>{part}</p>)}
+          </div>
+        )}
+      </article>
+    ))}
+  </div>
+
+  <nav class="dynamic-navigation" aria-label={language === "en" ? "Dynamic lesson navigation" : "Navegación de la lección dinámica"}>
+    <button type="button" data-dynamic-previous disabled>{copy.previous}</button>
+    <span class="dynamic-navigation-status" data-dynamic-status>{blocks.length > 1 ? roleLabel(blocks[0]?.semantic_role ?? "title") : copy.finish}</span>
+    <button type="button" data-dynamic-next disabled={blocks.length <= 1}>{copy.next}</button>
+  </nav>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dynamic-lesson]").forEach((root) => {
+    if (root.dataset.dynamicMounted === "true") return;
+    const blocks = [...root.querySelectorAll<HTMLElement>("[data-dynamic-block]")];
+    const previous = root.querySelector<HTMLButtonElement>("[data-dynamic-previous]");
+    const next = root.querySelector<HTMLButtonElement>("[data-dynamic-next]");
+    const current = root.querySelector<HTMLElement>("[data-dynamic-current]");
+    const progress = root.querySelector<HTMLElement>("[data-dynamic-progress]");
+    const progressBar = root.querySelector<HTMLElement>("[data-dynamic-progress-bar]");
+    const status = root.querySelector<HTMLElement>("[data-dynamic-status]");
+    let index = 0;
+
+    const show = (requested: number, focus = false) => {
+      if (blocks.length === 0) return;
+      index = Math.max(0, Math.min(requested, blocks.length - 1));
+      blocks.forEach((block, blockIndex) => {
+        const active = blockIndex === index;
+        block.hidden = !active;
+        block.setAttribute("aria-hidden", String(!active));
+      });
+      if (previous) previous.disabled = index === 0;
+      if (next) next.disabled = index === blocks.length - 1;
+      if (current) current.textContent = String(index + 1);
+      if (progress) progress.setAttribute("aria-valuenow", String(index + 1));
+      if (progressBar) progressBar.style.width = `${((index + 1) / blocks.length) * 100}%`;
+      if (status) {
+        const active = blocks[index];
+        const label = active?.querySelector<HTMLElement>(".dynamic-role")?.textContent?.trim();
+        status.textContent = label || `${index + 1}/${blocks.length}`;
+      }
+      root.dataset.activeBlock = blocks[index]?.dataset.blockKey || "";
+      document.dispatchEvent(new CustomEvent("bibli:dynamic-block-change", {
+        detail: {
+          lessonId: root.dataset.lessonId || "",
+          blockId: blocks[index]?.dataset.blockId || "",
+          blockKey: blocks[index]?.dataset.blockKey || "",
+          position: index + 1,
+          total: blocks.length,
+        },
+      }));
+      if (focus) blocks[index]?.focus?.({ preventScroll: true });
+    };
+
+    previous?.addEventListener("click", () => show(index - 1));
+    next?.addEventListener("click", () => show(index + 1));
+    root.addEventListener("bibli:dynamic-reset", () => show(0));
+    root.dataset.dynamicMounted = "true";
+    show(0);
+  });
+</script>
+
+<style>
+  .dynamic-lesson-renderer { display:grid; gap:1rem; }
+  .dynamic-lesson-renderer[hidden] { display:none !important; }
+  .dynamic-shell-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; padding:.35rem .15rem 0; }
+  .dynamic-shell-heading h2 { margin:.18rem 0 0; color:var(--heading-color); font-size:clamp(1.45rem,3vw,2.05rem); letter-spacing:-.035em; line-height:1.08; }
+  .dynamic-eyebrow { margin:0; color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .dynamic-counter { min-width:4rem; display:flex; justify-content:center; gap:.2rem; padding:.55rem .7rem; border:1px solid var(--border-color); border-radius:999px; background:var(--surface-soft); color:var(--text-muted); font-size:.8rem; font-variant-numeric:tabular-nums; }
+  .dynamic-progress { height:5px; overflow:hidden; border-radius:999px; background:var(--surface-soft); }
+  .dynamic-progress span { display:block; height:100%; border-radius:inherit; background:var(--accent); transition:width .22s ease; }
+  .dynamic-block-stack { min-height:clamp(300px,46vh,560px); display:grid; }
+  .dynamic-block { align-self:stretch; min-height:inherit; display:flex; flex-direction:column; justify-content:center; gap:1rem; padding:clamp(1.25rem,3.5vw,2.5rem); border:1px solid var(--border-color); border-radius:22px; background:linear-gradient(145deg,var(--surface-elevated),var(--surface-soft)); box-shadow:var(--shadow-sm); }
+  .dynamic-block[hidden] { display:none !important; }
+  .dynamic-block.is-scripture { background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface-elevated)),var(--surface-soft)); }
+  .dynamic-block.role-christ-connection { border-color:color-mix(in srgb,var(--accent) 35%,var(--border-color)); }
+  .dynamic-block.role-reflection,.dynamic-block.role-prayer { background:linear-gradient(145deg,var(--surface-soft),var(--surface-elevated)); }
+  .dynamic-block-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .dynamic-role { color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+  .dynamic-block-number { color:var(--text-muted); font-size:.72rem; }
+  .dynamic-block h3 { margin:0; color:var(--heading-color); font-size:clamp(1.35rem,3vw,2rem); line-height:1.12; letter-spacing:-.03em; text-wrap:balance; }
+  .dynamic-title { font-size:clamp(2rem,5vw,3.35rem) !important; max-width:18ch; }
+  .dynamic-copy { display:grid; gap:.8rem; max-width:72ch; }
+  .dynamic-copy p { margin:0; color:var(--text-color); font-size:clamp(1rem,1.7vw,1.12rem); line-height:1.72; }
+  .dynamic-scripture-reference { display:grid; gap:.35rem; padding:1rem 1.15rem; border-left:4px solid var(--accent); border-radius:0 14px 14px 0; background:var(--surface); }
+  .dynamic-scripture-reference strong { color:var(--heading-color); font-size:clamp(1.45rem,3vw,2.15rem); }
+  .dynamic-scripture-reference span { color:var(--text-muted); font-size:.85rem; font-weight:700; }
+  .dynamic-navigation { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:.75rem; }
+  .dynamic-navigation button { min-height:44px; padding:.7rem 1rem; border:1px solid var(--border-color); border-radius:12px; background:var(--surface-elevated); color:var(--heading-color); font:inherit; font-weight:750; cursor:pointer; }
+  .dynamic-navigation button:disabled { opacity:.42; cursor:not-allowed; }
+  .dynamic-navigation-status { min-width:0; color:var(--text-muted); font-size:.78rem; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  @media (max-width:640px) {
+    .dynamic-shell-heading { align-items:center; }
+    .dynamic-shell-heading h2 { font-size:1.35rem; }
+    .dynamic-block-stack { min-height:55vh; }
+    .dynamic-block { border-radius:18px; padding:1.15rem; }
+    .dynamic-navigation { grid-template-columns:1fr 1fr; }
+    .dynamic-navigation-status { grid-column:1 / -1; grid-row:1; }
+    .dynamic-navigation button { grid-row:2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dynamic-progress span { transition:none; }
+  }
+</style>
