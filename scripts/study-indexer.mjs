@@ -14,6 +14,9 @@ import {
 import { loadEditorialConfig, resolveEditorialModule } from "./study-editorial-config.mjs";
 import { compileStructuredLesson, ensureLearningSchema } from "./study-learning-model.mjs";
 import { ensureLearningConceptSchema, indexLearningConcepts } from "./study-learning-concepts.mjs";
+import { ensureLearningContextSchema, indexLearningContext } from "./study-learning-context.mjs";
+import { ensureLearningCheckSchema, indexLearningChecks } from "./study-learning-checks.mjs";
+import { ensureLearningInteractionSchema, indexLearningInteractions } from "./study-learning-interactions.mjs";
 
 function readJson(filePath, fallback = null) {
   if (!fs.existsSync(filePath)) return fallback;
@@ -98,6 +101,9 @@ export function indexStudies(db, options = {}) {
   // learning tables. Keep imports forward-compatible without requiring db:reset.
   ensureLearningSchema(db);
   ensureLearningConceptSchema(db);
+  ensureLearningContextSchema(db);
+  ensureLearningCheckSchema(db);
+  ensureLearningInteractionSchema(db);
 
   const markdownFiles = walkFiles(studiesRoot, (filePath) => filePath.toLowerCase().endsWith(".md"));
   if (markdownFiles.length === 0) throw new Error("content/studies no contiene lecciones Markdown");
@@ -125,6 +131,14 @@ export function indexStudies(db, options = {}) {
     for (const table of [
       "lesson_visual_resources", "lesson_glossary", "lesson_places", "lesson_people",
       "lesson_passages", "lesson_books", "lesson_events", "lesson_topics",
+      "learning_interactive_item_localizations", "learning_interactive_items",
+      "learning_interactive_block_concepts", "learning_interactive_block_localizations", "learning_interactive_blocks",
+      "learning_microcheck_evidence_localizations", "learning_microcheck_evidence", "learning_microcheck_option_localizations",
+      "learning_microcheck_options", "learning_microcheck_concepts",
+      "learning_microcheck_localizations", "learning_microchecks",
+      "lesson_learning_glossary_links", "glossary_term_localizations",
+      "learning_objective_blocks", "learning_objective_concepts",
+      "learning_objective_localizations", "learning_objectives",
       "lesson_learning_block_concepts", "lesson_learning_concepts",
       "learning_concept_localizations", "learning_concepts",
       "route_lessons", "route_modules", "routes",
@@ -316,6 +330,9 @@ export function indexStudies(db, options = {}) {
     }
 
     const learningConcepts = indexLearningConcepts(db, { rootDir, clear: false });
+    const learningContext = indexLearningContext(db, { rootDir, clear: false });
+    const learningChecks = indexLearningChecks(db, { rootDir, clear: false });
+    const learningInteractions = indexLearningInteractions(db, { rootDir, clear: false });
 
     for (const route of effectiveRoutes) {
       const row = db.prepare(`
@@ -328,10 +345,10 @@ export function indexStudies(db, options = {}) {
       db.prepare("UPDATE routes SET estimated_duration = ? WHERE id = ?").run(hours, route.id);
     }
 
-    return learningConcepts;
+    return { learningConcepts, learningContext, learningChecks, learningInteractions };
   });
 
-  const learningConcepts = tx();
+  const { learningConcepts, learningContext, learningChecks, learningInteractions } = tx();
 
   return {
     lessons: documents.length,
@@ -343,5 +360,23 @@ export function indexStudies(db, options = {}) {
     learningConceptLocalizations: learningConcepts.localizations,
     learningConceptLessonLinks: learningConcepts.lessonLinks,
     learningConceptBlockLinks: learningConcepts.blockLinks,
+    learningObjectives: learningContext.objectives,
+    learningObjectiveLocalizations: learningContext.objectiveLocalizations,
+    learningObjectiveConceptLinks: learningContext.objectiveConceptLinks,
+    learningObjectiveBlockLinks: learningContext.objectiveBlockLinks,
+    learningGlossaryLocalizations: learningContext.glossaryLocalizations,
+    learningGlossaryLinks: learningContext.glossaryLinks,
+    learningMicrochecks: learningChecks.checks,
+    learningMicrocheckLocalizations: learningChecks.localizations,
+    learningMicrocheckConceptLinks: learningChecks.conceptLinks,
+    learningMicrocheckOptions: learningChecks.options,
+    learningMicrocheckOptionLocalizations: learningChecks.optionLocalizations,
+    learningMicrocheckEvidenceLinks: learningChecks.evidenceLinks,
+    learningMicrocheckEvidenceLocalizations: learningChecks.evidenceLocalizations,
+    learningInteractiveBlocks: learningInteractions.interactions,
+    learningInteractiveLocalizations: learningInteractions.localizations,
+    learningInteractiveConceptLinks: learningInteractions.conceptLinks,
+    learningInteractiveItems: learningInteractions.items,
+    learningInteractiveItemLocalizations: learningInteractions.itemLocalizations,
   };
 }

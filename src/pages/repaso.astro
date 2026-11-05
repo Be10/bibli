@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ReviewSession from "../components/learning/ReviewSession.astro";
+import { getLearningReviewCatalog } from "../lib/queries";
+import { sitePath } from "../lib/site-paths";
+
+const catalog = getLearningReviewCatalog("es");
+---
+
+<BaseLayout
+  title="Repaso de hoy"
+  alternateLanguage={{ code: "en", label: "English", href: sitePath("/en/review/") }}
+>
+  <main class="review-page" data-review-page>
+    <ReviewSession lang="es" catalog={catalog} />
+  </main>
+</BaseLayout>
+
+<style>
+  .review-page{width:min(960px,calc(100% - 32px));margin:0 auto;padding:26px 0 72px}
+  @media(max-width:560px){.review-page{width:min(100% - 20px,960px);padding-top:16px}}
+</style>

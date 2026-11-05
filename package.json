@@ -14,7 +14,7 @@
     "clean:generated": "node scripts/clean-generated.mjs",
     "db:reset": "node scripts/reset-db.mjs",
     "db:validate": "node scripts/validate-db.mjs",
-    "learning:validate": "node scripts/validate-learning-model.mjs && node scripts/validate-learning-concepts.mjs",
+    "learning:validate": "node scripts/validate-learning-model.mjs && node scripts/validate-learning-concepts.mjs && node scripts/validate-learning-context.mjs && node scripts/validate-learning-checks.mjs && node scripts/validate-learning-interactions.mjs && npm run tts:validate && npm run visuals:validate",
     "repo:validate": "node scripts/validate-repository.mjs",
     "studies:sync": "node scripts/sync-studies.mjs",
     "studies:validate": "node scripts/validate-studies.mjs",
@@ -34,7 +34,7 @@
     "qa:e2e:setup": "node scripts/setup-browser-qa.mjs",
     "qa:e2e": "node scripts/run-browser-qa.mjs",
     "qa:search": "npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/bible-reference-search.spec.ts tests/e2e/search-ranking.spec.ts --project=desktop-chromium --workers=3",
-    "qa:learning": "npm run studies:validate && npm run studies:import && npm run learning:validate && npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/learning-presentation.spec.ts tests/e2e/smoke.spec.ts --project=desktop-chromium --workers=3",
+    "qa:learning": "npm run studies:validate && npm run studies:import && npm run learning:validate && npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/learning-presentation.spec.ts tests/e2e/learning-review.spec.ts tests/e2e/tts-architecture.spec.ts tests/e2e/visual-identity.spec.ts tests/e2e/smoke.spec.ts --project=desktop-chromium --workers=3",
     "qa:fast": "npm run qa:quick-build && node scripts/run-browser-qa.mjs tests/e2e/accessibility.spec.ts tests/e2e/bible-reference-search.spec.ts tests/e2e/personal.spec.ts tests/e2e/responsive.spec.ts tests/e2e/search-ranking.spec.ts tests/e2e/smoke.spec.ts --project=desktop-chromium --workers=3",
     "qa:all": "npm run build && npm run qa:e2e",
     "qa:ci": "node scripts/run-browser-qa.mjs",
@@ -53,7 +53,9 @@
     "bibliimg:r2:plan": "node scripts/publish-bibli-images-r2.mjs --plan",
     "bibliimg:r2:publish": "node scripts/publish-bibli-images-r2.mjs --publish",
     "bibliimg:r2:check": "node scripts/publish-bibli-images-r2.mjs --check",
-    "qa:quick-build": "astro build"
+    "qa:quick-build": "astro build",
+    "tts:validate": "node scripts/validate-tts.mjs",
+    "visuals:validate": "node scripts/validate-route-visuals.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1161.0",

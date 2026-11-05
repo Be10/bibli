@@ -1,5 +1,5 @@
 ---
-import type { StructuredLesson } from "../../lib/queries";
+import type { ContextualGlossaryTerm, StructuredLesson } from "../../lib/queries";
 
 interface Props {
   lesson: StructuredLesson;
@@ -16,6 +16,7 @@ const {
 } = Astro.props;
 
 const language = locale === "en" ? "en" : "es";
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
 const copy = {
   es: {
     eyebrow: "Aprendizaje dinámico",
@@ -25,6 +26,28 @@ const copy = {
     next: "Siguiente",
     finish: "Último bloque",
     progress: "Progreso dentro de la lección",
+    objectivesEyebrow: "Objetivos de aprendizaje",
+    objectivesTitle: "Al terminar este estudio podrás",
+    glossaryEyebrow: "Glosario contextual",
+    glossaryClose: "Cerrar definición",
+    glossaryHint: "Término del glosario. Activa para ver una definición breve.",
+    microcheckEyebrow: "Comprueba tu comprensión",
+    microcheckHint: "Comprobación breve · no bloquea tu avance",
+    correct: "Correcto",
+    incorrect: "Revisa esta idea",
+    evidence: "Evidencia",
+    review: "Revisar este punto",
+    retry: "Puedes elegir otra respuesta para volver a comprobarlo.",
+    summaryEyebrow: "Cierre de aprendizaje",
+    summaryTitle: "Lo esencial de esta lección",
+    summaryEstimate: "Comprensión estimada",
+    summaryEstimatePending: "Completa las comprobaciones para obtener una estimación basada en evidencia.",
+    summaryEstimateNote: "Estimación basada en las comprobaciones de esta lección; no mide tu aprendizaje de forma absoluta.",
+    summaryUnderstood: "Conceptos comprendidos",
+    summaryReinforce: "Por reforzar",
+    summaryPending: "Aún sin evidencia",
+    summaryReview: "Revisar concepto",
+    visualUnavailable: "Recurso visual en preparación",
     roles: {
       title: "Inicio",
       "primary-reading": "Lectura principal",
@@ -48,6 +71,28 @@ const copy = {
     next: "Next",
     finish: "Last block",
     progress: "Progress within the lesson",
+    objectivesEyebrow: "Learning objectives",
+    objectivesTitle: "By the end of this study, you will be able to",
+    glossaryEyebrow: "Contextual glossary",
+    glossaryClose: "Close definition",
+    glossaryHint: "Glossary term. Activate to view a short definition.",
+    microcheckEyebrow: "Check your understanding",
+    microcheckHint: "Short check · does not block your progress",
+    correct: "Correct",
+    incorrect: "Review this idea",
+    evidence: "Evidence",
+    review: "Review this point",
+    retry: "You can choose another answer and check again.",
+    summaryEyebrow: "Learning close",
+    summaryTitle: "What matters most from this lesson",
+    summaryEstimate: "Estimated understanding",
+    summaryEstimatePending: "Complete the checks to receive an evidence-based estimate.",
+    summaryEstimateNote: "Estimate based on this lesson's checks; it does not measure your learning absolutely.",
+    summaryUnderstood: "Concepts understood",
+    summaryReinforce: "Worth reinforcing",
+    summaryPending: "Not yet evidenced",
+    summaryReview: "Review concept",
+    visualUnavailable: "Visual resource in preparation",
     roles: {
       title: "Start",
       "primary-reading": "Primary reading",
@@ -66,8 +111,52 @@ const copy = {
 }[language];
 
 const blocks = lesson.blocks;
+const objectives = lesson.objectives ?? [];
+const contextualGlossary = lesson.contextual_glossary ?? [];
+const microchecks = lesson.microchecks ?? [];
+const interactiveBlocks = lesson.interactive_blocks ?? [];
+const concepts = lesson.concepts ?? [];
 const roleLabel = (role: string) => copy.roles[role as keyof typeof copy.roles] ?? (language === "en" ? "Study" : "Estudio");
 const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part) => part.trim()).filter(Boolean);
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const glossaryByBlock = new Map<string, ContextualGlossaryTerm[]>();
+for (const term of contextualGlossary) {
+  const items = glossaryByBlock.get(term.block_id) ?? [];
+  items.push(term);
+  glossaryByBlock.set(term.block_id, items);
+}
+const microchecksByBlock = new Map<string, typeof microchecks>();
+for (const check of microchecks) {
+  const items = microchecksByBlock.get(check.trigger_block_id) ?? [];
+  items.push(check);
+  microchecksByBlock.set(check.trigger_block_id, items);
+}
+const interactionsByBlock = new Map<string, typeof interactiveBlocks>();
+for (const interaction of interactiveBlocks) {
+  const items = interactionsByBlock.get(interaction.anchor_block_id) ?? [];
+  items.push(interaction);
+  interactionsByBlock.set(interaction.anchor_block_id, items);
+}
+const blockByKey = new Map(blocks.map((block) => [block.block_key, block]));
+
+const glossaryPanelId = (blockKey: string, slug: string) =>
+  `${id}-glossary-${blockKey}-${slug}`.replace(/[^a-zA-Z0-9_-]/g, "-");
+
+const splitGlossaryText = (value: string, terms: ContextualGlossaryTerm[], claimed: Set<string>) => {
+  const usable = [...terms]
+    .filter((term) => term.term.trim())
+    .sort((a, b) => b.term.length - a.term.length);
+  if (usable.length === 0) return [{ text: value, glossary: null as ContextualGlossaryTerm | null }];
+  const regex = new RegExp(`(${usable.map((term) => escapeRegExp(term.term)).join("|")})`, "giu");
+  return value.split(regex).filter(Boolean).map((part) => {
+    const glossary = usable.find((term) => term.term.toLocaleLowerCase(language) === part.toLocaleLowerCase(language)) ?? null;
+    if (!glossary || claimed.has(glossary.glossary_id)) {
+      return { text: part, glossary: null as ContextualGlossaryTerm | null };
+    }
+    claimed.add(glossary.glossary_id);
+    return { text: part, glossary };
+  });
+};
 ---
 
 <section
@@ -76,9 +165,15 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
   data-study-presentation-panel="dynamic"
   data-lesson-renderer="dynamic"
   data-dynamic-lesson
+  data-tts-dynamic-reader
   data-lesson-id={lesson.lesson_id}
   data-locale={language}
   data-block-count={blocks.length}
+  data-objective-count={objectives.length}
+  data-glossary-count={contextualGlossary.length}
+  data-microcheck-count={microchecks.length}
+  data-interactive-count={interactiveBlocks.length}
+  data-concept-count={concepts.length}
   role="tabpanel"
   aria-labelledby={labelledBy}
   hidden
@@ -95,6 +190,27 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
     </div>
   </header>
 
+  {objectives.length > 0 && (
+    <aside class="dynamic-objectives" data-learning-objectives>
+      <div class="dynamic-objectives-heading">
+        <p>{copy.objectivesEyebrow}</p>
+        <h3>{copy.objectivesTitle}</h3>
+      </div>
+      <ol>
+        {objectives.map((objective) => (
+          <li
+            data-learning-objective
+            data-objective-id={objective.objective_id}
+            data-concept-ids={objective.concept_ids.join(",")}
+            data-evidence-blocks={objective.evidence_block_keys.join(",")}
+          >
+            {objective.objective_text}
+          </li>
+        ))}
+      </ol>
+    </aside>
+  )}
+
   <div
     class="dynamic-progress"
     role="progressbar"
@@ -108,38 +224,269 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
   </div>
 
   <div class="dynamic-block-stack" data-dynamic-block-stack>
-    {blocks.map((block, index) => (
-      <article
-        class:list={["dynamic-block", `is-${block.block_type}`, `role-${block.semantic_role}`]}
-        data-dynamic-block
-        data-block-id={block.block_id}
-        data-block-key={block.block_key}
-        data-semantic-role={block.semantic_role}
-        data-block-position={block.position}
-        aria-hidden={index === 0 ? "false" : "true"}
-        hidden={index !== 0}
-      >
-        <header class="dynamic-block-header">
-          <span class="dynamic-role">{roleLabel(block.semantic_role)}</span>
-          <span class="dynamic-block-number">{copy.block} {block.position} {copy.of} {blocks.length}</span>
-        </header>
+    {blocks.map((block, index) => {
+      const blockGlossary = glossaryByBlock.get(block.block_id) ?? [];
+      const blockChecks = microchecksByBlock.get(block.block_id) ?? [];
+      const blockInteractions = interactionsByBlock.get(block.block_id) ?? [];
+      const claimedGlossary = new Set<string>();
+      return (
+        <article
+          class:list={["dynamic-block", `is-${block.block_type}`, `role-${block.semantic_role}`]}
+          data-dynamic-block
+          data-block-id={block.block_id}
+          data-block-key={block.block_key}
+          data-semantic-role={block.semantic_role}
+          data-block-position={block.position}
+          tabindex="-1"
+          aria-hidden={index === 0 ? "false" : "true"}
+          hidden={index !== 0}
+        >
+          <header class="dynamic-block-header">
+            <span class="dynamic-role">{roleLabel(block.semantic_role)}</span>
+            <span class="dynamic-block-number">{copy.block} {block.position} {copy.of} {blocks.length}</span>
+          </header>
 
-        {block.heading && block.semantic_role !== "title" && <h3>{block.heading.replace(/^[^\p{L}\p{N}]+/u, "").trim()}</h3>}
-        {block.semantic_role === "title" ? (
-          <h3 class="dynamic-title">{block.content_text}</h3>
-        ) : block.semantic_role === "primary-reading" ? (
-          <div class="dynamic-scripture-reference">
-            <strong>{block.bible_reference ?? lesson.primary_reference}</strong>
-            <span>{block.bible_translation ?? lesson.translation}</span>
-          </div>
-        ) : (
-          <div class="dynamic-copy">
-            {textParts(block.content_text).map((part) => <p>{part}</p>)}
-          </div>
-        )}
-      </article>
-    ))}
+          {block.heading && block.semantic_role !== "title" && <h3>{block.heading.replace(/^[^\p{L}\p{N}]+/u, "").trim()}</h3>}
+          {block.semantic_role === "title" ? (
+            <h3 class="dynamic-title">{block.content_text}</h3>
+          ) : block.semantic_role === "primary-reading" ? (
+            <div class="dynamic-scripture-reference">
+              <strong>{block.bible_reference ?? lesson.primary_reference}</strong>
+              <span>{block.bible_translation ?? lesson.translation}</span>
+            </div>
+          ) : (
+            <div class="dynamic-copy">
+              {textParts(block.content_text).map((part) => (
+                <p>
+                  {splitGlossaryText(part, blockGlossary, claimedGlossary).map((segment) => segment.glossary ? (
+                    <button
+                      type="button"
+                      class="dynamic-glossary-trigger"
+                      data-glossary-trigger
+                      data-glossary-id={segment.glossary.glossary_id}
+                      aria-controls={glossaryPanelId(block.block_key, segment.glossary.slug)}
+                      aria-expanded="false"
+                      title={copy.glossaryHint}
+                    >
+                      {segment.text}
+                    </button>
+                  ) : segment.text)}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {blockInteractions.map((interaction) => (
+            <section
+              class:list={["dynamic-interaction", `interaction-${interaction.interaction_type}`, `presentation-${interaction.presentation}`]}
+              data-learning-interaction
+              data-interaction-id={interaction.interaction_id}
+              data-interaction-type={interaction.interaction_type}
+              data-interaction-presentation={interaction.presentation}
+              data-anchor-block={interaction.anchor_block_key}
+              data-concept-ids={interaction.concept_ids.join(",")}
+            >
+              <header class="dynamic-interaction-heading">
+                {interaction.eyebrow && <p>{interaction.eyebrow}</p>}
+                <h4>{interaction.title}</h4>
+                <div class="dynamic-interaction-body">{interaction.body}</div>
+              </header>
+
+              {interaction.interaction_type === "comparison" && (
+                <div class="dynamic-comparison" data-comparison>
+                  <div class="dynamic-comparison-controls" role="group" aria-label={interaction.title}>
+                    {interaction.items.map((item, itemIndex) => (
+                      <button
+                        type="button"
+                        data-comparison-option
+                        data-item-key={item.item_key}
+                        aria-pressed={itemIndex === 0 ? "true" : "false"}
+                      >
+                        {item.label || item.title}
+                      </button>
+                    ))}
+                  </div>
+                  <div class="dynamic-comparison-items">
+                    {interaction.items.map((item, itemIndex) => (
+                      <article
+                        data-comparison-item
+                        data-item-key={item.item_key}
+                        data-selected={itemIndex === 0 ? "true" : "false"}
+                      >
+                        {item.label && <span>{item.label}</span>}
+                        <h5>{item.title}</h5>
+                        <p>{item.body}</p>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {interaction.interaction_type === "visual-resource" && (
+                <figure class="dynamic-visual-resource" data-visual-resource data-resource-id={interaction.resource_id ?? undefined}>
+                  {interaction.resource_url ? (
+                    <img
+                      src={interaction.resource_url}
+                      alt={interaction.resource_alt_text || interaction.resource_title || interaction.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="dynamic-visual-resource-placeholder" role="status">{copy.visualUnavailable}</div>
+                  )}
+                  {(interaction.resource_title || interaction.resource_description) && (
+                    <figcaption>
+                      {interaction.resource_title && <strong>{interaction.resource_title}</strong>}
+                      {interaction.resource_description && <span>{interaction.resource_description}</span>}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
+
+              {interaction.instruction && <p class="dynamic-interaction-instruction">{interaction.instruction}</p>}
+            </section>
+          ))}
+
+          {blockGlossary.map((term) => (
+            <aside
+              id={glossaryPanelId(block.block_key, term.slug)}
+              class="dynamic-glossary-panel"
+              data-glossary-panel
+              data-glossary-id={term.glossary_id}
+              data-glossary-popover
+              role="dialog"
+              aria-live="polite"
+              hidden
+            >
+              <div class="dynamic-glossary-panel-heading">
+                <div>
+                  <span>{copy.glossaryEyebrow}</span>
+                  <h4>{term.term}</h4>
+                </div>
+                <button type="button" data-glossary-close aria-label={copy.glossaryClose}>×</button>
+              </div>
+              <p>{term.definition}</p>
+              {language === "es" && (
+                <a href={`${baseUrl}/glosario/${term.slug}`}>Ver término completo</a>
+              )}
+            </aside>
+          ))}
+
+          {blockChecks.map((check) => (
+            <section
+              class="dynamic-microcheck"
+              data-microcheck
+              data-check-id={check.check_id}
+              data-objective-id={check.objective_id}
+              data-concept-ids={check.concept_ids.join(",")}
+              data-trigger-block={check.trigger_block_key}
+              data-correct-label={copy.correct}
+              data-incorrect-label={copy.incorrect}
+            >
+              <header class="dynamic-microcheck-heading">
+                <div>
+                  <p>{copy.microcheckEyebrow}</p>
+                  <span>{copy.microcheckHint}</span>
+                </div>
+                <span class="dynamic-microcheck-number">{check.position}/{microchecks.length}</span>
+              </header>
+              <h4>{check.prompt}</h4>
+              <div class="dynamic-microcheck-options" role="group" aria-label={check.prompt}>
+                {check.options.map((option) => (
+                  <button
+                    type="button"
+                    data-microcheck-option
+                    data-option-id={option.option_id}
+                    data-option-key={option.option_key}
+                    data-is-correct={String(option.is_correct)}
+                    data-rationale={option.rationale}
+                    aria-pressed="false"
+                  >
+                    <span class="dynamic-option-marker" aria-hidden="true">{String.fromCharCode(64 + option.position)}</span>
+                    <span>{option.option_text}</span>
+                  </button>
+                ))}
+              </div>
+              <div class="dynamic-microcheck-feedback" data-microcheck-feedback role="status" aria-live="polite" hidden>
+                <p class="dynamic-microcheck-result" data-microcheck-result></p>
+                <p data-microcheck-rationale></p>
+                <div class="dynamic-microcheck-evidence" data-microcheck-evidence>
+                  <span>{copy.evidence}</span>
+                  <ul>
+                    {check.evidence.map((item) => {
+                      const evidenceBlock = blockByKey.get(item.block_key);
+                      return (
+                        <li>
+                          {item.bible_reference && <strong>{item.bible_reference}</strong>}
+                          <span>{evidenceBlock?.heading?.replace(/^[^\p{L}\p{N}]+/u, "").trim() || roleLabel(evidenceBlock?.semantic_role ?? "exposition")}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div class="dynamic-microcheck-actions">
+                  <button type="button" data-review-block-key={check.evidence[0]?.block_key}>{copy.review}</button>
+                  <span>{copy.retry}</span>
+                </div>
+              </div>
+            </section>
+          ))}
+        </article>
+      );
+    })}
   </div>
+
+  {concepts.length > 0 && (
+    <section
+      class="dynamic-learning-summary"
+      data-learning-summary
+      data-estimate-ready-label={copy.summaryEstimateNote}
+      data-estimate-pending-label={copy.summaryEstimatePending}
+      hidden
+    >
+      <header class="dynamic-learning-summary-heading">
+        <p>{copy.summaryEyebrow}</p>
+        <h3>{copy.summaryTitle}</h3>
+      </header>
+
+      <div class="dynamic-understanding-estimate" data-understanding-estimate>
+        <span>{copy.summaryEstimate}</span>
+        <strong data-understanding-estimate-value>—</strong>
+        <p data-understanding-estimate-note>{copy.summaryEstimatePending}</p>
+      </div>
+
+      <div class="dynamic-summary-groups">
+        <section data-summary-group="understood" hidden>
+          <h4>{copy.summaryUnderstood} <span data-summary-count>0</span></h4>
+          <ul data-summary-list="understood"></ul>
+        </section>
+        <section data-summary-group="reinforce" hidden>
+          <h4>{copy.summaryReinforce} <span data-summary-count>0</span></h4>
+          <ul data-summary-list="reinforce"></ul>
+        </section>
+        <section data-summary-group="pending">
+          <h4>{copy.summaryPending} <span data-summary-count>{concepts.length}</span></h4>
+          <ul data-summary-list="pending">
+            {concepts.map((concept) => (
+              <li
+                data-learning-summary-concept
+                data-concept-id={concept.concept_id}
+                data-concept-importance={concept.importance}
+                data-summary-state="pending"
+              >
+                <div>
+                  <strong data-summary-concept-label>{concept.label}</strong>
+                  <p>{concept.short_description}</p>
+                </div>
+                {concept.review_block_key && (
+                  <button type="button" data-review-block-key={concept.review_block_key}>{copy.summaryReview}</button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </section>
+  )}
 
   <nav class="dynamic-navigation" aria-label={language === "en" ? "Dynamic lesson navigation" : "Navegación de la lección dinámica"}>
     <button type="button" data-dynamic-previous disabled>{copy.previous}</button>
@@ -149,6 +496,8 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
 </section>
 
 <script>
+  import { seedReviewFromLessonCheck } from "../../lib/learning-review";
+
   document.querySelectorAll<HTMLElement>("[data-dynamic-lesson]").forEach((root) => {
     if (root.dataset.dynamicMounted === "true") return;
     const blocks = [...root.querySelectorAll<HTMLElement>("[data-dynamic-block]")];
@@ -158,16 +507,251 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
     const progress = root.querySelector<HTMLElement>("[data-dynamic-progress]");
     const progressBar = root.querySelector<HTMLElement>("[data-dynamic-progress-bar]");
     const status = root.querySelector<HTMLElement>("[data-dynamic-status]");
+    const objectives = root.querySelector<HTMLElement>("[data-learning-objectives]");
+    const learningSummary = root.querySelector<HTMLElement>("[data-learning-summary]");
+    const checkElements = [...root.querySelectorAll<HTMLElement>("[data-microcheck]")];
+    const conceptItems = [...root.querySelectorAll<HTMLElement>("[data-learning-summary-concept]")];
+    const answerStorageKey = `bibli-learning-check-answers-v1:${root.dataset.lessonId || "unknown"}`;
     let index = 0;
+    let lastGlossaryTrigger: HTMLButtonElement | null = null;
+    let lastGlossaryPanel: HTMLElement | null = null;
 
-    const show = (requested: number, focus = false) => {
+    const positionGlossary = (trigger: HTMLButtonElement, panel: HTMLElement) => {
+      const margin = 12;
+      const gap = 10;
+      panel.style.visibility = "hidden";
+      panel.style.left = `${margin}px`;
+      panel.style.top = `${margin}px`;
+      const triggerRect = trigger.getBoundingClientRect();
+      const initialPanelRect = panel.getBoundingClientRect();
+      const availableBelow = window.innerHeight - triggerRect.bottom - margin;
+      const availableAbove = triggerRect.top - margin;
+      const placeBelow = availableBelow >= initialPanelRect.height + gap || availableBelow >= availableAbove;
+      const availableOnSide = Math.max(96, (placeBelow ? availableBelow : availableAbove) - gap);
+      panel.style.maxHeight = `${Math.floor(availableOnSide)}px`;
+      const panelRect = panel.getBoundingClientRect();
+      const left = Math.min(
+        Math.max(margin, triggerRect.left + triggerRect.width / 2 - panelRect.width / 2),
+        Math.max(margin, window.innerWidth - panelRect.width - margin),
+      );
+      const top = placeBelow
+        ? triggerRect.bottom + gap
+        : triggerRect.top - panelRect.height - gap;
+      panel.style.left = `${Math.round(left)}px`;
+      panel.style.top = `${Math.round(top)}px`;
+      panel.dataset.placement = placeBelow ? "below" : "above";
+      panel.style.visibility = "visible";
+    };
+
+    const repositionGlossary = () => {
+      if (lastGlossaryTrigger && lastGlossaryPanel && !lastGlossaryPanel.hidden) {
+        positionGlossary(lastGlossaryTrigger, lastGlossaryPanel);
+      }
+    };
+
+    const closeGlossary = (restoreFocus = false) => {
+      root.querySelectorAll<HTMLElement>("[data-glossary-panel]").forEach((panel) => {
+        panel.hidden = true;
+        panel.style.removeProperty("left");
+        panel.style.removeProperty("top");
+        panel.style.removeProperty("visibility");
+        panel.style.removeProperty("max-height");
+        delete panel.dataset.placement;
+      });
+      root.querySelectorAll<HTMLButtonElement>("[data-glossary-trigger]").forEach((trigger) => {
+        trigger.setAttribute("aria-expanded", "false");
+      });
+      if (restoreFocus && lastGlossaryTrigger) lastGlossaryTrigger.focus({ preventScroll: true });
+      lastGlossaryTrigger = null;
+      lastGlossaryPanel = null;
+    };
+
+    root.querySelectorAll<HTMLButtonElement>("[data-glossary-trigger]").forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        const targetId = trigger.getAttribute("aria-controls");
+        const target = targetId ? document.getElementById(targetId) : null;
+        const wasOpen = trigger.getAttribute("aria-expanded") === "true";
+        closeGlossary(false);
+        if (!target || wasOpen) return;
+        target.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        lastGlossaryTrigger = trigger;
+        lastGlossaryPanel = target;
+        positionGlossary(trigger, target);
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-glossary-close]").forEach((button) => {
+      button.addEventListener("click", () => closeGlossary(true));
+    });
+
+    window.addEventListener("resize", repositionGlossary, { passive: true });
+    window.addEventListener("scroll", repositionGlossary, { passive: true, capture: true });
+
+    root.querySelectorAll<HTMLElement>("[data-comparison]").forEach((comparison) => {
+      const controls = [...comparison.querySelectorAll<HTMLButtonElement>("[data-comparison-option]")];
+      const items = [...comparison.querySelectorAll<HTMLElement>("[data-comparison-item]")];
+      const select = (itemKey: string) => {
+        controls.forEach((control) => {
+          const selected = control.dataset.itemKey === itemKey;
+          control.setAttribute("aria-pressed", String(selected));
+          control.classList.toggle("is-selected", selected);
+        });
+        items.forEach((item) => {
+          const selected = item.dataset.itemKey === itemKey;
+          item.dataset.selected = String(selected);
+          item.classList.toggle("is-selected", selected);
+        });
+      };
+      controls.forEach((control) => {
+        control.addEventListener("click", () => select(control.dataset.itemKey || ""));
+      });
+      const initial = controls.find((control) => control.getAttribute("aria-pressed") === "true") ?? controls[0];
+      if (initial) select(initial.dataset.itemKey || "");
+    });
+
+    let persistedAnswers: Record<string, string> = {};
+    try {
+      const stored = localStorage.getItem(answerStorageKey);
+      persistedAnswers = stored ? JSON.parse(stored) : {};
+    } catch {
+      persistedAnswers = {};
+    }
+
+    const saveAnswers = () => {
+      try {
+        localStorage.setItem(answerStorageKey, JSON.stringify(persistedAnswers));
+      } catch {
+        // Local persistence is progressive enhancement; lesson interaction remains available.
+      }
+    };
+
+    const updateSummary = () => {
+      if (!learningSummary) return;
+      const lists = new Map<string, HTMLElement>();
+      ["understood", "reinforce", "pending"].forEach((state) => {
+        const list = learningSummary.querySelector<HTMLElement>(`[data-summary-list="${state}"]`);
+        if (list) lists.set(state, list);
+      });
+
+      const counts = { understood: 0, reinforce: 0, pending: 0 };
+      let assessedConcepts = 0;
+      let understoodAssessedConcepts = 0;
+
+      conceptItems.forEach((item) => {
+        const conceptId = item.dataset.conceptId || "";
+        const relatedChecks = checkElements.filter((check) =>
+          (check.dataset.conceptIds || "").split(",").filter(Boolean).includes(conceptId)
+        );
+        let state: "understood" | "reinforce" | "pending" = "pending";
+
+        if (relatedChecks.length > 0) {
+          assessedConcepts += 1;
+          const answered = relatedChecks.filter((check) => Boolean(check.dataset.result));
+          if (answered.some((check) => check.dataset.result === "incorrect")) {
+            state = "reinforce";
+          } else if (answered.length === relatedChecks.length) {
+            state = "understood";
+            understoodAssessedConcepts += 1;
+          }
+        }
+
+        item.dataset.summaryState = state;
+        counts[state] += 1;
+        lists.get(state)?.appendChild(item);
+      });
+
+      (["understood", "reinforce", "pending"] as const).forEach((state) => {
+        const group = learningSummary.querySelector<HTMLElement>(`[data-summary-group="${state}"]`);
+        const count = group?.querySelector<HTMLElement>("[data-summary-count]");
+        if (count) count.textContent = String(counts[state]);
+        if (group) group.hidden = counts[state] === 0;
+      });
+
+      const estimateValue = learningSummary.querySelector<HTMLElement>("[data-understanding-estimate-value]");
+      const estimateNote = learningSummary.querySelector<HTMLElement>("[data-understanding-estimate-note]");
+      const answeredChecks = checkElements.filter((check) => Boolean(check.dataset.result)).length;
+      const estimateReady = checkElements.length > 0 && answeredChecks === checkElements.length && assessedConcepts > 0;
+
+      if (estimateReady) {
+        const estimate = Math.round((understoodAssessedConcepts / assessedConcepts) * 100);
+        learningSummary.dataset.understandingEstimate = String(estimate);
+        learningSummary.dataset.estimateStatus = "ready";
+        if (estimateValue) estimateValue.textContent = `${estimate}%`;
+        if (estimateNote) estimateNote.textContent = learningSummary.dataset.estimateReadyLabel || "";
+      } else {
+        delete learningSummary.dataset.understandingEstimate;
+        learningSummary.dataset.estimateStatus = "pending";
+        if (estimateValue) estimateValue.textContent = "—";
+        if (estimateNote) estimateNote.textContent = learningSummary.dataset.estimatePendingLabel || "";
+      }
+    };
+
+    const applyAnswer = (check: HTMLElement, option: HTMLButtonElement, persist = true) => {
+      const feedback = check.querySelector<HTMLElement>("[data-microcheck-feedback]");
+      const result = check.querySelector<HTMLElement>("[data-microcheck-result]");
+      const rationale = check.querySelector<HTMLElement>("[data-microcheck-rationale]");
+      const options = [...check.querySelectorAll<HTMLButtonElement>("[data-microcheck-option]")];
+      const correct = option.dataset.isCorrect === "true";
+
+      options.forEach((item) => {
+        item.setAttribute("aria-pressed", String(item === option));
+        item.classList.toggle("is-selected", item === option);
+        item.classList.toggle("is-correct", item === option && correct);
+        item.classList.toggle("is-incorrect", item === option && !correct);
+      });
+      check.dataset.result = correct ? "correct" : "incorrect";
+      check.dataset.selectedOptionKey = option.dataset.optionKey || "";
+      if (result) result.textContent = correct ? check.dataset.correctLabel || "Correct" : check.dataset.incorrectLabel || "Review";
+      if (rationale) rationale.textContent = option.dataset.rationale || "";
+      if (feedback) feedback.hidden = false;
+
+      const checkId = check.dataset.checkId || "";
+      if (persist && checkId) {
+        persistedAnswers[checkId] = option.dataset.optionKey || "";
+        saveAnswers();
+        seedReviewFromLessonCheck({
+          lessonId: root.dataset.lessonId || "",
+          checkId,
+          conceptIds: (check.dataset.conceptIds || "").split(",").filter(Boolean),
+          correct,
+        });
+      }
+      updateSummary();
+    };
+
+    checkElements.forEach((check) => {
+      const options = [...check.querySelectorAll<HTMLButtonElement>("[data-microcheck-option]")];
+      options.forEach((option) => {
+        option.addEventListener("click", () => applyAnswer(check, option, true));
+      });
+
+      const savedOptionKey = persistedAnswers[check.dataset.checkId || ""];
+      const savedOption = savedOptionKey
+        ? options.find((option) => option.dataset.optionKey === savedOptionKey)
+        : undefined;
+      if (savedOption) applyAnswer(check, savedOption, false);
+    });
+    updateSummary();
+
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && root.querySelector("[data-glossary-panel]:not([hidden])")) {
+        event.preventDefault();
+        closeGlossary(true);
+      }
+    });
+
+    const show = (requested: number, focus = false, source = "ui") => {
       if (blocks.length === 0) return;
+      closeGlossary(false);
       index = Math.max(0, Math.min(requested, blocks.length - 1));
       blocks.forEach((block, blockIndex) => {
         const active = blockIndex === index;
         block.hidden = !active;
         block.setAttribute("aria-hidden", String(!active));
       });
+      if (objectives) objectives.hidden = index !== 0;
+      if (learningSummary) learningSummary.hidden = index !== blocks.length - 1;
       if (previous) previous.disabled = index === 0;
       if (next) next.disabled = index === blocks.length - 1;
       if (current) current.textContent = String(index + 1);
@@ -186,16 +770,37 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
           blockKey: blocks[index]?.dataset.blockKey || "",
           position: index + 1,
           total: blocks.length,
+          source,
         },
       }));
       if (focus) blocks[index]?.focus?.({ preventScroll: true });
     };
 
-    previous?.addEventListener("click", () => show(index - 1));
-    next?.addEventListener("click", () => show(index + 1));
-    root.addEventListener("bibli:dynamic-reset", () => show(0));
+    root.querySelectorAll<HTMLButtonElement>("[data-review-block-key]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const blockKey = button.dataset.reviewBlockKey || "";
+        const targetIndex = blocks.findIndex((block) => block.dataset.blockKey === blockKey);
+        if (targetIndex >= 0) show(targetIndex, true, "review");
+      });
+    });
+
+    previous?.addEventListener("click", () => show(index - 1, false, "ui"));
+    next?.addEventListener("click", () => show(index + 1, false, "ui"));
+    root.addEventListener("bibli:dynamic-reset", () => show(0, false, "reset"));
+    document.addEventListener("bibli:tts-dynamic-navigate", (event) => {
+      if (!(event instanceof CustomEvent)) return;
+      const detail = event.detail || {};
+      if (detail.lessonId && detail.lessonId !== (root.dataset.lessonId || "")) return;
+      if (detail.direction === "next") show(index + 1, false, "tts");
+      if (detail.direction === "previous") show(index - 1, false, "tts");
+    });
+
     root.dataset.dynamicMounted = "true";
-    show(0);
+    const requestedBlockKey = new URLSearchParams(window.location.search).get("block") || "";
+    const requestedIndex = requestedBlockKey
+      ? blocks.findIndex((block) => block.dataset.blockKey === requestedBlockKey)
+      : -1;
+    show(requestedIndex >= 0 ? requestedIndex : 0, false, requestedIndex >= 0 ? "deeplink" : "initial");
   });
 </script>
 
@@ -206,6 +811,12 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
   .dynamic-shell-heading h2 { margin:.18rem 0 0; color:var(--heading-color); font-size:clamp(1.45rem,3vw,2.05rem); letter-spacing:-.035em; line-height:1.08; }
   .dynamic-eyebrow { margin:0; color:var(--accent); font-size:.76rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
   .dynamic-counter { min-width:4rem; display:flex; justify-content:center; gap:.2rem; padding:.55rem .7rem; border:1px solid var(--border-color); border-radius:999px; background:var(--surface-soft); color:var(--text-muted); font-size:.8rem; font-variant-numeric:tabular-nums; }
+  .dynamic-objectives { display:grid; grid-template-columns:minmax(0,.7fr) minmax(0,1.5fr); gap:1rem 1.5rem; padding:1rem 1.1rem; border:1px solid color-mix(in srgb,var(--accent) 26%,var(--border-color)); border-radius:18px; background:color-mix(in srgb,var(--accent) 5%,var(--surface-elevated)); }
+  .dynamic-objectives[hidden] { display:none !important; }
+  .dynamic-objectives-heading p { margin:0 0 .25rem; color:var(--accent); font-size:.7rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .dynamic-objectives-heading h3 { margin:0; color:var(--heading-color); font-size:1rem; line-height:1.3; }
+  .dynamic-objectives ol { margin:0; padding-left:1.25rem; display:grid; gap:.5rem; color:var(--text-color); }
+  .dynamic-objectives li { padding-left:.15rem; line-height:1.5; }
   .dynamic-progress { height:5px; overflow:hidden; border-radius:999px; background:var(--surface-soft); }
   .dynamic-progress span { display:block; height:100%; border-radius:inherit; background:var(--accent); transition:width .22s ease; }
   .dynamic-block-stack { min-height:clamp(300px,46vh,560px); display:grid; }
@@ -221,6 +832,86 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
   .dynamic-title { font-size:clamp(2rem,5vw,3.35rem) !important; max-width:18ch; }
   .dynamic-copy { display:grid; gap:.8rem; max-width:72ch; }
   .dynamic-copy p { margin:0; color:var(--text-color); font-size:clamp(1rem,1.7vw,1.12rem); line-height:1.72; }
+  .dynamic-interaction { display:grid; gap:.9rem; margin-top:.35rem; padding:1rem 1.05rem; border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border-color)); border-radius:18px; background:color-mix(in srgb,var(--accent) 4%,var(--surface-elevated)); }
+  .dynamic-interaction-heading { display:grid; gap:.35rem; }
+  .dynamic-interaction-heading > p { margin:0; color:var(--accent); font-size:.7rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .dynamic-interaction-heading h4 { margin:0; color:var(--heading-color); font-size:clamp(1.08rem,2vw,1.3rem); line-height:1.25; }
+  .dynamic-interaction-body { color:var(--text-color); line-height:1.6; }
+  .dynamic-interaction-instruction { margin:0; color:var(--text-muted); font-size:.82rem; line-height:1.45; }
+  .interaction-key-idea { border-left:4px solid var(--accent); background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface-elevated)),var(--surface-soft)); }
+  .dynamic-comparison { display:grid; gap:.75rem; }
+  .dynamic-comparison-controls { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .dynamic-comparison-controls button { min-height:40px; padding:.45rem .75rem; border:1px solid var(--border-color); border-radius:999px; background:var(--surface); color:var(--text-color); font:inherit; font-size:.82rem; font-weight:700; cursor:pointer; }
+  .dynamic-comparison-controls button[aria-pressed="true"] { border-color:color-mix(in srgb,var(--accent) 60%,var(--border-color)); background:color-mix(in srgb,var(--accent) 12%,var(--surface)); color:var(--heading-color); }
+  .dynamic-comparison-controls button:focus-visible { outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent); outline-offset:2px; }
+  .dynamic-comparison-items { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+  .dynamic-comparison-items article { display:grid; align-content:start; gap:.35rem; min-height:100%; padding:.85rem .9rem; border:1px solid var(--border-color); border-radius:14px; background:var(--surface); transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+  .dynamic-comparison-items article[data-selected="true"] { border-color:color-mix(in srgb,var(--accent) 55%,var(--border-color)); box-shadow:0 6px 20px color-mix(in srgb,var(--accent) 10%,transparent); transform:translateY(-1px); }
+  .dynamic-comparison-items article > span { color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+  .dynamic-comparison-items h5 { margin:0; color:var(--heading-color); font-size:.98rem; line-height:1.3; }
+  .dynamic-comparison-items p { margin:0; color:var(--text-color); font-size:.9rem; line-height:1.55; }
+  .dynamic-visual-resource { display:grid; gap:.55rem; margin:0; }
+  .dynamic-visual-resource img { display:block; width:100%; max-height:420px; object-fit:contain; border-radius:14px; background:var(--surface-soft); }
+  .dynamic-visual-resource-placeholder { display:grid; place-items:center; min-height:180px; border:1px dashed var(--border-color); border-radius:14px; background:var(--surface-soft); color:var(--text-muted); font-size:.85rem; }
+  .dynamic-visual-resource figcaption { display:grid; gap:.15rem; color:var(--text-muted); font-size:.8rem; }
+  .dynamic-visual-resource figcaption strong { color:var(--heading-color); }
+  .dynamic-glossary-trigger { display:inline; margin:0; padding:.02em .12em; border:0; border-radius:.25em; background:color-mix(in srgb,var(--accent) 10%,transparent); color:inherit; font:inherit; font-weight:700; text-decoration-line:underline; text-decoration-style:dotted; text-decoration-thickness:1px; text-underline-offset:.18em; cursor:pointer; }
+  .dynamic-glossary-trigger:hover,.dynamic-glossary-trigger:focus-visible { background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--heading-color); outline:none; }
+  .dynamic-glossary-trigger:focus-visible { box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent); }
+  .dynamic-glossary-panel { position:fixed; z-index:90; display:grid; gap:.7rem; width:min(360px,calc(100vw - 24px)); max-height:calc(100vh - 24px); overflow:auto; padding:1rem 1.05rem; border:1px solid color-mix(in srgb,var(--accent) 25%,var(--border-color)); border-radius:14px; background:var(--surface); box-shadow:0 16px 44px rgba(0,0,0,.18); }
+  .dynamic-glossary-panel[hidden] { display:none !important; }
+  .dynamic-glossary-panel-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+  .dynamic-glossary-panel-heading span { display:block; margin-bottom:.15rem; color:var(--accent); font-size:.68rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  .dynamic-glossary-panel-heading h4 { margin:0; color:var(--heading-color); font-size:1.05rem; }
+  .dynamic-glossary-panel-heading button { width:36px; height:36px; border:1px solid var(--border-color); border-radius:999px; background:var(--surface-soft); color:var(--heading-color); font:inherit; font-size:1.2rem; line-height:1; cursor:pointer; }
+  .dynamic-glossary-panel p { margin:0; color:var(--text-color); line-height:1.6; }
+  .dynamic-glossary-panel a { width:max-content; color:var(--accent); font-size:.82rem; font-weight:750; text-decoration:none; }
+  .dynamic-glossary-panel a:hover,.dynamic-glossary-panel a:focus-visible { text-decoration:underline; text-underline-offset:.16em; }
+  .dynamic-microcheck { display:grid; gap:1rem; margin-top:.35rem; padding:1.15rem; border:1px solid color-mix(in srgb,var(--accent) 30%,var(--border-color)); border-radius:18px; background:color-mix(in srgb,var(--accent) 5%,var(--surface)); }
+  .dynamic-microcheck-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+  .dynamic-microcheck-heading p { margin:0 0 .18rem; color:var(--accent); font-size:.72rem; font-weight:850; letter-spacing:.06em; text-transform:uppercase; }
+  .dynamic-microcheck-heading span { color:var(--text-muted); font-size:.76rem; }
+  .dynamic-microcheck-number { flex:0 0 auto; padding:.28rem .48rem; border-radius:999px; background:var(--surface-soft); font-variant-numeric:tabular-nums; }
+  .dynamic-microcheck h4 { margin:0; color:var(--heading-color); font-size:clamp(1.05rem,2vw,1.3rem); line-height:1.35; }
+  .dynamic-microcheck-options { display:grid; gap:.65rem; }
+  .dynamic-microcheck-options button { width:100%; min-height:48px; display:grid; grid-template-columns:2rem minmax(0,1fr); align-items:center; gap:.7rem; padding:.75rem .85rem; border:1px solid var(--border-color); border-radius:13px; background:var(--surface-elevated); color:var(--text-color); font:inherit; line-height:1.45; text-align:left; cursor:pointer; }
+  .dynamic-microcheck-options button:hover,.dynamic-microcheck-options button:focus-visible { border-color:color-mix(in srgb,var(--accent) 45%,var(--border-color)); outline:none; }
+  .dynamic-microcheck-options button:focus-visible { box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 24%,transparent); }
+  .dynamic-microcheck-options button.is-selected { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,var(--surface-elevated)); }
+  .dynamic-option-marker { display:grid; place-items:center; width:1.8rem; height:1.8rem; border-radius:999px; background:var(--surface-soft); color:var(--heading-color); font-size:.76rem; font-weight:850; }
+  .dynamic-microcheck-feedback { display:grid; gap:.7rem; padding-top:.2rem; }
+  .dynamic-microcheck-feedback[hidden] { display:none !important; }
+  .dynamic-microcheck-result { margin:0; color:var(--heading-color); font-weight:850; }
+  .dynamic-microcheck-feedback > p:not(.dynamic-microcheck-result) { margin:0; color:var(--text-color); line-height:1.55; }
+  .dynamic-microcheck-evidence { display:grid; gap:.45rem; padding:.75rem .85rem; border-radius:12px; background:var(--surface-soft); }
+  .dynamic-microcheck-evidence > span { color:var(--accent); font-size:.68rem; font-weight:850; letter-spacing:.06em; text-transform:uppercase; }
+  .dynamic-microcheck-evidence ul { margin:0; padding-left:1.15rem; display:grid; gap:.3rem; }
+  .dynamic-microcheck-evidence li { color:var(--text-muted); font-size:.8rem; line-height:1.4; }
+  .dynamic-microcheck-evidence li strong { color:var(--heading-color); margin-right:.4rem; }
+  .dynamic-microcheck-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.65rem 1rem; }
+  .dynamic-microcheck-actions button { min-height:44px; padding:.65rem .85rem; border:1px solid color-mix(in srgb,var(--accent) 35%,var(--border-color)); border-radius:11px; background:var(--surface-elevated); color:var(--accent); font:inherit; font-weight:800; cursor:pointer; }
+  .dynamic-microcheck-actions span { color:var(--text-muted); font-size:.76rem; }
+  .dynamic-learning-summary { display:grid; gap:1rem; padding:1.15rem; border:1px solid color-mix(in srgb,var(--accent) 28%,var(--border-color)); border-radius:20px; background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 5%,var(--surface-elevated)),var(--surface-soft)); }
+  .dynamic-learning-summary[hidden] { display:none !important; }
+  .dynamic-learning-summary-heading p { margin:0 0 .22rem; color:var(--accent); font-size:.7rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
+  .dynamic-learning-summary-heading h3 { margin:0; color:var(--heading-color); font-size:clamp(1.2rem,2.4vw,1.55rem); letter-spacing:-.02em; }
+  .dynamic-understanding-estimate { display:grid; grid-template-columns:auto auto; align-items:baseline; justify-content:start; gap:.2rem .7rem; padding:.85rem 1rem; border-radius:14px; background:var(--surface-elevated); }
+  .dynamic-understanding-estimate > span { color:var(--text-muted); font-size:.78rem; font-weight:750; }
+  .dynamic-understanding-estimate strong { color:var(--heading-color); font-size:1.45rem; font-variant-numeric:tabular-nums; }
+  .dynamic-understanding-estimate p { grid-column:1 / -1; margin:0; color:var(--text-muted); font-size:.76rem; line-height:1.45; }
+  .dynamic-summary-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+  .dynamic-summary-groups > section { min-width:0; padding:.85rem; border:1px solid var(--border-color); border-radius:14px; background:var(--surface-elevated); }
+  .dynamic-summary-groups > section[hidden] { display:none !important; }
+  .dynamic-summary-groups h4 { margin:0 0 .65rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem; color:var(--heading-color); font-size:.88rem; }
+  .dynamic-summary-groups h4 span { min-width:1.6rem; padding:.15rem .4rem; border-radius:999px; background:var(--surface-soft); color:var(--text-muted); font-size:.7rem; text-align:center; }
+  .dynamic-summary-groups ul { list-style:none; margin:0; padding:0; display:grid; gap:.6rem; }
+  .dynamic-summary-groups li { display:grid; gap:.5rem; padding:.7rem; border-radius:11px; background:var(--surface-soft); }
+  .dynamic-summary-groups li strong { display:block; color:var(--heading-color); font-size:.82rem; line-height:1.35; }
+  .dynamic-summary-groups li p { margin:.18rem 0 0; color:var(--text-muted); font-size:.72rem; line-height:1.45; }
+  .dynamic-summary-groups li button { min-height:40px; width:max-content; max-width:100%; padding:.5rem .65rem; border:1px solid var(--border-color); border-radius:9px; background:var(--surface-elevated); color:var(--accent); font:inherit; font-size:.72rem; font-weight:800; cursor:pointer; }
+  .dynamic-summary-groups li[data-summary-state="understood"] { border-left:3px solid color-mix(in srgb,var(--accent) 78%,#2f855a); }
+  .dynamic-summary-groups li[data-summary-state="reinforce"] { border-left:3px solid color-mix(in srgb,var(--accent) 55%,#b7791f); }
+  .dynamic-summary-groups li[data-summary-state="pending"] { border-left:3px solid var(--border-color); }
   .dynamic-scripture-reference { display:grid; gap:.35rem; padding:1rem 1.15rem; border-left:4px solid var(--accent); border-radius:0 14px 14px 0; background:var(--surface); }
   .dynamic-scripture-reference strong { color:var(--heading-color); font-size:clamp(1.45rem,3vw,2.15rem); }
   .dynamic-scripture-reference span { color:var(--text-muted); font-size:.85rem; font-weight:700; }
@@ -228,6 +919,13 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
   .dynamic-navigation button { min-height:44px; padding:.7rem 1rem; border:1px solid var(--border-color); border-radius:12px; background:var(--surface-elevated); color:var(--heading-color); font:inherit; font-weight:750; cursor:pointer; }
   .dynamic-navigation button:disabled { opacity:.42; cursor:not-allowed; }
   .dynamic-navigation-status { min-width:0; color:var(--text-muted); font-size:.78rem; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  @media (max-width:900px) {
+    .dynamic-summary-groups { grid-template-columns:1fr; }
+  }
+  @media (max-width:760px) {
+    .dynamic-comparison-items { grid-template-columns:1fr; }
+    .dynamic-objectives { grid-template-columns:1fr; }
+  }
   @media (max-width:640px) {
     .dynamic-shell-heading { align-items:center; }
     .dynamic-shell-heading h2 { font-size:1.35rem; }
@@ -238,6 +936,8 @@ const textParts = (value: string) => String(value ?? "").split(/\n+/).map((part)
     .dynamic-navigation button { grid-row:2; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .dynamic-progress span { transition:none; }
+    .dynamic-progress span,
+    .dynamic-comparison-items article { transition:none; }
+    .dynamic-comparison-items article[data-selected="true"] { transform:none; }
   }
 </style>

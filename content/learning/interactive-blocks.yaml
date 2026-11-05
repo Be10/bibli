@@ -1,0 +1,66 @@
+schema_version: '1.0.0'
+required_locales:
+  - es
+  - en
+
+lessons:
+  pentateuco-principal--genesis--01-01-02-03--l001:
+    interactions:
+      - interaction_key: interaction-01
+        interaction_type: comparison
+        anchor_block: exposition-01
+        presentation: paired-cards
+        concepts:
+          - creation-order-and-purpose
+        localizations:
+          es:
+            eyebrow: Comparación visual
+            title: Dios forma y luego llena
+            body: Los seis días muestran un patrón ordenado que responde a una creación todavía sin formar y sin llenar.
+            instruction: Compara ambos movimientos del relato.
+          en:
+            eyebrow: Visual comparison
+            title: God forms and then fills
+            body: The six days display an ordered pattern that answers a creation not yet formed and filled.
+            instruction: Compare both movements in the account.
+        items:
+          - item_key: form
+            localizations:
+              es:
+                label: Días 1–3
+                title: Dios forma los ámbitos
+                body: Luz y oscuridad; cielo y aguas; tierra seca y vegetación.
+              en:
+                label: Days 1–3
+                title: God forms the realms
+                body: Light and darkness; sky and waters; dry land and vegetation.
+          - item_key: fill
+            localizations:
+              es:
+                label: Días 4–6
+                title: Dios llena los ámbitos
+                body: Lumbreras; criaturas del mar y aves; animales terrestres y seres humanos.
+              en:
+                label: Days 4–6
+                title: God fills the realms
+                body: Lights; sea creatures and birds; land animals and human beings.
+
+      - interaction_key: interaction-02
+        interaction_type: key-idea
+        anchor_block: exposition-05
+        presentation: emphasis-card
+        concepts:
+          - seventh-day-rest
+          - creation-order-and-purpose
+        localizations:
+          es:
+            eyebrow: Idea clave
+            title: El reposo es la culminación, no un apéndice
+            body: La creación no termina simplemente con un mundo lleno. Culmina en el séptimo día bendecido y santificado, bajo el gobierno y la provisión de Dios.
+            instruction: Conserva esta idea mientras continúas la lección.
+          en:
+            eyebrow: Key idea
+            title: Rest is the culmination, not an appendix
+            body: Creation does not simply end with a filled world. It culminates in the blessed and sanctified seventh day under God's rule and provision.
+            instruction: Keep this idea in mind as you continue the lesson.
+        items: []

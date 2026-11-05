@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "fallback_palette": "neutral",
+  "palettes": {
+    "neutral": {
+      "light": { "accent": "#6B7280", "soft": "#E7EAF0", "subtle": "#F4F5F7" },
+      "dark": { "accent": "#AAB2BF", "soft": "#29303A", "subtle": "#1C2128" }
+    },
+    "scroll": {
+      "light": { "accent": "#7A5A2F", "soft": "#EEE2D1", "subtle": "#F8F2E8" },
+      "dark": { "accent": "#D8B378", "soft": "#3A3022", "subtle": "#241F18" }
+    },
+    "olive": {
+      "light": { "accent": "#66733E", "soft": "#E7ECD8", "subtle": "#F4F6EC" },
+      "dark": { "accent": "#AFC489", "soft": "#2A3122", "subtle": "#1C2118" }
+    },
+    "teal": {
+      "light": { "accent": "#3F716B", "soft": "#DCEBE8", "subtle": "#EFF6F4" },
+      "dark": { "accent": "#8EC4BC", "soft": "#203331", "subtle": "#172321" }
+    },
+    "indigo": {
+      "light": { "accent": "#536B9B", "soft": "#E1E7F3", "subtle": "#F1F4FA" },
+      "dark": { "accent": "#9BAED5", "soft": "#242C3D", "subtle": "#191E2A" }
+    },
+    "plum": {
+      "light": { "accent": "#765982", "soft": "#EADFF0", "subtle": "#F6F0F8" },
+      "dark": { "accent": "#B7A0BF", "soft": "#312936", "subtle": "#211B25" }
+    },
+    "clay": {
+      "light": { "accent": "#A25745", "soft": "#F2DFDA", "subtle": "#FAF0ED" },
+      "dark": { "accent": "#D99D8D", "soft": "#382722", "subtle": "#251A17" }
+    }
+  },
+  "routes": {
+    "pentateuco-principal": {
+      "palette": "scroll",
+      "module_palette": ["olive", "teal", "indigo", "plum", "clay"]
+    }
+  }
+}

@@ -1,0 +1,168 @@
+schema_version: '1.0.0'
+required_locales:
+  - es
+  - en
+
+lessons:
+  pentateuco-principal--genesis--01-01-02-03--l001:
+    checks:
+      - check_key: check-01
+        trigger_block: exposition-02
+        objective_key: objective-01
+        concepts:
+          - god-as-creator
+          - creation-order-and-purpose
+        evidence:
+          - block_key: exposition-01
+            bible_reference:
+              es: Génesis 1:1-2
+              en: Genesis 1:1-2
+          - block_key: exposition-02
+            bible_reference:
+              es: Génesis 1:3-31
+              en: Genesis 1:3-31
+        prompt:
+          es: ¿Qué idea resume mejor cómo presenta Génesis 1 la relación entre Dios y la creación?
+          en: Which statement best summarizes how Genesis 1 presents the relationship between God and creation?
+        options:
+          - option_key: option-a
+            correct: true
+            text:
+              es: Dios crea soberanamente por su palabra y da orden, función y propósito a lo creado.
+              en: God sovereignly creates by his word and gives order, function, and purpose to creation.
+            rationale:
+              es: Correcto. La lección subraya que Dios habla, lo creado responde y recibe de él su lugar y propósito.
+              en: Correct. The lesson emphasizes that God speaks, creation responds, and receives its place and purpose from him.
+          - option_key: option-b
+            correct: false
+            text:
+              es: El mundo surge de una lucha entre fuerzas divinas que finalmente alcanzan equilibrio.
+              en: The world emerges from a struggle among divine forces that eventually reach balance.
+            rationale:
+              es: No. Génesis presenta a un único Dios soberano; no describe rivales divinos que compitan con él.
+              en: No. Genesis presents one sovereign God; it does not describe divine rivals competing with him.
+          - option_key: option-c
+            correct: false
+            text:
+              es: La creación adquiere autonomía una vez que existe y deja de depender del Creador.
+              en: Creation becomes autonomous once it exists and no longer depends on the Creator.
+            rationale:
+              es: No. La lección insiste en que la creación depende de Dios y permanece bajo su autoridad.
+              en: No. The lesson stresses that creation depends on God and remains under his authority.
+          - option_key: option-d
+            correct: false
+            text:
+              es: El propósito principal del capítulo es explicar mecanismos científicos modernos con detalle técnico.
+              en: The chapter's main purpose is to explain modern scientific mechanisms in technical detail.
+            rationale:
+              es: No. La lección distingue las afirmaciones teológicas centrales del pasaje de las categorías de un tratado científico moderno.
+              en: No. The lesson distinguishes the passage's central theological claims from the categories of a modern scientific treatise.
+
+      - check_key: check-02
+        trigger_block: exposition-04
+        objective_key: objective-02
+        concepts:
+          - image-of-god
+          - human-stewardship
+        evidence:
+          - block_key: exposition-04
+            bible_reference:
+              es: Génesis 1:26-28
+              en: Genesis 1:26-28
+          - block_key: revelation-about-humanity
+            bible_reference:
+              es: Génesis 1:26-28
+              en: Genesis 1:26-28
+        prompt:
+          es: Según la lección, ¿qué describe mejor ser creado a imagen de Dios?
+          en: According to the lesson, what best describes being created in the image of God?
+        options:
+          - option_key: option-a
+            correct: false
+            text:
+              es: Que la dignidad humana depende del rendimiento, la capacidad o el reconocimiento social.
+              en: That human dignity depends on performance, ability, or social recognition.
+            rationale:
+              es: No. La dignidad se recibe de Dios por haber sido creados a su imagen; no se gana por desempeño.
+              en: No. Dignity is received from God by being created in his image; it is not earned by performance.
+          - option_key: option-b
+            correct: true
+            text:
+              es: Que representamos responsablemente el gobierno de Dios en la creación con una autoridad delegada y limitada.
+              en: That we responsibly represent God's rule in creation with delegated and limited authority.
+            rationale:
+              es: Correcto. La lección vincula la imagen con representar el gobierno de Dios y administrar la creación bajo su autoridad.
+              en: Correct. The lesson connects the image with representing God's rule and stewarding creation under his authority.
+          - option_key: option-c
+            correct: false
+            text:
+              es: Que somos propietarios absolutos de la creación y podemos usarla sin límites.
+              en: That we are absolute owners of creation and may use it without limits.
+            rationale:
+              es: No. El dominio humano es delegado y debe reflejar la sabiduría, generosidad y cuidado de Dios.
+              en: No. Human dominion is delegated and should reflect God's wisdom, generosity, and care.
+          - option_key: option-d
+            correct: false
+            text:
+              es: Que Dios posee necesariamente un cuerpo humano semejante al nuestro.
+              en: That God necessarily has a human body like ours.
+            rationale:
+              es: No. La lección aclara expresamente que ser imagen de Dios no significa que Dios posea un cuerpo humano.
+              en: No. The lesson explicitly clarifies that being God's image does not mean God has a human body.
+
+      - check_key: check-03
+        trigger_block: canonical-thread
+        objective_key: objective-03
+        concepts:
+          - seventh-day-rest
+          - christ-and-creation
+          - creation-and-new-creation
+        evidence:
+          - block_key: exposition-05
+            bible_reference:
+              es: Génesis 2:1-3
+              en: Genesis 2:1-3
+          - block_key: christ-connection
+            bible_reference:
+              es: Juan 1:1-3; Colosenses 1:15-16
+              en: John 1:1-3; Colossians 1:15-16
+          - block_key: canonical-thread
+            bible_reference:
+              es: Apocalipsis 21-22
+              en: Revelation 21-22
+        prompt:
+          es: ¿Qué conexión resume mejor el hilo que la lección traza desde la creación hasta Cristo y la nueva creación?
+          en: Which connection best summarizes the thread the lesson traces from creation to Christ and the new creation?
+        options:
+          - option_key: option-a
+            correct: false
+            text:
+              es: Dios reposa porque quedó fatigado, y Cristo aparece después para reemplazar una creación defectuosa.
+              en: God rests because he became tired, and Christ later appears to replace a defective creation.
+            rationale:
+              es: No. Dios reposa porque su obra creadora está completa, y la creación original es declarada buena.
+              en: No. God rests because his creative work is complete, and the original creation is declared good.
+          - option_key: option-b
+            correct: false
+            text:
+              es: Génesis 2 ya contiene toda la legislación mosaica del sábado y el resto de la Biblia no añade un desarrollo relevante.
+              en: Genesis 2 already contains the full Mosaic Sabbath legislation and the rest of the Bible adds no meaningful development.
+            rationale:
+              es: No. La lección distingue el fundamento creacional del séptimo día de la legislación que aparecerá después con Israel.
+              en: No. The lesson distinguishes the creation foundation of the seventh day from the legislation that later appears with Israel.
+          - option_key: option-c
+            correct: true
+            text:
+              es: La creación culmina en el reposo bendecido por Dios; el Nuevo Testamento presenta a Cristo como agente de la creación y verdadera imagen, y la historia bíblica apunta a la renovación de todas las cosas.
+              en: Creation culminates in God's blessed rest; the New Testament presents Christ as agent of creation and true image, and the biblical story points toward the renewal of all things.
+            rationale:
+              es: Correcto. Ese es el hilo canónico que la lección construye entre Génesis, Cristo y la esperanza de nueva creación.
+              en: Correct. That is the canonical thread the lesson develops between Genesis, Christ, and the hope of new creation.
+          - option_key: option-d
+            correct: false
+            text:
+              es: Cada detalle de Génesis 1 debe interpretarse como una alegoría directa y exclusiva de Jesús.
+              en: Every detail in Genesis 1 must be interpreted as a direct and exclusive allegory of Jesus.
+            rationale:
+              es: No. La lección conecta responsablemente el pasaje con Cristo sin convertir cada elemento del relato en alegoría.
+              en: No. The lesson responsibly connects the passage with Christ without turning every element of the narrative into allegory.

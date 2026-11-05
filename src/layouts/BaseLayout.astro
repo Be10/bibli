@@ -79,7 +79,8 @@ const ui = {
     themeDark: "Oscuro",
     themeCycle: "Cambiar tema",
     appearance: "Apariencia",
-    accent: "Color de énfasis",
+    accent: "Color personal",
+    accentHelp: "Afecta controles y acciones. Las rutas conservan su identidad propia.",
     accentEarth: "Tierra",
     accentOcean: "Azul",
     accentForest: "Bosque",
@@ -135,7 +136,8 @@ const ui = {
     themeDark: "Dark",
     themeCycle: "Change theme",
     appearance: "Appearance",
-    accent: "Accent color",
+    accent: "Personal accent",
+    accentHelp: "Affects controls and actions. Study routes keep their own identity.",
     accentEarth: "Earth",
     accentOcean: "Blue",
     accentForest: "Forest",
@@ -756,8 +758,9 @@ const languageSwitchLabel =
                   <button type="button" data-theme-choice="dark" aria-label={activeUi.themeDark}><Icon name="moon" size={15} /><span>{activeUi.themeDark}</span></button>
                 </div>
               </div>
-              <div class="appearance-group">
+              <div class="appearance-group" data-accent-policy="curated-v1">
                 <span>{activeUi.accent}</span>
+                <small class="appearance-help">{activeUi.accentHelp}</small>
                 <div class="accent-options" role="group" aria-label={activeUi.accent}>
                   <button type="button" data-accent-choice="earth" title={activeUi.accentEarth} aria-label={activeUi.accentEarth}><span class="accent-swatch earth"></span></button>
                   <button type="button" data-accent-choice="ocean" title={activeUi.accentOcean} aria-label={activeUi.accentOcean}><span class="accent-swatch ocean"></span></button>
@@ -3464,6 +3467,7 @@ border-color: var(--border-color);
   .appearance-title .bibli-icon { color: var(--accent); }
   .appearance-group { display:grid; gap:6px; }
   .appearance-group > span { padding:0 .45rem; color:var(--text-muted); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
+  .appearance-help { padding:0 .45rem; color:var(--text-muted); font-size:.68rem; line-height:1.42; }
   .theme-options { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:4px; border-radius:12px; background:var(--surface-soft); }
   .theme-options button {
     min-width:0; min-height:44px; border:0; border-radius:9px; background:transparent; color:var(--text-muted); display:flex; align-items:center; justify-content:center; gap:.35rem; font:inherit; font-size:.72rem; font-weight:680; cursor:pointer;
@@ -3516,6 +3520,29 @@ border-color: var(--border-color);
   html[data-accent="plum"] { --accent:#765982; --accent-hover:#5f4769; --accent-soft:#eadff0; --accent-subtle:#f6f0f8; }
   html[data-accent="clay"] { --accent:#a25745; --accent-hover:#874737; --accent-soft:#f2dfda; --accent-subtle:#faf0ed; }
   html[data-theme="dark"] { --accent-subtle:color-mix(in srgb,var(--accent-soft) 65%,var(--surface)); --accent-border:color-mix(in srgb,var(--accent) 34%,var(--border-color)); }
+
+  [data-route-visual] {
+    --route-accent:var(--route-accent-light,#6b7280);
+    --route-soft:var(--route-soft-light,#e7eaf0);
+    --route-subtle:var(--route-subtle-light,#f4f5f7);
+    --route-border:color-mix(in srgb,var(--route-accent) 32%,var(--border-color));
+  }
+  html[data-theme="dark"] [data-route-visual] {
+    --route-accent:var(--route-accent-dark,#aab2bf);
+    --route-soft:var(--route-soft-dark,#29303a);
+    --route-subtle:var(--route-subtle-dark,#1c2128);
+  }
+  [data-module-visual] {
+    --module-accent:var(--module-accent-light,#6b7280);
+    --module-soft:var(--module-soft-light,#e7eaf0);
+    --module-subtle:var(--module-subtle-light,#f4f5f7);
+    --module-border:color-mix(in srgb,var(--module-accent) 30%,var(--border-color));
+  }
+  html[data-theme="dark"] [data-module-visual] {
+    --module-accent:var(--module-accent-dark,#aab2bf);
+    --module-soft:var(--module-soft-dark,#29303a);
+    --module-subtle:var(--module-subtle-dark,#1c2128);
+  }
 
   .site-header {
     width:100%;

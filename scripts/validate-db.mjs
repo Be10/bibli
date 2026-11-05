@@ -74,6 +74,16 @@ try {
     "lesson_learning_models", "lesson_learning_blocks",
     "learning_concepts", "learning_concept_localizations",
     "lesson_learning_concepts", "lesson_learning_block_concepts",
+    "learning_objectives", "learning_objective_localizations",
+    "learning_objective_concepts", "learning_objective_blocks",
+    "glossary_term_localizations", "lesson_learning_glossary_links",
+    "learning_microchecks", "learning_microcheck_localizations",
+    "learning_microcheck_concepts", "learning_microcheck_options",
+    "learning_microcheck_option_localizations", "learning_microcheck_evidence",
+    "learning_microcheck_evidence_localizations",
+    "learning_interactive_blocks", "learning_interactive_block_localizations",
+    "learning_interactive_block_concepts", "learning_interactive_items",
+    "learning_interactive_item_localizations",
   ]) {
     const exists = db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(required);
     if (!exists) fail(`Falta tabla ${required}`);

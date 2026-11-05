@@ -1,0 +1,99 @@
+---
+import Icon from "../Icon.astro";
+import { sitePath } from "../../lib/site-paths";
+
+interface Props {
+  lang?: "es" | "en";
+  conceptIds?: string[];
+}
+
+const { lang = "es", conceptIds = [] } = Astro.props;
+const language = lang === "en" ? "en" : "es";
+const copy = language === "en"
+  ? {
+      eyebrow: "Spaced review",
+      title: "Review today",
+      empty: "Nothing is due right now.",
+      conceptSingular: "concept",
+      conceptPlural: "concepts",
+      minuteSingular: "min",
+      minutePlural: "min",
+      action: "Start review",
+      href: sitePath("/en/review/"),
+    }
+  : {
+      eyebrow: "Repaso espaciado",
+      title: "Repaso de hoy",
+      empty: "No tienes conceptos pendientes por ahora.",
+      conceptSingular: "concepto",
+      conceptPlural: "conceptos",
+      minuteSingular: "min",
+      minutePlural: "min",
+      action: "Comenzar repaso",
+      href: sitePath("/repaso/"),
+    };
+---
+
+<section
+  class="home-review"
+  data-home-review
+  data-concept-ids={JSON.stringify(conceptIds)}
+  hidden
+  aria-labelledby={`home-review-title-${language}`}
+>
+  <div class="home-review-icon"><Icon name="brain" size={22} /></div>
+  <div class="home-review-copy">
+    <span>{copy.eyebrow}</span>
+    <h2 id={`home-review-title-${language}`}>{copy.title}</h2>
+    <p data-home-review-meta>{copy.empty}</p>
+  </div>
+  <a href={copy.href} data-home-review-link>
+    <span>{copy.action}</span>
+    <Icon name="arrow-right" size={16} />
+  </a>
+</section>
+
+<script>
+  import {
+    LEARNING_REVIEW_SESSION_LIMIT,
+    LEARNING_REVIEW_STORAGE_KEY,
+    countDueReviewConcepts,
+  } from "../../lib/learning-review";
+
+  document.querySelectorAll<HTMLElement>("[data-home-review]").forEach((root) => {
+    if (root.dataset.reviewMounted === "true") return;
+    root.dataset.reviewMounted = "true";
+    const meta = root.querySelector<HTMLElement>("[data-home-review-meta]");
+    let allowed: string[] = [];
+    try { allowed = JSON.parse(root.dataset.conceptIds || "[]"); } catch {}
+    const isEnglish = document.documentElement.lang.toLowerCase().startsWith("en");
+
+    const sync = () => {
+      const totalDue = countDueReviewConcepts(allowed);
+      const count = Math.min(totalDue, LEARNING_REVIEW_SESSION_LIMIT);
+      root.hidden = count <= 0;
+      root.dataset.dueCount = String(count);
+      root.dataset.totalDueCount = String(totalDue);
+      if (!meta || count <= 0) return;
+      const minutes = Math.max(1, Math.ceil(count / 2));
+      meta.textContent = isEnglish
+        ? `${count} ${count === 1 ? "concept" : "concepts"} · ~${minutes} min`
+        : `${count} ${count === 1 ? "concepto" : "conceptos"} · ~${minutes} min`;
+    };
+
+    sync();
+    document.addEventListener("bibli:learning-review-change", sync);
+    window.addEventListener("pageshow", sync);
+    window.addEventListener("storage", (event) => {
+      if (event.key === LEARNING_REVIEW_STORAGE_KEY) sync();
+    });
+  });
+</script>
+
+<style>
+  .home-review{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.9rem;margin-top:1rem;padding:1rem 1.05rem;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border-color));border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent-soft) 22%,var(--surface)),var(--surface));box-shadow:0 8px 24px rgba(15,23,42,.025)}
+  .home-review[hidden]{display:none!important}.home-review-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
+  .home-review-copy{min-width:0}.home-review-copy>span{display:block;color:var(--accent);font-size:.69rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.home-review-copy h2{margin:.14rem 0 .18rem;color:var(--heading-color);font-size:1rem}.home-review-copy p{margin:0;color:var(--text-muted);font-size:.8rem;line-height:1.45}
+  .home-review a{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.55rem .8rem;border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border-color));border-radius:10px;background:var(--surface-elevated);color:var(--accent);font-size:.76rem;font-weight:800;text-decoration:none}
+  @media(max-width:640px){.home-review{grid-template-columns:auto 1fr}.home-review a{grid-column:1/-1;width:100%}}
+</style>

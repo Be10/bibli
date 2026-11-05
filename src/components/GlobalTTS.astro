@@ -1,5 +1,6 @@
 ---
 import Icon from "./Icon.astro";
+import ttsLexicon from "../../content/learning/tts-lexicon.json";
 
 type LanguageCode = "es" | "en";
 interface Props { lang?: LanguageCode; }
@@ -10,6 +11,7 @@ const copy = lang === "en"
       title: "Read aloud",
       ready: "Ready to read",
       part: "Part",
+      block: "Block",
       of: "of",
       previous: "Previous part",
       play: "Play",
@@ -38,6 +40,7 @@ const copy = lang === "en"
       title: "Lectura en voz alta",
       ready: "Listo para leer",
       part: "Fragmento",
+      block: "Bloque",
       of: "de",
       previous: "Fragmento anterior",
       play: "Reproducir",
@@ -61,9 +64,11 @@ const copy = lang === "en"
       estimatedTime: "Duración",
       minuteApprox: "min aprox.",
     };
+const ttsCopyPayload = JSON.stringify(copy);
+const ttsLexiconPayload = JSON.stringify(ttsLexicon);
 ---
 
-<div class="global-tts" data-global-tts data-tts-lang={lang} hidden>
+<div class="global-tts" data-global-tts data-tts-lang={lang} data-tts-copy={ttsCopyPayload} data-tts-lexicon={ttsLexiconPayload} data-tts-provider-default="browser-web-speech" data-tts-rules-version={ttsLexicon.rules_version} data-tts-cache-version={ttsLexicon.cache_version} data-tts-dynamic-sync="block-v1" hidden>
   <button type="button" class="tts-launcher" data-tts-launcher aria-label={copy.launcher} title={copy.launcher}>
     <Icon name="volume" size={19} />
     <span>{copy.launcher}</span>
@@ -123,17 +128,28 @@ const copy = lang === "en"
   </button>
 </div>
 
-<script define:vars={{ copy }}>
+<script>
+  import {
+    buildTtsCacheKey,
+    createBrowserSpeechProvider,
+    createSpeechNormalizer,
+    inferTtsSemanticRole,
+    normalizeWhitespace,
+  } from "../lib/tts/index.js";
+
   (() => {
     const root = document.querySelector("[data-global-tts]");
     if (!(root instanceof HTMLElement)) return;
 
-    const synth = window.speechSynthesis;
-    const Utterance = window.SpeechSynthesisUtterance;
     const lang = root.dataset.ttsLang === "en" ? "en" : "es";
-    const pageSpeechLang = lang === "en" ? "en-US" : "es-PE";
+    const copy = JSON.parse(root.dataset.ttsCopy || "{}");
+    const lexicon = JSON.parse(root.dataset.ttsLexicon || "{}");
+    const speechNormalizer = createSpeechNormalizer(lexicon, lang);
+    const speechProvider = createBrowserSpeechProvider(window);
+    const pageSpeechLang = speechNormalizer.speechLocale;
     const voiceKey = `bibli-tts-voice-${lang}-v1`;
     const rateKey = "bibli-tts-rate-v1";
+    root.dataset.ttsProvider = speechProvider.id;
 
     const launcher = root.querySelector("[data-tts-launcher]");
     const player = root.querySelector("[data-tts-player]");
@@ -151,7 +167,7 @@ const copy = lang === "en"
     const playIcon = root.querySelector("[data-tts-play-icon]");
     const pauseIcon = root.querySelector("[data-tts-pause-icon]");
 
-    if (!synth || !Utterance || !(launcher instanceof HTMLButtonElement) || !(player instanceof HTMLElement)) {
+    if (!speechProvider.available || !(launcher instanceof HTMLButtonElement) || !(player instanceof HTMLElement)) {
       root.hidden = true;
       return;
     }
@@ -159,6 +175,8 @@ const copy = lang === "en"
     let chunks = [];
     let currentIndex = 0;
     let activeSource = null;
+    let activeDynamicBlock = null;
+    let dynamicState = { lessonId: "", blockId: "", blockKey: "", position: 0, total: 0 };
     let session = 0;
     let playing = false;
     let paused = false;
@@ -169,6 +187,7 @@ const copy = lang === "en"
     let voices = [];
     let resumeAfterVisibility = false;
     let foregroundRecoveryTimer = 0;
+    let semanticPauseTimer = 0;
 
     let mediaSession = null;
     let audioSession = null;
@@ -212,61 +231,8 @@ const copy = lang === "en"
       rootElement.style.setProperty("--tts-player-offset", `${height}px`);
     };
 
-    const normalize = (value) => String(value ?? "").replace(/\s+/g, " ").trim();
-    const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const spanishBooks = [
-      "Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut",
-      "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes", "1 Crónicas", "2 Crónicas", "Esdras",
-      "Nehemías", "Ester", "Job", "Salmo", "Salmos", "Proverbios", "Eclesiastés", "Cantares",
-      "Isaías", "Jeremías", "Lamentaciones", "Ezequiel", "Daniel", "Oseas", "Joel", "Amós",
-      "Abdías", "Jonás", "Miqueas", "Nahúm", "Habacuc", "Sofonías", "Hageo", "Zacarías",
-      "Malaquías", "Mateo", "Marcos", "Lucas", "Juan", "Hechos", "Romanos", "1 Corintios",
-      "2 Corintios", "Gálatas", "Efesios", "Filipenses", "Colosenses", "1 Tesalonicenses",
-      "2 Tesalonicenses", "1 Timoteo", "2 Timoteo", "Tito", "Filemón", "Hebreos", "Santiago",
-      "1 Pedro", "2 Pedro", "1 Juan", "2 Juan", "3 Juan", "Judas", "Apocalipsis",
-    ];
-    const englishBooks = [
-      "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
-      "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
-      "Nehemiah", "Esther", "Job", "Psalm", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon",
-      "Song of Songs", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel",
-      "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai",
-      "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans",
-      "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians",
-      "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon",
-      "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation",
-    ];
-    const referenceBooks = [...spanishBooks, ...englishBooks]
-      .sort((a, b) => b.length - a.length)
-      .map(escapeRegExp)
-      .join("|");
-    const bibleReferencePattern = new RegExp(
-      `(^|[^\\p{L}\\p{N}])(${referenceBooks})\\s+(\\d{1,3})\\s*:\\s*(\\d{1,3})(?:\\s*[–—-]\\s*(?:(\\d{1,3})\\s*:\\s*)?(\\d{1,3}))?(?=$|[^\\p{L}\\p{N}])`,
-      "giu",
-    );
-
-    const speakBibleReference = (_match, prefix, book, chapter, verse, endChapter, endVerse) => {
-      if (lang === "en") {
-        if (endVerse && endChapter) return `${prefix}${book}, chapter ${chapter}, verse ${verse}, to chapter ${endChapter}, verse ${endVerse}`;
-        if (endVerse) return `${prefix}${book}, chapter ${chapter}, verses ${verse} to ${endVerse}`;
-        return `${prefix}${book}, chapter ${chapter}, verse ${verse}`;
-      }
-      if (endVerse && endChapter) return `${prefix}${book}, capítulo ${chapter}, versículo ${verse}, al capítulo ${endChapter}, versículo ${endVerse}`;
-      if (endVerse) return `${prefix}${book}, capítulo ${chapter}, versículos ${verse} al ${endVerse}`;
-      return `${prefix}${book}, capítulo ${chapter}, versículo ${verse}`;
-    };
-
-    const prepareSpeechText = (value) => {
-      let text = String(value ?? "")
-        .replace(/[\p{Extended_Pictographic}\p{Emoji_Modifier}\uFE0F\u200D]/gu, " ")
-        .replace(/[•▪◦✦✧✝✓◌≡↝⌖◇]/g, ", ");
-      text = text.replace(bibleReferencePattern, speakBibleReference);
-      text = text.replace(/(\d+)\s*[–—-]\s*(\d+)/g, (_match, start, end) =>
-        lang === "en" ? `${start} to ${end}` : `${start} al ${end}`,
-      );
-      text = text.replace(/(\d+)\s*:\s*(\d+)/g, "$1, $2");
-      return normalize(text);
-    };
+    const normalize = normalizeWhitespace;
+    const prepareSpeechText = (value) => speechNormalizer.normalize(value);
 
     const isVisible = (element) => {
       if (!(element instanceof HTMLElement)) return false;
@@ -274,23 +240,92 @@ const copy = lang === "en"
       return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0;
     };
 
-    const splitLongText = (text, source) => {
+    const splitLongText = (text, source, semanticRole = inferTtsSemanticRole(source)) => {
       const clean = prepareSpeechText(text);
-      if (clean.length <= 520) return clean ? [{ text: clean, source }] : [];
+      const makePart = (part) => ({ text: part, source, semanticRole });
+      if (clean.length <= 520) return clean ? [makePart(clean)] : [];
       const sentences = clean.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) ?? [clean];
       const parts = [];
       let buffer = "";
       for (const sentence of sentences) {
         const nextValue = normalize(`${buffer} ${sentence}`);
         if (buffer && nextValue.length > 520) {
-          parts.push({ text: buffer, source });
+          parts.push(makePart(buffer));
           buffer = normalize(sentence);
         } else {
           buffer = nextValue;
         }
       }
-      if (buffer) parts.push({ text: buffer, source });
+      if (buffer) parts.push(makePart(buffer));
       return parts;
+    };
+
+    const isDynamicPresentation = () =>
+      document.documentElement.dataset.lessonMode === "study"
+      && document.documentElement.dataset.studyPresentation === "dynamic";
+
+    const getDynamicRoot = () => {
+      const candidates = Array.from(document.querySelectorAll("[data-dynamic-lesson]"));
+      return candidates.find((element) => element instanceof HTMLElement && isVisible(element)) ?? null;
+    };
+
+    const syncDynamicStateFromBlock = (dynamicRoot, block) => {
+      if (!(dynamicRoot instanceof HTMLElement) || !(block instanceof HTMLElement)) return;
+      dynamicState = {
+        lessonId: dynamicRoot.dataset.lessonId || "",
+        blockId: block.dataset.blockId || "",
+        blockKey: block.dataset.blockKey || "",
+        position: Number(block.dataset.blockPosition) || 0,
+        total: Number(dynamicRoot.dataset.blockCount) || 0,
+      };
+      root.dataset.ttsDynamicBlockKey = dynamicState.blockKey;
+      root.dataset.ttsDynamicBlockPosition = String(dynamicState.position || 0);
+      root.dataset.ttsDynamicBlockTotal = String(dynamicState.total || 0);
+    };
+
+    const getDynamicSemanticRole = (source, block) => {
+      if (source instanceof Element && source.closest("[data-microcheck]")) return "question";
+      if (source instanceof Element && source.matches("h3,h4,h5")) {
+        return block?.dataset.semanticRole === "title" ? "title" : "heading";
+      }
+      const role = block?.dataset.semanticRole || "";
+      if (role === "title") return "title";
+      if (role === "primary-reading") return "bible-reading";
+      if (role === "application") return "application";
+      if (role === "reflection") return "reflection";
+      if (role === "summary") return "summary";
+      if (role === "prayer") return "prayer";
+      return "explanation";
+    };
+
+    const buildDynamicChunks = () => {
+      const dynamicRoot = getDynamicRoot();
+      if (!(dynamicRoot instanceof HTMLElement)) return [];
+      const activeBlock = dynamicRoot.querySelector("[data-dynamic-block]:not([hidden])");
+      if (!(activeBlock instanceof HTMLElement)) return [];
+      syncDynamicStateFromBlock(dynamicRoot, activeBlock);
+
+      const selectors = [
+        ":scope > h3",
+        ":scope > .dynamic-scripture-reference > strong",
+        ":scope > .dynamic-scripture-reference > span",
+        ":scope > .dynamic-copy > p",
+        ":scope > [data-learning-interaction] .dynamic-interaction-heading h4",
+        ":scope > [data-learning-interaction] .dynamic-interaction-body",
+        ":scope > [data-learning-interaction] [data-comparison-item] > span",
+        ":scope > [data-learning-interaction] [data-comparison-item] > h5",
+        ":scope > [data-learning-interaction] [data-comparison-item] > p",
+        ":scope > [data-learning-interaction] .dynamic-interaction-instruction",
+        ":scope > [data-microcheck] > h4",
+        ":scope > [data-microcheck] [data-microcheck-option] > span:last-child",
+      ];
+      const candidates = Array.from(activeBlock.querySelectorAll(selectors.join(",")));
+      const parts = candidates.flatMap((element) => {
+        if (!(element instanceof HTMLElement) || !isVisible(element)) return [];
+        return splitLongText(element.textContent, element, getDynamicSemanticRole(element, activeBlock));
+      });
+      if (parts.length) return parts;
+      return splitLongText(activeBlock.textContent, activeBlock, getDynamicSemanticRole(activeBlock, activeBlock));
     };
 
     const getActiveReader = () => {
@@ -299,6 +334,8 @@ const copy = lang === "en"
     };
 
     const buildChunks = () => {
+      if (isDynamicPresentation()) return buildDynamicChunks();
+
       const reader = getActiveReader();
       if (!(reader instanceof HTMLElement)) return [];
 
@@ -364,7 +401,10 @@ const copy = lang === "en"
         syncMediaSession();
         return;
       }
-      const label = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
+      const partLabel = `${copy.part} ${currentIndex + 1} ${copy.of} ${chunks.length}`;
+      const label = isDynamicPresentation() && dynamicState.position > 0
+        ? `${copy.block} ${dynamicState.position} ${copy.of} ${dynamicState.total} · ${partLabel}`
+        : partLabel;
       status.textContent = label;
       if (miniStatus instanceof HTMLElement) miniStatus.textContent = label;
       syncMediaSession();
@@ -386,7 +426,10 @@ const copy = lang === "en"
 
     const clearHighlight = () => {
       if (activeSource instanceof HTMLElement) activeSource.classList.remove("tts-active-source");
+      if (activeDynamicBlock instanceof HTMLElement) activeDynamicBlock.classList.remove("tts-active-block");
       activeSource = null;
+      activeDynamicBlock = null;
+      delete root.dataset.ttsDynamicPlayingBlock;
     };
 
     const highlightSource = (source) => {
@@ -394,6 +437,12 @@ const copy = lang === "en"
       if (!(source instanceof HTMLElement)) return;
       activeSource = source;
       source.classList.add("tts-active-source");
+      const dynamicBlock = source.closest("[data-dynamic-block]");
+      if (dynamicBlock instanceof HTMLElement) {
+        activeDynamicBlock = dynamicBlock;
+        dynamicBlock.classList.add("tts-active-block");
+        root.dataset.ttsDynamicPlayingBlock = dynamicBlock.dataset.blockKey || "";
+      }
       const rect = source.getBoundingClientRect();
       const headerHeight = Number.parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
@@ -502,13 +551,53 @@ const copy = lang === "en"
     const stopSpeech = ({ reset = false, keepMini = false } = {}) => {
       session += 1;
       window.clearTimeout(foregroundRecoveryTimer);
+      window.clearTimeout(semanticPauseTimer);
       resumeAfterVisibility = false;
-      synth.cancel();
+      speechProvider.cancel();
       playing = false;
       paused = false;
       keepMiniVisible = keepMini;
       if (reset) currentIndex = 0;
       clearHighlight();
+      setStatus();
+      setPlayingUi();
+    };
+
+    const requestDynamicBlock = (direction) => {
+      if (!isDynamicPresentation()) return false;
+      const before = dynamicState.blockKey;
+      document.dispatchEvent(new CustomEvent("bibli:tts-dynamic-navigate", {
+        detail: {
+          lessonId: dynamicState.lessonId,
+          blockKey: dynamicState.blockKey,
+          direction,
+        },
+      }));
+      return dynamicState.blockKey !== before;
+    };
+
+    const refreshDynamicQueue = ({ continuePlayback = false, preservePaused = false } = {}) => {
+      if (!isDynamicPresentation()) return;
+      session += 1;
+      speechProvider.cancel();
+      clearHighlight();
+      chunks = buildDynamicChunks();
+      currentIndex = 0;
+      if (!chunks.length) {
+        playing = false;
+        paused = false;
+        setStatus();
+        setPlayingUi();
+        return;
+      }
+      if (continuePlayback && !preservePaused) {
+        playing = true;
+        paused = false;
+        speakCurrent();
+        return;
+      }
+      playing = continuePlayback || preservePaused;
+      paused = preservePaused;
       setStatus();
       setPlayingUi();
     };
@@ -524,60 +613,84 @@ const copy = lang === "en"
       currentIndex = Math.max(0, Math.min(currentIndex, chunks.length - 1));
       session += 1;
       const token = session;
-      synth.cancel();
+      speechProvider.cancel();
       const chunk = chunks[currentIndex];
       prepareAudioSession();
-      const utterance = new Utterance(chunk.text);
       const selectedVoice = getSelectedVoiceConfiguration();
-      utterance.lang = selectedVoice.language;
-      utterance.rate = Math.max(.6, Math.min(1.6, getRate() * selectedVoice.rateMultiplier));
-      utterance.pitch = selectedVoice.pitch;
-      utterance.volume = 1;
-      if (selectedVoice.voice) utterance.voice = selectedVoice.voice;
-      utterance.onstart = () => {
-        if (token !== session) return;
-        playing = true;
-        paused = false;
-        setStatus();
-        setPlayingUi();
-        highlightSource(chunk.source);
-      };
-      utterance.onend = () => {
-        if (token !== session) return;
-        // Mobile browsers can suspend Web Speech while the page is backgrounded.
-        // Keep the logical session alive and replay the current fragment on return
-        // instead of advancing silently while the app is not visible.
-        if (document.visibilityState !== "visible") {
-          resumeAfterVisibility = true;
-          return;
-        }
-        if (currentIndex < chunks.length - 1) {
-          currentIndex += 1;
-          speakCurrent();
-        } else {
+      const prosody = speechNormalizer.getProsody(chunk.semanticRole);
+      const semanticRate = Number(prosody?.rate_multiplier) || 1;
+      const selectedVoiceId = selectedVoice.voice
+        ? `${selectedVoice.voice.name}|||${selectedVoice.voice.lang}`
+        : (voiceSelect instanceof HTMLSelectElement ? voiceSelect.value : "profile:auto");
+      root.dataset.ttsSemanticRole = chunk.semanticRole;
+      void buildTtsCacheKey({
+        text: chunk.text,
+        locale: selectedVoice.language,
+        voiceId: selectedVoiceId,
+        modelId: speechProvider.modelId,
+        rulesVersion: speechNormalizer.rulesVersion,
+        semanticRole: chunk.semanticRole,
+      }).then((cacheKey) => {
+        if (token === session) root.dataset.ttsCacheKey = cacheKey;
+      });
+      speechProvider.speak({
+        text: chunk.text,
+        language: selectedVoice.language,
+        rate: Math.max(.6, Math.min(1.6, getRate() * selectedVoice.rateMultiplier * semanticRate)),
+        pitch: selectedVoice.pitch,
+        volume: 1,
+        voice: selectedVoice.voice,
+        onStart: () => {
+          if (token !== session) return;
+          playing = true;
+          paused = false;
+          setStatus();
+          setPlayingUi();
+          highlightSource(chunk.source);
+        },
+        onEnd: () => {
+          if (token !== session) return;
+          // Mobile browsers can suspend Web Speech while the page is backgrounded.
+          // Keep the logical session alive and replay the current fragment on return
+          // instead of advancing silently while the app is not visible.
+          if (document.visibilityState !== "visible") {
+            resumeAfterVisibility = true;
+            return;
+          }
+          const finishOrAdvance = () => {
+            if (token !== session) return;
+            if (currentIndex < chunks.length - 1) {
+              currentIndex += 1;
+              speakCurrent();
+              return;
+            }
+            if (isDynamicPresentation() && requestDynamicBlock("next")) return;
+            playing = false;
+            paused = false;
+            keepMiniVisible = false;
+            resumeAfterVisibility = false;
+            clearHighlight();
+            setStatus();
+            setPlayingUi();
+          };
+          const pauseAfterMs = Math.max(0, Math.min(700, Number(prosody?.pause_after_ms) || 0));
+          window.clearTimeout(semanticPauseTimer);
+          semanticPauseTimer = window.setTimeout(finishOrAdvance, pauseAfterMs);
+        },
+        onError: (event) => {
+          if (token !== session || event.error === "canceled") return;
+          if (event.error === "interrupted" && (document.visibilityState !== "visible" || resumeAfterVisibility)) {
+            resumeAfterVisibility = true;
+            return;
+          }
           playing = false;
           paused = false;
           keepMiniVisible = false;
           resumeAfterVisibility = false;
           clearHighlight();
-          setStatus();
           setPlayingUi();
-        }
-      };
-      utterance.onerror = (event) => {
-        if (token !== session || event.error === "canceled") return;
-        if (event.error === "interrupted" && (document.visibilityState !== "visible" || resumeAfterVisibility)) {
-          resumeAfterVisibility = true;
-          return;
-        }
-        playing = false;
-        paused = false;
-        keepMiniVisible = false;
-        resumeAfterVisibility = false;
-        clearHighlight();
-        setPlayingUi();
-      };
-      synth.speak(utterance);
+        },
+      });
     };
 
     const openPlayer = ({ autoplay = false } = {}) => {
@@ -629,7 +742,7 @@ const copy = lang === "en"
     };
 
     const refreshVoices = () => {
-      voices = synth.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(lang));
+      voices = speechProvider.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(lang));
       if (!(voiceSelect instanceof HTMLSelectElement)) return;
       const storedVoice = localStorage.getItem(voiceKey) ?? "profile:auto";
       voiceSelect.replaceChildren();
@@ -671,26 +784,26 @@ const copy = lang === "en"
         speakCurrent();
         return;
       }
-      if (playing && !paused && synth.paused) {
+      if (playing && !paused && speechProvider.paused) {
         resumeAfterVisibility = false;
-        synth.resume();
+        speechProvider.resume();
         paused = false;
         setPlayingUi();
         return;
       }
-      if (playing && !paused && !synth.speaking && !synth.pending) {
+      if (playing && !paused && !speechProvider.speaking && !speechProvider.pending) {
         resumeAfterVisibility = false;
         speakCurrent();
         return;
       }
       if (playing && !paused) {
-        synth.pause();
+        speechProvider.pause();
         paused = true;
         resumeAfterVisibility = false;
         setPlayingUi();
       } else if (playing && paused) {
-        if (!synth.speaking && !synth.pending) speakCurrent();
-        else synth.resume();
+        if (!speechProvider.speaking && !speechProvider.pending) speakCurrent();
+        else speechProvider.resume();
         paused = false;
         resumeAfterVisibility = false;
         setPlayingUi();
@@ -701,12 +814,12 @@ const copy = lang === "en"
     };
 
     const playFromMediaControl = () => {
-      if (playing && !paused && (synth.speaking || synth.pending) && !resumeAfterVisibility) {
+      if (playing && !paused && (speechProvider.speaking || speechProvider.pending) && !resumeAfterVisibility) {
         setPlayingUi();
         return;
       }
-      if (playing && paused && (synth.speaking || synth.pending)) {
-        synth.resume();
+      if (playing && paused && (speechProvider.speaking || speechProvider.pending)) {
+        speechProvider.resume();
         paused = false;
         resumeAfterVisibility = false;
         setPlayingUi();
@@ -718,7 +831,7 @@ const copy = lang === "en"
 
     const pauseFromMediaControl = () => {
       if (!playing || paused) return;
-      synth.pause();
+      speechProvider.pause();
       paused = true;
       resumeAfterVisibility = false;
       setPlayingUi();
@@ -726,12 +839,14 @@ const copy = lang === "en"
 
     const previousPart = () => {
       if (!chunks.length) chunks = buildChunks();
+      if (isDynamicPresentation() && currentIndex === 0 && requestDynamicBlock("previous")) return;
       currentIndex = Math.max(0, currentIndex - 1);
       speakCurrent();
     };
 
     const nextPart = () => {
       if (!chunks.length) chunks = buildChunks();
+      if (isDynamicPresentation() && currentIndex >= Math.max(0, chunks.length - 1) && requestDynamicBlock("next")) return;
       currentIndex = Math.min(Math.max(0, chunks.length - 1), currentIndex + 1);
       speakCurrent();
     };
@@ -763,6 +878,48 @@ const copy = lang === "en"
     voiceSelect?.addEventListener("change", () => {
       if (voiceSelect instanceof HTMLSelectElement) localStorage.setItem(voiceKey, voiceSelect.value);
       if (playing) speakCurrent();
+    });
+
+    document.addEventListener("bibli:dynamic-block-change", (event) => {
+      if (!(event instanceof CustomEvent)) return;
+      const detail = event.detail || {};
+      dynamicState = {
+        lessonId: detail.lessonId || "",
+        blockId: detail.blockId || "",
+        blockKey: detail.blockKey || "",
+        position: Number(detail.position) || 0,
+        total: Number(detail.total) || 0,
+      };
+      root.dataset.ttsDynamicBlockKey = dynamicState.blockKey;
+      root.dataset.ttsDynamicBlockPosition = String(dynamicState.position || 0);
+      root.dataset.ttsDynamicBlockTotal = String(dynamicState.total || 0);
+      if (!isDynamicPresentation()) return;
+      const wasPlaying = playing;
+      const wasPaused = paused;
+      refreshDynamicQueue({ continuePlayback: wasPlaying && !wasPaused, preservePaused: wasPlaying && wasPaused });
+    });
+
+    document.addEventListener("bibli:study-presentation-change", () => {
+      const playerWasOpen = !player.hidden;
+      const miniWasVisible = mini instanceof HTMLButtonElement && !mini.hidden;
+      stopSpeech({ reset: true, keepMini: miniWasVisible });
+      chunks = [];
+      requestAnimationFrame(() => {
+        chunks = buildChunks();
+        currentIndex = 0;
+        setStatus();
+        syncEstimatedTime();
+        syncCollapsedSurface();
+        syncFloatingUiOffset();
+        if (playerWasOpen) {
+          root.hidden = false;
+          player.hidden = false;
+          root.classList.add("is-open");
+        }
+        document.dispatchEvent(new CustomEvent("bibli:tts-state", {
+          detail: { open: !player.hidden, active: false, collapsed: miniWasVisible },
+        }));
+      });
     });
 
     document.addEventListener("bibli:lesson-mode-change", () => {
@@ -844,15 +1001,16 @@ const copy = lang === "en"
     }
     window.addEventListener("beforeunload", () => {
       window.clearTimeout(foregroundRecoveryTimer);
-      synth.cancel();
+      window.clearTimeout(semanticPauseTimer);
+      speechProvider.cancel();
+      if (typeof detachVoicesChanged === "function") detachVoicesChanged();
       document.documentElement.style.setProperty("--tts-player-offset", "0px");
       delete document.documentElement.dataset.ttsPlayerOpen;
       delete document.documentElement.dataset.ttsActive;
     });
 
     refreshVoices();
-    synth.addEventListener?.("voiceschanged", refreshVoices);
-    if ("onvoiceschanged" in synth) synth.onvoiceschanged = refreshVoices;
+    const detachVoicesChanged = speechProvider.setVoicesChangedHandler(refreshVoices);
 
     const hasReadableContent = document.querySelector("[data-reader-content]");
     if (hasReadableContent || lessonDockActive()) {
@@ -907,6 +1065,7 @@ const copy = lang === "en"
   .tts-options label { display:grid; gap:.25rem; min-width:0; }
   .tts-options label > span { color:var(--text-muted); font-size:.64rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
   .tts-options select { min-width:0; width:100%; height:44px; border:1px solid var(--border-color); border-radius:10px; background:var(--surface-soft); color:var(--heading-color); padding:0 .55rem; font:inherit; font-size:.72rem; font-weight:700; }
+  :global(.dynamic-block.tts-active-block) { border-color:color-mix(in srgb,var(--accent) 48%,var(--border-color)); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent),var(--shadow-sm); }
   :global(.tts-active-source) { outline:2px solid color-mix(in srgb,var(--accent) 48%,transparent); outline-offset:5px; border-radius:8px; background-color:color-mix(in srgb,var(--accent-soft) 28%,transparent); }
   @media(max-width:600px){
     .global-tts { left:10px; right:10px; bottom:calc(82px + env(safe-area-inset-bottom)); display:flex; justify-content:flex-end; }

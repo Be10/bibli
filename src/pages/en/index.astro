@@ -4,8 +4,11 @@ import Icon from "../../components/Icon.astro";
 import HomeStudyVisual from "../../components/HomeStudyVisual.astro";
 import PersonalContinue from "../../components/PersonalContinue.astro";
 import StudyPresentationPreference from "../../components/learning/StudyPresentationPreference.astro";
+import HomeReviewToday from "../../components/learning/HomeReviewToday.astro";
 import { sitePath } from "../../lib/site-paths";
+import { getLearningReviewCatalog } from "../../lib/queries";
 
+const reviewCatalog = getLearningReviewCatalog("en");
 ---
 
 <BaseLayout
@@ -30,6 +33,8 @@ import { sitePath } from "../../lib/site-paths";
     </section>
 
     <PersonalContinue lang="en" />
+
+    <HomeReviewToday lang="en" conceptIds={reviewCatalog.map((item) => item.concept_id)} />
 
     <StudyPresentationPreference lang="en" />
 

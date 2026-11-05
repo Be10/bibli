@@ -102,8 +102,100 @@ export type LessonLearningBlock = {
   source_position: number | null;
 };
 
+export type LearningObjective = {
+  objective_id: string;
+  lesson_id: string;
+  position: number;
+  locale: string;
+  objective_text: string;
+  concept_ids: string[];
+  evidence_block_ids: string[];
+  evidence_block_keys: string[];
+};
+
+export type ContextualGlossaryTerm = {
+  lesson_id: string;
+  block_id: string;
+  block_key: string;
+  glossary_id: string;
+  position: number;
+  locale: string;
+  term: string;
+  definition: string;
+  slug: string;
+};
+
+export type LearningMicrocheckOption = {
+  option_id: string;
+  option_key: string;
+  position: number;
+  is_correct: boolean;
+  option_text: string;
+  rationale: string;
+};
+
+export type LearningMicrocheckEvidence = {
+  block_id: string;
+  block_key: string;
+  position: number;
+  bible_reference: string | null;
+};
+
+export type LearningMicrocheck = {
+  check_id: string;
+  lesson_id: string;
+  trigger_block_id: string;
+  trigger_block_key: string;
+  objective_id: string;
+  position: number;
+  locale: string;
+  prompt: string;
+  concept_ids: string[];
+  options: LearningMicrocheckOption[];
+  evidence: LearningMicrocheckEvidence[];
+};
+
+export type LearningInteractiveItem = {
+  item_id: string;
+  item_key: string;
+  position: number;
+  locale: string;
+  label: string;
+  title: string;
+  body: string;
+};
+
+export type LearningInteractiveBlock = {
+  interaction_id: string;
+  lesson_id: string;
+  anchor_block_id: string;
+  anchor_block_key: string;
+  position: number;
+  interaction_version: string;
+  interaction_type: "key-idea" | "comparison" | "visual-resource";
+  presentation: string;
+  resource_id: string | null;
+  locale: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  instruction: string;
+  concept_ids: string[];
+  items: LearningInteractiveItem[];
+  resource_title: string | null;
+  resource_type: string | null;
+  resource_description: string | null;
+  resource_alt_text: string | null;
+  resource_url: string | null;
+};
+
 export type StructuredLesson = LessonLearningModel & {
   blocks: LessonLearningBlock[];
+  objectives: LearningObjective[];
+  contextual_glossary: ContextualGlossaryTerm[];
+  microchecks: LearningMicrocheck[];
+  interactive_blocks: LearningInteractiveBlock[];
+  concepts: LessonLearningConcept[];
 };
 
 export type LearningConcept = {
@@ -118,6 +210,8 @@ export type LearningConcept = {
 
 export type LessonLearningConcept = LearningConcept & {
   importance: "core" | "supporting";
+  review_block_id: string | null;
+  review_block_key: string | null;
 };
 
 export type BlockLearningConcept = LessonLearningConcept & {
@@ -125,6 +219,19 @@ export type BlockLearningConcept = LessonLearningConcept & {
   block_key: string;
   relation_role: string;
 };
+
+export type LearningReviewCatalogItem = {
+  concept_id: string;
+  label: string;
+  short_description: string;
+  importance: "core" | "supporting";
+  lesson_id: string;
+  lesson_slug: string;
+  lesson_title: string;
+  review_block_key: string | null;
+  check: LearningMicrocheck;
+};
+
 
 export type RelatedItem = {
   title: string;
@@ -257,6 +364,184 @@ export function getLearningBlocksByLessonId(
   `).all(lessonId, locale) as LessonLearningBlock[];
 }
 
+export function getLearningObjectivesByLessonId(
+  lessonId: string,
+  locale = "es",
+): LearningObjective[] {
+  if (!hasDatabaseTable("learning_objectives") || !hasDatabaseTable("learning_objective_localizations")) return [];
+  const rows = db.prepare(`
+    SELECT
+      o.id AS objective_id, o.lesson_id, o.position,
+      l.locale, l.objective_text
+    FROM learning_objectives o
+    JOIN learning_objective_localizations l ON l.objective_id = o.id
+    WHERE o.lesson_id = ? AND l.locale = ?
+    ORDER BY o.position ASC
+  `).all(lessonId, locale) as Array<Omit<LearningObjective, "concept_ids" | "evidence_block_ids" | "evidence_block_keys">>;
+
+  const concepts = hasDatabaseTable("learning_objective_concepts")
+    ? db.prepare(`
+        SELECT concept_id FROM learning_objective_concepts
+        WHERE objective_id = ? ORDER BY position ASC
+      `)
+    : null;
+  const blocks = hasDatabaseTable("learning_objective_blocks")
+    ? db.prepare(`
+        SELECT block_id, block_key FROM learning_objective_blocks
+        WHERE objective_id = ? ORDER BY position ASC
+      `)
+    : null;
+
+  return rows.map((row) => {
+    const conceptRows = concepts ? concepts.all(row.objective_id) as Array<{ concept_id: string }> : [];
+    const blockRows = blocks ? blocks.all(row.objective_id) as Array<{ block_id: string; block_key: string }> : [];
+    return {
+      ...row,
+      concept_ids: conceptRows.map((item) => item.concept_id),
+      evidence_block_ids: blockRows.map((item) => item.block_id),
+      evidence_block_keys: blockRows.map((item) => item.block_key),
+    };
+  });
+}
+
+export function getContextualGlossaryByLessonId(
+  lessonId: string,
+  locale = "es",
+): ContextualGlossaryTerm[] {
+  if (!hasDatabaseTable("lesson_learning_glossary_links") || !hasDatabaseTable("glossary_term_localizations")) return [];
+  return db.prepare(`
+    SELECT
+      gl.lesson_id, gl.block_id, gl.block_key, gl.glossary_id, gl.position,
+      loc.locale, loc.term, loc.definition, g.slug
+    FROM lesson_learning_glossary_links gl
+    JOIN glossary_term_localizations loc
+      ON loc.glossary_id = gl.glossary_id
+     AND loc.locale = ?
+    JOIN glossary_terms g ON g.id = gl.glossary_id
+    JOIN lesson_learning_blocks b
+      ON b.lesson_id = gl.lesson_id
+     AND b.block_id = gl.block_id
+     AND b.locale = ?
+    WHERE gl.lesson_id = ?
+    ORDER BY b.position ASC, gl.position ASC
+  `).all(locale, locale, lessonId) as ContextualGlossaryTerm[];
+}
+
+export function getLearningMicrochecksByLessonId(
+  lessonId: string,
+  locale = "es",
+): LearningMicrocheck[] {
+  const requiredTables = [
+    "learning_microchecks",
+    "learning_microcheck_localizations",
+    "learning_microcheck_concepts",
+    "learning_microcheck_options",
+    "learning_microcheck_option_localizations",
+    "learning_microcheck_evidence",
+    "learning_microcheck_evidence_localizations",
+  ];
+  if (requiredTables.some((table) => !hasDatabaseTable(table))) return [];
+
+  const rows = db.prepare(`
+    SELECT
+      c.id AS check_id, c.lesson_id, c.trigger_block_id, c.trigger_block_key,
+      c.objective_id, c.position, l.locale, l.prompt
+    FROM learning_microchecks c
+    JOIN learning_microcheck_localizations l ON l.check_id = c.id
+    WHERE c.lesson_id = ? AND l.locale = ?
+    ORDER BY c.position ASC
+  `).all(lessonId, locale) as Array<Omit<LearningMicrocheck, "concept_ids" | "options" | "evidence">>;
+
+  const conceptStmt = db.prepare(`
+    SELECT concept_id FROM learning_microcheck_concepts
+    WHERE check_id = ? ORDER BY position ASC
+  `);
+  const optionStmt = db.prepare(`
+    SELECT
+      o.id AS option_id, o.option_key, o.position, o.is_correct,
+      l.option_text, l.rationale
+    FROM learning_microcheck_options o
+    JOIN learning_microcheck_option_localizations l
+      ON l.option_id = o.id AND l.locale = ?
+    WHERE o.check_id = ?
+    ORDER BY o.position ASC
+  `);
+  const evidenceStmt = db.prepare(`
+    SELECT e.block_id, e.block_key, e.position, l.bible_reference
+    FROM learning_microcheck_evidence e
+    LEFT JOIN learning_microcheck_evidence_localizations l
+      ON l.check_id = e.check_id
+     AND l.block_id = e.block_id
+     AND l.locale = ?
+    WHERE e.check_id = ?
+    ORDER BY e.position ASC
+  `);
+
+  return rows.map((row) => ({
+    ...row,
+    concept_ids: (conceptStmt.all(row.check_id) as Array<{ concept_id: string }>).map((item) => item.concept_id),
+    options: (optionStmt.all(locale, row.check_id) as Array<Omit<LearningMicrocheckOption, "is_correct"> & { is_correct: number }>).map((option) => ({
+      ...option,
+      is_correct: option.is_correct === 1,
+    })),
+    evidence: evidenceStmt.all(locale, row.check_id) as LearningMicrocheckEvidence[],
+  }));
+}
+
+export function getLearningInteractiveBlocksByLessonId(
+  lessonId: string,
+  locale = "es",
+): LearningInteractiveBlock[] {
+  const requiredTables = [
+    "learning_interactive_blocks",
+    "learning_interactive_block_localizations",
+    "learning_interactive_block_concepts",
+    "learning_interactive_items",
+    "learning_interactive_item_localizations",
+  ];
+  if (requiredTables.some((table) => !hasDatabaseTable(table))) return [];
+
+  const rows = db.prepare(`
+    SELECT
+      i.id AS interaction_id, i.lesson_id, i.anchor_block_id, i.anchor_block_key,
+      i.position, i.interaction_version, i.interaction_type, i.presentation, i.resource_id,
+      l.locale, l.eyebrow, l.title, l.body, l.instruction,
+      vr.title AS resource_title, vr.resource_type, vr.description AS resource_description,
+      vr.alt_text AS resource_alt_text, vr.url AS resource_url
+    FROM learning_interactive_blocks i
+    JOIN learning_interactive_block_localizations l
+      ON l.interaction_id = i.id AND l.locale = ?
+    LEFT JOIN visual_resources vr ON vr.id = i.resource_id
+    JOIN lesson_learning_blocks b
+      ON b.lesson_id = i.lesson_id
+     AND b.block_id = i.anchor_block_id
+     AND b.locale = ?
+    WHERE i.lesson_id = ?
+    ORDER BY b.position ASC, i.position ASC
+  `).all(locale, locale, lessonId) as Array<Omit<LearningInteractiveBlock, "concept_ids" | "items">>;
+
+  const conceptStmt = db.prepare(`
+    SELECT concept_id FROM learning_interactive_block_concepts
+    WHERE interaction_id = ? ORDER BY position ASC
+  `);
+  const itemStmt = db.prepare(`
+    SELECT
+      item.id AS item_id, item.item_key, item.position, loc.locale,
+      loc.label, loc.title, loc.body
+    FROM learning_interactive_items item
+    JOIN learning_interactive_item_localizations loc
+      ON loc.item_id = item.id AND loc.locale = ?
+    WHERE item.interaction_id = ?
+    ORDER BY item.position ASC
+  `);
+
+  return rows.map((row) => ({
+    ...row,
+    concept_ids: (conceptStmt.all(row.interaction_id) as Array<{ concept_id: string }>).map((item) => item.concept_id),
+    items: itemStmt.all(locale, row.interaction_id) as LearningInteractiveItem[],
+  }));
+}
+
 export function getStructuredLessonByLessonId(
   lessonId: string,
   locale = "es",
@@ -266,6 +551,11 @@ export function getStructuredLessonByLessonId(
   return {
     ...model,
     blocks: getLearningBlocksByLessonId(lessonId, locale),
+    objectives: getLearningObjectivesByLessonId(lessonId, locale),
+    contextual_glossary: getContextualGlossaryByLessonId(lessonId, locale),
+    microchecks: getLearningMicrochecksByLessonId(lessonId, locale),
+    interactive_blocks: getLearningInteractiveBlocksByLessonId(lessonId, locale),
+    concepts: getLearningConceptsByLessonId(lessonId, locale),
   };
 }
 
@@ -287,10 +577,61 @@ export function getLearningConceptsByLessonId(
   lessonId: string,
   locale = "es",
 ): LessonLearningConcept[] {
+  const requiredTables = [
+    "learning_concepts",
+    "learning_concept_localizations",
+    "lesson_learning_concepts",
+    "lesson_learning_block_concepts",
+    "lesson_learning_blocks",
+  ];
+  if (requiredTables.some((table) => !hasDatabaseTable(table))) return [];
+
   return db.prepare(`
     SELECT
       c.id AS concept_id, c.concept_version, c.status, c.source_kind,
-      l.locale, l.label, l.short_description, lc.importance
+      l.locale, l.label, l.short_description, lc.importance,
+      (
+        SELECT bc.block_id
+        FROM lesson_learning_block_concepts bc
+        JOIN lesson_learning_blocks b
+          ON b.lesson_id = bc.lesson_id
+         AND b.block_id = bc.block_id
+         AND b.locale = ?
+        WHERE bc.lesson_id = lc.lesson_id
+          AND bc.concept_id = lc.concept_id
+        ORDER BY
+          CASE bc.relation_role
+            WHEN 'explains' THEN 0
+            WHEN 'introduces' THEN 1
+            WHEN 'summarizes' THEN 2
+            WHEN 'connects' THEN 3
+            WHEN 'applies' THEN 4
+            ELSE 5
+          END,
+          b.position ASC
+        LIMIT 1
+      ) AS review_block_id,
+      (
+        SELECT bc.block_key
+        FROM lesson_learning_block_concepts bc
+        JOIN lesson_learning_blocks b
+          ON b.lesson_id = bc.lesson_id
+         AND b.block_id = bc.block_id
+         AND b.locale = ?
+        WHERE bc.lesson_id = lc.lesson_id
+          AND bc.concept_id = lc.concept_id
+        ORDER BY
+          CASE bc.relation_role
+            WHEN 'explains' THEN 0
+            WHEN 'introduces' THEN 1
+            WHEN 'summarizes' THEN 2
+            WHEN 'connects' THEN 3
+            WHEN 'applies' THEN 4
+            ELSE 5
+          END,
+          b.position ASC
+        LIMIT 1
+      ) AS review_block_key
     FROM lesson_learning_concepts lc
     JOIN learning_concepts c ON c.id = lc.concept_id
     JOIN learning_concept_localizations l
@@ -298,7 +639,87 @@ export function getLearningConceptsByLessonId(
      AND l.locale = ?
     WHERE lc.lesson_id = ?
     ORDER BY CASE lc.importance WHEN 'core' THEN 0 ELSE 1 END, l.label ASC
-  `).all(locale, lessonId) as LessonLearningConcept[];
+  `).all(locale, locale, locale, lessonId) as LessonLearningConcept[];
+}
+
+export function getLearningReviewCatalog(
+  locale = "es",
+): LearningReviewCatalogItem[] {
+  const requiredTables = [
+    "learning_concepts",
+    "learning_concept_localizations",
+    "lesson_learning_concepts",
+    "learning_microchecks",
+    "learning_microcheck_concepts",
+    "study_lessons",
+  ];
+  if (requiredTables.some((table) => !hasDatabaseTable(table))) return [];
+
+  const rows = db.prepare(`
+    SELECT
+      lc.lesson_id, lc.concept_id, lc.importance,
+      cl.label, cl.short_description,
+      sl.slug AS lesson_slug, sl.title AS lesson_title,
+      mc.id AS check_id, mc.position AS check_position
+    FROM lesson_learning_concepts lc
+    JOIN learning_concepts c ON c.id = lc.concept_id
+    JOIN learning_concept_localizations cl
+      ON cl.concept_id = c.id
+     AND cl.locale = ?
+    JOIN study_lessons sl ON sl.id = lc.lesson_id
+    JOIN learning_microcheck_concepts mcc ON mcc.concept_id = lc.concept_id
+    JOIN learning_microchecks mc
+      ON mc.id = mcc.check_id
+     AND mc.lesson_id = lc.lesson_id
+    WHERE c.status = 'active'
+    ORDER BY
+      CASE lc.importance WHEN 'core' THEN 0 ELSE 1 END,
+      mc.position ASC,
+      cl.label ASC
+  `).all(locale) as Array<{
+    lesson_id: string;
+    concept_id: string;
+    importance: "core" | "supporting";
+    label: string;
+    short_description: string;
+    lesson_slug: string;
+    lesson_title: string;
+    check_id: string;
+    check_position: number;
+  }>;
+
+  const lessonConcepts = new Map<string, LessonLearningConcept[]>();
+  const lessonChecks = new Map<string, LearningMicrocheck[]>();
+  const seen = new Set<string>();
+  const catalog: LearningReviewCatalogItem[] = [];
+
+  for (const row of rows) {
+    const key = `${row.lesson_id}:${row.concept_id}`;
+    if (seen.has(key)) continue;
+    if (!lessonConcepts.has(row.lesson_id)) {
+      lessonConcepts.set(row.lesson_id, getLearningConceptsByLessonId(row.lesson_id, locale));
+    }
+    if (!lessonChecks.has(row.lesson_id)) {
+      lessonChecks.set(row.lesson_id, getLearningMicrochecksByLessonId(row.lesson_id, locale));
+    }
+    const concept = lessonConcepts.get(row.lesson_id)?.find((item) => item.concept_id === row.concept_id);
+    const check = lessonChecks.get(row.lesson_id)?.find((item) => item.check_id === row.check_id);
+    if (!check) continue;
+    seen.add(key);
+    catalog.push({
+      concept_id: row.concept_id,
+      label: row.label,
+      short_description: row.short_description,
+      importance: row.importance,
+      lesson_id: row.lesson_id,
+      lesson_slug: row.lesson_slug,
+      lesson_title: row.lesson_title,
+      review_block_key: concept?.review_block_key ?? null,
+      check,
+    });
+  }
+
+  return catalog;
 }
 
 export function getLearningConceptsByBlockId(

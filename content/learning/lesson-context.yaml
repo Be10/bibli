@@ -1,0 +1,67 @@
+schema_version: '1.0.0'
+required_locales:
+  - es
+  - en
+
+lessons:
+  pentateuco-principal--genesis--01-01-02-03--l001:
+    objectives:
+      - objective_key: objective-01
+        text:
+          es: Explicar cómo Génesis 1:1–2:3 presenta a Dios como Creador soberano que da orden y propósito a lo creado.
+          en: Explain how Genesis 1:1–2:3 presents God as the sovereign Creator who gives order and purpose to creation.
+        concepts:
+          - god-as-creator
+          - creation-order-and-purpose
+        evidence_blocks:
+          - exposition-01
+          - exposition-02
+
+      - objective_key: objective-02
+        text:
+          es: Reconocer cómo la imagen de Dios fundamenta la dignidad humana y una mayordomía responsable de la creación.
+          en: Recognize how the image of God grounds human dignity and responsible stewardship of creation.
+        concepts:
+          - image-of-god
+          - human-stewardship
+        evidence_blocks:
+          - exposition-04
+          - revelation-about-humanity
+
+      - objective_key: objective-03
+        text:
+          es: Relacionar el reposo del séptimo día, la obra de Cristo y la esperanza de nueva creación con el propósito culminante de Dios.
+          en: Relate seventh-day rest, the work of Christ, and the hope of new creation to God's culminating purpose.
+        concepts:
+          - seventh-day-rest
+          - christ-and-creation
+          - creation-and-new-creation
+        evidence_blocks:
+          - exposition-05
+          - christ-connection
+          - canonical-thread
+
+    contextual_glossary:
+      - glossary_id: glo-bendicion
+        block_key: exposition-04
+        en:
+          term: Blessing
+          definition: God's favor that brings life and purpose according to his plan.
+
+      - glossary_id: glo-descanso
+        block_key: application
+        en:
+          term: Rest
+          definition: A biblical theme connected with inheritance, security, and final communion with God.
+
+      - glossary_id: glo-cristo
+        block_key: christ-connection
+        en:
+          term: Christ
+          definition: The Greek title equivalent to Messiah; it means Anointed One.
+
+      - glossary_id: glo-nueva-creacion
+        block_key: canonical-thread
+        en:
+          term: New creation
+          definition: The final renewal of all things in the consummation of God's kingdom.

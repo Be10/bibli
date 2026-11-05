@@ -1,0 +1,248 @@
+---
+import Icon from "../Icon.astro";
+import { sitePath } from "../../lib/site-paths";
+import type { LearningReviewCatalogItem } from "../../lib/queries";
+
+interface Props {
+  lang?: "es" | "en";
+  catalog: LearningReviewCatalogItem[];
+}
+
+const { lang = "es", catalog } = Astro.props;
+const language = lang === "en" ? "en" : "es";
+const copy = language === "en" ? {
+  eyebrow: "Spaced review",
+  title: "Review today",
+  intro: "A short review of concepts you have already studied. Missing a day does not create a penalty or backlog.",
+  emptyTitle: "You're caught up",
+  emptyBody: "No concepts are due right now. Continue studying and Bibli will bring them back when useful.",
+  concept: "Concept",
+  concepts: "Concepts",
+  evidence: "Evidence",
+  correct: "Correct",
+  incorrect: "Review this idea",
+  next: "Next review",
+  finish: "Finish review",
+  doneTitle: "Review complete",
+  doneBody: "Your next review dates were adjusted from today's evidence.",
+  backHome: "Back home",
+  reviewPoint: "Review this point",
+} : {
+  eyebrow: "Repaso espaciado",
+  title: "Repaso de hoy",
+  intro: "Un repaso breve de conceptos que ya estudiaste. Omitir un día no genera penalización ni una deuda acumulada.",
+  emptyTitle: "Estás al día",
+  emptyBody: "No hay conceptos para repasar ahora. Continúa estudiando y Bibli los traerá de nuevo cuando sea útil.",
+  concept: "Concepto",
+  concepts: "Conceptos",
+  evidence: "Evidencia",
+  correct: "Correcto",
+  incorrect: "Revisa esta idea",
+  next: "Siguiente repaso",
+  finish: "Terminar repaso",
+  doneTitle: "Repaso completado",
+  doneBody: "Las próximas fechas de repaso se ajustaron según la evidencia de hoy.",
+  backHome: "Volver al inicio",
+  reviewPoint: "Revisar este punto",
+};
+
+const byCheck = new Map<string, { check: LearningReviewCatalogItem["check"]; items: LearningReviewCatalogItem[] }>();
+for (const item of catalog) {
+  const current = byCheck.get(item.check.check_id) ?? { check: item.check, items: [] };
+  current.items.push(item);
+  byCheck.set(item.check.check_id, current);
+}
+const checkGroups = [...byCheck.values()];
+const homeHref = language === "en" ? sitePath("/en/") : sitePath("/");
+---
+
+<section
+  class="review-session"
+  data-review-session
+  data-catalog-concept-ids={JSON.stringify(catalog.map((item) => item.concept_id))}
+  data-session-limit="4"
+>
+  <header class="review-header">
+    <span class="review-eyebrow"><Icon name="brain" size={16} /> {copy.eyebrow}</span>
+    <h1>{copy.title}</h1>
+    <p>{copy.intro}</p>
+    <div class="review-meta" data-review-meta hidden></div>
+  </header>
+
+  <section class="review-empty" data-review-empty hidden>
+    <Icon name="check" size={24} />
+    <div><h2>{copy.emptyTitle}</h2><p>{copy.emptyBody}</p></div>
+    <a href={homeHref}>{copy.backHome}</a>
+  </section>
+
+  <div class="review-stack" data-review-stack hidden>
+    {checkGroups.map(({ check, items }) => {
+      const lesson = items[0];
+      const relevantConceptIds = items.map((item) => item.concept_id);
+      const reviewBlockKey = items.find((item) => item.review_block_key)?.review_block_key ?? check.evidence[0]?.block_key ?? "";
+      const reviewHref = lesson
+        ? `${sitePath(`/lecciones/${lesson.lesson_slug}/`)}?presentation=dynamic&block=${encodeURIComponent(reviewBlockKey)}`
+        : "#";
+      return (
+        <article
+          class="review-card"
+          data-review-check
+          data-check-id={check.check_id}
+          data-lesson-id={check.lesson_id}
+          data-concept-ids={relevantConceptIds.join(",")}
+          hidden
+        >
+          <div class="review-concepts">
+            <span>{relevantConceptIds.length === 1 ? copy.concept : copy.concepts}</span>
+            <div>{items.map((item) => <strong data-review-concept-id={item.concept_id}>{item.label}</strong>)}</div>
+          </div>
+          <h2>{check.prompt}</h2>
+          <div class="review-options" role="group" aria-label={check.prompt}>
+            {check.options.map((option, index) => (
+              <button
+                type="button"
+                data-review-option
+                data-option-key={option.option_key}
+                data-is-correct={String(option.is_correct)}
+                data-rationale={option.rationale}
+                aria-pressed="false"
+              >
+                <span>{String.fromCharCode(65 + index)}</span>
+                <span>{option.option_text}</span>
+              </button>
+            ))}
+          </div>
+          <div class="review-feedback" data-review-feedback hidden role="status" aria-live="polite">
+            <strong data-review-result></strong>
+            <p data-review-rationale></p>
+            <div class="review-evidence">
+              <span>{copy.evidence}</span>
+              <ul>{check.evidence.map((item) => <li>{item.bible_reference ?? item.block_key}</li>)}</ul>
+            </div>
+            <div class="review-actions">
+              <a href={reviewHref}>{copy.reviewPoint}</a>
+              <button type="button" data-review-next>{copy.next}</button>
+            </div>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+
+  <section class="review-complete" data-review-complete hidden>
+    <Icon name="check" size={26} />
+    <h2>{copy.doneTitle}</h2>
+    <p>{copy.doneBody}</p>
+    <a href={homeHref}>{copy.backHome}</a>
+  </section>
+</section>
+
+<script>
+  import {
+    LEARNING_REVIEW_SESSION_LIMIT,
+    getDueReviewConcepts,
+    markReviewSessionComplete,
+    recordReviewOutcome,
+  } from "../../lib/learning-review";
+
+  document.querySelectorAll<HTMLElement>("[data-review-session]").forEach((root) => {
+    if (root.dataset.reviewMounted === "true") return;
+    root.dataset.reviewMounted = "true";
+    const empty = root.querySelector<HTMLElement>("[data-review-empty]");
+    const stack = root.querySelector<HTMLElement>("[data-review-stack]");
+    const complete = root.querySelector<HTMLElement>("[data-review-complete]");
+    const meta = root.querySelector<HTMLElement>("[data-review-meta]");
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-review-check]")];
+    let allowed: string[] = [];
+    try { allowed = JSON.parse(root.dataset.catalogConceptIds || "[]"); } catch {}
+    const due = getDueReviewConcepts(allowed, LEARNING_REVIEW_SESSION_LIMIT);
+    const dueIds = new Set(due.map((item) => item.conceptId));
+    const activeCards = cards.filter((card) =>
+      (card.dataset.conceptIds || "").split(",").some((id) => dueIds.has(id))
+    );
+    let index = 0;
+    const isEnglish = document.documentElement.lang.toLowerCase().startsWith("en");
+
+    root.dataset.dueConceptCount = String(due.length);
+    root.dataset.reviewQuestionCount = String(activeCards.length);
+    if (meta && due.length > 0) {
+      const minutes = Math.max(1, Math.ceil(due.length / 2));
+      meta.hidden = false;
+      meta.textContent = isEnglish
+        ? `${due.length} ${due.length === 1 ? "concept" : "concepts"} · ~${minutes} min`
+        : `${due.length} ${due.length === 1 ? "concepto" : "conceptos"} · ~${minutes} min`;
+    }
+
+    const show = (requested: number) => {
+      activeCards.forEach((card, cardIndex) => { card.hidden = cardIndex !== requested; });
+      root.dataset.activeReviewIndex = String(requested);
+    };
+
+    if (due.length === 0 || activeCards.length === 0) {
+      if (empty) empty.hidden = false;
+      return;
+    }
+    if (stack) stack.hidden = false;
+    show(0);
+
+    activeCards.forEach((card, cardIndex) => {
+      const options = [...card.querySelectorAll<HTMLButtonElement>("[data-review-option]")];
+      const feedback = card.querySelector<HTMLElement>("[data-review-feedback]");
+      const result = card.querySelector<HTMLElement>("[data-review-result]");
+      const rationale = card.querySelector<HTMLElement>("[data-review-rationale]");
+      const next = card.querySelector<HTMLButtonElement>("[data-review-next]");
+      const dueConceptIds = (card.dataset.conceptIds || "").split(",").filter((id) => dueIds.has(id));
+
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          if (card.dataset.answered === "true") return;
+          const correct = option.dataset.isCorrect === "true";
+          card.dataset.answered = "true";
+          card.dataset.result = correct ? "correct" : "incorrect";
+          options.forEach((item) => {
+            const selected = item === option;
+            item.setAttribute("aria-pressed", String(selected));
+            item.disabled = true;
+            item.classList.toggle("is-selected", selected);
+            item.classList.toggle("is-correct", selected && correct);
+            item.classList.toggle("is-incorrect", selected && !correct);
+          });
+          if (result) result.textContent = correct
+            ? (isEnglish ? "Correct" : "Correcto")
+            : (isEnglish ? "Review this idea" : "Revisa esta idea");
+          if (rationale) rationale.textContent = option.dataset.rationale || "";
+          if (feedback) feedback.hidden = false;
+          recordReviewOutcome({
+            conceptIds: dueConceptIds,
+            correct,
+            sourceLessonId: card.dataset.lessonId || "",
+            sourceCheckId: card.dataset.checkId || "",
+          });
+          if (next) next.textContent = cardIndex === activeCards.length - 1
+            ? (isEnglish ? "Finish review" : "Terminar repaso")
+            : (isEnglish ? "Next review" : "Siguiente repaso");
+        });
+      });
+
+      next?.addEventListener("click", () => {
+        if (cardIndex < activeCards.length - 1) {
+          index = cardIndex + 1;
+          show(index);
+          activeCards[index]?.focus?.({ preventScroll: true });
+        } else {
+          markReviewSessionComplete();
+          if (stack) stack.hidden = true;
+          if (complete) complete.hidden = false;
+          root.dataset.sessionComplete = "true";
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .review-session{display:grid;gap:1rem}.review-header{max-width:760px}.review-eyebrow{display:inline-flex;align-items:center;gap:.4rem;color:var(--accent);font-size:.73rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.review-header h1{margin:.55rem 0 .7rem;color:var(--heading-color);font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.05em;line-height:1}.review-header>p{margin:0;color:var(--text-muted);line-height:1.65}.review-meta{width:max-content;margin-top:.75rem;padding:.38rem .6rem;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.76rem;font-weight:800}
+  .review-card{display:grid;gap:1rem;max-width:820px;padding:clamp(1rem,3vw,1.5rem);border:1px solid var(--border-color);border-radius:20px;background:var(--surface);box-shadow:var(--shadow-sm)}.review-card[hidden]{display:none!important}.review-card:focus{outline:none}.review-concepts>span{display:block;margin-bottom:.4rem;color:var(--text-muted);font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.review-concepts>div{display:flex;flex-wrap:wrap;gap:.4rem}.review-concepts strong{padding:.28rem .48rem;border-radius:999px;background:var(--surface-soft);color:var(--heading-color);font-size:.72rem}.review-card h2{margin:0;color:var(--heading-color);font-size:clamp(1.15rem,2.5vw,1.5rem);line-height:1.35}.review-options{display:grid;gap:.65rem}.review-options button{min-height:48px;display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.7rem;align-items:center;padding:.75rem .85rem;border:1px solid var(--border-color);border-radius:13px;background:var(--surface-elevated);color:var(--text-color);font:inherit;text-align:left;cursor:pointer}.review-options button:disabled{cursor:default}.review-options button.is-selected{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface-elevated))}.review-options button.is-correct{box-shadow:inset 3px 0 color-mix(in srgb,var(--accent) 70%,#2f855a)}.review-options button.is-incorrect{box-shadow:inset 3px 0 color-mix(in srgb,var(--accent) 45%,#b7791f)}
+  .review-feedback{display:grid;gap:.7rem;padding-top:.3rem}.review-feedback[hidden]{display:none!important}.review-feedback>strong{color:var(--heading-color)}.review-feedback>p{margin:0;color:var(--text-color);line-height:1.55}.review-evidence{padding:.75rem .85rem;border-radius:12px;background:var(--surface-soft)}.review-evidence>span{color:var(--accent);font-size:.68rem;font-weight:850;letter-spacing:.06em;text-transform:uppercase}.review-evidence ul{margin:.45rem 0 0;padding-left:1.15rem;color:var(--text-muted);font-size:.8rem}.review-actions{display:flex;flex-wrap:wrap;gap:.6rem}.review-actions a,.review-actions button,.review-empty a,.review-complete a{min-height:42px;display:inline-flex;align-items:center;justify-content:center;padding:.55rem .8rem;border:1px solid var(--border-color);border-radius:10px;background:var(--surface-elevated);color:var(--accent);font:inherit;font-size:.76rem;font-weight:800;text-decoration:none;cursor:pointer}.review-actions button{background:var(--accent);color:var(--accent-contrast);border-color:var(--accent)}
+  .review-empty,.review-complete{max-width:720px;display:grid;gap:.65rem;padding:1.2rem;border:1px solid var(--border-color);border-radius:18px;background:var(--surface);color:var(--text-muted)}.review-empty[hidden],.review-complete[hidden]{display:none!important}.review-empty>.bibli-icon,.review-complete>.bibli-icon{color:var(--accent)}.review-empty h2,.review-complete h2{margin:0;color:var(--heading-color)}.review-empty p,.review-complete p{margin:0;line-height:1.55}.review-empty a,.review-complete a{width:max-content}
+</style>

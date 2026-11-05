@@ -5,15 +5,18 @@ import Icon from "../components/Icon.astro";
 import HomeStudyVisual from "../components/HomeStudyVisual.astro";
 import PersonalContinue from "../components/PersonalContinue.astro";
 import StudyPresentationPreference from "../components/learning/StudyPresentationPreference.astro";
+import HomeReviewToday from "../components/learning/HomeReviewToday.astro";
 import {
   getLessonsByRouteId,
   getRouteBySlug,
+  getLearningReviewCatalog,
 } from "../lib/queries";
 import { LEARNING_PROGRESS_STORAGE_KEY } from "../lib/personal-state";
 
 const siteTitle = "Biblioteca Bíblica";
 const primaryRoute = getRouteBySlug("de-la-creacion-al-pacto");
 const primaryLessons = primaryRoute ? getLessonsByRouteId(primaryRoute.id) : [];
+const reviewCatalog = getLearningReviewCatalog("es");
 
 const quickLinks = [
   {
@@ -88,6 +91,8 @@ const primaryLessonTargets = primaryLessons.map((lesson) => ({
     </section>
 
     <PersonalContinue lang="es" />
+
+    <HomeReviewToday lang="es" conceptIds={reviewCatalog.map((item) => item.concept_id)} />
 
     <StudyPresentationPreference lang="es" />
 

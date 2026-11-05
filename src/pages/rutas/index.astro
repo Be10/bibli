@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Icon from "../../components/Icon.astro";
 import { sitePath } from "../../lib/site-paths";
 import { getAllRoutes, getLessonsByRouteId, getRouteModules } from "../../lib/queries";
+import { getRouteVisualPaletteKey, getRouteVisualStyle } from "../../lib/route-visuals";
 
 const routes = getAllRoutes().filter((route) => route.status !== "Borrador");
 const routeCards = routes.map((route) => ({
@@ -88,7 +89,7 @@ const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((less
 
     <section class="route-grid" aria-label="Rutas disponibles">
       {routeCards.map(({ route, lessons, modules }) => (
-        <article class="route-card" data-catalog-item data-route-card data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
+        <article class="route-card" data-catalog-item data-route-card data-route-visual data-route-palette={getRouteVisualPaletteKey(route.id)} style={getRouteVisualStyle(route.id)} data-route-id={route.id} data-route-lesson-ids={JSON.stringify(lessons.map((lesson) => lesson.id))} data-route-lesson-map={JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, href: sitePath(`/lecciones/${lesson.slug}/`) })))}>
           <div class="route-card-top">
             <div class="route-card-icon"><Icon name="layers" size={20} /></div>
             <span class="route-count">{modules.length} módulos · {lessons.length} lecciones</span>
@@ -181,19 +182,19 @@ const totalLessons = new Set(routeCards.flatMap((item) => item.lessons.map((less
   .route-index-header p:last-child { margin:0; color:var(--text-muted); font-size:1rem; line-height:1.55; }
   .route-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:.9rem; }
   .route-card { display:grid; gap:1rem; padding:1.25rem; border:1px solid var(--border-color); border-radius:18px; background:var(--surface); box-shadow:0 10px 30px rgba(15, 23, 42, .04); transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
-  .route-card:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--accent) 42%,var(--border-color)); box-shadow:var(--shadow-sm); }
+  .route-card:hover { transform:translateY(-2px); border-color:var(--route-border); box-shadow:var(--shadow-sm); }
   .route-card-top { display:flex; align-items:center; justify-content:space-between; gap:.8rem; }
-  .route-card-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:var(--accent-soft); color:var(--accent); }
+  .route-card-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:var(--route-soft); color:var(--route-accent); }
   .route-count { color:var(--text-muted); font-size:.78rem; }
   .route-card-copy { display:grid; gap:.42rem; }
-  .route-badge { width:max-content; color:var(--accent); font-size:.7rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+  .route-badge { width:max-content; color:var(--route-accent); font-size:.7rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
   .route-card h2 { margin:0; font-size:1.42rem; line-height:1.15; letter-spacing:-.025em; }
   .route-card h2 a { color:var(--heading-color); text-decoration:none; }
   .route-card p { margin:0; color:var(--text-muted); line-height:1.6; }
   .route-progress-row { display:flex; justify-content:space-between; gap:1rem; color:var(--text-muted); font-size:.78rem; }
   .route-progress-row strong { color:var(--heading-color); }
   .progress-track { height:6px; background:var(--surface-soft); border-radius:999px; overflow:hidden; }
-  .progress-track span { display:block; height:100%; width:0; border-radius:inherit; background:var(--accent); transition:width .28s ease; }
+  .progress-track span { display:block; height:100%; width:0; border-radius:inherit; background:var(--route-accent); transition:width .28s ease; }
   .route-actions { display:flex; align-items:center; justify-content:space-between; gap:.65rem; }
   .route-actions a { min-height:42px; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; padding:0 .85rem; border-radius:11px; text-decoration:none; font-weight:720; transition:transform 150ms ease,background-color 150ms ease,border-color 150ms ease; }
   .route-actions a:hover { transform:translateY(-1px); }

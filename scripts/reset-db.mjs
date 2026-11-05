@@ -24,7 +24,7 @@ try {
   const studies = indexStudies(db, { rootDir });
 
   const counts = Object.fromEntries(
-    ["books", "routes", "route_modules", "study_lessons", "learning_concepts", "learning_concept_localizations", "topics", "events", "people", "places", "glossary_terms"]
+    ["books", "routes", "route_modules", "study_lessons", "learning_concepts", "learning_concept_localizations", "learning_objectives", "learning_objective_localizations", "lesson_learning_glossary_links", "learning_microchecks", "learning_microcheck_options", "learning_microcheck_evidence", "learning_microcheck_evidence_localizations", "learning_interactive_blocks", "learning_interactive_block_localizations", "learning_interactive_items", "topics", "events", "people", "places", "glossary_terms"]
       .map((table) => [table, db.prepare(`SELECT COUNT(*) AS count FROM ${table}`).get().count])
   );
 
@@ -35,6 +35,16 @@ try {
   console.log(`Lecciones canónicas: ${counts.study_lessons}`);
   console.log(`Conceptos educativos: ${counts.learning_concepts}`);
   console.log(`Localizaciones de conceptos: ${counts.learning_concept_localizations}`);
+  console.log(`Objetivos educativos: ${counts.learning_objectives}`);
+  console.log(`Localizaciones de objetivos: ${counts.learning_objective_localizations}`);
+  console.log(`Vínculos de glosario contextual: ${counts.lesson_learning_glossary_links}`);
+  console.log(`Microcomprobaciones: ${counts.learning_microchecks}`);
+  console.log(`Alternativas de microcomprobación: ${counts.learning_microcheck_options}`);
+  console.log(`Evidencias de microcomprobación: ${counts.learning_microcheck_evidence}`);
+  console.log(`Localizaciones de evidencia: ${counts.learning_microcheck_evidence_localizations}`);
+  console.log(`Bloques interactivos: ${counts.learning_interactive_blocks}`);
+  console.log(`Localizaciones de bloques interactivos: ${counts.learning_interactive_block_localizations}`);
+  console.log(`Items interactivos: ${counts.learning_interactive_items}`);
   console.log(`Temas: ${counts.topics}`);
   console.log(`Eventos: ${counts.events}`);
   console.log(`Personajes: ${counts.people}`);

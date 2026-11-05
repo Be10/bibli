@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.0.0",
+  "rules_version": "1.1.0",
+  "cache_version": "1",
+  "locales": {
+    "es": {
+      "speech_locale": "es-PE",
+      "reference": {
+        "chapter": "capítulo",
+        "chapters": "capítulos",
+        "verse": "versículo",
+        "verses": "versículos",
+        "to": "al"
+      },
+      "books": [
+        "Génesis",
+        "Éxodo",
+        "Levítico",
+        "Números",
+        "Deuteronomio",
+        "Josué",
+        "Jueces",
+        "Rut",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Reyes",
+        "2 Reyes",
+        "1 Crónicas",
+        "2 Crónicas",
+        "Esdras",
+        "Nehemías",
+        "Ester",
+        "Job",
+        "Salmo",
+        "Salmos",
+        "Proverbios",
+        "Eclesiastés",
+        "Cantares",
+        "Isaías",
+        "Jeremías",
+        "Lamentaciones",
+        "Ezequiel",
+        "Daniel",
+        "Oseas",
+        "Joel",
+        "Amós",
+        "Abdías",
+        "Jonás",
+        "Miqueas",
+        "Nahúm",
+        "Habacuc",
+        "Sofonías",
+        "Hageo",
+        "Zacarías",
+        "Malaquías",
+        "Mateo",
+        "Marcos",
+        "Lucas",
+        "Juan",
+        "Hechos",
+        "Romanos",
+        "1 Corintios",
+        "2 Corintios",
+        "Gálatas",
+        "Efesios",
+        "Filipenses",
+        "Colosenses",
+        "1 Tesalonicenses",
+        "2 Tesalonicenses",
+        "1 Timoteo",
+        "2 Timoteo",
+        "Tito",
+        "Filemón",
+        "Hebreos",
+        "Santiago",
+        "1 Pedro",
+        "2 Pedro",
+        "1 Juan",
+        "2 Juan",
+        "3 Juan",
+        "Judas",
+        "Apocalipsis"
+      ],
+      "ordinal_books": {
+        "1": "Primera de",
+        "2": "Segunda de",
+        "3": "Tercera de"
+      }
+    },
+    "en": {
+      "speech_locale": "en-US",
+      "reference": {
+        "chapter": "chapter",
+        "chapters": "chapters",
+        "verse": "verse",
+        "verses": "verses",
+        "to": "to"
+      },
+      "books": [
+        "Genesis",
+        "Exodus",
+        "Leviticus",
+        "Numbers",
+        "Deuteronomy",
+        "Joshua",
+        "Judges",
+        "Ruth",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Kings",
+        "2 Kings",
+        "1 Chronicles",
+        "2 Chronicles",
+        "Ezra",
+        "Nehemiah",
+        "Esther",
+        "Job",
+        "Psalm",
+        "Psalms",
+        "Proverbs",
+        "Ecclesiastes",
+        "Song of Solomon",
+        "Song of Songs",
+        "Isaiah",
+        "Jeremiah",
+        "Lamentations",
+        "Ezekiel",
+        "Daniel",
+        "Hosea",
+        "Joel",
+        "Amos",
+        "Obadiah",
+        "Jonah",
+        "Micah",
+        "Nahum",
+        "Habakkuk",
+        "Zephaniah",
+        "Haggai",
+        "Zechariah",
+        "Malachi",
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John",
+        "Acts",
+        "Romans",
+        "1 Corinthians",
+        "2 Corinthians",
+        "Galatians",
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "1 Thessalonians",
+        "2 Thessalonians",
+        "1 Timothy",
+        "2 Timothy",
+        "Titus",
+        "Philemon",
+        "Hebrews",
+        "James",
+        "1 Peter",
+        "2 Peter",
+        "1 John",
+        "2 John",
+        "3 John",
+        "Jude",
+        "Revelation"
+      ],
+      "ordinal_books": {
+        "1": "First",
+        "2": "Second",
+        "3": "Third"
+      }
+    }
+  },
+  "terms": [
+    {
+      "term_id": "translation-rvr1960",
+      "source_kind": "translation",
+      "match": {
+        "es": [
+          "RVR1960"
+        ],
+        "en": [
+          "RVR1960"
+        ]
+      },
+      "speak": {
+        "es": "Reina Valera mil novecientos sesenta",
+        "en": "Reina Valera nineteen sixty"
+      }
+    },
+    {
+      "term_id": "translation-kjv",
+      "source_kind": "translation",
+      "match": {
+        "es": [
+          "KJV"
+        ],
+        "en": [
+          "KJV"
+        ]
+      },
+      "speak": {
+        "es": "King James Version",
+        "en": "King James Version"
+      }
+    },
+    {
+      "term_id": "glossary-christ",
+      "source_kind": "glossary",
+      "source_glossary_id": "glo-cristo",
+      "match": {
+        "es": [
+          "Cristo",
+          "Mesías"
+        ],
+        "en": [
+          "Christ",
+          "Messiah"
+        ]
+      },
+      "speak": {
+        "es": "Cristo",
+        "en": "Christ"
+      }
+    }
+  ],
+  "semantic_roles": {
+    "title": {
+      "rate_multiplier": 0.94,
+      "pause_after_ms": 420
+    },
+    "bible-reading": {
+      "rate_multiplier": 0.93,
+      "pause_after_ms": 320
+    },
+    "heading": {
+      "rate_multiplier": 0.96,
+      "pause_after_ms": 260
+    },
+    "explanation": {
+      "rate_multiplier": 1.0,
+      "pause_after_ms": 180
+    },
+    "application": {
+      "rate_multiplier": 0.98,
+      "pause_after_ms": 220
+    },
+    "reflection": {
+      "rate_multiplier": 0.94,
+      "pause_after_ms": 320
+    },
+    "summary": {
+      "rate_multiplier": 0.96,
+      "pause_after_ms": 300
+    },
+    "prayer": {
+      "rate_multiplier": 0.9,
+      "pause_after_ms": 420
+    },
+    "question": {
+      "rate_multiplier": 0.95,
+      "pause_after_ms": 260
+    }
+  }
+}

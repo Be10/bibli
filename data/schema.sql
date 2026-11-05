@@ -28,6 +28,19 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS route_lessons;
 DROP TABLE IF EXISTS route_modules;
+DROP TABLE IF EXISTS learning_microcheck_evidence_localizations;
+DROP TABLE IF EXISTS learning_microcheck_evidence;
+DROP TABLE IF EXISTS learning_microcheck_option_localizations;
+DROP TABLE IF EXISTS learning_microcheck_options;
+DROP TABLE IF EXISTS learning_microcheck_concepts;
+DROP TABLE IF EXISTS learning_microcheck_localizations;
+DROP TABLE IF EXISTS learning_microchecks;
+DROP TABLE IF EXISTS lesson_learning_glossary_links;
+DROP TABLE IF EXISTS glossary_term_localizations;
+DROP TABLE IF EXISTS learning_objective_blocks;
+DROP TABLE IF EXISTS learning_objective_concepts;
+DROP TABLE IF EXISTS learning_objective_localizations;
+DROP TABLE IF EXISTS learning_objectives;
 DROP TABLE IF EXISTS lesson_learning_block_concepts;
 DROP TABLE IF EXISTS lesson_learning_concepts;
 DROP TABLE IF EXISTS learning_concept_localizations;
@@ -234,6 +247,48 @@ CREATE TABLE lesson_learning_block_concepts (
   FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE learning_objectives (
+  id TEXT PRIMARY KEY,
+  lesson_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  objective_version TEXT NOT NULL,
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  UNIQUE (lesson_id, position),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_objective_localizations (
+  objective_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  objective_text TEXT NOT NULL,
+  PRIMARY KEY (objective_id, locale),
+  FOREIGN KEY (objective_id) REFERENCES learning_objectives(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_objective_concepts (
+  objective_id TEXT NOT NULL,
+  concept_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  PRIMARY KEY (objective_id, concept_id),
+  UNIQUE (objective_id, position),
+  FOREIGN KEY (objective_id) REFERENCES learning_objectives(id) ON DELETE CASCADE,
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_objective_blocks (
+  objective_id TEXT NOT NULL,
+  lesson_id TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  block_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  evidence_role TEXT NOT NULL DEFAULT 'supports',
+  PRIMARY KEY (objective_id, block_id),
+  UNIQUE (objective_id, position),
+  FOREIGN KEY (objective_id) REFERENCES learning_objectives(id) ON DELETE CASCADE,
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE
+);
+
 CREATE TABLE route_lessons (
   route_id TEXT NOT NULL,
   module_id TEXT,
@@ -377,6 +432,162 @@ CREATE TABLE lesson_glossary (
   FOREIGN KEY (glossary_id) REFERENCES glossary_terms(id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE glossary_term_localizations (
+  glossary_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  term TEXT NOT NULL,
+  definition TEXT NOT NULL DEFAULT '',
+  source_kind TEXT NOT NULL DEFAULT 'canonical-glossary',
+  PRIMARY KEY (glossary_id, locale),
+  FOREIGN KEY (glossary_id) REFERENCES glossary_terms(id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_learning_glossary_links (
+  lesson_id TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  block_key TEXT NOT NULL,
+  glossary_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  PRIMARY KEY (lesson_id, block_id, glossary_id),
+  UNIQUE (lesson_id, block_id, position),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE,
+  FOREIGN KEY (glossary_id) REFERENCES glossary_terms(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE learning_microchecks (
+  id TEXT PRIMARY KEY,
+  lesson_id TEXT NOT NULL,
+  trigger_block_id TEXT NOT NULL,
+  trigger_block_key TEXT NOT NULL,
+  objective_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  check_version TEXT NOT NULL,
+  question_type TEXT NOT NULL DEFAULT 'single-choice',
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  UNIQUE (lesson_id, position),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE,
+  FOREIGN KEY (objective_id) REFERENCES learning_objectives(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_localizations (
+  check_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  prompt TEXT NOT NULL,
+  PRIMARY KEY (check_id, locale),
+  FOREIGN KEY (check_id) REFERENCES learning_microchecks(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_concepts (
+  check_id TEXT NOT NULL,
+  concept_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  PRIMARY KEY (check_id, concept_id),
+  UNIQUE (check_id, position),
+  FOREIGN KEY (check_id) REFERENCES learning_microchecks(id) ON DELETE CASCADE,
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_options (
+  id TEXT PRIMARY KEY,
+  check_id TEXT NOT NULL,
+  option_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  is_correct INTEGER NOT NULL DEFAULT 0 CHECK (is_correct IN (0, 1)),
+  UNIQUE (check_id, option_key),
+  UNIQUE (check_id, position),
+  FOREIGN KEY (check_id) REFERENCES learning_microchecks(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_option_localizations (
+  option_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  option_text TEXT NOT NULL,
+  rationale TEXT NOT NULL,
+  PRIMARY KEY (option_id, locale),
+  FOREIGN KEY (option_id) REFERENCES learning_microcheck_options(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_evidence (
+  check_id TEXT NOT NULL,
+  lesson_id TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  block_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  PRIMARY KEY (check_id, block_id),
+  UNIQUE (check_id, position),
+  FOREIGN KEY (check_id) REFERENCES learning_microchecks(id) ON DELETE CASCADE,
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_microcheck_evidence_localizations (
+  check_id TEXT NOT NULL,
+  block_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  bible_reference TEXT,
+  PRIMARY KEY (check_id, block_id, locale),
+  FOREIGN KEY (check_id, block_id) REFERENCES learning_microcheck_evidence(check_id, block_id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_interactive_blocks (
+  id TEXT PRIMARY KEY,
+  lesson_id TEXT NOT NULL,
+  anchor_block_id TEXT NOT NULL,
+  anchor_block_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  interaction_version TEXT NOT NULL,
+  interaction_type TEXT NOT NULL,
+  presentation TEXT NOT NULL DEFAULT 'inline',
+  resource_id TEXT,
+  source_kind TEXT NOT NULL DEFAULT 'editorial-registry',
+  UNIQUE (lesson_id, anchor_block_id, position),
+  FOREIGN KEY (lesson_id) REFERENCES study_lessons(id) ON DELETE CASCADE,
+  FOREIGN KEY (resource_id) REFERENCES visual_resources(id) ON DELETE SET NULL
+);
+
+CREATE TABLE learning_interactive_block_localizations (
+  interaction_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  eyebrow TEXT NOT NULL DEFAULT '',
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  instruction TEXT NOT NULL DEFAULT '',
+  PRIMARY KEY (interaction_id, locale),
+  FOREIGN KEY (interaction_id) REFERENCES learning_interactive_blocks(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_interactive_block_concepts (
+  interaction_id TEXT NOT NULL,
+  concept_id TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  PRIMARY KEY (interaction_id, concept_id),
+  UNIQUE (interaction_id, position),
+  FOREIGN KEY (interaction_id) REFERENCES learning_interactive_blocks(id) ON DELETE CASCADE,
+  FOREIGN KEY (concept_id) REFERENCES learning_concepts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_interactive_items (
+  id TEXT PRIMARY KEY,
+  interaction_id TEXT NOT NULL,
+  item_key TEXT NOT NULL,
+  position INTEGER NOT NULL CHECK (position > 0),
+  UNIQUE (interaction_id, item_key),
+  UNIQUE (interaction_id, position),
+  FOREIGN KEY (interaction_id) REFERENCES learning_interactive_blocks(id) ON DELETE CASCADE
+);
+
+CREATE TABLE learning_interactive_item_localizations (
+  item_id TEXT NOT NULL,
+  locale TEXT NOT NULL,
+  label TEXT NOT NULL DEFAULT '',
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  PRIMARY KEY (item_id, locale),
+  FOREIGN KEY (item_id) REFERENCES learning_interactive_items(id) ON DELETE CASCADE
+);
+
 CREATE TABLE lesson_visual_resources (
   lesson_id TEXT NOT NULL,
   visual_resource_id TEXT NOT NULL,
@@ -468,6 +679,18 @@ CREATE INDEX idx_lesson_learning_concepts_lesson ON lesson_learning_concepts(les
 CREATE INDEX idx_lesson_learning_concepts_concept ON lesson_learning_concepts(concept_id, lesson_id);
 CREATE INDEX idx_lesson_learning_block_concepts_block ON lesson_learning_block_concepts(lesson_id, block_id, concept_id);
 CREATE INDEX idx_lesson_learning_block_concepts_concept ON lesson_learning_block_concepts(concept_id, lesson_id, block_id);
+CREATE INDEX idx_learning_objectives_lesson ON learning_objectives(lesson_id, position);
+CREATE INDEX idx_learning_objective_localizations_locale ON learning_objective_localizations(locale, objective_id);
+CREATE INDEX idx_learning_objective_concepts_concept ON learning_objective_concepts(concept_id, objective_id);
+CREATE INDEX idx_learning_objective_blocks_lesson ON learning_objective_blocks(lesson_id, block_id, objective_id);
+CREATE INDEX idx_learning_microchecks_lesson ON learning_microchecks(lesson_id, position);
+CREATE INDEX idx_learning_microchecks_trigger ON learning_microchecks(lesson_id, trigger_block_id);
+CREATE INDEX idx_learning_microcheck_concepts_concept ON learning_microcheck_concepts(concept_id, check_id);
+CREATE INDEX idx_learning_microcheck_options_check ON learning_microcheck_options(check_id, position);
+CREATE INDEX idx_learning_microcheck_evidence_check ON learning_microcheck_evidence(check_id, position);
+CREATE INDEX idx_glossary_term_localizations_locale ON glossary_term_localizations(locale, term);
+CREATE INDEX idx_lesson_learning_glossary_block ON lesson_learning_glossary_links(lesson_id, block_id, position);
+CREATE INDEX idx_lesson_learning_glossary_term ON lesson_learning_glossary_links(glossary_id, lesson_id);
 CREATE INDEX idx_events_chronology ON events(chronological_order);
 CREATE INDEX idx_lesson_topics_lesson ON lesson_topics(lesson_id);
 CREATE INDEX idx_lesson_events_lesson ON lesson_events(lesson_id);
@@ -476,4 +699,8 @@ CREATE INDEX idx_lesson_passages_lesson ON lesson_passages(lesson_id, position);
 CREATE INDEX idx_lesson_people_lesson ON lesson_people(lesson_id);
 CREATE INDEX idx_lesson_places_lesson ON lesson_places(lesson_id);
 CREATE INDEX idx_lesson_glossary_lesson ON lesson_glossary(lesson_id);
+CREATE INDEX idx_learning_interactive_blocks_lesson ON learning_interactive_blocks(lesson_id, anchor_block_id, position);
+CREATE INDEX idx_learning_interactive_blocks_type ON learning_interactive_blocks(interaction_type, lesson_id);
+CREATE INDEX idx_learning_interactive_block_concepts_concept ON learning_interactive_block_concepts(concept_id, interaction_id);
+CREATE INDEX idx_learning_interactive_items_interaction ON learning_interactive_items(interaction_id, position);
 CREATE INDEX idx_lesson_visual_resources_lesson ON lesson_visual_resources(lesson_id);
